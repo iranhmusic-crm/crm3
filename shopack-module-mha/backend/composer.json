@@ -1,0 +1,42 @@
+{
+    "name": "iranhmusic/shopack-module-mha-backend",
+    "type": "yii2-extension",
+    "authors": [
+        {
+            "name": "Kambiz Zandi",
+            "email": "kambizzandi@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "iranhmusic\\shopack\\mha\\backend\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.4.0",
+        "yiisoft/yii2": "~2.0.45",
+        "bizley/jwt": "^3.0",
+        "guzzlehttp/guzzle": "^7.5",
+        "creocoder/yii2-nested-sets": ">=0.9",
+        "shopack/yii2-base-common": "@dev",
+        "shopack/yii2-base-backend": "@dev",
+        "shopack/yii2-module-aaa-common": "@dev",
+        "shopack/yii2-module-aaa-backend": "@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.8.34",
+        "yiisoft/yii2-bootstrap5": "~2.0.2"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    }
+}
