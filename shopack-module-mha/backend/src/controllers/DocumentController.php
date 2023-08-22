@@ -183,7 +183,7 @@ class DocumentController extends BaseRestController
 		;
 
 		$query
-			->addSelect('tmpmbrdoc.cnt AS providedCount')
+			->addSelect(new \yii\db\Expression("IFNULL(tmpmbrdoc.cnt, 0) AS providedCount"))
 			->leftJoin("(
 		SELECT mbrdocMemberID
 				 , mbrdocDocumentID
@@ -193,7 +193,7 @@ class DocumentController extends BaseRestController
 	GROUP BY mbrdocMemberID
 				 , mbrdocDocumentID
 					 ) AS tmpmbrdoc",
-			"tmpmbrdoc.mbrdocDocumentID = tbl_MHA_Document.docID "
+				"tmpmbrdoc.mbrdocDocumentID = tbl_MHA_Document.docID "
 			. " AND tmpmbrdoc.mbrdocMemberID = {$memberID}")
 		;
 

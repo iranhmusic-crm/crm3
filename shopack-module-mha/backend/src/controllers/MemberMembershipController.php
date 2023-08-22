@@ -91,7 +91,7 @@ class MemberMembershipController extends BaseRestController
 		;
 
 		if ($model !== null) {
-			if ($justForMe && ($model->mbrshpMemberID != Yii::$app->user->id))
+			if ($justForMe && ($model['mbrshpMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
 
 			return $model;

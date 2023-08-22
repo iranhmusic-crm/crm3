@@ -46,7 +46,7 @@ class MemberMasterInsDocSearchModel extends MemberMasterInsDocModel
 			return $dataProvider;
 		}
 
-		if (isset($params['mbrminsdocMemberID']))
+		if (empty($params['mbrminsdocMemberID']) == false)
 			$query->andWhere(['mbrminsdocMemberID' => $params['mbrminsdocMemberID']]);
 
 		$this->applySearchValuesInQuery($query);

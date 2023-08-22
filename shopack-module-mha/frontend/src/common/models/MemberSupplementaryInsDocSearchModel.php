@@ -46,7 +46,7 @@ class MemberSupplementaryInsDocSearchModel extends MemberSupplementaryInsDocMode
 			return $dataProvider;
 		}
 
-		if (isset($params['mbrsinsdocMemberID']))
+		if (empty($params['mbrsinsdocMemberID']) == false)
 			$query->andWhere(['mbrsinsdocMemberID' => $params['mbrsinsdocMemberID']]);
 
 		$this->applySearchValuesInQuery($query);

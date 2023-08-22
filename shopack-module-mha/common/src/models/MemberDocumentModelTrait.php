@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
 
 /*
@@ -16,6 +17,8 @@ use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
 'mbrdocDocumentID',
 'mbrdocTitle',
 'mbrdocFileID',
+'mbrdocComment',
+'mbrdocHistory',
 'mbrdocStatus',
 'mbrdocCreatedAt',
 'mbrdocCreatedBy',
@@ -73,6 +76,22 @@ trait MemberDocumentModelTrait
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
         enuColumnInfo::search     => false, //true
+			],
+			'mbrdocComment' => [
+				enuColumnInfo::type       => ['string', 'max' => 65500],
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        enuColumnInfo::search     => true,
+			],
+			'mbrdocHistory' => [
+				enuColumnInfo::type       => JsonValidator::class,
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        // enuColumnInfo::search     => null,
 			],
 			'mbrdocStatus' => [
 				enuColumnInfo::isStatus   => true,

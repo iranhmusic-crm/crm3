@@ -102,7 +102,7 @@ class MemberSpecialtyController extends BaseRestController
 		;
 
 		if ($model !== null) {
-			if ($justForMe && ($model->mbrspcMemberID != Yii::$app->user->id))
+			if ($justForMe && ($model['mbrspcMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
 
 			return $model;

@@ -55,7 +55,7 @@ class MemberSpecialtySearchModel extends MemberSpecialtyModel
 			return $dataProvider;
 		}
 
-		if (isset($params['mbrspcMemberID']))
+		if (empty($params['mbrspcMemberID']) == false)
 			$query->andWhere(['mbrspcMemberID' => $params['mbrspcMemberID']]);
 
 		$this->applySearchValuesInQuery($query);

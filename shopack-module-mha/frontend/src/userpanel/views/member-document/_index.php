@@ -61,6 +61,15 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
             'class' => \shopack\base\frontend\widgets\ActionColumn::class,
             'header' => MemberDocumentModel::canCreate() ? Html::createButton() : Yii::t('app', 'Actions'),
             'template' => '{delete}',
+
+            'visibleButtons' => [
+              'update' => function ($model, $key, $index) {
+                return $model->canUpdate();
+              },
+              'delete' => function ($model, $key, $index) {
+                return $model->canDelete();
+              },
+            ],
           ],
           [
             'attribute' => 'rowDate',
@@ -85,7 +94,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
   <div class='col-4'>
     <div class='card border-default'>
       <div class='card-header bg-default'>
-        <div class='card-title'><?= Yii::t('mha', 'Documents Types') ?></div>
+        <div class='card-title'><?= Yii::t('mha', 'Required Documents') ?></div>
       </div>
       <div class='card-body'>
         <?php
@@ -110,7 +119,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
                   if ($providedCount == 0)
                     return "<div class='badge bg-danger'>{$providedCount}</div>";
 
-                  return $providedCount;
+                  return "<div class='badge bg-success'>{$providedCount}</div>";
                 },
               ],
               [
@@ -120,6 +129,12 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
                   'create' => function ($url, $model, $key) {
                     return Html::createButton('درج', [
                       'docID' => $model->docID,
+                    ], [
+                      'class' => [
+                        'btn',
+                        'btn-sm',
+                        $model->providedCount > 0 ? 'btn-outline-success' : 'btn-success'
+                      ],
                     ]);
                   },
                 ],

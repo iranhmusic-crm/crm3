@@ -91,7 +91,7 @@ class MemberKanoonController extends BaseRestController
 		;
 
 		if ($model !== null) {
-			if ($justForMe && ($model->mbrknnMemberID != Yii::$app->user->id))
+			if ($justForMe && ($model['mbrknnMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
 
 			return $model;

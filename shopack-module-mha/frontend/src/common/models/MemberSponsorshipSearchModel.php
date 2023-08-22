@@ -46,7 +46,7 @@ class MemberSponsorshipSearchModel extends MemberSponsorshipModel
 			return $dataProvider;
 		}
 
-		if (isset($params['mbrspsMemberID']))
+		if (empty($params['mbrspsMemberID']) == false)
 			$query->andWhere(['mbrspsMemberID' => $params['mbrspsMemberID']]);
 
 		$this->applySearchValuesInQuery($query);

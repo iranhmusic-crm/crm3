@@ -89,7 +89,7 @@ class MemberSupplementaryInsDocController extends BaseRestController
 		;
 
 		if ($model !== null) {
-			if ($justForMe && ($model->mbrsinsdocMemberID != Yii::$app->user->id))
+			if ($justForMe && ($model['mbrsinsdocMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
 
 			return $model;

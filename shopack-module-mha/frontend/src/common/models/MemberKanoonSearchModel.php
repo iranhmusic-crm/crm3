@@ -46,7 +46,7 @@ class MemberKanoonSearchModel extends MemberKanoonModel
 			return $dataProvider;
 		}
 
-		if (isset($params['mbrknnMemberID']))
+		if (empty($params['mbrknnMemberID']) == false)
 			$query->andWhere(['mbrknnMemberID' => $params['mbrknnMemberID']]);
 
 		$this->applySearchValuesInQuery($query);

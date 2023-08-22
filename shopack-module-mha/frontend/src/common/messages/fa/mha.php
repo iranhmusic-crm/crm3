@@ -172,6 +172,7 @@ return [
 	'Update Document' => 'ویرایش مدرک',
 
 	'Documents Types' => 'انواع مدارک',
+	'Required Documents' => 'مدارک مورد نیاز',
 
 
 	// 'Document Definitions' => 'تعریف مدارک',

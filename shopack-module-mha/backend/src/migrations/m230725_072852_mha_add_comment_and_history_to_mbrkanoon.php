@@ -33,7 +33,7 @@ CREATE TRIGGER `trg_tbl_MHA_Member_Kanoon_before_insert` BEFORE INSERT ON `tbl_M
         SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT('comment', NEW.mbrknnComment));
     END IF;
 
-    SET NEW.mbrknnHistory = JSON_ARRAY(Changes);
+    SET NEW.mbrknnHistory = JSON_MERGE_PRESERVE(COALESCE(NEW.mbrknnHistory, '[]'), Changes);
 END
 SQLSTR
         );
@@ -55,8 +55,7 @@ CREATE TRIGGER `trg_tbl_MHA_Member_Kanoon_before_update` BEFORE UPDATE ON `tbl_M
             SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT('comment', NEW.mbrknnComment));
         END IF;
 
-        SET NEW.mbrknnHistory = JSON_MERGE_PRESERVE(COALESCE(OLD.mbrknnHistory, '[]'),
-            Changes);
+        SET NEW.mbrknnHistory = JSON_MERGE_PRESERVE(COALESCE(OLD.mbrknnHistory, '[]'), Changes);
     END IF;
 END
 SQLSTR

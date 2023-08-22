@@ -97,7 +97,7 @@ class MemberDocumentController extends BaseRestController
 		;
 
 		if ($model !== null) {
-			if ($justForMe && ($model->mbrdocMemberID != Yii::$app->user->id))
+			if ($justForMe && ($model['mbrdocMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
 
 			return $model;

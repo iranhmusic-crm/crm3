@@ -14,14 +14,14 @@ class BasicDefinitionSearchModel extends BasicDefinitionModel
 {
   use \shopack\base\common\db\SearchModelTrait;
 
-	public $providedCount;
+	// public $providedCount;
 
-	public function attributeLabels()
-	{
-		return ArrayHelper::merge(parent::attributeLabels(), [
-			'providedCount' => 'درج شده',
-		]);
-	}
+	// public function attributeLabels()
+	// {
+	// 	return ArrayHelper::merge(parent::attributeLabels(), [
+	// 		'providedCount' => 'درج شده',
+	// 	]);
+	// }
 
 	public function scenarios()
 	{
