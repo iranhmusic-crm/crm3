@@ -94,10 +94,138 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
   <side class="sidebar">
     <?php
       $userInfos = [];
+
+      if ((empty(Yii::$app->user->identity->usrFirstName) == false)
+          || (empty(Yii::$app->user->identity->usrLastName) == false))
+      {
+        $s = [
+          Yii::$app->user->identity->usrFirstName ?? '',
+          Yii::$app->user->identity->usrLastName ?? '',
+        ];
+        $userInfos[] = implode(' ', $s);
+      }
+
       if (empty(Yii::$app->user->identity->usrEmail) == false)
         $userInfos[] = Yii::$app->user->identity->usrEmail;
+
       if (empty(Yii::$app->user->identity->usrMobile) == false)
         $userInfos[] = Yii::$app->user->identity->usrMobile;
+
+      $sidebarItems = [
+        [
+          'label' => "<div>"
+            . "<div class='text-center dir-ltr'>"
+            . implode('<br>', $userInfos)
+            . "</div>"
+
+            . "<div class='text-center'>"
+            . Html::a(Yii::t('aaa', 'My Profile'), '/aaa/profile')
+            . ' - '
+            . Html::confirmButton(Yii::t('aaa', 'Logout'), '/aaa/auth/logout', Yii::t('aaa', 'Are you sure you want to logout?'), [
+              'btn' => false,
+            ])
+
+            . "</div>"
+
+            . "<hr class='sidemenu-divider'>"
+            . "</div>",
+          'encode' => false,
+          'url' => null,
+        ],
+        [
+          'label' => Yii::t('app', 'Desktop'),
+          'icon' => 'home',
+          'url' => '/',
+        ],
+        [
+          'label' => Yii::t('aaa', 'System'),
+          // 'icon' => 'question-sign',
+          'items' => [
+            [
+              'label' => Yii::t('app', 'Settings'),
+              'items' => [
+                ['label' => Yii::t('aaa', 'Roles'), 'icon' => 'info-sign', 'url' => ['/aaa/role']],
+                ['label' => Yii::t('aaa', 'Geo Divisions'), 'icon' => 'info-sign', 'url' => ['/aaa/geo-country']],
+              ],
+            ],
+            ['label' => Yii::t('aaa', 'Users'), 'icon' => 'info-sign', 'url' => ['/aaa/user']],
+            ['label' => Yii::t('aaa', 'Gateways'), 'icon' => 'info-sign', 'url' => ['/aaa/gateway']],
+
+            [
+              'label' => Yii::t('aaa', 'Files'),
+              'items' => [
+                ['label' => Yii::t('aaa', 'Files'), 'icon' => 'info-sign', 'url' => ['/aaa/upload-file']],
+                ['label' => Yii::t('aaa', 'Upload Queue'), 'icon' => 'info-sign', 'url' => ['/aaa/upload-queue']],
+              ],
+            ],
+
+            [
+              'label' => Yii::t('aaa', 'Messages'),
+              'items' => [
+                ['label' => Yii::t('aaa', 'Messages'), 'icon' => 'info-sign', 'url' => ['/aaa/message']],
+                ['label' => Yii::t('aaa', 'Message Templates'), 'icon' => 'info-sign', 'url' => ['/aaa/message-template']],
+              ],
+            ],
+          ],
+        ],
+        [
+          'label' => Yii::t('mha', 'Music House'),
+          // 'icon' => 'music',
+          'items' => [
+            ['label' => Yii::t('mha', 'Members'), 'icon' => 'info-sign', 'url' => ['/mha/member']],
+            ['label' => Yii::t('mha', 'Documents'), 'icon' => 'info-sign', 'url' => ['/mha/member-document']],
+            [
+              'label' => Yii::t('mha', 'Memberships'),
+              'icon' => 'info-sign',
+              'items' => [
+                ['label' => Yii::t('mha', 'Memberships Definitions'), 'icon' => 'info-sign', 'url' => ['/mha/membership']],
+                ['label' => Yii::t('mha', 'Members Memberships'), 'icon' => 'info-sign', 'url' => ['/mha/member-membership']],
+              ],
+            ],
+            [
+              'label' => Yii::t('mha', 'Kanoons'),
+              'icon' => 'info-sign',
+              'items' => [
+                ['label' => Yii::t('mha', 'Kanoons'), 'icon' => 'info-sign', 'url' => ['/mha/kanoon']],
+                ['label' => Yii::t('mha', 'Kanoon Members'), 'icon' => 'info-sign', 'url' => ['/mha/member-kanoon']],
+              ],
+            ],
+            [
+              'label' => Yii::t('mha', 'Insurance'),
+              // 'icon' => 'music',
+              'items' => [
+                ['label' => Yii::t('mha', 'Master Insurance Documents List'), 'icon' => 'info-sign', 'url' => ['/mha/member-master-ins-doc']],
+                ['label' => Yii::t('mha', 'Supplementary Insurance Documents List'), 'icon' => 'info-sign', 'url' => ['/mha/member-supplementary-ins-doc']],
+              ],
+            ],
+
+            [
+              'label' => Yii::t('app', 'Settings'),
+              'items' => [
+                ['label' => Yii::t('mha', 'Master Insurers'), 'icon' => 'info-sign', 'url' => ['/mha/master-insurer']],
+                ['label' => Yii::t('mha', 'Supplementary Insurers'), 'icon' => 'info-sign', 'url' => ['/mha/supplementary-insurer']],
+                ['label' => Yii::t('mha', 'Specialties'), 'icon' => 'info-sign', 'url' => ['/mha/specialty']],
+                ['label' => Yii::t('mha', 'Documents'), 'icon' => 'info-sign', 'url' => ['/mha/document']],
+                ['label' => Yii::t('mha', 'Basic Definitions'), 'icon' => 'info-sign', 'url' => ['/mha/basic-definition']],
+              ],
+            ],
+          ],
+        ],
+        [
+          'label' => Yii::t('aaa', 'Financial'),
+          // 'icon' => 'badge-dollar',
+          'items' => [
+            // ['label' => Yii::t('aaa', 'Wallets'), 'icon' => 'info-sign', 'url' => ['/aaa/wallet']],
+            // ['label' => Yii::t('aaa', 'Wallet Transactions'), 'icon' => 'info-sign', 'url' => ['/aaa/wallet-transaction']],
+            // ['label' => Yii::t('aaa', 'Payment gateways'), 'icon' => 'info-sign', 'url' => ['/aaa/payment-gateway']],
+            // ['label' => Yii::t('aaa', 'Vouchers'), 'icon' => 'info-sign', 'url' => ['/aaa/voucher']],
+            ['label' => Yii::t('aaa', 'Baskets'), 'icon' => 'info-sign', 'url' => ['/aaa/basket']],
+            ['label' => Yii::t('aaa', 'Orders'), 'icon' => 'info-sign', 'url' => ['/aaa/order']],
+            ['label' => Yii::t('aaa', 'Online Payments'), 'icon' => 'info-sign', 'url' => ['/aaa/online-payment']],
+            ['label' => Yii::t('aaa', 'Offline Payments'), 'icon' => 'info-sign', 'url' => ['/aaa/offline-payment']],
+          ],
+        ],
+      ];
 
       echo SideNav::widget([
         'type' => SideNav::TYPE_SECONDARY,
@@ -114,105 +242,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
         'activateParents' => true,
         'hideEmptyItems' => false,
 
-        'items' => [
-          [
-            'label' => "<div class='text-center dir-ltr'>" . implode('<br>', $userInfos) . "<hr class='sidemenu-divider'></div>",
-            'encode' => false,
-          ],
-          [
-            'label' => Yii::t('app', 'Desktop'),
-            'icon' => 'home',
-            'url' => '/',
-          ],
-          [
-            'label' => Yii::t('aaa', 'System'),
-            // 'icon' => 'question-sign',
-            'items' => [
-              [
-                'label' => Yii::t('app', 'Settings'),
-                'items' => [
-                  ['label' => Yii::t('aaa', 'Roles'), 'icon' => 'info-sign', 'url' => ['/aaa/role']],
-                  ['label' => Yii::t('aaa', 'Geo Divisions'), 'icon' => 'info-sign', 'url' => ['/aaa/geo-country']],
-                ],
-              ],
-              ['label' => Yii::t('aaa', 'Users'), 'icon' => 'info-sign', 'url' => ['/aaa/user']],
-              ['label' => Yii::t('aaa', 'Gateways'), 'icon' => 'info-sign', 'url' => ['/aaa/gateway']],
-
-              [
-                'label' => Yii::t('aaa', 'Files'),
-                'items' => [
-                  ['label' => Yii::t('aaa', 'Files'), 'icon' => 'info-sign', 'url' => ['/aaa/upload-file']],
-                  ['label' => Yii::t('aaa', 'Upload Queue'), 'icon' => 'info-sign', 'url' => ['/aaa/upload-queue']],
-                ],
-              ],
-
-              [
-                'label' => Yii::t('aaa', 'Messages'),
-                'items' => [
-                  ['label' => Yii::t('aaa', 'Messages'), 'icon' => 'info-sign', 'url' => ['/aaa/message']],
-                  ['label' => Yii::t('aaa', 'Message Templates'), 'icon' => 'info-sign', 'url' => ['/aaa/message-template']],
-                ],
-              ],
-            ],
-          ],
-          [
-            'label' => Yii::t('mha', 'Music House'),
-            // 'icon' => 'music',
-            'items' => [
-              ['label' => Yii::t('mha', 'Members'), 'icon' => 'info-sign', 'url' => ['/mha/member']],
-              ['label' => Yii::t('mha', 'Documents'), 'icon' => 'info-sign', 'url' => ['/mha/member-document']],
-              [
-                'label' => Yii::t('mha', 'Memberships'),
-                'icon' => 'info-sign',
-                'items' => [
-                  ['label' => Yii::t('mha', 'Memberships Definitions'), 'icon' => 'info-sign', 'url' => ['/mha/membership']],
-                  ['label' => Yii::t('mha', 'Members Memberships'), 'icon' => 'info-sign', 'url' => ['/mha/member-membership']],
-                ],
-              ],
-              [
-                'label' => Yii::t('mha', 'Kanoons'),
-                'icon' => 'info-sign',
-                'items' => [
-                  ['label' => Yii::t('mha', 'Kanoons'), 'icon' => 'info-sign', 'url' => ['/mha/kanoon']],
-                  ['label' => Yii::t('mha', 'Kanoon Members'), 'icon' => 'info-sign', 'url' => ['/mha/member-kanoon']],
-                ],
-              ],
-              [
-                'label' => Yii::t('mha', 'Insurance'),
-                // 'icon' => 'music',
-                'items' => [
-                  ['label' => Yii::t('mha', 'Master Insurance Documents List'), 'icon' => 'info-sign', 'url' => ['/mha/member-master-ins-doc']],
-                  ['label' => Yii::t('mha', 'Supplementary Insurance Documents List'), 'icon' => 'info-sign', 'url' => ['/mha/member-supplementary-ins-doc']],
-                ],
-              ],
-
-              [
-                'label' => Yii::t('app', 'Settings'),
-                'items' => [
-                  ['label' => Yii::t('mha', 'Master Insurers'), 'icon' => 'info-sign', 'url' => ['/mha/master-insurer']],
-                  ['label' => Yii::t('mha', 'Supplementary Insurers'), 'icon' => 'info-sign', 'url' => ['/mha/supplementary-insurer']],
-                  ['label' => Yii::t('mha', 'Specialties'), 'icon' => 'info-sign', 'url' => ['/mha/specialty']],
-                  ['label' => Yii::t('mha', 'Documents'), 'icon' => 'info-sign', 'url' => ['/mha/document']],
-                  ['label' => Yii::t('mha', 'Basic Definitions'), 'icon' => 'info-sign', 'url' => ['/mha/basic-definition']],
-                ],
-              ],
-            ],
-          ],
-          [
-            'label' => Yii::t('aaa', 'Financial'),
-            // 'icon' => 'badge-dollar',
-            'items' => [
-              // ['label' => Yii::t('aaa', 'Wallets'), 'icon' => 'info-sign', 'url' => ['/aaa/wallet']],
-              // ['label' => Yii::t('aaa', 'Wallet Transactions'), 'icon' => 'info-sign', 'url' => ['/aaa/wallet-transaction']],
-              // ['label' => Yii::t('aaa', 'Payment gateways'), 'icon' => 'info-sign', 'url' => ['/aaa/payment-gateway']],
-              // ['label' => Yii::t('aaa', 'Vouchers'), 'icon' => 'info-sign', 'url' => ['/aaa/voucher']],
-              ['label' => Yii::t('aaa', 'Baskets'), 'icon' => 'info-sign', 'url' => ['/aaa/basket']],
-              ['label' => Yii::t('aaa', 'Orders'), 'icon' => 'info-sign', 'url' => ['/aaa/order']],
-              ['label' => Yii::t('aaa', 'Online Payments'), 'icon' => 'info-sign', 'url' => ['/aaa/online-payment']],
-              ['label' => Yii::t('aaa', 'Offline Payments'), 'icon' => 'info-sign', 'url' => ['/aaa/offline-payment']],
-            ],
-          ],
-        ],
+        'items' => $sidebarItems,
       ]);
     ?>
   </side>

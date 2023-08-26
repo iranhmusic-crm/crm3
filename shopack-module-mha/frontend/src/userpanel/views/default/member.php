@@ -49,20 +49,25 @@ $this->params['breadcrumbs'][] = $this->title;
 									'cols' => 2,
 									'isVertical' => false,
 									'attributes' => [
-										[
-											'attribute' => 'mbrUserID',
-											'label' => 'کد کاربری',
-										],
-										[
-											'attribute' => 'usrStatus',
-											'value' => enuUserStatus::getLabel($model->user->usrStatus),
-										],
+										// [
+										// 	'attribute' => 'mbrUserID',
+										// 	'label' => 'کد کاربری',
+										// ],
+										// [
+										// 	'attribute' => 'usrStatus',
+										// 	'value' => enuUserStatus::getLabel($model->user->usrStatus),
+										// ],
 										'mbrRegisterCode',
+										'mbrAcceptedAt:jalaliWithTime',
 										[
 											'attribute' => 'mbrStatus',
 											'value' => enuMemberStatus::getLabel($model->mbrStatus),
 										],
-										'mbrAcceptedAt:jalaliWithTime',
+										[
+											'attribute' => 'expireDate',
+											'label' => 'تاریخ انقضای عضویت',
+											'value' => null,
+										],
 										[
 											'group' => true,
 											// 'cols' => 1,
@@ -73,6 +78,30 @@ $this->params['breadcrumbs'][] = $this->title;
 													'text-white',
 												],
 											],
+										],
+										[
+											'attribute' => 'usrFirstName',
+											'value' => $model->user->usrFirstName,
+										],
+										[
+											'attribute' => 'usrFirstName_en',
+											'value' => $model->user->usrFirstName_en,
+										],
+										[
+											'attribute' => 'usrLastName',
+											'value' => $model->user->usrLastName,
+										],
+										[
+											'attribute' => 'usrLastName_en',
+											'value' => $model->user->usrLastName_en,
+										],
+										[
+											'attribute' => 'usrFatherName',
+											'value' => $model->user->usrFatherName,
+										],
+										[
+											'attribute' => 'usrFatherName_en',
+											'value' => $model->user->usrFatherName_en,
 										],
 										[
 											'attribute' => 'usrEmail',
@@ -103,22 +132,6 @@ $this->params['breadcrumbs'][] = $this->title;
 											'value' => enuGender::getLabel($model->usrGender),
 										],
 										[
-											'attribute' => 'usrFirstName',
-											'value' => $model->user->usrFirstName,
-										],
-										[
-											'attribute' => 'usrFirstName_en',
-											'value' => $model->user->usrFirstName_en,
-										],
-										[
-											'attribute' => 'usrLastName',
-											'value' => $model->user->usrLastName,
-										],
-										[
-											'attribute' => 'usrLastName_en',
-											'value' => $model->user->usrLastName_en,
-										],
-										[
 											'group' => true,
 											'label' => 'اطلاعات تکمیلی',
 											'groupOptions' => [
@@ -144,35 +157,12 @@ $this->params['breadcrumbs'][] = $this->title;
 				</div>
 
 				<div class='col-sm-3'>
-					<div class='card border-default'>
-						<div class='card-header bg-default'>
-							<div class="float-end">
-								<?= Html::updateButton(Yii::t('aaa', 'Update Image'), ['/aaa/profile/update-image'], [
-									// 'modal' => false,
-								]) ?>
-							</div>
-							<div class='card-title'><?= Yii::t('aaa', 'Image') ?></div>
-							<div class="clearfix"></div>
-						</div>
-						<div class='card-body text-center'>
-							<?php
-								if ($model->user->usrImageFileID == null)
-									echo Yii::t('app', 'Not defined');
-								elseif (empty($model->user->imageFile->fullFileUrl))
-									echo Yii::t('aaa', 'Uploading...');
-								elseif ($model->user->imageFile->isImage())
-									echo Html::img($model->user->imageFile->fullFileUrl, ['style' => ['width' => '100%']]);
-								else
-									echo Html::a(Yii::t('app', 'Download'), $model->imageFile->fullFileUrl);
-							?>
-						</div>
-					</div>
 
 					<?php
 						$defects = $model->getDefects();
 						if (empty($defects) == false) {
 					?>
-					<div class='card border-default mt-3'>
+					<div class='card border-default mb-3'>
 						<div class='card-header bg-default'>
 							<div class="float-end">
 								<div class='badge bg-danger'><?= count($defects) ?></div>
@@ -205,6 +195,30 @@ $this->params['breadcrumbs'][] = $this->title;
 					<?php
 						}
 					?>
+
+					<div class='card border-default'>
+						<div class='card-header bg-default'>
+							<div class="float-end">
+								<?= Html::updateButton(Yii::t('aaa', 'Update Image'), ['/aaa/profile/update-image'], [
+									// 'modal' => false,
+								]) ?>
+							</div>
+							<div class='card-title'><?= Yii::t('aaa', 'Image') ?></div>
+							<div class="clearfix"></div>
+						</div>
+						<div class='card-body text-center'>
+							<?php
+								if ($model->user->usrImageFileID == null)
+									echo Yii::t('app', 'Not defined');
+								elseif (empty($model->user->imageFile->fullFileUrl))
+									echo Yii::t('aaa', 'Uploading...');
+								elseif ($model->user->imageFile->isImage())
+									echo Html::img($model->user->imageFile->fullFileUrl, ['style' => ['width' => '100%']]);
+								else
+									echo Html::a(Yii::t('app', 'Download'), $model->imageFile->fullFileUrl);
+							?>
+						</div>
+					</div>
 
 				</div>
 			</div>

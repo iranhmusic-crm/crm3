@@ -36,7 +36,7 @@ use shopack\aaa\frontend\common\models\GeoCountryModel;
 			[
 				'mbrUserID',
 				'type' => FormBuilder::FIELD_STATIC,
-				'staticValue' => $model->user->displayName(),
+				'staticValue' => $model->user->displayName('{fn} {ln} {em} {mob}'),
 			],
 		]);
 
@@ -69,7 +69,11 @@ use shopack\aaa\frontend\common\models\GeoCountryModel;
 			}
 			if (empty($model->user->usrFirstName_en)) {
 				$builder->fields([
-					['usrFirstName_en']
+					['usrFirstName_en',
+						'widgetOptions' => [
+							'class' => ['dir-ltr'],
+						],
+					]
 				]);
 			}
 			if (empty($model->user->usrLastName)) {
@@ -79,17 +83,37 @@ use shopack\aaa\frontend\common\models\GeoCountryModel;
 			}
 			if (empty($model->user->usrLastName_en)) {
 				$builder->fields([
-					['usrLastName_en']
+					['usrLastName_en',
+						'widgetOptions' => [
+							'class' => ['dir-ltr'],
+						],
+					]
 				]);
 			}
 			if (empty($model->user->usrEmail)) {
 				$builder->fields([
-					['usrEmail']
+					['usrEmail',
+						'type' => FormBuilder::FIELD_WIDGET,
+						'widget' => \yii\widgets\MaskedInput::class,
+						'widgetOptions' => [
+							'options' => [
+								'maxlength' => true,
+								'style' => 'direction:ltr;',
+							],
+							'clientOptions' => [
+								'alias' => 'email',
+							],
+						],
+					]
 				]);
 			}
 			if (empty($model->user->usrMobile)) {
 				$builder->fields([
-					['usrMobile']
+					['usrMobile',
+						'widgetOptions' => [
+							'class' => ['dir-ltr'],
+						],
+					]
 				]);
 			}
 			if (empty($model->user->usrSSID)) {

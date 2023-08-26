@@ -198,28 +198,6 @@ $this->params['breadcrumbs'][] = $this->title;
                   ?>
                 </div>
               </div>
-
-              <div class='card border-default mt-3'>
-                <div class='card-header bg-default'>
-                  <div class="float-end">
-                  </div>
-                  <div class='card-title'><?= Yii::t('aaa', 'Image') ?></div>
-                  <div class="clearfix"></div>
-                </div>
-                <div class='card-body text-center'>
-                  <?php
-                    if ($model->user->usrImageFileID == null)
-                      echo Yii::t('app', 'not set');
-                    elseif (empty($model->user->imageFile->fullFileUrl))
-                      echo Yii::t('aaa', 'Uploading...');
-                    elseif ($model->user->imageFile->isImage())
-                      echo Html::img($model->user->imageFile->fullFileUrl, ['style' => ['width' => '100%']]);
-                    else
-                      echo Html::a(Yii::t('app', 'Download'), $model->user->imageFile->fullFileUrl);
-                  ?>
-                </div>
-              </div>
-
               <?php
                 $defects = $model->getDefects();
                 if (empty($defects) == false) {
@@ -253,6 +231,28 @@ $this->params['breadcrumbs'][] = $this->title;
               <?php
                 }
               ?>
+
+              <div class='card border-default mt-3'>
+                <div class='card-header bg-default'>
+                  <div class="float-end">
+                  </div>
+                  <div class='card-title'><?= Yii::t('aaa', 'Image') ?></div>
+                  <div class="clearfix"></div>
+                </div>
+                <div class='card-body text-center'>
+                  <?php
+                    if ($model->user->usrImageFileID == null)
+                      echo Yii::t('app', 'not set');
+                    elseif (empty($model->user->imageFile->fullFileUrl))
+                      echo Yii::t('aaa', 'Uploading...');
+                    elseif ($model->user->imageFile->isImage())
+                      echo Html::img($model->user->imageFile->fullFileUrl, ['style' => ['width' => '100%']]);
+                    else
+                      echo Html::a(Yii::t('app', 'Download'), $model->user->imageFile->fullFileUrl);
+                  ?>
+                </div>
+              </div>
+
             </div>
           </div>
 

@@ -107,15 +107,43 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
         $memberModel = Yii::$app->member->memberModel;
 
         $userInfos = [];
+
+        if ((empty(Yii::$app->user->identity->usrFirstName) == false)
+            || (empty(Yii::$app->user->identity->usrLastName) == false))
+        {
+          $s = [
+            Yii::$app->user->identity->usrFirstName ?? '',
+            Yii::$app->user->identity->usrLastName ?? '',
+          ];
+          $userInfos[] = implode(' ', $s);
+        }
+
         if (empty(Yii::$app->user->identity->usrEmail) == false)
           $userInfos[] = Yii::$app->user->identity->usrEmail;
+
         if (empty(Yii::$app->user->identity->usrMobile) == false)
           $userInfos[] = Yii::$app->user->identity->usrMobile;
 
         $sidebarItems = [
           [
-            'label' => "<div class='text-center dir-ltr'>" . implode('<br>', $userInfos) . "<hr class='sidemenu-divider'></div>",
+            'label' => "<div>"
+              . "<div class='text-center dir-ltr'>"
+              . implode('<br>', $userInfos)
+              . "</div>"
+
+              . "<div class='text-center'>"
+              . Html::a(Yii::t('aaa', 'My Profile'), '/aaa/profile')
+              . ' - '
+              . Html::confirmButton(Yii::t('aaa', 'Logout'), '/aaa/auth/logout', Yii::t('aaa', 'Are you sure you want to logout?'), [
+                'btn' => false,
+              ])
+
+              . "</div>"
+
+              . "<hr class='sidemenu-divider'>"
+              . "</div>",
             'encode' => false,
+            'url' => null,
           ],
           [
             'label' => Yii::t('app', 'Desktop'),

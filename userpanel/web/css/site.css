@@ -4,7 +4,7 @@ html {
 
 :root {
   --bs-body-font-family: IRANSansFaNum, 'Vazirmatn FD' !important;
-  /* --bs-body-font-size: 0.875rem !important; */
+  --bs-body-font-size: 0.875rem !important;
   --bs-dark-rgb: 53, 54, 57 !important;
 }
 

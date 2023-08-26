@@ -32,27 +32,14 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
 
 <main id="layout-login" class="flex-shrink-0 h-100" role="main">
   <div class="container-fluid h-100">
-    <div class="row h-100">
-      <div class="col-md-4 d-flex login-sidebar">
+    <div class="h-100">
+      <div class="d-flex">
+        <div><?= Html::img('/images/logo_main_bw_h200.png', ['height' => 100]) ?></div>
+        <div class='text-left'><h1>عضویت در خانه موسیقی ایران</h1></div>
+      </div>
+      <div class="d-flex1">
         <?= Alert::widget() ?>
         <?= $content ?>
-      </div>
-      <div class="col d-flex login-center">
-        <div class="w-100 text-center">
-          <p><?= Html::img('/images/logo_main_bw_h200.png') ?></p>
-          <p>کاربر محترم</p>
-          <p>در صورت تمایل به عضویت در خانه موسیقی ایران، از طریق:</p>
-          <p><?= Html::a('درخواست عضویت در خانه موسیقی ایران',
-            '/mha/member/signup',
-            [
-              // 'method' => 'post',
-              // 'button' => [
-                'class' => ['btn', 'btn-success'],
-              // ],
-            ]);
-          ?></p>
-          <p>درخواست خود را ثبت کنید.</p>
-        </div>
       </div>
     </div>
   </div>
