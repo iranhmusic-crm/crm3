@@ -4,6 +4,7 @@
  */
 
 use yii\web\JsExpression;
+use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\Url;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\helpers\Html;
@@ -116,7 +117,7 @@ JS;
 		$getParamsSchemaUrl = Url::to(['specialty/params-schema']) . '?id=';
 		$strSpecialtyParameters = '{}';
 		if ($model->mbrspcDesc !== null)
-			$strSpecialtyParameters = json_encode($model->mbrspcDesc);
+			$strSpecialtyParameters = Json::encode($model->mbrspcDesc);
 
 		$builder->fields([
 			['mbrspcSpecialtyID',

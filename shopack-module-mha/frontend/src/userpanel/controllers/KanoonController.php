@@ -48,6 +48,7 @@ class KanoonController extends BaseController
 
           $definitionModels = BasicDefinitionModel::find()
             ->andWhere(['bdfType' => $k])
+            ->noLimit()
             ->asArray()
             ->all();
 

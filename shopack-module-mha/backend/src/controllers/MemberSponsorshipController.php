@@ -55,23 +55,7 @@ class MemberSponsorshipController extends BaseRestController
 		if (empty($filter) == false)
 			$query->andWhere($filter);
 
-		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
-		]);
-
-		if (Yii::$app->request->getMethod() == 'HEAD') {
-			$totalCount = $dataProvider->getTotalCount();
-			// $totalCount = $query->count();
-			Yii::$app->response->headers->add('X-Pagination-Total-Count', $totalCount);
-			return [];
-		}
-
-		return [
-			'data' => $dataProvider->getModels(),
-			// 'pagination' => [
-			// 	'totalCount' => $totalCount,
-			// ],
-		];
+		return $this->queryAllToResponse($query);
 	}
 
 	public function actionView($id)

@@ -36,6 +36,36 @@ class MemberController extends BaseCrudController
     return $this->render('view', $params);
   }
 
+  public function actionPrintCardFront($id)
+  {
+    try {
+      $model = $this->findModel($id);
+    } catch (\Throwable $exp) {
+      return $this->redirect(['/aaa/user/view', 'id' => $id]);
+    }
+
+    Yii::$app->controller->layout = "/print";
+
+    return $this->render('printCardFront', [
+      'model' => $model,
+		]);
+  }
+
+  public function actionPrintCardBack($id)
+  {
+    try {
+      $model = $this->findModel($id);
+    } catch (\Throwable $exp) {
+      return $this->redirect(['/aaa/user/view', 'id' => $id]);
+    }
+
+    Yii::$app->controller->layout = "/print";
+
+    return $this->render('printCardBack', [
+      'model' => $model,
+		]);
+  }
+
 	public function actionSelect2List(
     $q=null,
     // $id=null,

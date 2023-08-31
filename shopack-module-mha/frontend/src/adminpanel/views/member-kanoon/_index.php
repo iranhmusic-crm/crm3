@@ -44,7 +44,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
           '#',
           'تاریخ',
           'وضعیت',
-          'شرح',
+          'توضیح',
         ]) . '</td></tr>';
         if (empty($model->mbrknnHistory == false)) {
           $items = array_reverse($model->mbrknnHistory);
@@ -160,8 +160,8 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
         'waitForSurvey' => function ($url, $model, $key) {
           return Html::confirmButton(enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::WaitForSurvey), [
             'change-status',
-            'status' => enuMemberKanoonStatus::WaitForSurvey,
             'id' => $model->mbrknnID,
+            'status' => enuMemberKanoonStatus::WaitForSurvey,
             // 'ref' => Url::toRoute(['view', 'id' => $model->mbrUserID], true),
           ], Yii::t('mha', 'Are you sure you want to change status to {status}', ['status' => enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::WaitForSurvey)]), [
             'class' => 'btn btn-sm btn-primary',
@@ -170,8 +170,8 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
         'waitForResurvey' => function ($url, $model, $key) {
           return Html::confirmButton(enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::WaitForResurvey), [
             'change-status',
-            'status' => enuMemberKanoonStatus::WaitForResurvey,
             'id' => $model->mbrknnID,
+            'status' => enuMemberKanoonStatus::WaitForResurvey,
             // 'ref' => Url::toRoute(['view', 'id' => $model->mbrUserID], true),
           ], Yii::t('mha', 'Are you sure you want to change status to {status}', ['status' => enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::WaitForResurvey)]), [
             'class' => 'btn btn-sm btn-primary',
@@ -180,8 +180,8 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
         'azmoon' => function ($url, $model, $key) {
           return Html::confirmButton(enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Azmoon), [
             'change-status',
-            'status' => enuMemberKanoonStatus::Azmoon,
             'id' => $model->mbrknnID,
+            'status' => enuMemberKanoonStatus::Azmoon,
             // 'ref' => Url::toRoute(['view', 'id' => $model->mbrUserID], true),
           ], Yii::t('mha', 'Are you sure you want to change status to {status}', ['status' => enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Azmoon)]), [
             'class' => 'btn btn-sm btn-primary',
@@ -191,7 +191,6 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
           return Html::a(enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Accepted), [
             'accept',
             'id' => $model->mbrknnID,
-            // 'ref' => Url::toRoute(['view', 'id' => $model->mbrUserID], true),
           ], [
             'class' => 'btn btn-sm btn-success',
             'modal' => true,
@@ -199,21 +198,20 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
           ]);
         },
         'reject' => function ($url, $model, $key) {
-          return Html::confirmButton(enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Rejected), [
-            'change-status',
-            'status' => enuMemberKanoonStatus::Rejected,
+          return Html::a(enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Rejected), [
+            'reject',
             'id' => $model->mbrknnID,
-            // 'ref' => Url::toRoute(['view', 'id' => $model->mbrUserID], true),
-          ], Yii::t('mha', 'Are you sure you want to change status to {status}', ['status' => enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Rejected)]), [
+          ], [
             'class' => 'btn btn-sm btn-warning',
+            'modal' => true,
+            'title' => enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Rejected),
           ]);
         },
         'cancel' => function ($url, $model, $key) {
           return Html::confirmButton(enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Cancelled), [
             'change-status',
-            'status' => enuMemberKanoonStatus::Cancelled,
             'id' => $model->mbrknnID,
-            // 'ref' => Url::toRoute(['view', 'id' => $model->mbrUserID], true),
+            'status' => enuMemberKanoonStatus::Cancelled,
           ], Yii::t('mha', 'Are you sure you want to change status to {status}', ['status' => enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Cancelled)]), [
             'class' => 'btn btn-sm btn-warning',
           ]);

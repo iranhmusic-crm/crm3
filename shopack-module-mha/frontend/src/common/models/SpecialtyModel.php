@@ -75,6 +75,7 @@ class SpecialtyModel extends RestClientActiveRecord
 	{
 		$models = self::find()
 			->addUrlParameter('q', '***')
+			->noLimit()
 			// ->asArray()
 			->all();
 

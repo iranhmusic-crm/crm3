@@ -28,7 +28,7 @@ use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
-					'data' => ArrayHelper::map(KanoonModel::find()->asArray()->all(), 'knnID', 'knnName'),
+					'data' => ArrayHelper::map(KanoonModel::find()->asArray()->noLimit()->all(), 'knnID', 'knnName'),
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',

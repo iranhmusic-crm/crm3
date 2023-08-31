@@ -27,7 +27,7 @@ class SupplementaryInsurerDataColumn extends \kartik\grid\DataColumn
 			'model' => $model,
 			'attribute' => $attribute,
 			'initValueText' => $initValueText,
-			'data' => ArrayHelper::map(SupplementaryInsurerModel::find()->asArray()->all(), 'sinsID', 'sinsName'),
+			'data' => ArrayHelper::map(SupplementaryInsurerModel::find()->asArray()->noLimit()->all(), 'sinsID', 'sinsName'),
 			'pluginOptions' => [
 				'allowClear' => true,
 			],

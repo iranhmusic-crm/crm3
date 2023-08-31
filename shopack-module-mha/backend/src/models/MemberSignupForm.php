@@ -8,6 +8,7 @@ namespace iranhmusic\shopack\mha\backend\models;
 use Yii;
 use yii\base\Model;
 use yii\web\UnprocessableEntityHttpException;
+use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\common\validators\GroupRequiredValidator;
 use shopack\base\common\validators\JsonValidator;
@@ -277,7 +278,7 @@ class MemberSignupForm extends Model
 			$memberKanoonModel->mbrknnMemberID = $memberModel->mbrUserID;
 			$memberKanoonModel->mbrknnKanoonID = $this->kanoonID;
 			if (empty($this->mbrknnParams) == false)
-				$memberKanoonModel->mbrknnParams = json_decode($this->mbrknnParams, true);
+				$memberKanoonModel->mbrknnParams = Json::decode($this->mbrknnParams);
 
 			if ($memberKanoonModel->save() == false)  {
 				throw new UnprocessableEntityHttpException("could not save member kanoon\n" . implode("\n", $memberKanoonModel->getFirstErrors()));

@@ -27,7 +27,7 @@ class KanoonDataColumn extends \kartik\grid\DataColumn
 			'model' => $model,
 			'attribute' => $attribute,
 			'initValueText' => $initValueText,
-			'data' => ArrayHelper::map(KanoonModel::find()->asArray()->all(), 'knnID', 'knnName'),
+			'data' => ArrayHelper::map(KanoonModel::find()->asArray()->noLimit()->all(), 'knnID', 'knnName'),
 			'pluginOptions' => [
 				'allowClear' => true,
 			],

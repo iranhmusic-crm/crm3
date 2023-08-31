@@ -102,24 +102,10 @@ class SpecialtyController extends BaseRestController
 		$searchModel = new SpecialtyModel;
 		$searchModel->fillQueryFromRequest($query);
 
-		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
-		]);
+		// if (empty($filter) == false)
+		// 	$query->andWhere($filter);
 
-		if (Yii::$app->request->getMethod() == 'HEAD') {
-			$totalCount = $dataProvider->getTotalCount();
-			// $totalCount = $query->count();
-			Yii::$app->response->headers->add('X-Pagination-Total-Count', $totalCount);
-			return [];
-		}
-
-		$models = $dataProvider->getModels();
-		return [
-			'data' => $models,
-			// 'pagination' => [
-			// 	'totalCount' => $totalCount,
-			// ],
-		];
+		return $this->queryAllToResponse($query);
 	}
 
 	public function actionView($id)

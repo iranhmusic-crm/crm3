@@ -99,4 +99,46 @@ class MemberKanoonController extends BaseCrudController
     ]);
 	}
 
+  public function actionReject($id)
+	{
+		$model = $this->findModel($id);
+		$model->mbrknnStatus = enuMemberKanoonStatus::Rejected;
+
+		$formPosted = $model->load(Yii::$app->request->post());
+		$done = false;
+		if ($formPosted)
+			$done = $model->save();
+
+    if (Yii::$app->request->isAjax) {
+      if ($done) {
+        return $this->renderJson([
+          'message' => Yii::t('app', 'Success'),
+          // 'id' => $id,
+          // 'redirect' => $this->doneLink ? call_user_func($this->doneLink, $model) : null,
+          'modalDoneFragment' => $this->modalDoneFragment,
+        ]);
+      }
+
+      if ($formPosted) {
+        return $this->renderJson([
+          'status' => 'Error',
+          'message' => Yii::t('app', 'Error'),
+          // 'id' => $id,
+          'error' => Html::errorSummary($model),
+        ]);
+      }
+
+      return $this->renderAjaxModal('_reject_form', [
+        'model' => $model,
+      ]);
+    }
+
+    if ($done)
+      return $this->redirect(['view', 'id' => $model->primaryKeyValue()]);
+
+    return $this->render('reject', [
+      'model' => $model
+    ]);
+	}
+
 }

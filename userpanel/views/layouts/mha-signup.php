@@ -31,15 +31,24 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
 <?php $this->beginMainFrame() ?>
 
 <main id="layout-login" class="flex-shrink-0 h-100" role="main">
-  <div class="container-fluid h-100">
+  <div class="container-fluid h-100 w-50">
     <div class="h-100">
       <div class="d-flex">
         <div><?= Html::img('/images/logo_main_bw_h200.png', ['height' => 100]) ?></div>
-        <div class='text-left'><h1>عضویت در خانه موسیقی ایران</h1></div>
+        <!-- <div class='text-left'><h1>عضویت در خانه موسیقی ایران</h1></div> -->
       </div>
       <div class="d-flex1">
         <?= Alert::widget() ?>
-        <?= $content ?>
+
+        <div class='card border-primary'>
+          <div class='card-header bg-primary text-white'>
+            <div class='card-title'>عضویت در خانه موسیقی ایران</div>
+          </div>
+          <div class='card-body'>
+            <?= $content ?>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

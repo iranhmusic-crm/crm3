@@ -44,7 +44,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
               '#',
               'تاریخ',
               'وضعیت',
-              'شرح',
+              'توضیح',
             ]) . '</td></tr>';
             if (empty($model->mbrdocHistory == false)) {
               $items = array_reverse($model->mbrdocHistory);

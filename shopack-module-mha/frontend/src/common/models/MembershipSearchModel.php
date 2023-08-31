@@ -39,6 +39,10 @@ class MembershipSearchModel extends MembershipModel
 				'attributes' => [
 					'mshpID',
 					'mshpTitle',
+					'mshpStartFrom' => [
+						'default' => SORT_DESC,
+					],
+					'mshpYearlyPrice',
 					'mshpStatus',
 					'mshpCreatedAt' => [
 						'default' => SORT_DESC,
@@ -53,6 +57,9 @@ class MembershipSearchModel extends MembershipModel
 					],
 					'mshpRemovedBy',
 				],
+				'defaultOrder' => [
+					'mshpStartFrom' => SORT_DESC,
+				]
 			],
 		]);
 

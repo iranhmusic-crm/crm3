@@ -6,6 +6,7 @@
 use yii\web\JsExpression;
 use shopack\base\frontend\widgets\Select2;
 use shopack\base\common\helpers\ArrayHelper;
+use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\Url;
 use shopack\base\frontend\helpers\Html;
 use shopack\base\frontend\widgets\ActiveForm;
@@ -119,7 +120,7 @@ JS;
 		$getParamsSchemaUrl = Url::to(['kanoon/params-schema']) . '?id=';
 		$strKanoonParameters = '{}';
 		if ($model->mbrknnParams !== null)
-			$strKanoonParameters = json_encode($model->mbrknnParams);
+			$strKanoonParameters = Json::encode($model->mbrknnParams);
 
 		$builder->fields([
 			[
@@ -127,7 +128,7 @@ JS;
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
-					'data' => ArrayHelper::map(KanoonModel::find()->asArray()->all(), 'knnID', 'knnName'),
+					'data' => ArrayHelper::map(KanoonModel::find()->asArray()->noLimit()->all(), 'knnID', 'knnName'),
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',

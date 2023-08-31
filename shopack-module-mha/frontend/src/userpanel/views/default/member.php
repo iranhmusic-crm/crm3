@@ -15,9 +15,22 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberSpecialtyModel;
 
 $this->title = Yii::t('mha', 'My Profile');
 $this->params['breadcrumbs'][] = $this->title;
+
+$defects = $model->getDefects();
+
 ?>
 
 <div class="profile-view w-100">
+	<?php
+		if (empty($defects) == false) {
+			echo "<div class='text-center'>";
+			echo "<h3 class='text-danger'>";
+			echo "عضو محترم، لطفا نسبت به رفع نواقص پرونده خود اقدام کنید.";
+			echo "</h3>";
+			echo "</div>";
+		}
+	?>
+
 	<div class='card border-0'>
 
 		<div class='card-body'>
@@ -63,11 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
 											'attribute' => 'mbrStatus',
 											'value' => enuMemberStatus::getLabel($model->mbrStatus),
 										],
-										[
-											'attribute' => 'expireDate',
-											'label' => 'تاریخ انقضای عضویت',
-											'value' => null,
-										],
+										'mbrExpireDate:jalali',
 										[
 											'group' => true,
 											// 'cols' => 1,
@@ -157,9 +166,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				</div>
 
 				<div class='col-sm-3'>
-
 					<?php
-						$defects = $model->getDefects();
 						if (empty($defects) == false) {
 					?>
 					<div class='card border-default mb-3'>

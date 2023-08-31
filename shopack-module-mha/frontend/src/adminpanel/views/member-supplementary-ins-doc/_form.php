@@ -117,7 +117,7 @@ JS;
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
-					'data' => ArrayHelper::map(SupplementaryInsurerModel::find()->asArray()->all(), 'sinsID', 'sinsName'),
+					'data' => ArrayHelper::map(SupplementaryInsurerModel::find()->asArray()->noLimit()->all(), 'sinsID', 'sinsName'),
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',

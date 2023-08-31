@@ -15,6 +15,7 @@ return [
 	'Related User' => 'کاربر مرتبط',
 	'Register Code' => 'کد عضویت',
 	'Registration Accepted At' => 'تاریخ تایید عضویت',
+	'Expire Date' => 'تاریخ پایان اعتبار',
 
 	'Members' => 'اعضا',
 	'Member' => 'عضو',
@@ -200,4 +201,6 @@ return [
 	'The member does not have a register code' => 'کد عضویت خالی است',
 	'Membership start date is blank' => 'تاریخ شروع عضویت مشخص نشده است',
 
+	'Print Card (Front)' => 'چاپ روی کارت',
+	'Print Card (Back)' => 'چاپ پشت کارت',
 ];

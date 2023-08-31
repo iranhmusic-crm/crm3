@@ -5,6 +5,7 @@
 
 use yii\web\JsExpression;
 use borales\extensions\phoneInput\PhoneInput;
+use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\Url;
 use shopack\base\frontend\widgets\Select2;
 use shopack\base\frontend\widgets\DepDrop;
@@ -135,7 +136,7 @@ use shopack\aaa\frontend\common\models\GeoCountryModel;
 						'type' => FormBuilder::FIELD_WIDGET,
 						'widget' => Select2::class,
 						'widgetOptions' => [
-							'data' => ArrayHelper::map(GeoCountryModel::find()->asArray()->all(), 'cntrID', 'cntrName'),
+							'data' => ArrayHelper::map(GeoCountryModel::find()->asArray()->noLimit()->all(), 'cntrID', 'cntrName'),
 							'options' => [
 								'placeholder' => Yii::t('app', '-- Choose --'),
 								'dir' => 'rtl',
@@ -227,7 +228,7 @@ use shopack\aaa\frontend\common\models\GeoCountryModel;
 		$getParamsSchemaUrl = Url::to(['kanoon/params-schema']) . '?id=';
 		$strKanoonParameters = '{}';
 		if ($model->mbrknnParams !== null)
-			$strKanoonParameters = json_encode($model->mbrknnParams);
+			$strKanoonParameters = Json::encode($model->mbrknnParams);
 
 		$builder->fields([
 			['@col' => 1],
@@ -235,7 +236,7 @@ use shopack\aaa\frontend\common\models\GeoCountryModel;
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
-					'data' => ArrayHelper::map(KanoonModel::find()->asArray()->all(), 'knnID', 'knnName'),
+					'data' => ArrayHelper::map(KanoonModel::find()->asArray()->noLimit()->all(), 'knnID', 'knnName'),
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',

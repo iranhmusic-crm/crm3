@@ -98,6 +98,7 @@ class MemberModel extends RestClientActiveRecord
 			'mbrUserID'                 => Yii::t('mha', 'Related User'),
 			'mbrRegisterCode'           => Yii::t('mha', 'Register Code'),
 			'mbrAcceptedAt'							=> Yii::t('mha', 'Registration Accepted At'),
+			'mbrExpireDate'							=> Yii::t('mha', 'Expire Date'),
 			'mbrMusicExperiences'       => Yii::t('mha', 'Music Experiences'),
 			'mbrMusicExperienceStartAt' => Yii::t('mha', 'Music Experience Start At'),
 			'mbrArtHistory'             => Yii::t('mha', 'Art History'),

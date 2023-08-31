@@ -225,6 +225,13 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
             ['label' => Yii::t('aaa', 'Offline Payments'), 'icon' => 'info-sign', 'url' => ['/aaa/offline-payment']],
           ],
         ],
+        [
+          'label' => Yii::t('aaa', 'Reports'),
+          // 'icon' => 'badge-dollar',
+          'items' => [
+            ['label' => Yii::t('mha', 'Reports'), 'icon' => 'info-sign', 'url' => ['/mha/report']],
+          ],
+        ],
       ];
 
       echo SideNav::widget([

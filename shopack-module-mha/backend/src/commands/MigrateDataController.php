@@ -9,6 +9,7 @@ use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use Ramsey\Uuid\Uuid;
+use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\StringHelper;
 use shopack\base\common\classes\datetime\Jalali;
 use shopack\base\common\helpers\PhoneHelper;
@@ -1741,7 +1742,7 @@ SQL;
           if (empty($history))
             $history = null;
           else
-            $history = json_encode($history);
+            $history = Json::encode($history);
 
           foreach ($ids as $clubidx => $clubid) {
             $values[$lastID] = implode(',', [
@@ -2018,9 +2019,9 @@ SQL;
 
       //------------
       if (in_array($fldID, [9, 10, 11])) {
-        $spctext = $this->quotedString(json_encode([
+        $spctext = $this->quotedString(Json::encode([
           'desc' => $expertData,
-        ], JSON_UNESCAPED_UNICODE));
+        ]));
 
         $values[] = implode(',', [
           // /* mbrspcID          */ $lastID,
@@ -2119,9 +2120,9 @@ SQL;
 
         $spctext = 'NULL';
         if (empty($expertData_8) == false) {
-          $spctext = $this->quotedString(json_encode([
+          $spctext = $this->quotedString(Json::encode([
             'desc' => $expertData_8,
-          ], JSON_UNESCAPED_UNICODE));
+          ]));
         }
 
         $values[] = implode(',', [
@@ -3064,7 +3065,7 @@ SQL;
 
               //phase 2: membership
               //create basket voucher
-              $vchItems = json_encode([
+              $vchItems = Json::encode([
                 [
                   'key'       => Uuid::uuid4()->toString(),
                   'userid'    => $userid,
@@ -3076,7 +3077,7 @@ SQL;
                   'maxqty'    => 1,
                   'unitprice' => $tbl_billing_price,
                 ],
-              ], JSON_UNESCAPED_UNICODE);
+              ]);
 
               $qry =<<<SQL
   INSERT INTO tbl_AAA_Voucher
@@ -3526,7 +3527,7 @@ SQL;
             //phase 2: membership
             if ($tbl_onlinebank_status == 1) { //OK
               //create basket voucher
-              $vchItems = json_encode([
+              $vchItems = Json::encode([
                 [
                   'key'       => Uuid::uuid4()->toString(),
                   'userid'    => $userid,
@@ -3538,7 +3539,7 @@ SQL;
                   'maxqty'    => 1,
                   'unitprice' => $tbl_onlinebank_price,
                 ],
-              ], JSON_UNESCAPED_UNICODE);
+              ]);
 
               $qry =<<<SQL
   INSERT INTO tbl_AAA_Voucher

@@ -41,7 +41,7 @@ use shopack\base\frontend\widgets\datetime\DatePicker;
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
-					'data' => ArrayHelper::map(DocumentModel::find()->asArray()->all(), 'docID', 'docName'),
+					'data' => ArrayHelper::map(DocumentModel::find()->asArray()->noLimit()->all(), 'docID', 'docName'),
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',

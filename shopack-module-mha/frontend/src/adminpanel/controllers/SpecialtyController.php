@@ -281,6 +281,7 @@ class SpecialtyController extends BaseController
 
           $definitionModels = BasicDefinitionModel::find()
             ->andWhere(['bdfType' => $k])
+            ->noLimit()
             ->asArray()
             ->all();
 

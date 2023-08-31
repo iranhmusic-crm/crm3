@@ -214,6 +214,13 @@ class Module
 						''									=> 'options',
 					],
 				],
+				[
+					'class' => \yii\rest\UrlRule::class,
+					// 'prefix' => 'v1',
+					'controller' => [$this->id . '/report'],
+					'pluralize' => false,
+				],
+
 			];
 
 			$app->urlManager->addRules($rules, false);

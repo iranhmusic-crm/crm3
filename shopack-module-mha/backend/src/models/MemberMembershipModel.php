@@ -63,7 +63,7 @@ class MemberMembershipModel extends MhaActiveRecord implements IAssetEntity
 		} else {
 			$startDate = new \DateTime($lastMembership->mbrshpEndDate);
 			$startDate->setTime(0, 0);
-			$startDate->add(\DateInterval::createFromDateString('1 day'));
+			// $startDate->add(\DateInterval::createFromDateString('1 day'));
 
 			if ($startDate > $now) {
 				$remained = date_diff($now, $startDate);
@@ -75,7 +75,7 @@ class MemberMembershipModel extends MhaActiveRecord implements IAssetEntity
 
 		$endDate = clone $startDate;
 		$endDate->add(\DateInterval::createFromDateString('1 year'));
-		$endDate->sub(\DateInterval::createFromDateString('1 day'));
+		// $endDate->sub(\DateInterval::createFromDateString('1 day'));
 
 		$years = 1;
 		while ($endDate < $now) {

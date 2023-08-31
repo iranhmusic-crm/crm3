@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\backend\models;
 
 use Yii;
 use shopack\base\common\shop\ISaleableEntity;
+use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\common\security\RsaPrivate;
 use iranhmusic\shopack\mha\common\enums\enuMembershipStatus;
@@ -52,7 +53,7 @@ class MembershipModel extends MhaActiveRecord implements ISaleableEntity
 	public static function addToBasket($basketdata, $saleableID = null)
 	{
 		if (is_string($basketdata))
-			$basketdata = json_decode(base64_decode($basketdata), true);
+			$basketdata = Json::decode(base64_decode($basketdata));
 
 		if ($basketdata === null)
 			$basketdata = [];
@@ -64,7 +65,7 @@ class MembershipModel extends MhaActiveRecord implements ISaleableEntity
 		//todo: check user langauge from request header
 		$desc = 'عضویت خانه موسیقی از '
 			. Yii::$app->formatter->asJalali($startDate)
-			. ' تا پایان'
+			. ' تا '
 			. Yii::$app->formatter->asJalali($endDate)
 			. ' به مدت '
 			. $years
@@ -86,7 +87,7 @@ class MembershipModel extends MhaActiveRecord implements ISaleableEntity
 			'maxqty'		=> $years,
 			'qtystep'		=> 0, //0: do not allow to change qty in basket
 		];
-		$data = json_encode($params);
+		$data = Json::encode($params);
 
 		if (empty(Yii::$app->controller->module->servicePrivateKey))
 			$data = base64_encode($data);

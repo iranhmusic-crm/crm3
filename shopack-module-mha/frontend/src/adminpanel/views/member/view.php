@@ -102,6 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                       'value' => enuUserStatus::getLabel($model->user->usrStatus),
                     ],
                     'mbrAcceptedAt:jalaliWithTime',
+                    'mbrExpireDate:jalali',
                     [
                       'group' => true,
                       // 'cols' => 1,
@@ -192,6 +193,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     if ($model->canUndelete())
                       $buttons[] = Html::undeleteButton(null, ['id' => $model->mbrUserID]);
+
+                    $buttons[] = Html::a(Yii::t('mha', 'Print Card (Front)'), [
+                      'print-card-front',
+                      'id' => $model->mbrUserID,
+                    ], [
+                      'class' => 'btn btn-sm btn-primary',
+                      // 'modal' => true,
+                      'target' => '_blank',
+                    ]);
+
+                    $buttons[] = Html::a(Yii::t('mha', 'Print Card (Back)'), [
+                      'print-card-back',
+                      'id' => $model->mbrUserID,
+                    ], [
+                      'class' => 'btn btn-sm btn-primary',
+                      // 'modal' => true,
+                      'target' => '_blank',
+                    ]);
 
                     if (empty($buttons) == false)
                       echo implode(' ', $buttons);

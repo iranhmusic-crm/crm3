@@ -5,6 +5,7 @@
 
 /** @var yii\web\View $this */
 
+use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\Url;
 use shopack\base\frontend\widgets\grid\GridView;
 use shopack\base\frontend\helpers\Html;
@@ -165,7 +166,7 @@ JS;
                 foreach($mhaList as $k => $v) {
                   $fildTypes['mha:' . $k] = $v;
                 }
-                $fildTypes = json_encode($fildTypes, JSON_UNESCAPED_UNICODE);
+                $fildTypes = Json::encode($fildTypes);
 
                 echo \shopack\base\frontend\widgets\fancytree\Fancytree::widget([
                   'id' => 'maintree', //$treeid

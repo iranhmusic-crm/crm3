@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\frontend\userpanel\models;
 
 use Yii;
 use yii\base\Model;
+use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\common\validators\GroupRequiredValidator;
 use shopack\base\common\validators\JsonValidator;
@@ -309,7 +310,7 @@ class MemberSignupForm extends Model
 			&& ($attributes['mbrknnParams'] !== null)
 			&& ($attributes['mbrknnParams'] !== '')
 		) {
-			$attributes['mbrknnParams'] = json_encode($attributes['mbrknnParams']);
+			$attributes['mbrknnParams'] = Json::encode($attributes['mbrknnParams']);
 		}
 
 		list ($resultStatus, $resultData) = HttpHelper::callApi('mha/member/signup',

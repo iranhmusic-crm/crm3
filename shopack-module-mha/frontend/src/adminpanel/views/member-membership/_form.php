@@ -118,7 +118,7 @@ JS;
 			// 	'type' => FormBuilder::FIELD_WIDGET,
 			// 	'widget' => Select2::class,
 			// 	'widgetOptions' => [
-			// 		'data' => ArrayHelper::map(MembershipModel::find()->asArray()->all(), 'mshpID', 'mshpTitle'),
+			// 		'data' => ArrayHelper::map(MembershipModel::find()->asArray()->noLimit()->all(), 'mshpID', 'mshpTitle'),
 			// 		'options' => [
 			// 			'placeholder' => Yii::t('app', '-- Choose --'),
 			// 			'dir' => 'rtl',

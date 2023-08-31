@@ -15,6 +15,7 @@ use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 'mbrUUID',
 'mbrRegisterCode',
 'mbrAcceptedAt',
+'mbrExpireDate',
 'mbrMusicExperiences',
 'mbrMusicExperienceStartAt', //Y/M/D
 'mbrArtHistory',
@@ -54,6 +55,14 @@ trait MemberModelTrait
         enuColumnInfo::search     => true,
 			],
 			'mbrAcceptedAt' => [
+				enuColumnInfo::type       => 'safe',
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        enuColumnInfo::search     => true,
+			],
+			'mbrExpireDate' => [
 				enuColumnInfo::type       => 'safe',
 				enuColumnInfo::validator  => null,
 				enuColumnInfo::default    => null,

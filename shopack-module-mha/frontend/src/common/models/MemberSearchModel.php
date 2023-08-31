@@ -72,6 +72,9 @@ class MemberSearchModel extends MemberModel
 					'mbrAcceptedAt' => [
 						'default' => SORT_DESC,
 					],
+					'mbrExpireDate' => [
+						'default' => SORT_DESC,
+					],
 					'mbrStatus',
 					'mbrCreatedAt' => [
 						'default' => SORT_DESC,

@@ -76,7 +76,7 @@ JS;
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
-					// 'data' => ArrayHelper::map(SpecialtyModel::find()->asArray()->all(), 'spcID', 'spcName'),
+					// 'data' => ArrayHelper::map(SpecialtyModel::find()->asArray()->noLimit()->all(), 'spcID', 'spcName'),
 					'initValueText' => $initValueText,
 					'value' => $model->mbrspcSpecialtyID,
 					'pluginOptions' => [

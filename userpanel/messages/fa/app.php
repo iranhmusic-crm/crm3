@@ -25,6 +25,7 @@ return [
 
 	'Start From' => 'شروع از',
 
+	'Comment' => 'توضیح',
 	'Status' => 'وضعیت',
 	'Month' => 'ماه',
 	'Year' => 'سال',

@@ -10,11 +10,11 @@ use shopack\base\common\base\BaseEnum;
 abstract class enuKanoonMembershipDegree extends BaseEnum
 {
 	const Continuous  = 'C'; //1 Then 'پیوسته'
-	const Dependent1  = '1'; //2 Then 'وابسته 1'
-	const Dependent2  = '2'; //3 Then 'وابسته 2'
+	const Dependent1  = 'D'; //'1'; //2 Then 'وابسته 1'
+	const Dependent2  = 'E'; //'2'; //3 Then 'وابسته 2'
 	const Lover       = 'L'; //4 Then 'دوستدار'
 	const Honorary    = 'H'; //5 Then 'افتخاری'
-	const Code25      = '5'; //  Then 'کد 25'
+	const Code25      = 'O'; //'5'; //  Then 'کد 25'
 
 	public static $messageCategory = 'mha';
 

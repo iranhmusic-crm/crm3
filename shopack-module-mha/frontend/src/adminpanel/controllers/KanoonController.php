@@ -91,6 +91,7 @@ class KanoonController extends BaseCrudController
 
           $definitionModels = BasicDefinitionModel::find()
             ->andWhere(['bdfType' => $k])
+            ->noLimit()
             ->asArray()
             ->all();
 
