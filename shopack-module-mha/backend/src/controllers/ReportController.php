@@ -150,4 +150,17 @@ class ReportController extends BaseRestController
 		];
 	}
 
+	public function actionRun($id)
+	{
+		PrivHelper::checkPriv('mha/Report/crud', '0100');
+
+		$model = $this->findModel($id);
+		$query = $model->run();
+
+		$queryParams = Yii::$app->request->getQueryParams();
+		$this->_fillQueryOrderByPart($queryParams, $query);
+
+		return $this->queryAllToResponse($query);
+	}
+
 }

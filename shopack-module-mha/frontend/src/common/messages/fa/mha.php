@@ -203,4 +203,17 @@ return [
 
 	'Print Card (Front)' => 'چاپ روی کارت',
 	'Print Card (Back)' => 'چاپ پشت کارت',
+
+	'Reports' => 'گزارش‌ها',
+	'Report' => 'گزارش',
+	'Report Info' => 'مشخصات گزارش',
+	'Create Report' => 'ایجاد گزارش',
+	'Update Report' => 'ویرایش گزارش',
+
+	'Member Report' => 'گزارش اعضا',
+	'Create Member Report' => 'ایجاد گزارش اعضا',
+
+	'Financial Report' => 'گزارش مالی',
+	'Create Financial Report' => 'ایجاد گزارش مالی',
+
 ];

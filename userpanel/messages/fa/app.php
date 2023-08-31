@@ -16,12 +16,26 @@ return [
 	'Deleted' => 'حذف شده',
 	'Add' => 'افزودن',
 
+	'Settings' => 'تنظیمات',
+	'Files' => 'فایل‌ها',
+
 	'Created At' => 'ایجاد در',
 	'Created By' => 'ایجاد توسط',
 	'Updated At' => 'ویرایش در',
 	'Updated By' => 'ویرایش توسط',
 	'Removed At' => 'حذف در',
 	'Removed By' => 'حذف توسط',
+
+	'Are you sure you want to delete this {item}?' => 'آیا از حذف این {item} اطمینان دارید؟',
+	'Are you sure you want to un-delete this {item}?' => 'آیا از بازگردانی این {item} اطمینان دارید؟',
+
+	'Are you sure you want to delete this item?' => 'آیا از حذف این آیتم اطمینان دارید؟',
+	'Are you sure you want to delete this item and all subitems?' => 'آیا از حذف این آیتم و تمام زیر مجموعه‌ی آن اطمینان دارید؟',
+	'Are you sure you want to delete this item?\n{name}' => 'آیا از حذف این آیتم اطمینان دارید؟\n{name}',
+	'Are you sure you want to delete this item and all subitems?\n{name}' => 'آیا از حذف این آیتم و تمام زیر مجموعه‌ی آن اطمینان دارید؟\n{name}',
+
+	'Are you sure you want to un-delete this item?' => 'آیا از بازگردانی این آیتم اطمینان دارید؟',
+	'Are you sure you want to un-delete this item?\n{name}' => 'آیا از بازگردانی این آیتم اطمینان دارید؟\n{name}',
 
 	'Start From' => 'شروع از',
 
@@ -55,6 +69,11 @@ return [
 	'Start Date' => 'تاریخ شروع',
 	'End Date' => 'تاریخ پایان',
 
+	'-- Choose --' => '-- انتخاب کنید --',
+
+	'Has' => 'دارد',
+	'Has not' => 'ندارد',
+
 	'Actions' => 'عملیات',
 	'Default' => 'پیش فرض',
 
@@ -67,4 +86,6 @@ return [
 	'bytes' => 'بایت',
 	'Logs' => 'لاگ',
 	'Search' => 'جستجو',
+
+	'Run Report' => 'اجرای گزارش',
 ];

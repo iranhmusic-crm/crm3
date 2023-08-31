@@ -40,7 +40,7 @@ class MemberSpecialtyController extends BaseCrudController
 		$model->form_specialties = SpecialtyModel::getAllAsTree();
   }
 
-	public function actionUpdate_afterCreateModel(&$model)
+	public function actionUpdate_afterFindModel(&$model)
   {
 		$model->form_specialties = SpecialtyModel::getAllAsTree();
   }

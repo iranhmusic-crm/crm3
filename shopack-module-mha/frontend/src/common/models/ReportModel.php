@@ -8,6 +8,8 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 use Yii;
 use shopack\base\frontend\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuReportStatus;
+use shopack\base\common\helpers\ArrayHelper;
+use shopack\base\frontend\rest\RestClientDataProvider;
 
 class ReportModel extends RestClientActiveRecord
 {
@@ -60,18 +62,69 @@ class ReportModel extends RestClientActiveRecord
 
 	public function save($runValidation = true, $attributeNames = null)
   {
-		if (empty($this->rptOutputFields) == false) {
-			$this->rptOutputFields = array_filter($this->rptOutputFields, function($v) {
-				return ((empty($v) == false) && ($v != 0));
-			});
-		}
+		$this->rptInputFields = ArrayHelper::filterNullOrEmpty($this->rptInputFields);
+		$this->rptOutputFields = ArrayHelper::filterNullOrEmpty($this->rptOutputFields, true);
 
 		if (empty($this->rptOutputFields)) {
 			$this->addError(null, 'ستون‌های خروجی مشخص نشده‌اند');
 			return false;
 		}
 
+		//---------------------
     return parent::save($runValidation, $attributeNames);
   }
+
+	public function run()
+	{
+		$query = self::find()
+			->endpoint('run')
+			// ->limit(null)
+			// ->offset(null)
+			->addUrlParameter('id', $this->rptID)
+		;
+
+		$dataProvider = new RestClientDataProvider([
+			'query' => $query,
+			// 'pagination' => false, //prevent HEAD request
+			// 'sort' => [
+			// 	// 'enableMultiSort' => true,
+			// 	'attributes' => [
+			// 		'docID',
+			// 		'docName',
+			// 		'docType',
+			// 		'docCreatedAt' => [
+			// 			'default' => SORT_DESC,
+			// 		],
+			// 		'docCreatedBy',
+			// 		'docUpdatedAt' => [
+			// 			'default' => SORT_DESC,
+			// 		],
+			// 		'docUpdatedBy',
+			// 		'docRemovedAt' => [
+			// 			'default' => SORT_DESC,
+			// 		],
+			// 		'docRemovedBy',
+			// 	],
+			// ],
+		]);
+
+		return $dataProvider;
+
+		// // $response = self::find()->restExecute('get', 'documentTypesForMember', [
+		// // 	'memberID' => $memberID,
+		// // ]);
+
+		// $result = HttpHelper::callApi(self::$resourceName . "/member-document-types", HttpHelper::METHOD_GET, [
+		// 	'memberID' => $memberID,
+		// ]);
+
+		// if ($result && $result[0] == 200) {
+		// 	$list = $result[1];
+
+
+		// }
+
+		// return null;
+	}
 
 }

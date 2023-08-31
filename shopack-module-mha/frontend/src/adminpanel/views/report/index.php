@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'dropdown' => [
               'items' => [
                 [
-                  'label' => Yii::t('mha', 'Members Report'),
+                  'label' => Yii::t('mha', 'Member Report'),
                   'url' => ['create', 'rpttyp' => enuReportType::Members],
                 ],
                 [
@@ -56,6 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <?php
         echo GridView::widget([
           'id' => StringHelper::generateRandomId(),
+          'itemLabelSingle' => Yii::t('mha', 'Report'),
           'dataProvider' => $dataProvider,
           'filterModel' => $searchModel,
 
@@ -80,6 +81,9 @@ $this->params['breadcrumbs'][] = $this->title;
               'class' => \shopack\base\frontend\widgets\ActionColumn::class,
               'header' => /*ReportModel::canCreate() ? Html::createButton() :*/ Yii::t('app', 'Actions'),
               'template' => '{run} {update} {delete}{undelete}',
+              'updateOptions' => [
+                'modal' => false,
+              ],
               'visibleButtons' => [
                 'update' => function ($model, $key, $index) {
                   return $model->canUpdate();
@@ -96,13 +100,11 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
               'buttons' => [
                 'run' => function ($url, $model, $key) {
-                  return Html::a(Yii::t('aaa', 'Run'), [
+                  return Html::confirmButton(yii::t('app', 'Run Report'), [
                     'run',
-                    'id' => $model->rptID,
-                  ], [
-                    'class' => 'btn btn-sm btn-success',
-                    // 'modal' => true,
-                    // 'target' => '_blank',
+                    'id' => $model->rptID
+                  ], 'آیا می‌خواهید این گزارش اجرا شود؟', [
+                    'btn' => 'success',
                   ]);
                 },
               ],

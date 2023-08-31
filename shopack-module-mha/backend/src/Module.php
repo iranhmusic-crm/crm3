@@ -219,6 +219,11 @@ class Module
 					// 'prefix' => 'v1',
 					'controller' => [$this->id . '/report'],
 					'pluralize' => false,
+
+					'extraPatterns' => [
+						'GET run/{id}' => 'run',
+						'GET run' => 'run',
+					],
 				],
 
 			];

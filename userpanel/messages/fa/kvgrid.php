@@ -38,7 +38,7 @@ return [
 	'Active' => 'فعال',
 	'Add Book' => 'افزودن کتاب',
 	'All' => 'همه موارد',
-	'Are you sure to delete this {item}?' => 'آیا از حذف این {item} اطمینان دارید؟',
+	'Are you sure you want to delete this {item}?' => 'آیا از حذف این {item} اطمینان دارید؟',
 	'Book Listing' => 'لیست کتابها',
 	'CSV' => 'CSV',
 	'Clear selection' => 'پاک کردن انتخاب ها',

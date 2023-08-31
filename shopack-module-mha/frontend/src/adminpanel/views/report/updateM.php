@@ -5,13 +5,14 @@
 
 use shopack\base\frontend\helpers\Html;
 
-$this->title = Yii::t('mha', 'Create Member Report');
+$this->title = Yii::t('app', 'Update');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Reports'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->rptName, 'url' => ['view', 'id' => $model->rptID]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div id='members-report-create' class='d-flex justify-content-center'>
+<div id='member-report-update' class='d-flex justify-content-center'>
 	<div class='w-100 card border-primary'>
 
 		<div class='card-header bg-primary text-white'>
