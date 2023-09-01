@@ -3174,6 +3174,8 @@ SQL;
 
         } catch (\Throwable $exp) {
           echo "** ERROR: ID: {$lastID} **\n";
+          echo $exp->getMessage();
+          echo "\n";
           throw $exp;
         }
       } //foreach ($rows as $row)
