@@ -17,11 +17,18 @@ use iranhmusic\shopack\mha\backend\models\ReportModel;
 
 class ReportController extends BaseRestController
 {
-	// public function behaviors()
-	// {
-	// 	$behaviors = parent::behaviors();
-	// 	return $behaviors;
-	// }
+	public function behaviors()
+	{
+		$behaviors = parent::behaviors();
+
+		if (YII_ENV_DEV) {
+			$behaviors[BaseRestController::BEHAVIOR_AUTHENTICATOR]['except'] = [
+				'run',
+			];
+		}
+
+		return $behaviors;
+	}
 
 	public function actionOptions()
 	{
@@ -152,13 +159,15 @@ class ReportController extends BaseRestController
 
 	public function actionRun($id)
 	{
-		PrivHelper::checkPriv('mha/Report/crud', '0100');
+		if (YII_ENV_DEV == false) {
+			PrivHelper::checkPriv('mha/Report/crud', '0100');
+		}
 
 		$model = $this->findModel($id);
 		$query = $model->run();
 
 		$queryParams = Yii::$app->request->getQueryParams();
-		$this->_fillQueryOrderByPart($queryParams, $query);
+		$model->fillQueryOrderByPart($queryParams, $query);
 
 		return $this->queryAllToResponse($query);
 	}

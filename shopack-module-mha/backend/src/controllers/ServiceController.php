@@ -26,7 +26,6 @@ class ServiceController extends BaseRestController
 			'process-voucher-item',
 		];
 
-
 		return $behaviors;
 	}
 

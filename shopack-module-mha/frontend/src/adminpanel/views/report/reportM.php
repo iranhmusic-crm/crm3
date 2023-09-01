@@ -7,7 +7,7 @@
 
 use shopack\base\frontend\helpers\Html;
 
-$this->title = Yii::t('mha', 'Report Result');
+$this->title = Yii::t('mha', 'Report Result') . ': ' . $model->rptID . '- ' . $model->rptName;
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
   <div class='card border-default'>
 		<div class='card-header bg-default'>
 			<div class="float-end">
+				<?= $model->canUpdate()   ? Html::updateButton(null,   ['id' => $model->rptID], ['modal' => false]) : '' ?>
 			</div>
       <div class='card-title'><?= Html::encode($this->title) ?></div>
 			<div class="clearfix"></div>

@@ -221,8 +221,8 @@ class Module
 					'pluralize' => false,
 
 					'extraPatterns' => [
-						'GET run/{id}' => 'run',
-						'GET run' => 'run',
+						'GET,HEAD run/{id}' => 'run',
+						'GET,HEAD run' => 'run',
 					],
 				],
 

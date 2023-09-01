@@ -7,10 +7,11 @@ namespace iranhmusic\shopack\mha\backend\models;
 
 use Yii;
 use yii\web\NotFoundHttpException;
-use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
+use shopack\aaa\backend\models\UserModel;
 use iranhmusic\shopack\mha\common\enums\enuReportType;
 use iranhmusic\shopack\mha\common\enums\enuReportStatus;
-use shopack\aaa\backend\models\UserModel;
+use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
+use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\backend\models\MemberModel;
 use iranhmusic\shopack\mha\backend\models\MemberKanoonModel;
 
@@ -65,45 +66,212 @@ class ReportModel extends MhaActiveRecord
 	 */
 	private function runMembers()
 	{
-		$jointoUser = false;
-		$jointoUserImage = false;
-		$jointoKanoon = false;
+		$query = MemberModel::find();
 
+		$joinToUser = false;
+		$joinToUserImage = false;
+		$joinToUserBirthLocation = false;
+		$joinToUserHomeLocation = false;
+		$joinToKanoon = false;
+
+		//-- rptInputFields ------------------------------
+		/*
+		{
+			"mbrknnParams": {"I": "55"},
+			"mbrknnKanoonID": "8",
+			"usrBirthLocation": {"City": "877", "State": "1227"}
+		}
+		*/
+
+		$fnAddBetweenCondition = function($field, $values) use (&$query) {
+			if (empty($values['From']) == false) {
+				if (empty($values['To']) == false)
+					$query->andWhere(['BETWEEN', $field, $values['From'], $values['To']]);
+				else
+					$query->andWhere(['>=', $field, $values['From']]);
+			} else if (empty($values['To']) == false)
+				$query->andWhere(['<=', $field, $values['To']]);
+		};
+
+		foreach ($this->rptInputFields as $k => $v) {
+			switch ($k) {
+				case 'usrBirthLocation':     // [State], [City]
+					$joinToUser = true;
+					$joinToUserBirthLocation = true;
+
+					if (empty($v['State']) == false)
+						$query->andWhere(['birthstate.sttID' => $v['State']]);
+
+					if (empty($v['City']) == false)
+						$query->andWhere(['birthcity.ctvID' => $v['City']]);
+
+					break;
+
+				case 'usrStateID':
+					$joinToUser = true;
+					$joinToUserHomeLocation = true;
+					$query->andWhere(['usrStateID' => $v]);
+					break;
+
+				case 'usrCityOrVillageID':
+					$joinToUser = true;
+					$joinToUserHomeLocation = true;
+					$query->andWhere(['usrCityOrVillageID' => $v]);
+					break;
+
+				case 'usrBirthDate':         // [From], [To]
+					$joinToUser = true;
+					$fnAddBetweenCondition('usrBirthDate', $v);
+					break;
+
+				case 'mbrAcceptedAt':        // [From], [To]
+					$fnAddBetweenCondition('mbrAcceptedAt', $v);
+					break;
+
+				case 'mbrExpireDate':        // [From], [To]
+					$fnAddBetweenCondition('mbrExpireDate', $v);
+					break;
+
+				case 'mbrknnMembershipDegree':
+					$joinToKanoon = true;
+					$query->andWhere(['mbrknnMembershipDegree' => $v]);
+					break;
+
+				case 'mbrknnParams':         // [I], [S], [R]
+					$joinToKanoon = true;
+					$vals = implode(',', $v);
+					$query->andWhere(new \yii\db\Expression(
+						"JSON_UNQUOTE(JSON_EXTRACT(mbrknnParams, '$.desc')) IN ({$vals})"
+					));
+					break;
+
+				default:
+					$query->andWhere([$k => $v]);
+					break;
+			}
+		}
+
+		//-- rptOutputFields ---------------------------------
 		$rptOutputFields = array_keys($this->rptOutputFields);
 		foreach ($rptOutputFields as $k => &$v) {
-			if (str_starts_with($v, 'usr')) {
-				$jointoUser = true;
+			if (str_starts_with($v, 'usr') || ($v == 'hasPassword')) {
+				$joinToUser = true;
 
 				if ($v == 'usrImage')
-					$jointoUserImage = true;
-
+					$joinToUserImage = true;
+				else if ($v == 'usrBirthCityID')
+					$joinToUserBirthLocation = true;
+				else if (in_array($v, [
+							'usrCountryID',
+							'usrStateID',
+							'usrCityOrVillageID',
+							'usrTownID',
+						]))
+					$joinToUserHomeLocation = true;
 			} else if (str_starts_with($v, 'mbrknn')) {
-				$jointoKanoon = true;
+				$joinToKanoon = true;
 			} else if (str_starts_with($v, 'knn')) {
-				$jointoKanoon = true;
+				$joinToKanoon = true;
 			} else if (str_starts_with($v, 'mbr')) {
 			} else  {
 				// unknown field
 			}
 		}
 
-		$query = MemberModel::find();
-
 		//columns
-		$query->select($rptOutputFields);
+		$query
+			->select('mbrUserID')
+			// ->addSelect($rptOutputFields)
+		;
 
-		//join
-		if ($jointoUser) {
-			$query->innerJoinWith('user');
+		foreach ($rptOutputFields as $k) {
+			switch ($k) {
+				case 'usrBirthCityID':
+					$query->addSelect([
+						'birthcity.ctvName AS BirthCityName',
+						'birthstate.sttName AS BirthStateName',
+					]);
+					break;
 
-			if ($jointoUserImage)
-				$query->joinWith('user.imageFile');
+				case 'usrStateID':
+					$query->addSelect([
+						'homestate.sttName AS HomeStateName',
+					]);
+					break;
+
+				case 'usrCityOrVillageID':
+					$query->addSelect([
+						'homecity.ctvName AS HomeCityName',
+					]);
+					break;
+
+				case 'knnName':
+					$query->addSelect([
+						'knnID',
+						'knnName',
+						'mbrknnParams',
+						'knnDescFieldType',
+					]);
+					break;
+
+				case 'hasPassword':
+					$query->addSelect(new \yii\db\Expression("usrPasswordHash IS NOT NULL AND usrPasswordHash != '' AS hasPassword"));
+					break;
+
+				default:
+					$query->addSelect($k);
+					break;
+			}
 		}
 
+		//join
+		if ($joinToUser) {
+			$query->innerJoinWith('user', false);
+
+			if ($joinToUserImage)
+				$query->joinWith('user.imageFile', false);
+
+			if ($joinToUserBirthLocation) {
+				$query
+					->joinWith(['user.birthCityOrVillage birthcity' => function($q) {
+						$q->joinWith('state birthstate');
+					}], false)
+					// ->addSelect([
+					// 	'birthcity.ctvName',
+					// 	'birthstate.sttName',
+					// ])
+				;
+			}
+
+			if ($joinToUserHomeLocation) {
+				$query
+					->joinWith(['user.cityOrVillage homecity'], false)
+					->joinWith(['user.state homestate'], false)
+					// ->addSelect([
+					// 	'homecity.ctvName',
+					// 	'homestate.sttName',
+					// ])
+				;
+			}
+		}
+
+		if ($joinToKanoon) {
+			$query
+				->leftJoin(MemberKanoonModel::tableName(), [
+					'AND',
+					MemberKanoonModel::tableName() . '.mbrknnMemberID = '
+					. MemberModel::tableName() . '.mbrUserID',
+					MemberKanoonModel::tableName() . ".mbrknnStatus = '" . enuMemberKanoonStatus::Accepted . "'"
+				])
+				->leftJoin(KanoonModel::tableName(),
+					KanoonModel::tableName() . '.knnID = '
+					. MemberKanoonModel::tableName() . '.mbrknnKanoonID'
+				)
+			;
+		}
 
 		return $query;
 	}
-
 
 	/**
 	 * return query

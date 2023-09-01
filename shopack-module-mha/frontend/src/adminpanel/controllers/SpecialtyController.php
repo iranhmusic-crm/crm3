@@ -20,7 +20,6 @@ use iranhmusic\shopack\mha\frontend\common\models\SpecialtySearchModel;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 
-
 class SpecialtyController extends BaseController
 {
 	protected function findModel($id)

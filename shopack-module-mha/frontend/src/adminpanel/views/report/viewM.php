@@ -83,7 +83,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 				$rptOutputFields = array_keys($model->rptOutputFields);
 				foreach ($rptOutputFields as $k => &$v) {
-					if (str_starts_with($v, 'usr'))
+					if ($v == 'hasPassword')
+						$v = yii::t('aaa', 'User') . ': ' . $userModel->getAttributeLabel($v);
+					else if (str_starts_with($v, 'usr'))
 						$v = yii::t('aaa', 'User') . ': ' . $userModel->getAttributeLabel($v);
 					else if (str_starts_with($v, 'mbrknn'))
 						$v = yii::t('mha', 'Kanoon') . ': ' . $memberKanoonModel->getAttributeLabel($v);

@@ -215,5 +215,6 @@ return [
 
 	'Financial Report' => 'گزارش مالی',
 	'Create Financial Report' => 'ایجاد گزارش مالی',
+	'Report Result' => 'اجرای گزارش',
 
 ];

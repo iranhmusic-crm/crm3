@@ -111,6 +111,44 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 					'allowClear' => true,
 				],
 			],
+			['rptInputFields[usrStateID]',
+				'label' => 'استان محل تولد',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => Select2::class,
+				'widgetOptions' => [
+					'data' => ArrayHelper::map(GeoStateModel::find()->asArray()->noLimit()->all(), 'sttID', 'sttName'),
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'pluginOptions' => [
+						'allowClear' => true,
+					],
+				],
+			],
+			['rptInputFields[usrCityOrVillageID]',
+				'label' => 'شهر محل تولد',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => DepDrop::class,
+				'widgetOptions' => [
+					'type' => DepDrop::TYPE_SELECT2,
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'select2Options' => [
+						'pluginOptions' => [
+							'allowClear' => true,
+						],
+					],
+					'pluginOptions' => [
+						'depends' => ["{$formNameLower}-rptinputfields-usrstateid"],
+						'initialize' => true,
+						'url' => Url::to(['/aaa/geo-city-or-village/depdrop-list', 'sel' => $model->rptInputFields['usrCityOrVillageID'] ?? null]),
+						'loadingText' => Yii::t('app', 'Loading...'),
+					],
+				],
+			],
 
 			['@col-break'],
 
@@ -262,7 +300,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 
 		$outputFields = [
       // 'usrID'                 => Yii::t('app', 'ID'),
-			'usrImage'              => Yii::t('aaa', 'Image'),
+			'usrImageFileID'        => Yii::t('aaa', 'Image'),
       'usrGender'             => Yii::t('aaa', 'Gender'),
       'usrFirstName'          => Yii::t('aaa', 'First Name'),
       'usrFirstName_en'       => Yii::t('aaa', 'First Name (en)'),
@@ -284,6 +322,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
       'usrPasswordCreatedAt'  => Yii::t('aaa', 'Password Created At'),
       // 'usrMustChangePassword' => Yii::t('aaa', 'Must Change Password'),
 			'usrBirthDate'          => Yii::t('aaa', 'Birth Date'),
+			'usrBirthCityID'        => Yii::t('aaa', 'Birth Location'),
 			'usrCountryID'          => Yii::t('aaa', 'Country'),
 			'usrStateID'            => Yii::t('aaa', 'State'),
 			'usrCityOrVillageID'    => Yii::t('aaa', 'City Or Village'),
