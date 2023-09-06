@@ -40,6 +40,14 @@ class MemberSignupForm extends Model
 	public $mbrArtHistory;
 	public $mbrMusicEducationHistory;
 
+	public $mbrOwnOrgName;
+	public $mbrInstrumentID;
+	public $mbrSingID;
+	public $mbrResearchID;
+	public $mbrJob;
+	public $mbrArtDegree;
+	public $mbrHonarCreditCode;
+
 	public $kanoonID;
 	public $mbrknnParams;
 
@@ -158,6 +166,13 @@ class MemberSignupForm extends Model
 			['mbrMusicExperienceStartAt', 'safe'],
 			['mbrArtHistory', 'string'],
 			['mbrMusicEducationHistory', 'string'],
+			['mbrOwnOrgName', 'string'],
+			['mbrInstrumentID', 'integer'],
+			['mbrSingID', 'integer'],
+			['mbrResearchID', 'integer'],
+			['mbrJob', 'string'],
+			['mbrArtDegree', 'integer'],
+			['mbrHonarCreditCode', 'string'],
 
 			['mbrknnParams', JsonValidator::class],
 
@@ -204,6 +219,22 @@ class MemberSignupForm extends Model
 			'mbrMusicExperienceStartAt' => Yii::t('mha', 'Music Experience Start At'),
 			'mbrArtHistory'             => Yii::t('mha', 'Art History'),
 			'mbrMusicEducationHistory'  => Yii::t('mha', 'Music Education History'),
+
+			'mbrOwnOrgName'             => Yii::t('mha', 'Own Org Name'),
+			'mbrInstrumentID'           => Yii::t('mha', 'Instrument'),
+			'mbrSingID'                 => Yii::t('mha', 'Sing'),
+			'mbrResearchID'             => Yii::t('mha', 'Research'),
+			'mbrJob'                    => Yii::t('mha', 'Job'),
+			'mbrArtDegree'              => Yii::t('mha', 'Art Degree'),
+			'mbrHonarCreditCode'        => Yii::t('mha', 'Honar Credit Code'),
+
+		];
+	}
+
+	public function attributeHints()
+	{
+		return [
+			'mbrOwnOrgName' => 'در صورت دارا بودن کسب و کار شخصی، عنوان آنرا در این بخش وارد کنید',
 		];
 	}
 

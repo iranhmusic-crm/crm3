@@ -20,22 +20,18 @@ SQLSTR
 
         $this->execute(<<<SQLSTR
 UPDATE tbl_MHA_Member
-    INNER JOIN (
-        SELECT mbrshpMemberID
-             , mbrshpEndDate
-          FROM (
-        SELECT *
-          FROM tbl_MHA_MemberMembership
-         WHERE mbrshpStatus = '{$fnGetConst(enuMemberMembershipStatus::Paid)}'
-      ORDER BY mbrshpEndDate DESC
-               ) t1
-      GROUP BY mbrshpMemberID
-               ) t2
-            ON t2.mbrshpMemberID = tbl_MHA_Member.mbrUserID
-           SET mbrExpireDate = t2.mbrshpEndDate
-         WHERE (mbrExpireDate IS NULL
-            OR mbrExpireDate < t2.mbrshpEndDate
-               )
+  INNER JOIN (
+      SELECT mbrshpMemberID
+           , MAX(mbrshpEndDate) AS _mbrshpEndDate
+        FROM tbl_MHA_MemberMembership
+       WHERE mbrshpStatus = '{$fnGetConst(enuMemberMembershipStatus::Paid)}'
+    GROUP BY mbrshpMemberID
+             ) tMax
+          ON tMax.mbrshpMemberID = tbl_MHA_Member.mbrUserID
+         SET mbrExpireDate = tMax._mbrshpEndDate
+       WHERE (mbrExpireDate IS NULL
+          OR mbrExpireDate < tMax._mbrshpEndDate
+             )
 ;
 SQLSTR
         );
@@ -44,25 +40,43 @@ SQLSTR
 
         $this->execute(<<<SQLSTR
 CREATE TRIGGER `trg_tbl_MHA_MemberMembership_after_insert` AFTER INSERT ON `tbl_MHA_MemberMembership` FOR EACH ROW BEGIN
+	DECLARE maxDate DATE DEFAULT NULL;
+
+    SELECT MAX(mbrshpEndDate)
+      INTO maxDate
+      FROM tbl_MHA_MemberMembership
+     WHERE mbrshpStatus = 'P' -- Paid
+       AND mbrshpMemberID = NEW.mbrshpMemberID
+  GROUP BY mbrshpMemberID
+           ;
+
+  IF maxDate IS NOT NULL THEN
+    UPDATE tbl_MHA_Member
+       SET mbrExpireDate = maxDate
+     WHERE mbrUserID = NEW.mbrshpMemberID
+       AND (mbrExpireDate IS NULL
+        OR mbrExpireDate < maxDate
+           )
+           ;
+  END IF;
+
+/*
         UPDATE tbl_MHA_Member
     INNER JOIN (
         SELECT mbrshpMemberID
-             , mbrshpEndDate
-          FROM (
-        SELECT *
+             , MAX(mbrshpEndDate) AS _mbrshpEndDate
           FROM tbl_MHA_MemberMembership
          WHERE mbrshpStatus = 'P' -- Paid
-      ORDER BY mbrshpEndDate DESC
-               ) t1
       GROUP BY mbrshpMemberID
-               ) t2
-            ON t2.mbrshpMemberID = tbl_MHA_Member.mbrUserID
-           SET mbrExpireDate = t2.mbrshpEndDate
+               ) tMax
+            ON tMax.mbrshpMemberID = tbl_MHA_Member.mbrUserID
+           SET mbrExpireDate = tMax._mbrshpEndDate
          WHERE mbrUserID = NEW.mbrshpMemberID
            AND (mbrExpireDate IS NULL
-            OR mbrExpireDate < t2.mbrshpEndDate
+            OR mbrExpireDate < tMax._mbrshpEndDate
                )
     ;
+*/
 END
 SQLSTR
         );
@@ -71,25 +85,43 @@ SQLSTR
 
         $this->execute(<<<SQLSTR
 CREATE TRIGGER `trg_tbl_MHA_MemberMembership_after_update` AFTER UPDATE ON `tbl_MHA_MemberMembership` FOR EACH ROW BEGIN
+	DECLARE maxDate DATE DEFAULT NULL;
+
+    SELECT MAX(mbrshpEndDate)
+      INTO maxDate
+      FROM tbl_MHA_MemberMembership
+     WHERE mbrshpStatus = 'P' -- Paid
+       AND mbrshpMemberID = NEW.mbrshpMemberID
+  GROUP BY mbrshpMemberID
+           ;
+
+  IF maxDate IS NOT NULL THEN
+    UPDATE tbl_MHA_Member
+       SET mbrExpireDate = maxDate
+     WHERE mbrUserID = NEW.mbrshpMemberID
+       AND (mbrExpireDate IS NULL
+        OR mbrExpireDate < maxDate
+           )
+           ;
+  END IF;
+
+/*
         UPDATE tbl_MHA_Member
     INNER JOIN (
         SELECT mbrshpMemberID
-             , mbrshpEndDate
-          FROM (
-        SELECT *
+             , MAX(mbrshpEndDate) AS _mbrshpEndDate
           FROM tbl_MHA_MemberMembership
          WHERE mbrshpStatus = 'P' -- Paid
-      ORDER BY mbrshpEndDate DESC
-               ) t1
       GROUP BY mbrshpMemberID
-               ) t2
-            ON t2.mbrshpMemberID = tbl_MHA_Member.mbrUserID
-           SET mbrExpireDate = t2.mbrshpEndDate
+               ) tMax
+            ON tMax.mbrshpMemberID = tbl_MHA_Member.mbrUserID
+           SET mbrExpireDate = tMax._mbrshpEndDate
          WHERE mbrUserID = NEW.mbrshpMemberID
            AND (mbrExpireDate IS NULL
-            OR mbrExpireDate < t2.mbrshpEndDate
+            OR mbrExpireDate < tMax._mbrshpEndDate
                )
     ;
+*/
 END
 SQLSTR
         );

@@ -497,3 +497,11 @@ pre {
 .popover-x {
   position: absolute;
 }
+
+.info-row1 {
+  background-color: #b2e0ffff !important;
+}
+.info-row {
+  background-color: #6c757dff !important;
+  color: #ffffffff !important;
+}

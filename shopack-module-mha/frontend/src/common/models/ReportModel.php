@@ -24,7 +24,7 @@ class ReportModel extends RestClientActiveRecord
 	{
 		return [
 			'rptID'                   => Yii::t('app', 'ID'),
-			'rptName'                 => Yii::t('app', 'Name'),
+			'rptName'                 => Yii::t('mha', 'Report Title'),
 			'rptType'                	=> Yii::t('app', 'Type'),
 			'rptInputFields'          => Yii::t('app', 'Input Fields'),
 			'rptOutputFields'         => Yii::t('app', 'Output Fields'),

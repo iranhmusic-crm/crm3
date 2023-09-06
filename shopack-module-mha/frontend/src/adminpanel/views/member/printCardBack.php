@@ -158,25 +158,29 @@ h2 {
 CSS;
 
 $this->registerCss($css);
-
-//clubs
-$searchModel = new MemberKanoonModel();
-$mbrkanoons = $searchModel->find()
-  ->andWhere(['mbrknnMemberID' => $model->mbrUserID])
-  ->andWhere(['mbrknnStatus' => enuMemberKanoonStatus::Accepted])
-  ->all();
-$mbrkanoon = $mbrkanoons[0];
 ?>
 
 <div class="cardbox">
   <div class="logo_type"><img src="/images/logo_type.jpg"></div>
   <div class="logo_title"><h4>House Of Music</h4><p>Association For Iranian Musician</p></div>
   <div class="info">
-    <label style="width:100%;"><h1>Full Name</h1><h2><?= strtoupper($model->user->usrFirstName_en) ?> <?= strtoupper($model->user->usrLastName_en) ?></h2>
-    </label>
+    <label style="width:100%;"><h1>Full Name</h1><h2>
+      <?php
+        $parts = [];
+        if ($model->user->usrGender == enuGender::Male)
+          $parts[] = 'Mr.';
+        else if ($model->user->usrGender == enuGender::Female)
+          $parts[] = 'Ms.';
+
+        $parts[] = ucfirst($model->user->usrFirstName_en);
+        $parts[] = strtoupper($model->user->usrLastName_en);
+
+        echo implode(' ', $parts);
+      ?>
+    </h2></label>
     <label><h1>Birthday</h1><h2><?= (new \DateTime($model->user->usrBirthDate))->format('Y/m/d') ?></h2></label>
     <label><h1>National Code</h1><h2><?= $model->user->usrSSID ?></h2></label>
-    <label><h1>Father Name</h1><h2><?= $model->user->usrFatherName_en ?></h2></label>
+    <label><h1>Father Name</h1><h2><?= ucfirst($model->user->usrFatherName_en) ?></h2></label>
     <label><h1>Club</h1><h2><?= $mbrkanoon->kanoon->knnNameEn ?></h2></label>
     <label style="width: 100%;"><h1>Member Code</h1><h2><?= $model->mbrRegisterCode ?> - <?= enuKanoonMembershipDegree::$list[$mbrkanoon->mbrknnMembershipDegree] ?></h2></label>
     <label><h1>Expire Date</h1><h2><?php

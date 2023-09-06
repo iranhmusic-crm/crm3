@@ -212,7 +212,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
                 'template' => '{create}',
                 'buttons' => [
                   'create' => function ($url, $model, $key) use ($mbrdocMemberID) {
-                    return Html::createButton('درج', [
+                    return Html::createButton('افزودن', [
                       'docID' => $model->docID,
                       'mbrdocMemberID' => $mbrdocMemberID,
                     ], [

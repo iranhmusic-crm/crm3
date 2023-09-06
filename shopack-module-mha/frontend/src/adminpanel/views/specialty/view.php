@@ -56,10 +56,6 @@ $this->params['breadcrumbs'][] = $this->title;
               'isVertical' => false,
               'attributes' => [
                 'spcID',
-                [
-                  'attribute' => 'usrStatus',
-                  'value' => enuUserStatus::getLabel($model->user->usrStatus),
-                ],
                 'spcRegisterCode',
                 [
                   'attribute' => 'spcStatus',
@@ -69,6 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   'group' => true,
                   // 'cols' => 1,
                   'label' => 'اطلاعات پایه',
+                  'groupOptions' => ['class' => 'info-row'],
                 ],
                 [
                   'attribute' => 'usrEmail',

@@ -107,6 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                       'group' => true,
                       // 'cols' => 1,
                       'label' => 'اطلاعات پایه',
+                      'groupOptions' => ['class' => 'info-row'],
                     ],
                     [
                       'attribute' => 'usrFirstName',
@@ -160,6 +161,39 @@ $this->params['breadcrumbs'][] = $this->title;
                       'attribute' => 'usrGender',
                       'value' => enuGender::getLabel($model->usrGender),
                     ],
+                    [
+                      'group' => true,
+                      'cols' => 1,
+                      'label' => 'اطلاعات تکمیلی',
+                      'groupOptions' => ['class' => 'info-row'],
+                    ],
+                    'mbrMusicExperiences:paragraphs',
+                    'mbrMusicExperienceStartAt:jalali',
+
+                    [
+                      'attribute' => 'mbrInstrumentID',
+                      'value' => $model->instrument->bdfName ?? null,
+                    ],
+                    [
+                      'attribute' => 'mbrSingID',
+                      'value' => $model->sing->bdfName ?? null,
+                    ],
+                    [
+                      'attribute' => 'mbrResearchID',
+                      'value' => $model->research->bdfName ?? null,
+                    ],
+                    [
+                      'attribute' => 'mbrArtDegree',
+                      'value' => empty($model->mbrArtDegree) ? null
+                                  : 'درجه ' . $model->mbrArtDegree,
+                    ],
+                    'mbrHonarCreditCode',
+                    'mbrJob',
+                    'mbrOwnOrgName',
+
+                    'mbrArtHistory:paragraphs',
+                    'mbrMusicEducationHistory:paragraphs',
+
                   ],
                 ]);
               ?>
@@ -178,11 +212,15 @@ $this->params['breadcrumbs'][] = $this->title;
                       ], [
                         'modal' => true,
                         'class' => 'btn btn-sm btn-primary',
+                        'data-popup-size' => 'lg',
                       ]);
                     }
 
                     if ($model->canUpdate()) {
-                      $buttons[] = Html::updateButton(null, ['id' => $model->mbrUserID]);
+                      $buttons[] = Html::updateButton(null, ['id' => $model->mbrUserID], [
+                        'modal' => true,
+                        'data-popup-size' => 'lg',
+                      ]);
                       $buttons[] = Html::updateButton('تعیین رمز', ['/aaa/user/password-reset', 'id' => $model->mbrUserID], [
                         'btn' => 'warning',
                       ]);
@@ -205,6 +243,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     $buttons[] = Html::a(Yii::t('mha', 'Print Card (Back)'), [
                       'print-card-back',
+                      'id' => $model->mbrUserID,
+                    ], [
+                      'class' => 'btn btn-sm btn-primary',
+                      // 'modal' => true,
+                      'target' => '_blank',
+                    ]);
+
+                    $buttons[] = Html::a('چاپ نامه صندوق هنر', [
+                      'print-art-fund-letter',
                       'id' => $model->mbrUserID,
                     ], [
                       'class' => 'btn btn-sm btn-primary',
@@ -262,9 +309,9 @@ $this->params['breadcrumbs'][] = $this->title;
                   <?php
                     if ($model->user->usrImageFileID == null)
                       echo Yii::t('app', 'not set');
-                    elseif (empty($model->user->imageFile->fullFileUrl))
+                    else if (empty($model->user->imageFile->fullFileUrl))
                       echo Yii::t('aaa', 'Uploading...');
-                    elseif ($model->user->imageFile->isImage())
+                    else if ($model->user->imageFile->isImage())
                       echo Html::img($model->user->imageFile->fullFileUrl, ['style' => ['width' => '100%']]);
                     else
                       echo Html::a(Yii::t('app', 'Download'), $model->user->imageFile->fullFileUrl);
@@ -273,25 +320,6 @@ $this->params['breadcrumbs'][] = $this->title;
               </div>
 
             </div>
-          </div>
-
-          <div>
-            <?php
-              echo DetailView::widget([
-                'model' => $model,
-                'enableEditMode' => false,
-                'attributes' => [
-                  [
-                    'group' => true,
-                    'label' => 'اطلاعات تکمیلی',
-                  ],
-                  'mbrMusicExperiences:paragraphs',
-                  'mbrMusicExperienceStartAt:jalali',
-                  'mbrArtHistory:paragraphs',
-                  'mbrMusicEducationHistory:paragraphs',
-                ],
-              ]);
-            ?>
           </div>
 
         </div>

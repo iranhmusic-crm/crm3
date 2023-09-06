@@ -140,14 +140,6 @@ h2 {
 CSS;
 
 $this->registerCss($css);
-
-//clubs
-$searchModel = new MemberKanoonModel();
-$mbrkanoons = $searchModel->find()
-  ->andWhere(['mbrknnMemberID' => $model->mbrUserID])
-  ->andWhere(['mbrknnStatus' => enuMemberKanoonStatus::Accepted])
-  ->all();
-$mbrkanoon = $mbrkanoons[0];
 ?>
 
 <div class="cardbox">
@@ -156,8 +148,20 @@ $mbrkanoon = $mbrkanoons[0];
   <div class="logo_title"><img src="/images/logo_iran.jpg"></div>
   <div class="user_img" style="background:url(<?= $model->user->imageFile->fullFileUrl ?>);background-size: cover;background-position: center center;"></div>
   <div class="info">
-    <label style="width: 31%;"><h1>نام</h1><h2><?= $model->user->usrFirstName ?></h2></label>
-    <label style="width: 69%;"><h1>نام خانوادگی</h1><h2><?= $model->user->usrLastName ?></h2></label>
+    <label style="width: 100%;"><h1>نام و نام خانوادگی</h1><h2>
+      <?php
+        $parts = [];
+        if ($model->user->usrGender == enuGender::Male)
+          $parts[] = 'آقای';
+        else if ($model->user->usrGender == enuGender::Female)
+          $parts[] = 'خانم';
+
+        $parts[] = $model->user->usrFirstName;
+        $parts[] = $model->user->usrLastName;
+
+        echo implode(' ', $parts);
+      ?>
+    </h2></label>
     <label><h1>تاریخ تولد</h1><h2><?= Yii::$app->formatter->asPersianNum(Yii::$app->formatter->asJalali($model->user->usrBirthDate)) ?></h2></label>
     <label><h1>کد ملی</h1><h2><?= Yii::$app->formatter->asPersianNum($model->user->usrSSID) ?></h2></label>
     <label><h1>نام پدر</h1><h2><?= $model->user->usrFatherName ?></h2></label>

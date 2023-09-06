@@ -103,6 +103,15 @@ class MemberModel extends RestClientActiveRecord
 			'mbrMusicExperienceStartAt' => Yii::t('mha', 'Music Experience Start At'),
 			'mbrArtHistory'             => Yii::t('mha', 'Art History'),
 			'mbrMusicEducationHistory'  => Yii::t('mha', 'Music Education History'),
+
+			'mbrOwnOrgName'             => Yii::t('mha', 'Own Org Name'),
+			'mbrInstrumentID'           => Yii::t('mha', 'Instrument'),
+			'mbrSingID'                 => Yii::t('mha', 'Sing'),
+			'mbrResearchID'             => Yii::t('mha', 'Research'),
+			'mbrJob'                    => Yii::t('mha', 'Job'),
+			'mbrArtDegree'              => Yii::t('mha', 'Art Degree'),
+			'mbrHonarCreditCode'        => Yii::t('mha', 'Honar Credit Code'),
+
 			'mbrStatus'                 => Yii::t('mha', 'Member Status'),
 			'mbrCreatedAt'              => Yii::t('app', 'Created At'),
 			'mbrCreatedBy'              => Yii::t('app', 'Created By'),
@@ -133,7 +142,13 @@ class MemberModel extends RestClientActiveRecord
       'usrRetypePassword'     => Yii::t('aaa', 'Retype Password'),
       'usrPasswordHash'       => Yii::t('aaa', 'Password Hash'),
       'usrPasswordCreatedAt'  => Yii::t('aaa', 'Password Created At'),
+		];
+	}
 
+	public function attributeHints()
+	{
+		return [
+			'mbrOwnOrgName' => 'در صورت دارا بودن کسب و کار شخصی، عنوان آنرا در این بخش وارد کنید',
 		];
 	}
 

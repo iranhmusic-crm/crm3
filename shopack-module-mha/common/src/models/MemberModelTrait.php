@@ -20,6 +20,15 @@ use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 'mbrMusicExperienceStartAt', //Y/M/D
 'mbrArtHistory',
 'mbrMusicEducationHistory',
+
+'mbrOwnOrgName',
+'mbrInstrumentID',
+'mbrSingID',
+'mbrResearchID',
+'mbrJob',
+'mbrArtDegree',
+'mbrHonarCreditCode',
+
 'mbrStatus',
 'mbrCreatedAt',
 'mbrCreatedBy',
@@ -74,7 +83,7 @@ trait MemberModelTrait
 				enuColumnInfo::type       => ['string', 'max' => 65000], //TEXT
 				enuColumnInfo::validator  => null,
 				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => null,
+				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
         // enuColumnInfo::search     => null,
 			],
@@ -82,7 +91,7 @@ trait MemberModelTrait
 				enuColumnInfo::type       => 'safe', //Date
 				enuColumnInfo::validator  => null,
 				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => null,
+				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
         // enuColumnInfo::search     => null,
 			],
@@ -90,7 +99,7 @@ trait MemberModelTrait
 				enuColumnInfo::type       => ['string', 'max' => 65000], //TEXT
 				enuColumnInfo::validator  => null,
 				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => null,
+				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
         // enuColumnInfo::search     => null,
 			],
@@ -98,9 +107,65 @@ trait MemberModelTrait
 				enuColumnInfo::type       => ['string', 'max' => 65000], //TEXT
 				enuColumnInfo::validator  => null,
 				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => null,
+				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
         // enuColumnInfo::search     => null,
+			],
+			'mbrOwnOrgName' => [
+				enuColumnInfo::type       => ['string', 'max' => 1024],
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        enuColumnInfo::search     => 'like',
+			],
+			'mbrInstrumentID' => [
+				enuColumnInfo::type       => 'integer',
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        enuColumnInfo::search     => true,
+			],
+			'mbrSingID' => [
+				enuColumnInfo::type       => 'integer',
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        enuColumnInfo::search     => true,
+			],
+			'mbrResearchID' => [
+				enuColumnInfo::type       => 'integer',
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        enuColumnInfo::search     => true,
+			],
+			'mbrJob' => [
+				enuColumnInfo::type       => ['string', 'max' => 512],
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        enuColumnInfo::search     => 'like',
+			],
+			'mbrArtDegree' => [
+				enuColumnInfo::type       => 'integer',
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        enuColumnInfo::search     => true,
+			],
+			'mbrHonarCreditCode' => [
+				enuColumnInfo::type       => ['string', 'max' => 64],
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        enuColumnInfo::search     => 'like',
 			],
 			'mbrStatus' => [
 				enuColumnInfo::isStatus   => true,
@@ -152,6 +217,39 @@ trait MemberModelTrait
 			$className = '\shopack\aaa\frontend\common\models\UserModel';
 
 		return $this->hasOne($className, ['usrID' => 'mbrRemovedBy']);
+	}
+
+	public function getInstrument() {
+		$className = get_called_class();
+
+		if (str_contains($className, '\\backend\\'))
+			$className = '\iranhmusic\shopack\mha\backend\models\BasicDefinitionModel';
+		else
+			$className = 'iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel';
+
+		return $this->hasOne($className, ['bdfID' => 'mbrInstrumentID']);
+	}
+
+	public function getSing() {
+		$className = get_called_class();
+
+		if (str_contains($className, '\\backend\\'))
+			$className = '\iranhmusic\shopack\mha\backend\models\BasicDefinitionModel';
+		else
+			$className = 'iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel';
+
+		return $this->hasOne($className, ['bdfID' => 'mbrSingID']);
+	}
+
+	public function getResearch() {
+		$className = get_called_class();
+
+		if (str_contains($className, '\\backend\\'))
+			$className = '\iranhmusic\shopack\mha\backend\models\BasicDefinitionModel';
+		else
+			$className = 'iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel';
+
+		return $this->hasOne($className, ['bdfID' => 'mbrResearchID']);
 	}
 
 }

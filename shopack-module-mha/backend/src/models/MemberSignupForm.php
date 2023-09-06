@@ -41,7 +41,7 @@ class MemberSignupForm extends Model
 	public $mbrMusicEducationHistory;
 
 	public $kanoonID;
-	public $mbrknnParams;
+	// public $mbrknnParams;
 
 	public function rules()
 	{
@@ -159,7 +159,7 @@ class MemberSignupForm extends Model
 			['mbrArtHistory', 'string'],
 			['mbrMusicEducationHistory', 'string'],
 
-			['mbrknnParams', 'safe'], //JsonValidator::class],
+			// ['mbrknnParams', 'safe'], //JsonValidator::class],
 
 			[[
 				'mbrUserID',
@@ -277,8 +277,8 @@ class MemberSignupForm extends Model
 
 			$memberKanoonModel->mbrknnMemberID = $memberModel->mbrUserID;
 			$memberKanoonModel->mbrknnKanoonID = $this->kanoonID;
-			if (empty($this->mbrknnParams) == false)
-				$memberKanoonModel->mbrknnParams = Json::decode($this->mbrknnParams);
+			// if (empty($this->mbrknnParams) == false)
+			// 	$memberKanoonModel->mbrknnParams = Json::decode($this->mbrknnParams);
 
 			if ($memberKanoonModel->save() == false)  {
 				throw new UnprocessableEntityHttpException("could not save member kanoon\n" . implode("\n", $memberKanoonModel->getFirstErrors()));

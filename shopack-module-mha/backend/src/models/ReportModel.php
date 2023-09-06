@@ -94,6 +94,12 @@ class ReportModel extends MhaActiveRecord
 		};
 
 		foreach ($this->rptInputFields as $k => $v) {
+			if (str_starts_with($k, 'usr')) {
+				$joinToUser = true;
+			} else if (str_starts_with($k, 'mbrknn') || str_starts_with($k, 'knn')) {
+				$joinToKanoon = true;
+			}
+
 			switch ($k) {
 				case 'usrBirthLocation':     // [State], [City]
 					$joinToUser = true;
@@ -137,13 +143,13 @@ class ReportModel extends MhaActiveRecord
 					$query->andWhere(['mbrknnMembershipDegree' => $v]);
 					break;
 
-				case 'mbrknnParams':         // [I], [S], [R]
-					$joinToKanoon = true;
-					$vals = implode(',', $v);
-					$query->andWhere(new \yii\db\Expression(
-						"JSON_UNQUOTE(JSON_EXTRACT(mbrknnParams, '$.desc')) IN ({$vals})"
-					));
-					break;
+				// case 'mbrknnParams':         // [I], [S], [R]
+				// 	$joinToKanoon = true;
+				// 	$vals = implode(',', $v);
+				// 	$query->andWhere(new \yii\db\Expression(
+				// 		"JSON_UNQUOTE(JSON_EXTRACT(mbrknnParams, '$.desc')) IN ({$vals})"
+				// 	));
+				// 	break;
 
 				default:
 					$query->andWhere([$k => $v]);
@@ -209,13 +215,28 @@ class ReportModel extends MhaActiveRecord
 					$query->addSelect([
 						'knnID',
 						'knnName',
-						'mbrknnParams',
+						// 'mbrknnParams',
 						'knnDescFieldType',
 					]);
 					break;
 
 				case 'hasPassword':
 					$query->addSelect(new \yii\db\Expression("usrPasswordHash IS NOT NULL AND usrPasswordHash != '' AS hasPassword"));
+					break;
+
+				case 'mbrInstrumentID':
+					$query->joinWith('instrument instrument', false);
+					$query->addSelect('instrument.bdfName AS InstrumentName');
+					break;
+
+				case 'mbrSingID':
+					$query->joinWith('sing sing', false);
+					$query->addSelect('sing.bdfName AS SingName');
+					break;
+
+				case 'mbrResearchID':
+					$query->joinWith('research research', false);
+					$query->addSelect('research.bdfName AS ResearchName');
 					break;
 
 				default:

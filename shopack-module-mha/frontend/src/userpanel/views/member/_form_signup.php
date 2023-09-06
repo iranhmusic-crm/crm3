@@ -20,6 +20,8 @@ use shopack\aaa\common\enums\enuGender;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use shopack\aaa\frontend\common\models\GeoCountryModel;
+use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
+use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 ?>
 
 <div class='member-form'>
@@ -265,7 +267,7 @@ use shopack\aaa\frontend\common\models\GeoCountryModel;
 	<?php
 		$builder->fields([
 			'<hr>',
-			['@col' => 2],
+			['@col' => 1],
 			['mbrMusicExperiences'],
 			['mbrMusicExperienceStartAt',
 				'type' => FormBuilder::FIELD_WIDGET,
@@ -278,8 +280,89 @@ use shopack\aaa\frontend\common\models\GeoCountryModel;
 					],
 				],
 			],
-			['mbrArtHistory'],
-			['mbrMusicEducationHistory'],
+			['@cols' => 2, 'vertical' => true],
+			['mbrInstrumentID',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => Select2::class,
+				'widgetOptions' => [
+					'data' => ArrayHelper::map(BasicDefinitionModel::find()->where(['bdfType' => enuBasicDefinitionType::Instrument])->asArray()->noLimit()->all(), 'bdfID', 'bdfName'),
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'pluginOptions' => [
+						'allowClear' => true,
+					],
+				],
+			],
+			['mbrSingID',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => Select2::class,
+				'widgetOptions' => [
+					'data' => ArrayHelper::map(BasicDefinitionModel::find()->where(['bdfType' => enuBasicDefinitionType::Sing])->asArray()->noLimit()->all(), 'bdfID', 'bdfName'),
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'pluginOptions' => [
+						'allowClear' => true,
+					],
+				],
+			],
+			['mbrResearchID',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => Select2::class,
+				'widgetOptions' => [
+					'data' => ArrayHelper::map(BasicDefinitionModel::find()->where(['bdfType' => enuBasicDefinitionType::Research])->asArray()->noLimit()->all(), 'bdfID', 'bdfName'),
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'pluginOptions' => [
+						'allowClear' => true,
+					],
+				],
+			],
+
+			['@col-break'],
+			['mbrArtDegree',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => Select2::class,
+				'widgetOptions' => [
+					'data' => [
+						'1' => 'درجه 1',
+						'2' => 'درجه 2',
+						'3' => 'درجه 3',
+						'4' => 'درجه 4',
+						'5' => 'درجه 5',
+					],
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'pluginOptions' => [
+						'allowClear' => true,
+					],
+				],
+			],
+			['mbrHonarCreditCode'],
+			['mbrJob'],
+
+			['@cols' => 1],
+			['mbrOwnOrgName'],
+
+			['mbrArtHistory',
+				'type' => FormBuilder::FIELD_TEXTAREA,
+				'widgetOptions' => [
+					'rows' => 4,
+				],
+			],
+			['mbrMusicEducationHistory',
+				'type' => FormBuilder::FIELD_TEXTAREA,
+				'widgetOptions' => [
+					'rows' => 4,
+				],
+			],
 		]);
 	?>
 

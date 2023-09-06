@@ -28,6 +28,15 @@ return [
 	'Music Experience Start At' => 'شروع فعالیت در این رشته',
 	'Art History' => 'سوابق فعالیت هنری',
 	'Music Education History' => 'سوابق آموزشی',
+
+	'Own Org Name' => 'نام کسب و کار شخصی',
+	'Instrument' => 'ساز',
+	'Sing' => 'آواز',
+	'Research' => 'پژوهش',
+	'Job' => 'شغل',
+	'Art Degree' => 'درجه هنری',
+	'Honar Credit Code' => 'کد صندوق هنر',
+
 	'Waiting For Approval' => 'منتظر تایید',
 
 	'Kanoons' => 'کانون‌ها',
@@ -210,11 +219,14 @@ return [
 	'Create Report' => 'ایجاد گزارش',
 	'Update Report' => 'ویرایش گزارش',
 
+	'Report Result' => 'اجرای گزارش',
+	'Report Title' => 'عنوان گزارش',
+	'Run Report' => 'اجرای گزارش',
+
 	'Member Report' => 'گزارش اعضا',
 	'Create Member Report' => 'ایجاد گزارش اعضا',
 
 	'Financial Report' => 'گزارش مالی',
 	'Create Financial Report' => 'ایجاد گزارش مالی',
-	'Report Result' => 'اجرای گزارش',
 
 ];

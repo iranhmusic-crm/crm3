@@ -81,12 +81,7 @@ $defects = $model->getDefects();
 											'group' => true,
 											// 'cols' => 1,
 											'label' => 'اطلاعات پایه',
-											'groupOptions' => [
-												'class' => [
-													'bg-secondary',
-													'text-white',
-												],
-											],
+											'groupOptions' => ['class' => 'info-row'],
 										],
 										[
 											'attribute' => 'usrFirstName',
@@ -140,24 +135,40 @@ $defects = $model->getDefects();
 											'attribute' => 'usrGender',
 											'value' => enuGender::getLabel($model->usrGender),
 										],
-										[
-											'group' => true,
-											'label' => 'اطلاعات تکمیلی',
-											'groupOptions' => [
-												'class' => [
-													'bg-secondary',
-													'text-white',
-												],
-											],
-										],
-										'mbrMusicExperiences',
-										'mbrMusicExperienceStartAt:jalali',
+
 										[
 											'group' => true,
 											'cols' => 1,
+											'label' => 'اطلاعات تکمیلی',
+											'groupOptions' => ['class' => 'info-row'],
 										],
-										'mbrArtHistory',
-										'mbrMusicEducationHistory',
+                    'mbrMusicExperiences:paragraphs',
+                    'mbrMusicExperienceStartAt:jalali',
+
+                    [
+                      'attribute' => 'mbrInstrumentID',
+                      'value' => $model->instrument->bdfName ?? null,
+                    ],
+                    [
+                      'attribute' => 'mbrSingID',
+                      'value' => $model->sing->bdfName ?? null,
+                    ],
+                    [
+                      'attribute' => 'mbrResearchID',
+                      'value' => $model->research->bdfName ?? null,
+                    ],
+                    [
+                      'attribute' => 'mbrArtDegree',
+                      'value' => empty($model->mbrArtDegree) ? null
+                                  : 'درجه ' . $model->mbrArtDegree,
+                    ],
+                    'mbrHonarCreditCode',
+                    'mbrJob',
+                    'mbrOwnOrgName',
+
+										'mbrArtHistory:paragraphs',
+                    'mbrMusicEducationHistory:paragraphs',
+
 									],
 								]);
 							?>

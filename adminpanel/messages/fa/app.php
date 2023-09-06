@@ -87,5 +87,4 @@ return [
 	'Logs' => 'لاگ',
 	'Search' => 'جستجو',
 
-	'Run Report' => 'اجرای گزارش',
 ];

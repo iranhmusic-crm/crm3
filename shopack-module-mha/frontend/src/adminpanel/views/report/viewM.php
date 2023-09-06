@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	<div class='card border-default'>
 		<div class='card-header bg-default'>
 			<div class="float-end">
-				<?= Html::confirmButton(yii::t('app', 'Run Report'), [
+				<?= Html::confirmButton(yii::t('mha', 'Run Report'), [
 					'run',
 					'id' => $model->rptID
 				], 'آیا می‌خواهید این گزارش اجرا شود؟', [

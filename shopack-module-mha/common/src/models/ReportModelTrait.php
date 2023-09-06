@@ -45,7 +45,7 @@ trait ReportModelTrait
 			],
       'rptUUID' => ModelColumnHelper::UUID(),
 			'rptName' => [
-				enuColumnInfo::type       => ['string', 'max' => 1024],
+				enuColumnInfo::type       => ['string', 'max' => 512],
 				enuColumnInfo::validator  => null,
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,

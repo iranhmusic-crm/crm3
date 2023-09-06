@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
               'buttons' => [
                 'run' => function ($url, $model, $key) {
-                  return Html::confirmButton(yii::t('app', 'Run Report'), [
+                  return Html::confirmButton(yii::t('mha', 'Run Report'), [
                     'run',
                     'id' => $model->rptID
                   ], 'آیا می‌خواهید این گزارش اجرا شود؟', [

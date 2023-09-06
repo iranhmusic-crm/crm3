@@ -127,7 +127,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
                 'template' => '{create}',
                 'buttons' => [
                   'create' => function ($url, $model, $key) {
-                    return Html::createButton('درج', [
+                    return Html::createButton('افزودن', [
                       'docID' => $model->docID,
                     ], [
                       'class' => [

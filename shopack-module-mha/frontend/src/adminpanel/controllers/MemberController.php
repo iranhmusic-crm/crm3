@@ -7,10 +7,13 @@ namespace iranhmusic\shopack\mha\frontend\adminpanel\controllers;
 
 use Yii;
 use yii\web\Response;
+use yii\web\UnprocessableEntityHttpException;
 use shopack\aaa\frontend\common\auth\BaseCrudController;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberSearchModel;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
+use iranhmusic\shopack\mha\frontend\common\models\MemberKanoonModel;
+use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 
 class MemberController extends BaseCrudController
 {
@@ -38,20 +41,56 @@ class MemberController extends BaseCrudController
 
   public function actionPrintCardFront($id)
   {
-    try {
+    // try {
       $model = $this->findModel($id);
-    } catch (\Throwable $exp) {
-      return $this->redirect(['/aaa/user/view', 'id' => $id]);
-    }
+
+      if (empty($model->user->usrImageFileID))
+        throw new UnprocessableEntityHttpException('تصویر عضو تعیین نشده است.');
+
+      if (empty($model->user->imageFile->fullFileUrl))
+        throw new UnprocessableEntityHttpException('تصویر عضو هنوز آپلود نشده است.');
+
+      $searchModel = new MemberKanoonModel();
+      $mbrkanoons = $searchModel->find()
+        ->andWhere(['mbrknnMemberID' => $model->mbrUserID])
+        ->andWhere(['mbrknnStatus' => enuMemberKanoonStatus::Accepted])
+        ->all();
+      if (empty($mbrkanoons))
+        throw new UnprocessableEntityHttpException('این عضو دارای هیچ کانون تایید شده‌ای نیست.');
+
+    // } catch (\Throwable $exp) {
+    //   return $this->redirect(['/aaa/user/view', 'id' => $id]);
+    // }
 
     Yii::$app->controller->layout = "/print";
 
     return $this->render('printCardFront', [
       'model' => $model,
+      'mbrkanoon' => $mbrkanoons[0],
 		]);
   }
 
   public function actionPrintCardBack($id)
+  {
+    $model = $this->findModel($id);
+
+    $searchModel = new MemberKanoonModel();
+    $mbrkanoons = $searchModel->find()
+      ->andWhere(['mbrknnMemberID' => $model->mbrUserID])
+      ->andWhere(['mbrknnStatus' => enuMemberKanoonStatus::Accepted])
+      ->all();
+    if (empty($mbrkanoons))
+      throw new UnprocessableEntityHttpException('این عضو دارای هیچ کانون تایید شده‌ای نیست.');
+
+    Yii::$app->controller->layout = "/print";
+
+    return $this->render('printCardBack', [
+      'model' => $model,
+      'mbrkanoon' => $mbrkanoons[0],
+		]);
+  }
+
+  public function actionPrintArtFundLetter($id)
   {
     try {
       $model = $this->findModel($id);
@@ -61,7 +100,7 @@ class MemberController extends BaseCrudController
 
     Yii::$app->controller->layout = "/print";
 
-    return $this->render('printCardBack', [
+    return $this->render('printArtFundLetter', [
       'model' => $model,
 		]);
   }

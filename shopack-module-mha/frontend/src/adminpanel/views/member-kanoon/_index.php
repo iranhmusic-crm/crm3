@@ -84,45 +84,45 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
         return $model->kanoon->knnName;
       },
     ],
-    [
-      'attribute' => 'mbrknnParams',
-      'value' => function ($model, $key, $index, $widget) {
-        if (empty($model->mbrknnKanoonID)
-          || empty($model->mbrknnParams)
-          || empty($model->kanoon->knnDescFieldType)
-        )
-          return null;
+    // [
+    //   'attribute' => 'mbrknnParams',
+    //   'value' => function ($model, $key, $index, $widget) {
+    //     if (empty($model->mbrknnKanoonID)
+    //       || empty($model->mbrknnParams)
+    //       || empty($model->kanoon->knnDescFieldType)
+    //     )
+    //       return null;
 
-        $desc = $model->mbrknnParams['desc'];
-        $fieldType = $model->kanoon->knnDescFieldType;
-        if ($fieldType == 'text')
-          return $desc;
+    //     $desc = $model->mbrknnParams['desc'];
+    //     $fieldType = $model->kanoon->knnDescFieldType;
+    //     if ($fieldType == 'text')
+    //       return $desc;
 
-        if (str_starts_with($fieldType, 'mha:')) {
-          $bdf = substr($fieldType, 4);
+    //     if (str_starts_with($fieldType, 'mha:')) {
+    //       $bdf = substr($fieldType, 4);
 
-          $basicDefinitionModel = BasicDefinitionModel::find()
-            ->andWhere(['bdfID' => $desc])
-            // ->andWhere(['bdfType' => $bdf])
-            ->one()
-          ;
+    //       $basicDefinitionModel = BasicDefinitionModel::find()
+    //         ->andWhere(['bdfID' => $desc])
+    //         // ->andWhere(['bdfType' => $bdf])
+    //         ->one()
+    //       ;
 
-          if ($basicDefinitionModel)
-            return enuBasicDefinitionType::getLabel($bdf) . ': ' . $basicDefinitionModel->bdfName;
+    //       if ($basicDefinitionModel)
+    //         return enuBasicDefinitionType::getLabel($bdf) . ': ' . $basicDefinitionModel->bdfName;
 
-          return enuBasicDefinitionType::getLabel($bdf) . ': ' . $desc;
-        }
+    //       return enuBasicDefinitionType::getLabel($bdf) . ': ' . $desc;
+    //     }
 
-        // $mhaList = enuBasicDefinitionType::getList();
-        // foreach($mhaList as $k => $v) {
-        //   if ($fieldType == 'mha:' . $k) {
-        //     return $v . ': ' . $desc;
-        //   }
-        // }
+    //     // $mhaList = enuBasicDefinitionType::getList();
+    //     // foreach($mhaList as $k => $v) {
+    //     //   if ($fieldType == 'mha:' . $k) {
+    //     //     return $v . ': ' . $desc;
+    //     //   }
+    //     // }
 
-        return $desc;
-      },
-    ],
+    //     return $desc;
+    //   },
+    // ],
     'mbrknnIsMaster:boolean',
     [
       'class' => \shopack\base\frontend\widgets\grid\EnumDataColumn::class,

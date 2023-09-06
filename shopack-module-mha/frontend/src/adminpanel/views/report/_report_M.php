@@ -56,46 +56,50 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 
       'knnName'                => Yii::t('mha', 'Kanoon'),
 
-      'mbrknnParams'           => [
-        'label' => 'تخصص',
-        'value' => function($model) {
-          if (empty($model['knnID'])
-            || empty($model['mbrknnParams'])
-            || empty($model['knnDescFieldType'])
-          )
-            return null;
+      'InstrumentName'         => Yii::t('mha', 'Instrument'),
+			'SingName'							 => Yii::t('mha', 'Sing'),
+			'ResearchName'					 => Yii::t('mha', 'Research'),
 
-          $mbrknnParams = Json::decode($model['mbrknnParams'], true);
-          $desc = $mbrknnParams['desc'];
-          $fieldType = $model['knnDescFieldType'];
-          if ($fieldType == 'text')
-            return $desc;
+      // 'mbrknnParams'           => [
+      //   'label' => 'تخصص',
+      //   'value' => function($model) {
+      //     if (empty($model['knnID'])
+      //       || empty($model['mbrknnParams'])
+      //       || empty($model['knnDescFieldType'])
+      //     )
+      //       return null;
 
-          if (str_starts_with($fieldType, 'mha:')) {
-            $bdf = substr($fieldType, 4);
+      //     $mbrknnParams = Json::decode($model['mbrknnParams'], true);
+      //     $desc = $mbrknnParams['desc'];
+      //     $fieldType = $model['knnDescFieldType'];
+      //     if ($fieldType == 'text')
+      //       return $desc;
 
-            $basicDefinitionModel = BasicDefinitionModel::find()
-              ->andWhere(['bdfID' => $desc])
-              // ->andWhere(['bdfType' => $bdf])
-              ->one()
-            ;
+      //     if (str_starts_with($fieldType, 'mha:')) {
+      //       $bdf = substr($fieldType, 4);
 
-            if ($basicDefinitionModel)
-              return enuBasicDefinitionType::getLabel($bdf) . ': ' . $basicDefinitionModel->bdfName;
+      //       $basicDefinitionModel = BasicDefinitionModel::find()
+      //         ->andWhere(['bdfID' => $desc])
+      //         // ->andWhere(['bdfType' => $bdf])
+      //         ->one()
+      //       ;
 
-            return enuBasicDefinitionType::getLabel($bdf) . ': ' . $desc;
-          }
+      //       if ($basicDefinitionModel)
+      //         return enuBasicDefinitionType::getLabel($bdf) . ': ' . $basicDefinitionModel->bdfName;
 
-          // $mhaList = enuBasicDefinitionType::getList();
-          // foreach($mhaList as $k => $v) {
-          //   if ($fieldType == 'mha:' . $k) {
-          //     return $v . ': ' . $desc;
-          //   }
-          // }
+      //       return enuBasicDefinitionType::getLabel($bdf) . ': ' . $desc;
+      //     }
 
-          return $desc;
-        },
-      ],
+      //     // $mhaList = enuBasicDefinitionType::getList();
+      //     // foreach($mhaList as $k => $v) {
+      //     //   if ($fieldType == 'mha:' . $k) {
+      //     //     return $v . ': ' . $desc;
+      //     //   }
+      //     // }
+
+      //     return $desc;
+      //   },
+      // ],
       'mbrknnMembershipDegree' => [
         'label' => Yii::t('mha', 'Membership Degree'),
         'value' => function ($model, $key, $index, $widget) {
