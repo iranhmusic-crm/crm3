@@ -110,6 +110,14 @@ $this->params['breadcrumbs'][] = $this->title;
                       'groupOptions' => ['class' => 'info-row'],
                     ],
                     [
+                      'attribute' => 'usrGender',
+                      'value' => enuGender::getLabel($model->user->usrGender),
+                    ],
+                    [
+                      'attribute' => 'usrSSID',
+                      'value' => $model->user->usrSSID,
+                    ],
+                    [
                       'attribute' => 'usrFirstName',
                       'value' => $model->user->usrFirstName,
                     ],
@@ -152,14 +160,6 @@ $this->params['breadcrumbs'][] = $this->title;
                       'attribute' => 'usrMobileApprovedAt',
                       'format' => 'jalaliWithTime',
                       'value' => $model->user->usrMobileApprovedAt,
-                    ],
-                    [
-                      'attribute' => 'usrSSID',
-                      'value' => $model->user->usrSSID,
-                    ],
-                    [
-                      'attribute' => 'usrGender',
-                      'value' => enuGender::getLabel($model->usrGender),
                     ],
                     [
                       'group' => true,
