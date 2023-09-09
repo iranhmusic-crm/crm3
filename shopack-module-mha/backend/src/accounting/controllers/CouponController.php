@@ -14,6 +14,7 @@ use shopack\base\common\helpers\ExceptionHelper;
 use shopack\base\backend\accounting\controllers\BaseCouponController;
 use shopack\base\backend\helpers\PrivHelper;
 
-class AccountingCouponController extends BaseCouponController
+class CouponController extends BaseCouponController
 {
+	public $modelClass = \iranhmusic\shopack\mha\backend\accounting\models\CouponModel::class;
 }

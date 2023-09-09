@@ -14,7 +14,7 @@ use shopack\base\common\helpers\ExceptionHelper;
 use shopack\base\backend\accounting\controllers\BaseUnitController;
 use shopack\base\backend\helpers\PrivHelper;
 
-class AccountingUnitController extends BaseUnitController
+class UnitController extends BaseUnitController
 {
-
+	public $modelClass = \iranhmusic\shopack\mha\backend\accounting\models\UnitModel::class;
 }

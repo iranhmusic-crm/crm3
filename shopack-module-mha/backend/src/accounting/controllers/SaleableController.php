@@ -11,9 +11,10 @@ use yii\web\NotFoundHttpException;
 use yii\web\UnprocessableEntityHttpException;
 use yii\data\ActiveDataProvider;
 use shopack\base\common\helpers\ExceptionHelper;
-use shopack\base\backend\accounting\controllers\BaseUserAssetController;
+use shopack\base\backend\accounting\controllers\BaseSaleableController;
 use shopack\base\backend\helpers\PrivHelper;
 
-class AccountingUserAssetController extends BaseUserAssetController
+class SaleableController extends BaseSaleableController
 {
+	public $modelClass = \iranhmusic\shopack\mha\backend\accounting\models\SaleableModel::class;
 }

@@ -14,6 +14,7 @@ use shopack\base\common\helpers\ExceptionHelper;
 use shopack\base\backend\accounting\controllers\BaseProductController;
 use shopack\base\backend\helpers\PrivHelper;
 
-class AccountingProductController extends BaseProductController
+class ProductController extends BaseProductController
 {
+	public $modelClass = \iranhmusic\shopack\mha\backend\accounting\models\ProductModel::class;
 }

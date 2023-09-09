@@ -9,7 +9,7 @@ use yii\base\BootstrapInterface;
 use shopack\base\common\shop\ShopModuleTrait;
 use iranhmusic\shopack\mha\backend\models\MembershipModel;
 use iranhmusic\shopack\mha\backend\models\MemberMembershipModel;
-use iranhmusic\shopack\mha\backend\accounting\controllers\AccountingController;
+use iranhmusic\shopack\mha\backend\accounting\controllers\DefaultController;
 use iranhmusic\shopack\mha\backend\accounting\controllers\UnitController;
 use iranhmusic\shopack\mha\backend\accounting\controllers\CouponController;
 use iranhmusic\shopack\mha\backend\accounting\controllers\ProductController;
@@ -20,6 +20,8 @@ class AccountingModule
 	extends \shopack\base\common\base\BaseModule
 	implements BootstrapInterface
 {
+	public $controllerNamespace = 'iranhmusic\shopack\mha\backend\accounting\controllers';
+
 	public function init()
 	{
 		if (empty($this->id))
@@ -30,7 +32,18 @@ class AccountingModule
 
 	public function bootstrap($app)
 	{
+		$parentID = $this->module->id;
+		$thisID = $parentID . '/' . $this->id;
+
 		if ($app instanceof \yii\web\Application) {
+
+			// $this->controllerMap['default']			= DefaultController::class;
+			// $this->controllerMap['unit']				= UnitController::class;
+			// $this->controllerMap['coupon']			= CouponController::class;
+			// $this->controllerMap['product']			= ProductController::class;
+			// $this->controllerMap['saleable']		= SaleableController::class;
+			// $this->controllerMap['user-asset']	= UserAssetController::class;
+
 			$rules = [];
 
 			//-- accounting ---------------------------------
@@ -38,50 +51,45 @@ class AccountingModule
 				[
 					'class' => \yii\rest\UrlRule::class,
 					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting'],
+					'controller' => [$thisID . '/unit'],
+					'pluralize' => false,
+				],
+				[
+					'class' => \yii\rest\UrlRule::class,
+					// 'prefix' => 'v1',
+					'controller' => [$thisID . '/coupon'],
+					'pluralize' => false,
+				],
+				[
+					'class' => \yii\rest\UrlRule::class,
+					// 'prefix' => 'v1',
+					'controller' => [$thisID . '/product'],
+					'pluralize' => false,
+				],
+				[
+					'class' => \yii\rest\UrlRule::class,
+					// 'prefix' => 'v1',
+					'controller' => [$thisID . '/saleable'],
+					'pluralize' => false,
+				],
+				[
+					'class' => \yii\rest\UrlRule::class,
+					// 'prefix' => 'v1',
+					'controller' => [$thisID . '/user-asset'],
+					'pluralize' => false,
+				],
+
+				[
+					'class' => \yii\rest\UrlRule::class,
+					// 'prefix' => 'v1',
+					'controller' => [$thisID => $thisID . '/default'],
 					'pluralize' => false,
 
 					'patterns' => [
-						// 'GET,HEAD'					=> 'index',
-						// 'GET,HEAD {uuid}'		=> 'view',
-						// 'POST'							=> 'create',
-						// 'PUT,PATCH {uuid}'	=> 'update',
-						// 'DELETE {uuid}'			=> 'delete',
-						// '{uuid}'						=> 'options',
-						// ''									=> 'options',
 						'GET remove-basket-item' => 'remove-basket-item',
 					],
 				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting/unit'],
-					'pluralize' => false,
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting/coupon'],
-					'pluralize' => false,
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting/product'],
-					'pluralize' => false,
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting/saleable'],
-					'pluralize' => false,
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting/user-asset'],
-					'pluralize' => false,
-				],
+
 			]);
 
 			$app->urlManager->addRules($rules, false);

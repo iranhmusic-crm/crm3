@@ -7,7 +7,7 @@ namespace iranhmusic\shopack\mha\backend\accounting\controllers;
 
 use shopack\base\backend\accounting\controllers\BaseAccountingController;
 
-class AccountingController extends BaseAccountingController
+class DefaultController extends BaseAccountingController
 {
 
 }

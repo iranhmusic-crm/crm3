@@ -32,6 +32,12 @@ class Module
 	// 	],
 	// ];
 
+	// public function __construct($id)
+	// {
+
+	// 	Yii::$app->bootstrap[] = $id . '/accounting';
+	// }
+
 	public function init()
 	{
 		if (empty($this->id))
@@ -39,73 +45,78 @@ class Module
 
 		parent::init();
 
-		// Yii::$app->bootstrap[] = 'accounting';
+		$this->setModule('accounting', [
+			'class' => AccountingModule::class,
+		]);
 
 		$this->registerSaleable(MembershipModel::class, MemberMembershipModel::class);
 	}
 
 	public function bootstrap($app)
 	{
+		$accounting = $this->getModule('accounting');
+		$accounting->bootstrap($app);
+
 		if ($app instanceof \yii\web\Application) {
 			$rules = [];
 
-			//-- accounting ---------------------------------
-			$this->controllerMap['accounting']						= AccountingController::class;
-			$this->controllerMap['accounting-unit']				= AccountingUnitController::class;
-			$this->controllerMap['accounting-coupon']			= AccountingCouponController::class;
-			$this->controllerMap['accounting-product']		= AccountingProductController::class;
-			$this->controllerMap['accounting-saleable']		= AccountingSaleableController::class;
-			$this->controllerMap['accounting-user-asset']	= AccountingUserAssetController::class;
+			// //-- accounting ---------------------------------
+			// $this->controllerMap['accounting']						= AccountingController::class;
+			// $this->controllerMap['accounting-unit']				= AccountingUnitController::class;
+			// $this->controllerMap['accounting-coupon']			= AccountingCouponController::class;
+			// $this->controllerMap['accounting-product']		= AccountingProductController::class;
+			// $this->controllerMap['accounting-saleable']		= AccountingSaleableController::class;
+			// $this->controllerMap['accounting-user-asset']	= AccountingUserAssetController::class;
 
-			$rules = array_merge($rules, [
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting'],
-					'pluralize' => false,
+			// $rules = array_merge($rules, [
+			// 	[
+			// 		'class' => \yii\rest\UrlRule::class,
+			// 		// 'prefix' => 'v1',
+			// 		'controller' => [$this->id . '/accounting'],
+			// 		'pluralize' => false,
 
-					'patterns' => [
-						// 'GET,HEAD'					=> 'index',
-						// 'GET,HEAD {uuid}'		=> 'view',
-						// 'POST'							=> 'create',
-						// 'PUT,PATCH {uuid}'	=> 'update',
-						// 'DELETE {uuid}'			=> 'delete',
-						// '{uuid}'						=> 'options',
-						// ''									=> 'options',
-						'GET remove-basket-item' => 'remove-basket-item',
-					],
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting-unit'],
-					'pluralize' => false,
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting-coupon'],
-					'pluralize' => false,
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting-product'],
-					'pluralize' => false,
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting-saleable'],
-					'pluralize' => false,
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/accounting-user-asset'],
-					'pluralize' => false,
-				],
-			]);
+			// 		'patterns' => [
+			// 			// 'GET,HEAD'					=> 'index',
+			// 			// 'GET,HEAD {uuid}'		=> 'view',
+			// 			// 'POST'							=> 'create',
+			// 			// 'PUT,PATCH {uuid}'	=> 'update',
+			// 			// 'DELETE {uuid}'			=> 'delete',
+			// 			// '{uuid}'						=> 'options',
+			// 			// ''									=> 'options',
+			// 			'GET remove-basket-item' => 'remove-basket-item',
+			// 		],
+			// 	],
+			// 	[
+			// 		'class' => \yii\rest\UrlRule::class,
+			// 		// 'prefix' => 'v1',
+			// 		'controller' => [$this->id . '/accounting-unit'],
+			// 		'pluralize' => false,
+			// 	],
+			// 	[
+			// 		'class' => \yii\rest\UrlRule::class,
+			// 		// 'prefix' => 'v1',
+			// 		'controller' => [$this->id . '/accounting-coupon'],
+			// 		'pluralize' => false,
+			// 	],
+			// 	[
+			// 		'class' => \yii\rest\UrlRule::class,
+			// 		// 'prefix' => 'v1',
+			// 		'controller' => [$this->id . '/accounting-product'],
+			// 		'pluralize' => false,
+			// 	],
+			// 	[
+			// 		'class' => \yii\rest\UrlRule::class,
+			// 		// 'prefix' => 'v1',
+			// 		'controller' => [$this->id . '/accounting-saleable'],
+			// 		'pluralize' => false,
+			// 	],
+			// 	[
+			// 		'class' => \yii\rest\UrlRule::class,
+			// 		// 'prefix' => 'v1',
+			// 		'controller' => [$this->id . '/accounting-user-asset'],
+			// 		'pluralize' => false,
+			// 	],
+			// ]);
 
 			//-----------------------------------
 			$rules = array_merge($rules, [
