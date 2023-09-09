@@ -71,12 +71,17 @@ $config = [
 				// '@yii/rbac/migrations',
 				// '@yii/web/migrations',
 				// '@app/migrations',
+				// '@core/migrations',
 				'@aaa/migrations',
 				'@mha/migrations',
 				// '@app/modules/mha/migrations',
 				// '@yii/../yii2-queue/src/drivers/db/migrations',
 			],
 		],
+		// 'migrate-core-accounting' => [
+		// 	'class' => 'yii\console\controllers\MigrateController',
+		// 	'migrationPath' => '@core/migrations',
+		// ],
 		'migrate-aaa' => [
 			'class' => 'yii\console\controllers\MigrateController',
 			'migrationPath' => '@aaa/migrations',
