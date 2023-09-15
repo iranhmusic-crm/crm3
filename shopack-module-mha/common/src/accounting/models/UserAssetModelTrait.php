@@ -18,4 +18,28 @@ trait UserAssetModelTrait
 {
 	use BaseUserAssetModelTrait;
 
+	public static function getSaleableModelClass()
+	{
+		$className = get_called_class();
+
+		if (str_contains($className, '\\backend\\'))
+			$className = '\iranhmusic\shopack\mha\backend\accounting\models\SaleableModel';
+		else
+			$className = '\iranhmusic\shopack\mha\frontend\common\accounting\models\SaleableModel';
+
+		return $className;
+	}
+
+	public static function getCouponModelClass()
+	{
+		$className = get_called_class();
+
+		if (str_contains($className, '\\backend\\'))
+			$className = '\iranhmusic\shopack\mha\backend\accounting\models\CouponModel';
+		else
+			$className = '\iranhmusic\shopack\mha\frontend\common\accounting\models\CouponModel';
+
+		return $className;
+	}
+
 }

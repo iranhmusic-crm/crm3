@@ -18,11 +18,13 @@ use shopack\base\common\accounting\models\BaseProductModelTrait;
 
 trait ProductModelTrait
 {
-	use BaseProductModelTrait;
+	use BaseProductModelTrait {
+		columnsInfo as trait_columnsInfo;
+	}
 
 	public static function columnsInfo()
   {
-		$cols = BaseProductModelTrait::columnsInfo();
+		$cols = static::trait_columnsInfo(); //BaseProductModelTrait::columnsInfo();
 
 		$cols = array_merge($cols, [
 			'prdType' => [
@@ -35,6 +37,18 @@ trait ProductModelTrait
 		]);
 
 		return $cols;
+	}
+
+	public static function getUnitModelClass()
+	{
+		$className = get_called_class();
+
+		if (str_contains($className, '\\backend\\'))
+			$className = '\iranhmusic\shopack\mha\backend\accounting\models\UnitModel';
+		else
+			$className = '\iranhmusic\shopack\mha\frontend\common\accounting\models\UnitModel';
+
+		return $className;
 	}
 
 }

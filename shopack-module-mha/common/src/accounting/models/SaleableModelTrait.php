@@ -18,4 +18,16 @@ trait SaleableModelTrait
 {
 	use BaseSaleableModelTrait;
 
+	public static function getProductModelClass()
+	{
+		$className = get_called_class();
+
+		if (str_contains($className, '\\backend\\'))
+			$className = '\iranhmusic\shopack\mha\backend\accounting\models\ProductModel';
+		else
+			$className = '\iranhmusic\shopack\mha\frontend\common\accounting\models\ProductModel';
+
+		return $className;
+	}
+
 }
