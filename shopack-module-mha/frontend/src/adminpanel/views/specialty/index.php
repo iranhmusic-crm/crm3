@@ -7,8 +7,8 @@
 
 use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\Url;
-use shopack\base\frontend\widgets\grid\GridView;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\widgets\grid\GridView;
+use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\common\enums\enuSpecialtyStatus;
 use iranhmusic\shopack\mha\frontend\common\models\SpecialtyModel;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
@@ -168,7 +168,7 @@ JS;
                 }
                 $fildTypes = Json::encode($fildTypes);
 
-                echo \shopack\base\frontend\widgets\fancytree\Fancytree::widget([
+                echo \shopack\base\frontend\common\widgets\fancytree\Fancytree::widget([
                   'id' => 'maintree', //$treeid
                   'data' => $list,
                   // 'activeNode' => $_GET['selid'] ?? null,

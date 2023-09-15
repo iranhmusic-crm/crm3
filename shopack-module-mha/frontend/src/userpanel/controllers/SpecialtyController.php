@@ -11,7 +11,7 @@ use shopack\base\common\helpers\Url;
 use yii\base\InvalidConfigException;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\aaa\frontend\common\auth\BaseController;
 use iranhmusic\shopack\mha\frontend\common\models\SpecialtyModel;

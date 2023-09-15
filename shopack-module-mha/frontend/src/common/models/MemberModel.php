@@ -8,7 +8,7 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 use Yii;
 use shopack\base\common\helpers\Url;
 use shopack\base\common\validators\GroupRequiredValidator;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use shopack\aaa\frontend\common\models\UserModel;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 

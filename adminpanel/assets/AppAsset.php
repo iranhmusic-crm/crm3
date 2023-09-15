@@ -20,7 +20,7 @@ class AppAsset extends AssetBundle
     // 'app\assets\BootstrapAsset',
     // 'app\assets\FontAwesomeAsset'
     // 'simialbi\yii2\turbo\TurboAsset'
-    \shopack\base\frontend\ShopackAssetBundle::class,
+    \shopack\base\frontend\common\ShopackAssetBundle::class,
   ];
 
   public $css = [

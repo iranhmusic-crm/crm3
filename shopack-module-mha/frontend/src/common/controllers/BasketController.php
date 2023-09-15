@@ -8,7 +8,7 @@ namespace iranhmusic\shopack\mha\frontend\common\controllers;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\aaa\frontend\common\auth\BaseController;
 use iranhmusic\shopack\mha\frontend\common\models\BasketModel;
 

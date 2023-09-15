@@ -8,7 +8,7 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 use Yii;
 use yii\base\Model;
 use yii\db\Expression;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 
 class BasketModel extends RestClientActiveRecord
 {

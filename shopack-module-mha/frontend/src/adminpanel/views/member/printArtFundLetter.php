@@ -5,7 +5,7 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\aaa\common\enums\enuGender;
 use iranhmusic\shopack\mha\frontend\common\models\MemberKanoonModel;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;

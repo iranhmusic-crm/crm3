@@ -5,7 +5,7 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 
 $this->title = Yii::t('mha', 'Report Result') . ': ' . $model->rptID . '- ' . $model->rptName;
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');

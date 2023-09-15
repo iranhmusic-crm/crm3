@@ -10,7 +10,7 @@ use yii\web\Response;
 use yii\web\BadRequestHttpException;
 use shopack\base\common\helpers\Url;
 use shopack\base\common\helpers\StringHelper;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\aaa\frontend\common\auth\BaseCrudController;
 use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentSearchModel;

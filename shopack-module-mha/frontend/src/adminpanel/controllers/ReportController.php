@@ -7,7 +7,7 @@ namespace iranhmusic\shopack\mha\frontend\adminpanel\controllers;
 
 use Yii;
 use shopack\base\common\helpers\ArrayHelper;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\aaa\frontend\common\auth\BaseCrudController;
 use iranhmusic\shopack\mha\frontend\common\models\ReportModel;
 use iranhmusic\shopack\mha\frontend\common\models\ReportSearchModel;

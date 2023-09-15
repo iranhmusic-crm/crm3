@@ -7,11 +7,11 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
 use yii\data\ArrayDataProvider;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuReportStatus;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\common\helpers\HttpHelper;
-use shopack\base\frontend\rest\RestClientDataProvider;
+use shopack\base\frontend\common\rest\RestClientDataProvider;
 
 class ReportModel extends RestClientActiveRecord
 {

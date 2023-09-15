@@ -7,7 +7,7 @@ namespace iranhmusic\shopack\mha\frontend\userpanel\models;
 
 use Yii;
 use yii\base\Model;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use shopack\base\common\shop\ISaleableEntity;
 use shopack\base\common\helpers\HttpHelper;
 use iranhmusic\shopack\mha\common\enums\enuMembershipStatus;

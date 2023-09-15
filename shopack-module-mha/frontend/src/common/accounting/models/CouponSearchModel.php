@@ -8,7 +8,7 @@ namespace iranhmusic\shopack\mha\frontend\common\accounting\models;
 use yii\base\Model;
 use yii\web\ServerErrorHttpException;
 use shopack\base\common\helpers\ArrayHelper;
-use shopack\base\frontend\rest\RestClientDataProvider;
+use shopack\base\frontend\common\rest\RestClientDataProvider;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\CouponModel;
 
 class CouponSearchModel extends CouponModel
@@ -39,21 +39,20 @@ class CouponSearchModel extends CouponModel
 			'sort' => [
 				// 'enableMultiSort' => true,
 				'attributes' => [
-					'docID',
-					'docName',
-					'docType',
-					'docCreatedAt' => [
+					'cpnID',
+					'cpnName',
+					'cpnCreatedAt' => [
 						'default' => SORT_DESC,
 					],
-					'docCreatedBy',
-					'docUpdatedAt' => [
+					'cpnCreatedBy',
+					'cpnUpdatedAt' => [
 						'default' => SORT_DESC,
 					],
-					'docUpdatedBy',
-					'docRemovedAt' => [
+					'cpnUpdatedBy',
+					'cpnRemovedAt' => [
 						'default' => SORT_DESC,
 					],
-					'docRemovedBy',
+					'cpnRemovedBy',
 				],
 			],
 		]);

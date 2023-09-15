@@ -6,8 +6,8 @@
 /** @var yii\web\View $this */
 
 use shopack\base\common\helpers\Url;
-use shopack\base\frontend\widgets\grid\GridView;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\widgets\grid\GridView;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
@@ -116,12 +116,12 @@ $this->params['breadcrumbs'][] = $this->title;
             },
           ],
           [
-            'class' => \shopack\base\frontend\widgets\grid\EnumDataColumn::class,
+            'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
             'enumClass' => enuMemberStatus::class,
             'attribute' => 'mbrStatus',
           ],
           [
-            'class' => \shopack\base\frontend\widgets\ActionColumn::class,
+            'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
             'header' => MemberModel::canCreate() ? Html::createButton() : Yii::t('app', 'Actions'),
             'template' => '{update-user} {update} {delete}{undelete}',
             'buttons' => [

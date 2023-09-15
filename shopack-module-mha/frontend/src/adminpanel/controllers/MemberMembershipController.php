@@ -9,7 +9,7 @@ use Yii;
 use yii\web\Response;
 use shopack\base\common\helpers\Url;
 use shopack\base\common\helpers\StringHelper;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\aaa\frontend\common\auth\BaseCrudController;
 use iranhmusic\shopack\mha\frontend\common\models\MemberMembershipModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberMembershipSearchModel;

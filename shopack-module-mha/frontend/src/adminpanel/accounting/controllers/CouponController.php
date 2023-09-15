@@ -5,12 +5,12 @@
 
 namespace iranhmusic\shopack\mha\frontend\adminpanel\accounting\controllers;
 
-use shopack\aaa\frontend\common\auth\BaseCrudController;
+use shopack\base\frontend\adminpanel\accounting\controllers\BaseCouponController;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\CouponModel;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\CouponSearchModel;
 // use iranhmusic\shopack\mha\common\enums\enuCouponStatus;
 
-class CouponController extends BaseCrudController
+class CouponController extends BaseCouponController
 {
 	public $modelClass = CouponModel::class;
 	public $searchModelClass = CouponSearchModel::class;

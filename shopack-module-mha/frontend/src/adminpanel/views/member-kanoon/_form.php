@@ -4,13 +4,13 @@
  */
 
 use yii\web\JsExpression;
-use shopack\base\frontend\widgets\Select2;
+use shopack\base\frontend\common\widgets\Select2;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\Url;
-use shopack\base\frontend\helpers\Html;
-use shopack\base\frontend\widgets\ActiveForm;
-use shopack\base\frontend\widgets\FormBuilder;
+use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\widgets\ActiveForm;
+use shopack\base\frontend\common\widgets\FormBuilder;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;

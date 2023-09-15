@@ -5,7 +5,7 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\frontend\common\models\MemberSupplementaryInsDocModel;
 
 $this->title = Yii::t('mha', 'Supplementary Insurance Documents');

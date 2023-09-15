@@ -7,7 +7,7 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
 use yii\web\UnprocessableEntityHttpException;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\common\shop\IAssetEntity;

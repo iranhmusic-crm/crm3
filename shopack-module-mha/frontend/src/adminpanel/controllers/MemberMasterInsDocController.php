@@ -13,7 +13,7 @@ use shopack\aaa\frontend\common\auth\BaseCrudController;
 use iranhmusic\shopack\mha\frontend\common\models\MemberMasterInsDocModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberMasterInsDocSearchModel;
 use iranhmusic\shopack\mha\common\enums\enuInsurerDocStatus;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 
 class MemberMasterInsDocController extends BaseCrudController
 {

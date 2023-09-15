@@ -8,7 +8,7 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 use yii;
 use yii\base\Model;
 use yii\web\ServerErrorHttpException;
-use shopack\base\frontend\rest\RestClientDataProvider;
+use shopack\base\frontend\common\rest\RestClientDataProvider;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use shopack\base\common\helpers\ArrayHelper;
 

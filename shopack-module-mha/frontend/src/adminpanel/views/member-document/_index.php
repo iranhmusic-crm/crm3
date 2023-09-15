@@ -5,9 +5,9 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\widgets\grid\GridView;
+use shopack\base\frontend\common\widgets\grid\GridView;
 use shopack\base\common\helpers\StringHelper;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
 use iranhmusic\shopack\mha\frontend\common\models\DocumentSearchModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
@@ -101,12 +101,12 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
         'mbrdocTitle',
         [
           'attribute' => 'mbrdocStatus',
-          'class' => \shopack\base\frontend\widgets\grid\EnumDataColumn::class,
+          'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
           'enumClass' => enuMemberDocumentStatus::class,
         ],
         'mbrdocComment',
         [
-          'class' => \shopack\base\frontend\widgets\ActionColumn::class,
+          'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
           'header' => MemberDocumentModel::canCreate() ? Html::createButton(null, [
             'create',
             'mbrdocMemberID' => $mbrdocMemberID ?? $_GET['mbrdocMemberID'] ?? null,
@@ -208,7 +208,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
                 },
               ],
               [
-                'class' => \shopack\base\frontend\widgets\ActionColumn::class,
+                'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
                 'template' => '{create}',
                 'buttons' => [
                   'create' => function ($url, $model, $key) use ($mbrdocMemberID) {

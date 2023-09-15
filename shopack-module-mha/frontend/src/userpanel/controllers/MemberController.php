@@ -11,7 +11,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
 use shopack\aaa\frontend\common\auth\BaseController;
 use shopack\aaa\frontend\common\models\UserModel;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\Url;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use iranhmusic\shopack\mha\frontend\userpanel\models\MemberSignupForm;

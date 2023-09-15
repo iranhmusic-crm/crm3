@@ -5,9 +5,9 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\widgets\grid\GridView;
+use shopack\base\frontend\common\widgets\grid\GridView;
 use shopack\base\common\helpers\Url;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
@@ -57,7 +57,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
     'mbrminshstCoName',
     'mbrminshstIssuanceDate:jalali',
     [
-      'class' => \shopack\base\frontend\widgets\ActionColumn::class,
+      'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
       'header' => MemberModel::canCreate() ? Html::createButton(null, [
         'create',
         'mbrminshstMemberID' => $_GET['mbrminshstMemberID'] ?? null,
