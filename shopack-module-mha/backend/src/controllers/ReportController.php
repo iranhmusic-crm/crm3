@@ -46,7 +46,7 @@ class ReportController extends BaseRestController
 	public function actionIndex()
 	{
 		$filter = [];
-		PrivHelper::checkPriv('mha/Report/crud', '0100');
+		PrivHelper::checkPriv(['mha/Report/crud' => '0100']);
 
 		$searchModel = new ReportModel;
 		$query = $searchModel::find()
@@ -67,7 +67,7 @@ class ReportController extends BaseRestController
 
 	public function actionView($id)
 	{
-		PrivHelper::checkPriv('mha/Report/crud', '0100');
+		PrivHelper::checkPriv(['mha/Report/crud' => '0100']);
 
 		$model = ReportModel::find()
 			->select(ReportModel::selectableColumns())
@@ -89,7 +89,7 @@ class ReportController extends BaseRestController
 
 	public function actionCreate()
 	{
-		PrivHelper::checkPriv('mha/Report/crud', '1000');
+		PrivHelper::checkPriv(['mha/Report/crud' => '1000']);
 
 		$model = new ReportModel();
 		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
@@ -116,7 +116,7 @@ class ReportController extends BaseRestController
 
 	public function actionUpdate($id)
 	{
-		PrivHelper::checkPriv('mha/Report/crud', '0010');
+		PrivHelper::checkPriv(['mha/Report/crud' => '0010']);
 
 		$model = $this->findModel($id);
 
@@ -139,7 +139,7 @@ class ReportController extends BaseRestController
 
 	public function actionDelete($id)
 	{
-		PrivHelper::checkPriv('mha/Report/crud', '0001');
+		PrivHelper::checkPriv(['mha/Report/crud' => '0001']);
 
 		$model = $this->findModel($id);
 
@@ -160,7 +160,7 @@ class ReportController extends BaseRestController
 	public function actionRun($id)
 	{
 		if (YII_ENV_DEV == false) {
-			PrivHelper::checkPriv('mha/Report/crud', '0100');
+			PrivHelper::checkPriv(['mha/Report/crud' => '0100']);
 		}
 
 		$model = $this->findModel($id);

@@ -3,7 +3,7 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-namespace iranhmusic\shopack\mha\backend;
+namespace iranhmusic\shopack\mha\backend\accounting;
 
 use yii\base\BootstrapInterface;
 use shopack\base\common\shop\ShopModuleTrait;
@@ -20,8 +20,6 @@ class AccountingModule
 	extends \shopack\base\common\base\BaseModule
 	implements BootstrapInterface
 {
-	public $controllerNamespace = 'iranhmusic\shopack\mha\backend\accounting\controllers';
-
 	public function init()
 	{
 		if (empty($this->id))
@@ -36,6 +34,7 @@ class AccountingModule
 		$thisID = $parentID . '/' . $this->id;
 
 		if ($app instanceof \yii\web\Application) {
+			$this->controllerNamespace = 'iranhmusic\shopack\mha\backend\accounting\controllers';
 
 			// $this->controllerMap['default']			= DefaultController::class;
 			// $this->controllerMap['unit']				= UnitController::class;
@@ -94,8 +93,8 @@ class AccountingModule
 
 			$app->urlManager->addRules($rules, false);
 
-		} elseif ($app instanceof \yii\console\Application) {
-			$this->controllerNamespace = 'iranhmusic\shopack\mha\backend\commands';
+		} else if ($app instanceof \yii\console\Application) {
+			$this->controllerNamespace = 'iranhmusic\shopack\mha\backend\accounting\commands';
 		}
 	}
 

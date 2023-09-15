@@ -5,150 +5,54 @@
 
 namespace iranhmusic\shopack\mha\backend\controllers;
 
-use Yii;
-use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
-use yii\web\UnprocessableEntityHttpException;
-use yii\data\ActiveDataProvider;
-use shopack\base\common\helpers\ExceptionHelper;
 use shopack\base\backend\controller\BaseRestController;
-use shopack\base\backend\helpers\PrivHelper;
-use iranhmusic\shopack\mha\backend\models\MasterInsurerTypeModel;
 
 class MasterInsurerTypeController extends BaseRestController
 {
-	// public function behaviors()
-	// {
-	// 	$behaviors = parent::behaviors();
-	// 	return $behaviors;
-	// }
-
-	public function actionOptions()
+	public function behaviors()
 	{
-		return 'options';
+		$behaviors = parent::behaviors();
+
+		$behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
+			'index',
+			'view',
+		];
+
+		return $behaviors;
 	}
 
-	protected function findModel($id)
+	public $modelClass = \iranhmusic\shopack\mha\backend\models\MasterInsurerTypeModel::class;
+
+	public function permissions()
 	{
-		if (($model = MasterInsurerTypeModel::findOne($id)) !== null)
-			return $model;
-
-		throw new NotFoundHttpException('The requested item not exist.');
-	}
-
-	public function actionIndex()
-	{
-		$filter = [];
-		// PrivHelper::checkPriv('mha/master-insurer-type/crud', '0100');
-
-		$searchModel = new MasterInsurerTypeModel;
-		$query = $searchModel::find()
-			->select(MasterInsurerTypeModel::selectableColumns())
-			->joinWith('masterInsurer')
-			->with('createdByUser')
-			->with('updatedByUser')
-			->with('removedByUser')
-			->asArray()
-		;
-
-		$searchModel->fillQueryFromRequest($query);
-
-		if (empty($filter) == false)
-			$query->andWhere($filter);
-
-		return $this->queryAllToResponse($query);
-	}
-
-	public function actionView($id)
-	{
-		// PrivHelper::checkPriv('mha/master-insurer-type/crud', '0100');
-
-		$model = MasterInsurerTypeModel::find()
-			->select(MasterInsurerTypeModel::selectableColumns())
-			->joinWith('masterInsurer')
-			->with('createdByUser')
-			->with('updatedByUser')
-			->with('removedByUser')
-			->where(['minstypID' => $id])
-			->asArray()
-			->one()
-		;
-
-		if ($model !== null)
-			return $model;
-
-		throw new NotFoundHttpException('The requested item not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
-	}
-
-	public function actionCreate()
-	{
-		PrivHelper::checkPriv('mha/master-insurer-type/crud', '1000');
-
-		$model = new MasterInsurerTypeModel();
-		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
-			throw new NotFoundHttpException("parameters not provided");
-
-		try {
-			if ($model->save() == false)
-				throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
-		} catch(\Exception $exp) {
-			$msg = ExceptionHelper::CheckDuplicate($exp, $model);
-			throw new UnprocessableEntityHttpException($msg);
-		}
-
 		return [
-			// 'result' => [
-				// 'message' => 'created',
-				'minstypID' => $model->minstypID,
-				// 'minstypStatus' => $model->minstypStatus,
-				'minstypCreatedAt' => $model->minstypCreatedAt,
-				'minstypCreatedBy' => $model->minstypCreatedBy,
-			// ],
+			// 'index'  => ['mha/master-insurer-type/crud', '0100'],
+			// 'view'   => ['mha/master-insurer-type/crud', '0100'],
+			'create' => ['mha/master-insurer-type/crud', '1000'],
+			'update' => ['mha/master-insurer-type/crud', '0010'],
+			'delete' => ['mha/master-insurer-type/crud', '0001'],
 		];
 	}
 
-	public function actionUpdate($id)
+	public function queryAugmentaters()
 	{
-		PrivHelper::checkPriv('mha/master-insurer-type/crud', '0010');
-
-		$model = $this->findModel($id);
-
-		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
-			throw new NotFoundHttpException("parameters not provided");
-
-		if ($model->save() == false)
-			throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
-
 		return [
-			// 'result' => [
-				// 'message' => 'updated',
-				'minstypID' => $model->minstypID,
-				'minstypStatus' => $model->minstypStatus,
-				'minstypUpdatedAt' => $model->minstypUpdatedAt,
-				'minstypUpdatedBy' => $model->minstypUpdatedBy,
-			// ],
-		];
-	}
-
-	public function actionDelete($id)
-	{
-		PrivHelper::checkPriv('mha/master-insurer-type/crud', '0001');
-
-		$model = $this->findModel($id);
-
-		if ($model->delete() === false)
-			throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
-
-		return [
-			// 'result' => [
-				// 'message' => 'deleted',
-				'minstypID' => $model->minstypID,
-				'minstypStatus' => $model->minstypStatus,
-				'minstypRemovedAt' => $model->minstypRemovedAt,
-				'minstypRemovedBy' => $model->minstypRemovedBy,
-			// ],
+			'index' => function($query) {
+				$query
+					->joinWith('masterInsurer')
+					->with('createdByUser')
+					->with('updatedByUser')
+					->with('removedByUser')
+				;
+			},
+			'view' => function($query) {
+				$query
+					->joinWith('masterInsurer')
+					->with('createdByUser')
+					->with('updatedByUser')
+					->with('removedByUser')
+				;
+			},
 		];
 	}
 

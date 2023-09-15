@@ -39,7 +39,7 @@ class SupplementaryInsurerController extends BaseRestController
 	public function actionIndex()
 	{
 		$filter = [];
-		// PrivHelper::checkPriv('mha/supplementary-insurer/crud', '0100');
+		// PrivHelper::checkPriv(['mha/supplementary-insurer/crud' => '0100']);
 
 		$searchModel = new SupplementaryInsurerModel;
 		$query = $searchModel::find()
@@ -60,7 +60,7 @@ class SupplementaryInsurerController extends BaseRestController
 
 	public function actionView($id)
 	{
-		// PrivHelper::checkPriv('mha/supplementary-insurer/crud', '0100');
+		// PrivHelper::checkPriv(['mha/supplementary-insurer/crud' => '0100']);
 
 		$model = SupplementaryInsurerModel::find()
 			->select(SupplementaryInsurerModel::selectableColumns())
@@ -82,7 +82,7 @@ class SupplementaryInsurerController extends BaseRestController
 
 	public function actionCreate()
 	{
-		PrivHelper::checkPriv('mha/supplementary-insurer/crud', '1000');
+		PrivHelper::checkPriv(['mha/supplementary-insurer/crud' => '1000']);
 
 		$model = new SupplementaryInsurerModel();
 		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
@@ -109,7 +109,7 @@ class SupplementaryInsurerController extends BaseRestController
 
 	public function actionUpdate($id)
 	{
-		PrivHelper::checkPriv('mha/supplementary-insurer/crud', '0010');
+		PrivHelper::checkPriv(['mha/supplementary-insurer/crud' => '0010']);
 
 		$model = $this->findModel($id);
 
@@ -132,7 +132,7 @@ class SupplementaryInsurerController extends BaseRestController
 
 	public function actionDelete($id)
 	{
-		PrivHelper::checkPriv('mha/supplementary-insurer/crud', '0001');
+		PrivHelper::checkPriv(['mha/supplementary-insurer/crud' => '0001']);
 
 		$model = $this->findModel($id);
 

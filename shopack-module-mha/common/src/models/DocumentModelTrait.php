@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 
 /*
@@ -24,6 +25,8 @@ use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 */
 trait DocumentModelTrait
 {
+  public static $primaryKey = ['docID'];
+
 	public function primaryKeyValue() {
 		return $this->docID;
 	}
@@ -37,7 +40,7 @@ trait DocumentModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'docUUID' => ModelColumnHelper::UUID(),
 			'docName' => [
@@ -46,7 +49,7 @@ trait DocumentModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => 'like',
+        enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'docType' => [
 				enuColumnInfo::type       => ['string', 'max' => 1],
@@ -54,7 +57,7 @@ trait DocumentModelTrait
 				enuColumnInfo::default    => null, //enuDocumentType
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'docStatus' => [
 				enuColumnInfo::isStatus   => true,
@@ -63,7 +66,7 @@ trait DocumentModelTrait
 				enuColumnInfo::default    => enuDocumentStatus::Active,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'docCreatedAt' => ModelColumnHelper::CreatedAt(),

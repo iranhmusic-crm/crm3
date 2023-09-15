@@ -14,7 +14,6 @@ class KanoonModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\KanoonModelTrait;
 
 	public static $resourceName = 'mha/kanoon';
-  public static $primaryKey = ['knnID'];
 
 	public function attributeLabels()
 	{

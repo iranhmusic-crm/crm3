@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 use iranhmusic\shopack\mha\common\enums\enuMembershipStatus;
 
 /*
@@ -25,6 +26,8 @@ use iranhmusic\shopack\mha\common\enums\enuMembershipStatus;
 */
 trait MembershipModelTrait
 {
+	public static $primaryKey = ['mshpID'];
+
 	public function primaryKeyValue() {
 		return $this->mshpID;
 	}
@@ -38,7 +41,7 @@ trait MembershipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'mshpUUID' => ModelColumnHelper::UUID(),
 			'mshpTitle' => [
@@ -47,7 +50,7 @@ trait MembershipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => 'like',
+        enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'mshpStartFrom' => [
 				enuColumnInfo::type       => 'safe',
@@ -55,7 +58,7 @@ trait MembershipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mshpYearlyPrice' => [
 				enuColumnInfo::type       => 'integer',
@@ -63,7 +66,7 @@ trait MembershipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mshpStatus' => [
 				enuColumnInfo::isStatus   => true,
@@ -72,7 +75,7 @@ trait MembershipModelTrait
 				enuColumnInfo::default    => enuMembershipStatus::Active,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'mshpCreatedAt' => ModelColumnHelper::CreatedAt(),

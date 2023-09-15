@@ -16,7 +16,6 @@ class SpecialtyModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\SpecialtyModelTrait;
 
 	public static $resourceName = 'mha/specialty';
-  public static $primaryKey = ['spcID'];
 
 	public $parentid = null;
 	public function getParentKey() {

@@ -18,7 +18,6 @@ class ReportModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\ReportModelTrait;
 
 	public static $resourceName = 'mha/report';
-  public static $primaryKey = ['rptID'];
 
 	public function attributeLabels()
 	{

@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\enums\enuInsurerDocStatus;
 
@@ -26,6 +27,8 @@ use iranhmusic\shopack\mha\common\enums\enuInsurerDocStatus;
 */
 trait MemberSupplementaryInsDocModelTrait
 {
+	public static $primaryKey = ['mbrsinsdocID'];
+
 	public function primaryKeyValue() {
 		return $this->mbrsinsdocID;
 	}
@@ -39,7 +42,7 @@ trait MemberSupplementaryInsDocModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'mbrsinsdocUUID' => ModelColumnHelper::UUID(),
 			'mbrsinsdocMemberID' => [
@@ -48,7 +51,7 @@ trait MemberSupplementaryInsDocModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrsinsdocSupplementaryInsurerID' => [
 				enuColumnInfo::type       => 'integer',
@@ -56,7 +59,7 @@ trait MemberSupplementaryInsDocModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrsinsdocDocNumber' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
@@ -88,7 +91,7 @@ trait MemberSupplementaryInsDocModelTrait
 				enuColumnInfo::default    => enuInsurerDocStatus::WaitForSurvey,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'mbrsinsdocCreatedAt' => ModelColumnHelper::CreatedAt(),

@@ -10,7 +10,7 @@ use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 
 class UnitModel extends MhaActiveRecord
 {
-	use \shopack\base\common\accounting\models\BaseUnitModelTrait;
+	use \iranhmusic\shopack\mha\common\accounting\models\UnitModelTrait;
 
 	public static function tableName()
 	{

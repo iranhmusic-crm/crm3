@@ -5,23 +5,15 @@
 
 namespace iranhmusic\shopack\mha\backend\controllers;
 
-use Yii;
-use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
-use yii\web\UnprocessableEntityHttpException;
-use yii\data\ActiveDataProvider;
-use shopack\base\common\helpers\ExceptionHelper;
-use shopack\base\backend\controller\BaseRestController;
-use shopack\base\backend\helpers\PrivHelper;
-use iranhmusic\shopack\mha\backend\models\BasicDefinitionModel;
+use shopack\base\backend\controller\BaseCrudController;
 
-class BasicDefinitionController extends BaseRestController
+class BasicDefinitionController extends BaseCrudController
 {
 	public function behaviors()
 	{
 		$behaviors = parent::behaviors();
 
-		$behaviors[BaseRestController::BEHAVIOR_AUTHENTICATOR]['except'] = [
+		$behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
 			'index',
 			'view',
 		];
@@ -29,130 +21,36 @@ class BasicDefinitionController extends BaseRestController
 		return $behaviors;
 	}
 
-	public function actionOptions()
+	public $modelClass = \iranhmusic\shopack\mha\backend\models\BasicDefinitionModel::class;
+
+	public function permissions()
 	{
-		return 'options';
-	}
-
-	protected function findModel($id)
-	{
-		if (($model = BasicDefinitionModel::findOne($id)) !== null)
-			return $model;
-
-		throw new NotFoundHttpException('The requested item not exist.');
-	}
-
-	public function actionIndex()
-	{
-		$filter = [];
-		// PrivHelper::checkPriv('mha/basic-definition/crud', '0100');
-
-		$searchModel = new BasicDefinitionModel;
-		$query = $searchModel::find()
-			->select(BasicDefinitionModel::selectableColumns())
-			->with('createdByUser')
-			->with('updatedByUser')
-			->with('removedByUser')
-			->asArray()
-		;
-
-		$searchModel->fillQueryFromRequest($query);
-
-		if (empty($filter) == false)
-			$query->andWhere($filter);
-
-		return $this->queryAllToResponse($query);
-	}
-
-	public function actionView($id)
-	{
-		// PrivHelper::checkPriv('mha/basic-definition/crud', '0100');
-
-		$model = BasicDefinitionModel::find()
-			->select(BasicDefinitionModel::selectableColumns())
-			->with('createdByUser')
-			->with('updatedByUser')
-			->with('removedByUser')
-			->where(['bdfID' => $id])
-			->asArray()
-			->one()
-		;
-
-		if ($model !== null)
-			return $model;
-
-		throw new NotFoundHttpException('The requested item not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
-	}
-
-	public function actionCreate()
-	{
-		PrivHelper::checkPriv('mha/basic-definition/crud', '1000');
-
-		$model = new BasicDefinitionModel();
-		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
-			throw new NotFoundHttpException("parameters not provided");
-
-		try {
-			if ($model->save() == false)
-				throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
-		} catch(\Exception $exp) {
-			$msg = ExceptionHelper::CheckDuplicate($exp, $model);
-			throw new UnprocessableEntityHttpException($msg);
-		}
-
 		return [
-			// 'result' => [
-				// 'message' => 'created',
-				'bdfID' => $model->bdfID,
-				'bdfStatus' => $model->bdfStatus,
-				'bdfCreatedAt' => $model->bdfCreatedAt,
-				'bdfCreatedBy' => $model->bdfCreatedBy,
-			// ],
+			// 'index'  => ['mha/basic-definition/crud', '0100'],
+			// 'view'   => ['mha/basic-definition/crud', '0100'],
+			'create' => ['mha/basic-definition/crud', '1000'],
+			'update' => ['mha/basic-definition/crud', '0010'],
+			'delete' => ['mha/basic-definition/crud', '0001'],
 		];
 	}
 
-	public function actionUpdate($id)
+	public function queryAugmentaters()
 	{
-		PrivHelper::checkPriv('mha/basic-definition/crud', '0010');
-
-		$model = $this->findModel($id);
-
-		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
-			throw new NotFoundHttpException("parameters not provided");
-
-		if ($model->save() == false)
-			throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
-
 		return [
-			// 'result' => [
-				// 'message' => 'updated',
-				'bdfID' => $model->bdfID,
-				'bdfStatus' => $model->bdfStatus,
-				'bdfUpdatedAt' => $model->bdfUpdatedAt,
-				'bdfUpdatedBy' => $model->bdfUpdatedBy,
-			// ],
-		];
-	}
-
-	public function actionDelete($id)
-	{
-		PrivHelper::checkPriv('mha/basic-definition/crud', '0001');
-
-		$model = $this->findModel($id);
-
-		if ($model->delete() === false)
-			throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
-
-		return [
-			// 'result' => [
-				// 'message' => 'deleted',
-				'bdfID' => $model->bdfID,
-				'bdfStatus' => $model->bdfStatus,
-				'bdfRemovedAt' => $model->bdfRemovedAt,
-				'bdfRemovedBy' => $model->bdfRemovedBy,
-			// ],
+			'index' => function($query) {
+				$query
+					->with('createdByUser')
+					->with('updatedByUser')
+					->with('removedByUser')
+				;
+			},
+			'view' => function($query) {
+				$query
+					->with('createdByUser')
+					->with('updatedByUser')
+					->with('removedByUser')
+				;
+			},
 		];
 	}
 

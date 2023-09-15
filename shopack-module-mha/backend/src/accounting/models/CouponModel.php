@@ -10,7 +10,7 @@ use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 
 class CouponModel extends MhaActiveRecord
 {
-	use \shopack\base\common\accounting\models\BaseCouponModelTrait;
+	use \iranhmusic\shopack\mha\common\accounting\models\CouponModelTrait;
 
 	public static function tableName()
 	{

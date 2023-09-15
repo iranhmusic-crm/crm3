@@ -15,7 +15,6 @@ class DocumentModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\DocumentModelTrait;
 
 	public static $resourceName = 'mha/document';
-  public static $primaryKey = ['docID'];
 
 	public function attributeLabels()
 	{

@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 // use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\enums\enuKanoonStatus;
 
@@ -34,6 +35,8 @@ use iranhmusic\shopack\mha\common\enums\enuKanoonStatus;
 */
 trait KanoonModelTrait
 {
+	public static $primaryKey = ['knnID'];
+
 	public function primaryKeyValue() {
 		return $this->knnID;
 	}
@@ -47,7 +50,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'knnUUID' => ModelColumnHelper::UUID(),
 			'knnName' => [
@@ -56,7 +59,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => 'like',
+        enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'knnNameEn' => [
 				enuColumnInfo::type       => ['string', 'max' => 128],
@@ -64,7 +67,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => 'like',
+        enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'knnDescFieldType' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
@@ -72,7 +75,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => true,
+				enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'knnDescFieldLabel' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
@@ -80,7 +83,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => true,
+				enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'knnPresidentMemberID' => [
 				enuColumnInfo::type       => 'integer',
@@ -88,7 +91,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'knnVicePresidentMemberID' => [
 				enuColumnInfo::type       => 'integer',
@@ -96,7 +99,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'knnOzv1MemberID' => [
 				enuColumnInfo::type       => 'integer',
@@ -104,7 +107,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'knnOzv2MemberID' => [
 				enuColumnInfo::type       => 'integer',
@@ -112,7 +115,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'knnOzv3MemberID' => [
 				enuColumnInfo::type       => 'integer',
@@ -120,7 +123,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'knnWardenMemberID' => [
 				enuColumnInfo::type       => 'integer',
@@ -128,7 +131,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'knnTalkerMemberID' => [
 				enuColumnInfo::type       => 'integer',
@@ -136,7 +139,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'knnStatus' => [
 				enuColumnInfo::isStatus   => true,
@@ -145,7 +148,7 @@ trait KanoonModelTrait
 				enuColumnInfo::default    => enuKanoonStatus::Active,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'knnCreatedAt' => ModelColumnHelper::CreatedAt(),

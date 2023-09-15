@@ -40,7 +40,7 @@ class SpecialtyController extends BaseRestController
 		$parentid = null,
 		$q = null
 	) {
-		// PrivHelper::checkPriv('mha/specialty/crud', '0100');
+		// PrivHelper::checkPriv(['mha/specialty/crud' => '0100']);
 
 		$tableName = SpecialtyModel::tableName();
 		$nodeAlias = $tableName; //'node';
@@ -110,7 +110,7 @@ class SpecialtyController extends BaseRestController
 
 	public function actionView($id)
 	{
-		// PrivHelper::checkPriv('mha/specialty/crud', '0100');
+		// PrivHelper::checkPriv(['mha/specialty/crud' => '0100']);
 
 		$tableName = SpecialtyModel::tableName();
 		$nodeAlias = $tableName; //'node';
@@ -135,7 +135,7 @@ class SpecialtyController extends BaseRestController
 
 	public function actionCreate($parentid = null)
 	{
-		PrivHelper::checkPriv('mha/specialty/crud', '1000');
+		PrivHelper::checkPriv(['mha/specialty/crud' => '1000']);
 
 		$model = new SpecialtyModel();
 		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
@@ -177,7 +177,7 @@ class SpecialtyController extends BaseRestController
 
 	public function actionUpdate($id)
 	{
-		PrivHelper::checkPriv('mha/specialty/crud', '0010');
+		PrivHelper::checkPriv(['mha/specialty/crud' => '0010']);
 
 		$model = $this->findModel($id);
 
@@ -203,7 +203,7 @@ class SpecialtyController extends BaseRestController
 
 	public function actionDelete($id)
 	{
-		PrivHelper::checkPriv('mha/specialty/crud', '0001');
+		PrivHelper::checkPriv(['mha/specialty/crud' => '0001']);
 
 		$model = $this->findModel($id);
 

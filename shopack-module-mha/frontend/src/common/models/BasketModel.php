@@ -15,7 +15,6 @@ class BasketModel extends RestClientActiveRecord
 	use \shopack\base\common\models\BasketModelTrait;
 
 	public static $resourceName = 'mha/basket';
-  public static $primaryKey = null;
 
 	public function isSoftDeleted()
   {

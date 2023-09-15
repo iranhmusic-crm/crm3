@@ -10,7 +10,7 @@ use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 
 class SaleableModel extends MhaActiveRecord
 {
-	use \shopack\base\common\accounting\models\BaseSaleableModelTrait;
+	use \iranhmusic\shopack\mha\common\accounting\models\SaleableModelTrait;
 
 	public static function tableName()
 	{

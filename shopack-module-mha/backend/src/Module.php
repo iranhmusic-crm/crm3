@@ -16,6 +16,7 @@ use iranhmusic\shopack\mha\backend\accounting\controllers\AccountingCouponContro
 use iranhmusic\shopack\mha\backend\accounting\controllers\AccountingProductController;
 use iranhmusic\shopack\mha\backend\accounting\controllers\AccountingSaleableController;
 use iranhmusic\shopack\mha\backend\accounting\controllers\AccountingUserAssetController;
+use iranhmusic\shopack\mha\backend\accounting\AccountingModule;
 
 class Module
 	extends \shopack\base\common\base\BaseModule

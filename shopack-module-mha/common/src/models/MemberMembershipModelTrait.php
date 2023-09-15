@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
 
 /*
@@ -27,6 +28,8 @@ use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
 */
 trait MemberMembershipModelTrait
 {
+	public static $primaryKey = ['mbrshpID'];
+
 	public function primaryKeyValue() {
 		return $this->mbrshpID;
 	}
@@ -40,7 +43,7 @@ trait MemberMembershipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'mbrshpUUID' => ModelColumnHelper::UUID(),
 			'mbrshpMemberID' => [
@@ -49,7 +52,7 @@ trait MemberMembershipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrshpMembershipID' => [
 				enuColumnInfo::type       => 'integer',
@@ -57,7 +60,7 @@ trait MemberMembershipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrshpVoucherID' => [
 				enuColumnInfo::type       => 'integer',
@@ -65,7 +68,7 @@ trait MemberMembershipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false, //true?
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrshpStartDate' => [
 				enuColumnInfo::type       => 'safe',
@@ -73,7 +76,7 @@ trait MemberMembershipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrshpEndDate' => [
 				enuColumnInfo::type       => 'safe',
@@ -81,7 +84,7 @@ trait MemberMembershipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrshpStatus' => [
 				enuColumnInfo::isStatus   => true,
@@ -90,7 +93,7 @@ trait MemberMembershipModelTrait
 				enuColumnInfo::default    => enuMemberMembershipStatus::WaitForPay,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => true,
+				enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'mbrshpCreatedAt' => ModelColumnHelper::CreatedAt(),

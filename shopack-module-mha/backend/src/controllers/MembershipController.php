@@ -41,7 +41,7 @@ class MembershipController extends BaseRestController implements ISaleableContro
 	public function actionIndex()
 	{
 		$filter = [];
-		// PrivHelper::checkPriv('mha/membership/crud', '0100');
+		// PrivHelper::checkPriv(['mha/membership/crud' => '0100']);
 
 		$searchModel = new MembershipModel;
 		$query = $searchModel::find()
@@ -62,7 +62,7 @@ class MembershipController extends BaseRestController implements ISaleableContro
 
 	public function actionView($id)
 	{
-		// PrivHelper::checkPriv('mha/membership/crud', '0100');
+		// PrivHelper::checkPriv(['mha/membership/crud' => '0100']);
 
 		$model = MembershipModel::find()
 			->select(MembershipModel::selectableColumns())
@@ -84,7 +84,7 @@ class MembershipController extends BaseRestController implements ISaleableContro
 
 	public function actionCreate()
 	{
-		PrivHelper::checkPriv('mha/membership/crud', '1000');
+		PrivHelper::checkPriv(['mha/membership/crud' => '1000']);
 
 		$model = new MembershipModel();
 		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
@@ -111,7 +111,7 @@ class MembershipController extends BaseRestController implements ISaleableContro
 
 	public function actionUpdate($id)
 	{
-		PrivHelper::checkPriv('mha/membership/crud', '0010');
+		PrivHelper::checkPriv(['mha/membership/crud' => '0010']);
 
 		$model = $this->findModel($id);
 
@@ -134,7 +134,7 @@ class MembershipController extends BaseRestController implements ISaleableContro
 
 	public function actionDelete($id)
 	{
-		PrivHelper::checkPriv('mha/membership/crud', '0001');
+		PrivHelper::checkPriv(['mha/membership/crud' => '0001']);
 
 		$model = $this->findModel($id);
 

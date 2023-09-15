@@ -15,7 +15,6 @@ class MemberMasterInsuranceModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberMasterInsuranceModelTrait;
 
 	public static $resourceName = 'mha/member-master-insurance';
-  public static $primaryKey = 'mbrminshstID';
 
 	public function attributeLabels()
 	{

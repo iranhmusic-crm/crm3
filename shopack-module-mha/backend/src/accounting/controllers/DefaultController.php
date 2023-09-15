@@ -9,5 +9,4 @@ use shopack\base\backend\accounting\controllers\BaseAccountingController;
 
 class DefaultController extends BaseAccountingController
 {
-
 }

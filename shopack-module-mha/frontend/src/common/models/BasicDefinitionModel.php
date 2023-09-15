@@ -15,7 +15,6 @@ class BasicDefinitionModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\BasicDefinitionModelTrait;
 
 	public static $resourceName = 'mha/basic-definition';
-  public static $primaryKey = ['bdfID'];
 
 	public function attributeLabels()
 	{

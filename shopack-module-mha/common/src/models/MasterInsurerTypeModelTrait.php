@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 // use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\enums\enuInsurerStatus;
 
@@ -25,6 +26,8 @@ use iranhmusic\shopack\mha\common\enums\enuInsurerStatus;
 */
 trait MasterInsurerTypeModelTrait
 {
+	public static $primaryKey = ['minstypID'];
+
 	public function primaryKeyValue() {
 		return $this->minstypID;
 	}
@@ -38,7 +41,7 @@ trait MasterInsurerTypeModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'minstypUUID' => ModelColumnHelper::UUID(),
 			'minstypMasterInsurerID' => [
@@ -47,7 +50,7 @@ trait MasterInsurerTypeModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'minstypName' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
@@ -55,7 +58,7 @@ trait MasterInsurerTypeModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => 'like',
+        enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'minstypStatus' => [
 				enuColumnInfo::isStatus   => true,
@@ -64,7 +67,7 @@ trait MasterInsurerTypeModelTrait
 				enuColumnInfo::default    => enuInsurerStatus::Active,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'minstypCreatedAt' => ModelColumnHelper::CreatedAt(),

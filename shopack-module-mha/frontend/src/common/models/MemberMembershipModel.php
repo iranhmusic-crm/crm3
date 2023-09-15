@@ -17,7 +17,6 @@ class MemberMembershipModel extends RestClientActiveRecord implements IAssetEnti
 	use \iranhmusic\shopack\mha\common\models\MemberMembershipModelTrait;
 
 	public static $resourceName = 'mha/member-membership';
-	public static $primaryKey = 'mbrshpID';
 
 	public function attributeLabels()
 	{

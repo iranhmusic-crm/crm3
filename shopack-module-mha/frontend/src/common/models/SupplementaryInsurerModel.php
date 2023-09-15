@@ -14,7 +14,6 @@ class SupplementaryInsurerModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\SupplementaryInsurerModelTrait;
 
 	public static $resourceName = 'mha/supplementary-insurer';
-  public static $primaryKey = ['sinsID'];
 
 	public function attributeLabels()
 	{

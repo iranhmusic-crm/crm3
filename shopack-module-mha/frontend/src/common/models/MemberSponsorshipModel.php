@@ -15,7 +15,6 @@ class MemberSponsorshipModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberSponsorshipModelTrait;
 
 	public static $resourceName = 'mha/member-sponsorship';
-  public static $primaryKey = 'mbrspsID';
 
 	public function attributeLabels()
 	{

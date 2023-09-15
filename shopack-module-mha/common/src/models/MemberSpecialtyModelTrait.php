@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 use shopack\base\common\validators\JsonValidator;
 
 /*
@@ -24,6 +25,8 @@ use shopack\base\common\validators\JsonValidator;
 */
 trait MemberSpecialtyModelTrait
 {
+  public static $primaryKey = 'mbrspcID'; //['mbrspcMemberID', 'mbrspcSpecialtyID'];
+
 	public function primaryKeyValue() {
 		return $this->mbrspcID;
 	}
@@ -37,7 +40,7 @@ trait MemberSpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'mbrspcUUID' => ModelColumnHelper::UUID(),
 			'mbrspcMemberID' => [
@@ -46,7 +49,7 @@ trait MemberSpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrspcSpecialtyID' => [
 				enuColumnInfo::type       => 'integer',
@@ -54,7 +57,7 @@ trait MemberSpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrspcDesc' => [
 				enuColumnInfo::type       => JsonValidator::class,

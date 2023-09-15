@@ -10,7 +10,7 @@ use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 
 class UserAssetModel extends MhaActiveRecord
 {
-	use \shopack\base\common\accounting\models\BaseUserAssetModelTrait;
+	use \iranhmusic\shopack\mha\common\accounting\models\UserAssetModelTrait;
 
 	public static function tableName()
 	{

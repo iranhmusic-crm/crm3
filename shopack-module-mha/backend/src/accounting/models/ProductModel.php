@@ -10,7 +10,7 @@ use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 
 class ProductModel extends MhaActiveRecord
 {
-	use \shopack\base\common\accounting\models\BaseProductModelTrait;
+	use \iranhmusic\shopack\mha\common\accounting\models\ProductModelTrait;
 
 	public static function tableName()
 	{

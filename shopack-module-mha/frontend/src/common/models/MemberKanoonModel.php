@@ -18,7 +18,6 @@ class MemberKanoonModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberKanoonModelTrait;
 
 	public static $resourceName = 'mha/member-kanoon';
-  public static $primaryKey = 'mbrknnID';
 
 	public function attributeLabels()
 	{

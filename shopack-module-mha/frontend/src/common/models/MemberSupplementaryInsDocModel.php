@@ -16,7 +16,6 @@ class MemberSupplementaryInsDocModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberSupplementaryInsDocModelTrait;
 
 	public static $resourceName = 'mha/member-supplementary-ins-doc';
-  public static $primaryKey = 'mbrsinsdocID';
 
 	public function attributeLabels()
 	{

@@ -16,7 +16,6 @@ class MembershipModel extends RestClientActiveRecord implements ISaleableEntity
 	use \iranhmusic\shopack\mha\common\models\MembershipModelTrait;
 
 	public static $resourceName = 'mha/membership';
-  public static $primaryKey = ['mshpID'];
 
 	public function attributeLabels()
 	{

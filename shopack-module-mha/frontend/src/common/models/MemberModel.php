@@ -17,7 +17,6 @@ class MemberModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberModelTrait;
 
 	public static $resourceName = 'mha/member';
-  public static $primaryKey = ['mbrUserID'];
 
 	public $mbrCreateNewUser = false;
 

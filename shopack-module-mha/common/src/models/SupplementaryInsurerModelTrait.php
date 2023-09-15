@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 // use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\enums\enuInsurerStatus;
 
@@ -24,6 +25,8 @@ use iranhmusic\shopack\mha\common\enums\enuInsurerStatus;
 */
 trait SupplementaryInsurerModelTrait
 {
+	public static $primaryKey = ['sinsID'];
+
 	public function primaryKeyValue() {
 		return $this->sinsID;
 	}
@@ -37,7 +40,7 @@ trait SupplementaryInsurerModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'sinsUUID' => ModelColumnHelper::UUID(),
 			'sinsName' => [
@@ -46,7 +49,7 @@ trait SupplementaryInsurerModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => 'like',
+        enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'sinsStatus' => [
 				enuColumnInfo::isStatus   => true,
@@ -55,7 +58,7 @@ trait SupplementaryInsurerModelTrait
 				enuColumnInfo::default    => enuInsurerStatus::Active,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'sinsCreatedAt' => ModelColumnHelper::CreatedAt(),

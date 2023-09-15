@@ -14,7 +14,6 @@ class MasterInsurerTypeModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MasterInsurerTypeModelTrait;
 
 	public static $resourceName = 'mha/master-insurer-type';
-  public static $primaryKey = ['minstypID'];
 
 	public function attributeLabels()
 	{

@@ -14,7 +14,6 @@ class MemberDocumentModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberDocumentModelTrait;
 
 	public static $resourceName = 'mha/member-document';
-  public static $primaryKey = 'mbrdocID';
 
 	public function attributeLabels()
 	{

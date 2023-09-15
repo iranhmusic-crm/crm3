@@ -16,7 +16,6 @@ class MemberMasterInsDocModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberMasterInsDocModelTrait;
 
 	public static $resourceName = 'mha/member-master-ins-doc';
-  public static $primaryKey = 'mbrminsdocID';
 
 	public function attributeLabels()
 	{

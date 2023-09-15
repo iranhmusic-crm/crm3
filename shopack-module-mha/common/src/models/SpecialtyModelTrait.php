@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 // use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\enums\enuSpecialtyStatus;
 
@@ -34,6 +35,8 @@ use iranhmusic\shopack\mha\common\enums\enuSpecialtyStatus;
 */
 trait SpecialtyModelTrait
 {
+	public static $primaryKey = ['spcID'];
+
 	public function primaryKeyValue() {
 		return $this->spcID;
 	}
@@ -47,7 +50,7 @@ trait SpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false, //true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'spcUUID' => ModelColumnHelper::UUID(),
 			'spcRoot' => [
@@ -56,7 +59,7 @@ trait SpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'spcLeft' => [
 				enuColumnInfo::type       => 'integer',
@@ -64,7 +67,7 @@ trait SpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'spcRight' => [
 				enuColumnInfo::type       => 'integer',
@@ -72,7 +75,7 @@ trait SpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'spcLevel' => [
 				enuColumnInfo::type       => 'integer',
@@ -80,7 +83,7 @@ trait SpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'spcName' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
@@ -88,7 +91,7 @@ trait SpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'spcDesc' => [
 				enuColumnInfo::type       => 'string',
@@ -96,7 +99,7 @@ trait SpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false, //true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'spcDescFieldType' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
@@ -104,7 +107,7 @@ trait SpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => true,
+				enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'spcDescFieldLabel' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
@@ -112,7 +115,7 @@ trait SpecialtyModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => true,
+				enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'spcStatus' => [
 				enuColumnInfo::isStatus   => true,
@@ -121,7 +124,7 @@ trait SpecialtyModelTrait
 				enuColumnInfo::default    => enuSpecialtyStatus::Active,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'spcCreatedAt' => ModelColumnHelper::CreatedAt(),

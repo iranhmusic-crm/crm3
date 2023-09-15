@@ -13,7 +13,6 @@ class MemberSpecialtyModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberSpecialtyModelTrait;
 
 	public static $resourceName = 'mha/member-specialty';
-  public static $primaryKey = 'mbrspcID'; //['mbrspcMemberID', 'mbrspcSpecialtyID'];
 
 	public $form_specialties;
 
