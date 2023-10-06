@@ -5,22 +5,22 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\common\widgets\grid\GridView;
-use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
-use iranhmusic\shopack\mha\common\enums\enuInsurerStatus;
-use iranhmusic\shopack\mha\frontend\common\models\SupplementaryInsurerModel;
+use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\widgets\grid\GridView;
+use shopack\base\common\accounting\enums\enuProductStatus;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipProductModel;
 
-$this->title = Yii::t('mha', 'Supplementary Insurers');
+$this->title = Yii::t('mha', 'Membership Products');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="supplementary-insurer-index w-100">
+<div class="membership-product-index w-100">
   <div class='card'>
 		<div class='card-header'>
 			<div class="float-end">
-        <?= SupplementaryInsurerModel::canCreate() ? Html::createButton() : '' ?>
+        <?= MembershipProductModel::canCreate() ? Html::createButton() : '' ?>
 			</div>
       <div class='card-title'><?= Html::encode($this->title) ?></div>
 			<div class="clearfix"></div>
@@ -37,22 +37,38 @@ $this->params['breadcrumbs'][] = $this->title;
           [
             'class' => 'kartik\grid\SerialColumn',
           ],
-          'sinsID',
+          'prdID',
+          'prdCode',
           [
-            'attribute' => 'sinsName',
+            'attribute' => 'prdName',
             'format' => 'raw',
             'value' => function ($model, $key, $index, $widget) {
-              return Html::a($model->sinsName, ['view', 'id' => $model->sinsID]);
+              return Html::a($model->prdName, ['view', 'id' => $model->prdID]);
             },
           ],
+          // 'prdDesc',
+          // 'prdValidFromDate',
+          // 'prdValidToDate',
+          // 'prdValidFromHour',
+          // 'prdValidToHour',
+          // 'prdDurationMinutes',
+          // 'prdStartAtFirstUse',
+          // 'prdPrivs',
+          // 'prdVAT',
+          // 'prdUnitID',
+          // 'prdQtyIsDecimal',
+          // 'prdInStockQty',
+          // 'prdOrderedQty',
+          // 'prdReturnedQty',
+          // 'prdI18NData',
           [
             'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
-            'enumClass' => enuInsurerStatus::class,
-            'attribute' => 'sinsStatus',
+            'enumClass' => enuProductStatus::class,
+            'attribute' => 'prdStatus',
           ],
           [
             'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
-            'header' => SupplementaryInsurerModel::canCreate() ? Html::createButton() : Yii::t('app', 'Actions'),
+            'header' => MembershipProductModel::canCreate() ? Html::createButton() : Yii::t('app', 'Actions'),
             'template' => '{update} {delete}{undelete}',
             'visibleButtons' => [
               'update' => function ($model, $key, $index) {
@@ -73,11 +89,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => 'ایجاد / ویرایش',
             'value' => function($model) {
               return Html::formatRowDates(
-                $model->sinsCreatedAt,
+                $model->prdCreatedAt,
                 $model->createdByUser,
-                $model->sinsUpdatedAt,
+                $model->prdUpdatedAt,
                 $model->updatedByUser,
-                $model->sinsRemovedAt,
+                $model->prdRemovedAt,
                 $model->removedByUser,
               );
             },

@@ -92,8 +92,8 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
     ?>
   </div>
   <div class='col-4'>
-    <div class='card border-default'>
-      <div class='card-header bg-default'>
+    <div class='card'>
+      <div class='card-header'>
         <div class='card-title'><?= Yii::t('mha', 'Required Documents') ?></div>
       </div>
       <div class='card-body'>

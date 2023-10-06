@@ -139,6 +139,7 @@ $config = [
 		],
 		// 'db' => $db,
 		'urlManager' => [
+			'class' => \shopack\base\common\web\UrlManager::class,
 			'cache' => (YII_DEBUG ? false : 'cache'),
 			'enablePrettyUrl' => true,
 			'enableStrictParsing' => true,

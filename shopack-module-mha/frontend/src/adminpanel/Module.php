@@ -23,14 +23,12 @@ class Module
 
 		$this->setModule('accounting', [
 			'class' => AccountingModule::class,
+			'basePath' => $this->getBasePath() . DIRECTORY_SEPARATOR . 'accounting',
 		]);
 	}
 
 	public function bootstrap($app)
 	{
-		$accounting = $this->getModule('accounting');
-		$accounting->bootstrap($app);
-
 		if ($app instanceof \yii\web\Application) {
 			$this->controllerMap['basket'] = BasketController::class;
 
@@ -44,6 +42,9 @@ class Module
 		} elseif ($app instanceof \yii\console\Application) {
 			$this->controllerNamespace = 'iranhmusic\shopack\mha\frontend\adminpanel\commands';
 		}
+
+		$accounting = $this->getModule('accounting');
+		$accounting->bootstrap($app);
 	}
 
 }

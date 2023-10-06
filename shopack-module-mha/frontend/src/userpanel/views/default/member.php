@@ -37,8 +37,8 @@ $defects = $model->getDefects();
 			<div class='row'>
 				<div class='col-sm-9'>
 
-					<div class='card border-default'>
-						<div class='card-header bg-default'>
+					<div class='card'>
+						<div class='card-header'>
 							<div class="float-end">
 								<?= Html::updateButton('ویرایش اطلاعات پایه', ['/aaa/profile/update-user'], [
 									'data' => [
@@ -181,7 +181,7 @@ $defects = $model->getDefects();
 						if (empty($defects) == false) {
 					?>
 					<div class='card border-default mb-3'>
-						<div class='card-header bg-default'>
+						<div class='card-header'>
 							<div class="float-end">
 								<div class='badge bg-danger'><?= count($defects) ?></div>
 							</div>
@@ -214,8 +214,8 @@ $defects = $model->getDefects();
 						}
 					?>
 
-					<div class='card border-default'>
-						<div class='card-header bg-default'>
+					<div class='card'>
+						<div class='card-header'>
 							<div class="float-end">
 								<?= Html::updateButton(Yii::t('aaa', 'Update Image'), ['/aaa/profile/update-image'], [
 									// 'modal' => false,

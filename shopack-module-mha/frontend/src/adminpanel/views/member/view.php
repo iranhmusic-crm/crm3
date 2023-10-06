@@ -23,8 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="member-view w-100">
-  <div class='card border-default'>
-		<div class='card-header bg-default'>
+  <div class='card'>
+		<div class='card-header'>
 			<div class="float-end">
 				<?= MemberModel::canCreate() ? Html::createButton() : '' ?>
         <?php
@@ -199,7 +199,7 @@ $this->params['breadcrumbs'][] = $this->title;
               ?>
             </div>
             <div class='col-3'>
-              <div class='card border-default'>
+              <div class='card'>
                 <div class='card-body'>
                   <?php
                     $buttons = [];
@@ -269,7 +269,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (empty($defects) == false) {
               ?>
               <div class='card border-default mt-3'>
-                <div class='card-header bg-default'>
+                <div class='card-header'>
                   <div class="float-end">
                     <div class='badge bg-danger'><?= count($defects) ?></div>
                   </div>
@@ -299,7 +299,7 @@ $this->params['breadcrumbs'][] = $this->title;
               ?>
 
               <div class='card border-default mt-3'>
-                <div class='card-header bg-default'>
+                <div class='card-header'>
                   <div class="float-end">
                   </div>
                   <div class='card-title'><?= Yii::t('aaa', 'Image') ?></div>

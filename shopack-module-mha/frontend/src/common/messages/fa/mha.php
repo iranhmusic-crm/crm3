@@ -139,11 +139,27 @@ return [
 	'Description Field Type' => 'نوع فیلد توضیحات',
 	'Description Field Label' => 'عنوان فیلد توضیحات',
 
+	'Services Definition and Fee' => 'تعاریف و هزینه‌های خدمات',
+	'Card Issuance' => 'صدور کارت',
+	'Postage' => 'خدمات پستی',
+
 	'Memberships' => 'دوره‌های عضویت',
 	'Membership' => 'دوره‌ی عضویت',
 	'Membership Info' => 'مشخصات دوره‌ی عضویت',
 	'Create Membership' => 'ایجاد دوره‌ی عضویت',
 	'Update Membership' => 'ویرایش دوره‌ی عضویت',
+
+	'Membership Products' => 'دوره‌های عضویت',
+	'Membership Product' => 'دوره‌ی عضویت',
+	'Membership Product Info' => 'مشخصات دوره‌ی عضویت',
+	'Create Membership Product' => 'ایجاد دوره‌ی عضویت',
+	'Update Membership Product' => 'ویرایش دوره‌ی عضویت',
+
+	'Membership Saleables' => 'طرح‌های فروش دوره‌ عضویت',
+	'Membership Saleable' => 'طرح فروش دوره‌ی عضویت',
+	'Membership Saleable Info' => 'مشخصات طرح فروش دوره‌ی عضویت',
+	'Create Membership Saleable' => 'ایجاد طرح فروش دوره‌ی عضویت',
+	'Update Membership Saleable' => 'ویرایش طرح فروش دوره‌ی عضویت',
 
 	'Memberships Definitions' => 'تعاریف دوره‌های عضویت',
 	'Membership Definition' => 'تعریف دوره‌ی عضویت',

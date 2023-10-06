@@ -19,8 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div id='member-report-view' class='w-100'>
-	<div class='card border-default'>
-		<div class='card-header bg-default'>
+	<div class='card'>
+		<div class='card-header'>
 			<div class="float-end">
 				<?= Html::confirmButton(yii::t('mha', 'Run Report'), [
 					'run',

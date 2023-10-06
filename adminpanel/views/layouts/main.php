@@ -175,11 +175,29 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
             ['label' => Yii::t('mha', 'Members'), 'icon' => 'info-sign', 'url' => ['/mha/member']],
             ['label' => Yii::t('mha', 'Documents'), 'icon' => 'info-sign', 'url' => ['/mha/member-document']],
             [
-              'label' => Yii::t('mha', 'Memberships'),
+              'label' => Yii::t('mha', 'Members Memberships'),
+              'icon' => 'info-sign',
+              'url' => ['/mha/member-membership'],
+            ],
+            [
+              'label' => Yii::t('mha', 'Services Definition and Fee'),
               'icon' => 'info-sign',
               'items' => [
-                ['label' => Yii::t('mha', 'Memberships Definitions'), 'icon' => 'info-sign', 'url' => ['/mha/membership']],
-                ['label' => Yii::t('mha', 'Members Memberships'), 'icon' => 'info-sign', 'url' => ['/mha/member-membership']],
+                [
+                  'label' => Yii::t('mha', 'Memberships'),
+                  'icon' => 'info-sign',
+                  'url' => ['/mha/accounting/membership-saleable'],
+                ],
+                [
+                  'label' => Yii::t('mha', 'Card Issuance'),
+                  'icon' => 'info-sign',
+                  'url' => ['/mha/accounting/card-saleable'],
+                ],
+                [
+                  'label' => Yii::t('mha', 'Postage'),
+                  'icon' => 'info-sign',
+                  'url' => ['/mha/accounting/postage-saleable'],
+                ],
               ],
             ],
             [

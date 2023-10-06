@@ -32,15 +32,15 @@ class CouponModel extends RestClientActiveRecord
 	}
 
 	public function canUpdate() {
-		return ($this->cpnType != enuDocumentStatus::Removed);
+		return ($this->cpnStatus != enuDocumentStatus::Removed);
 	}
 
 	public function canDelete() {
-		return ($this->cpnType != enuDocumentStatus::Removed);
+		return ($this->cpnStatus != enuDocumentStatus::Removed);
 	}
 
 	public function canUndelete() {
-		return ($this->cpnType == enuDocumentStatus::Removed);
+		return ($this->cpnStatus == enuDocumentStatus::Removed);
 	}
 
 }

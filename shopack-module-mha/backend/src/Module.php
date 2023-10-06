@@ -49,9 +49,6 @@ class Module
 
 	public function bootstrap($app)
 	{
-		$accounting = $this->getModule('accounting');
-		$accounting->bootstrap($app);
-
 		if ($app instanceof \yii\web\Application) {
 			$rules = [];
 
@@ -255,6 +252,10 @@ class Module
 		} elseif ($app instanceof \yii\console\Application) {
 			$this->controllerNamespace = 'iranhmusic\shopack\mha\backend\commands';
 		}
+
+		$accounting = $this->getModule('accounting');
+		$accounting->bootstrap($app);
+
 	}
 
 }

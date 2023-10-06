@@ -87,6 +87,7 @@ $config = [
 			'class' => \shopack\base\common\components\I18N::class,
 		],
 		'urlManager' => [
+			'class' => \shopack\base\common\web\UrlManager::class,
 			'cache' => (YII_DEBUG ? false : 'cache'),
 			'enablePrettyUrl' => true,
 			'enableStrictParsing' => true,

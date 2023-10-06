@@ -45,15 +45,15 @@ class DocumentModel extends RestClientActiveRecord
 	}
 
 	public function canUpdate() {
-		return ($this->docType != enuDocumentStatus::Removed);
+		return ($this->docStatus != enuDocumentStatus::Removed);
 	}
 
 	public function canDelete() {
-		return ($this->docType != enuDocumentStatus::Removed);
+		return ($this->docStatus != enuDocumentStatus::Removed);
 	}
 
 	public function canUndelete() {
-		return ($this->docType == enuDocumentStatus::Removed);
+		return ($this->docStatus == enuDocumentStatus::Removed);
 	}
 
 }

@@ -11,11 +11,16 @@ use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use shopack\base\common\accounting\enums\enuProductStatus;
 use iranhmusic\shopack\mha\common\accounting\enums\enuProductType;
 
-class ProductModel extends RestClientActiveRecord
+class MembershipProductModel extends RestClientActiveRecord
 {
 	use \iranhmusic\shopack\mha\common\accounting\models\ProductModelTrait;
 
 	public static $resourceName = 'mha/accounting/product';
+
+	public function __construct()
+	{
+		$this->prdType = enuProductType::Membership;
+	}
 
 	public function attributeLabels()
 	{

@@ -3,18 +3,19 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-namespace iranhmusic\shopack\mha\backend\accounting\models;
+namespace iranhmusic\shopack\mha\frontend\common\accounting\models;
 
 use Yii;
-use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
+use shopack\base\common\helpers\HttpHelper;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 
-class UnitModel extends MhaActiveRecord
+class UnitModel extends RestClientActiveRecord
 {
 	use \iranhmusic\shopack\mha\common\accounting\models\UnitModelTrait;
 
-	public static function tableName()
+  public function isSoftDeleted()
 	{
-		return '{{%MHA_Accounting_Unit}}';
+		return false;
 	}
 
 }

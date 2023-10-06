@@ -3,18 +3,15 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-namespace iranhmusic\shopack\mha\backend\accounting\models;
+namespace iranhmusic\shopack\mha\frontend\common\accounting\models;
 
 use Yii;
-use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
+use shopack\base\common\helpers\HttpHelper;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 
-class SaleableModel extends MhaActiveRecord
+class SaleableModel extends RestClientActiveRecord
 {
 	use \iranhmusic\shopack\mha\common\accounting\models\SaleableModelTrait;
 
-	public static function tableName()
-	{
-		return '{{%MHA_Accounting_Saleable}}';
-	}
 
 }

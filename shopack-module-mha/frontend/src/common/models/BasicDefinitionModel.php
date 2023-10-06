@@ -45,15 +45,15 @@ class BasicDefinitionModel extends RestClientActiveRecord
 	}
 
 	public function canUpdate() {
-		return ($this->bdfType != enuBasicDefinitionStatus::Removed);
+		return ($this->bdfStatus != enuBasicDefinitionStatus::Removed);
 	}
 
 	public function canDelete() {
-		return ($this->bdfType != enuBasicDefinitionStatus::Removed);
+		return ($this->bdfStatus != enuBasicDefinitionStatus::Removed);
 	}
 
 	public function canUndelete() {
-		return ($this->bdfType == enuBasicDefinitionStatus::Removed);
+		return ($this->bdfStatus == enuBasicDefinitionStatus::Removed);
 	}
 
 }
