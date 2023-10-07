@@ -29,7 +29,7 @@ class MembershipSaleableModel extends RestClientActiveRecord
 			'slbAvailableFromDate'   => Yii::t('app', 'Available From'),
 			'slbAvailableToDate'     => Yii::t('app', 'Available To'),
 			'slbPrivs'               => Yii::t('app', 'Privs'),
-			'slbBasePrice'           => Yii::t('aaa', 'Base Price'),
+			'slbBasePrice'           => Yii::t('aaa', 'Price'),
 			'slbAdditives'           => Yii::t('aaa', 'Additives'),
 			'slbProductCount'        => Yii::t('aaa', 'Product Count'),
 			'slbMaxSaleCountPerUser' => Yii::t('aaa', 'Max Sale Count Per User'),
@@ -53,7 +53,7 @@ class MembershipSaleableModel extends RestClientActiveRecord
 
 	public function isSoftDeleted()
   {
-    return ($this->prdStatus == enuSaleableStatus::Removed);
+    return ($this->slbStatus == enuSaleableStatus::Removed);
   }
 
 	public static function canCreate() {
@@ -61,15 +61,15 @@ class MembershipSaleableModel extends RestClientActiveRecord
 	}
 
 	public function canUpdate() {
-		return ($this->prdStatus != enuSaleableStatus::Removed);
+		return ($this->slbStatus != enuSaleableStatus::Removed);
 	}
 
 	public function canDelete() {
-		return ($this->prdStatus != enuSaleableStatus::Removed);
+		return ($this->slbStatus != enuSaleableStatus::Removed);
 	}
 
 	public function canUndelete() {
-		return ($this->prdStatus == enuSaleableStatus::Removed);
+		return ($this->slbStatus == enuSaleableStatus::Removed);
 	}
 
 }

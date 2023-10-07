@@ -15,11 +15,6 @@ class MembershipProductController extends BaseCrudController
 	public $modelClass = MembershipProductModel::class;
 	public $searchModelClass = MembershipProductSearchModel::class;
 
-	// public function getSearchParams()
-  // {
-  //   return Yii::$app->request->queryParams;
-  // }
-
 	public function actionCreate_afterCreateModel(&$model)
   {
 		$model->prdUnitID = 1; //unit:Year

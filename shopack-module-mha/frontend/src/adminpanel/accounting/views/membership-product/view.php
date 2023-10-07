@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'value' => enuProductStatus::getLabel($model->prdStatus),
             ],
             'prdName',
-            'prdCode',
+            // 'prdCode',
             // 'prdDesc',
             // 'prdValidFromDate',
             // 'prdValidToDate',
@@ -112,14 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class='card-body'>
       <div class='card'>
         <div class='card-header'>
-          <div class="float-end">
-            <?= MembershipSaleableModel::canCreate() ? Html::createButton(null, [
-              'membership-saleable/create',
-              'slbProductID' => $model->prdID,
-            ]) : '' ?>
-          </div>
           <div class='card-title'><?= Yii::t('mha', 'Membership Saleables') ?></div>
-          <div class="clearfix"></div>
         </div>
         <div class='card-body'>
           <?php

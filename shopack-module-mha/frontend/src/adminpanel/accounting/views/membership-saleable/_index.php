@@ -10,10 +10,11 @@ use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
 use shopack\aaa\frontend\common\models\SaleableModel;
 use shopack\base\common\accounting\enums\enuSaleableStatus;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipSaleableModel;
 ?>
 
 <?php
-  $slbOwnerUserID = Yii::$app->request->queryParams['slbOwnerUserID'] ?? null;
+  // $slbProductID = Yii::$app->request->queryParams['slbProductID'] ?? null;
 ?>
 
 <?php
@@ -34,13 +35,13 @@ use shopack\base\common\accounting\enums\enuSaleableStatus;
       ],
       'slbID',
       // 'slbProductID',
-      'slbCode',
+      // 'slbCode',
       [
         'attribute' => 'slbName',
-        'format' => 'raw',
-        'value' => function ($model, $key, $index, $widget) {
-          return Html::a($model->slbName, ['view', 'id' => $model->slbID]);
-        },
+      //   'format' => 'raw',
+      //   'value' => function ($model, $key, $index, $widget) {
+      //     return Html::a($model->slbName, ['view', 'id' => $model->slbID]);
+      //   },
       ],
       // 'slbDesc',
       'slbAvailableFromDate:jalaliWithTime',
@@ -66,6 +67,25 @@ use shopack\base\common\accounting\enums\enuSaleableStatus;
         'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
         'enumClass' => enuSaleableStatus::class,
         'attribute' => 'slbStatus',
+      ],
+      [
+        'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
+        'header' => MembershipSaleableModel::canCreate() ? Html::createButton(null, [
+          // 'membership-saleable/create',
+          'slbProductID' => $slbProductID,
+        ]) : Yii::t('app', 'Actions'),
+        'template' => '{update} {delete}{undelete}',
+        'visibleButtons' => [
+          'update' => function ($model, $key, $index) {
+            return $model->canUpdate();
+          },
+          'delete' => function ($model, $key, $index) {
+            return $model->canDelete();
+          },
+          'undelete' => function ($model, $key, $index) {
+            return $model->canUndelete();
+          },
+        ],
       ],
       [
         'attribute' => 'rowDate',

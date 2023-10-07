@@ -5,6 +5,7 @@
 
 use yii\web\JsExpression;
 use shopack\base\common\helpers\Url;
+use shopack\base\frontend\common\widgets\datetime\DatePicker;
 use shopack\base\frontend\common\widgets\Select2;
 use shopack\base\frontend\common\widgets\DepDrop;
 use shopack\base\frontend\common\helpers\Html;
@@ -20,6 +21,9 @@ use shopack\base\common\accounting\enums\enuSaleableStatus;
 	<?php
 		$form = ActiveForm::begin([
 			'model' => $model,
+			'formConfig' => [
+				'labelSpan' => 4,
+			],
 		]);
 
 		$builder = $form->getBuilder();
@@ -39,12 +43,35 @@ use shopack\base\common\accounting\enums\enuSaleableStatus;
 				],
 			],
 			['slbName'],
-			['slbCode'],
+			// ['slbCode'],
 			// ['slbDesc'],
-			// ['slbAvailableFromDate'],
+			[
+				'slbAvailableFromDate',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => DatePicker::class,
+				'fieldOptions' => [
+					'addon' => [
+						'append' => [
+							'content' => '<i class="far fa-calendar-alt"></i>',
+						],
+					],
+				],
+			],
 			// ['slbAvailableToDate'],
 			// ['slbPrivs'],
-			// ['slbBasePrice'],
+			[
+				'slbBasePrice',
+				'fieldOptions' => [
+					'addon' => [
+						'append' => [
+							'content' => 'تومان',
+						],
+					],
+				],
+				'widgetOptions' => [
+					'style' => 'direction:ltr',
+				],
+			],
 			// ['slbAdditives'],
 			// ['slbProductCount'],
 			// ['slbMaxSaleCountPerUser'],

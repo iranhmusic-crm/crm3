@@ -38,7 +38,7 @@ class MembershipProductModel extends RestClientActiveRecord
 			'prdStartAtFirstUse'     => Yii::t('aaa', 'Start At First Use'),
 			'prdPrivs'               => Yii::t('app', 'Privs'),
 			'prdVAT'               	 => Yii::t('aaa', 'VAT'),
-			'prdUnitID'              => Yii::t('app', 'Unit'),
+			'prdUnitID'              => Yii::t('aaa', 'Unit'),
 			'prdQtyIsDecimal'        => Yii::t('aaa', 'Qty Is Decimal'),
 			'prdInStockQty'          => Yii::t('aaa', 'In Stock Qty'),
 			'prdOrderedQty'          => Yii::t('aaa', 'Ordered Qty'),

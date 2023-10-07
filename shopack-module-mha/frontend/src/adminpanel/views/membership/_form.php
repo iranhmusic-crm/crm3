@@ -95,7 +95,6 @@ JS;
 					'style' => 'direction:ltr',
 				],
 			],
-
 		]);
 	?>
 

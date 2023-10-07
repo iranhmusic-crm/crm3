@@ -32,13 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'id' => StringHelper::generateRandomId(),
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-
         'columns' => [
           [
             'class' => 'kartik\grid\SerialColumn',
           ],
           'prdID',
-          'prdCode',
+          // 'prdCode',
           [
             'attribute' => 'prdName',
             'format' => 'raw',

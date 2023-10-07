@@ -5,6 +5,8 @@
 
 namespace iranhmusic\shopack\mha\frontend\adminpanel\accounting\controllers;
 
+use shopack\base\common\helpers\Url;
+use shopack\base\common\helpers\StringHelper;
 use shopack\aaa\frontend\common\auth\BaseCrudController;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipSaleableModel;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipSaleableSearchModel;
@@ -14,11 +16,20 @@ class MembershipSaleableController extends BaseCrudController
 {
 	public $modelClass = MembershipSaleableModel::class;
 	public $searchModelClass = MembershipSaleableSearchModel::class;
+	public $modalDoneFragment = 'saleables';
 
-	// public function getSearchParams()
-  // {
-  //   return Yii::$app->request->queryParams;
-  // }
+	public function init()
+	{
+		$this->doneLink = function ($model) {
+			return Url::to(['membership-product/view',
+				'id' => $model->slbProductID,
+				'fragment' => $this->modalDoneFragment,
+				'anchor' => StringHelper::convertToJsVarName($model->primaryKeyValue()),
+			]);
+		};
+
+		parent::init();
+	}
 
 	public function actionCreate_afterCreateModel(&$model)
   {
