@@ -9,7 +9,7 @@ use Yii;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use shopack\base\common\accounting\enums\enuProductStatus;
-use iranhmusic\shopack\mha\common\accounting\enums\enuProductType;
+use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
 class ProductModel extends RestClientActiveRecord
 {

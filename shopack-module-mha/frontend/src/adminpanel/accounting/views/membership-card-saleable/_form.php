@@ -17,7 +17,7 @@ use shopack\base\common\accounting\enums\enuSaleableStatus;
 // \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);
 ?>
 
-<div class='membership-saleable-form'>
+<div class='membership-card-saleable-form'>
 	<?php
 		$form = ActiveForm::begin([
 			'model' => $model,

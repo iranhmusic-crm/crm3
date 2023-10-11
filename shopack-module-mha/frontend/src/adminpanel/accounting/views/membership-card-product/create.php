@@ -7,13 +7,12 @@ use shopack\base\frontend\common\helpers\Html;
 
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Services Definition and Fee');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Membership Products'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->prdName, 'url' => ['view', 'id' => $model->prdID]];
-$this->title = Yii::t('mha', 'Update Membership Product');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Membership Card Product'), 'url' => ['index']];
+$this->title = Yii::t('mha', 'Create Membership Card Product');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div id='membership-product-update' class='d-flex justify-content-center'>
+<div id='membership-card-product-create' class='d-flex justify-content-center'>
 	<div class='w-sm-75 card border-primary'>
 
 		<div class='card-header bg-primary text-white'>

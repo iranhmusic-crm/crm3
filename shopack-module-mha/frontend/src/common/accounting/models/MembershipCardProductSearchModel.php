@@ -9,10 +9,10 @@ use yii\base\Model;
 use yii\web\ServerErrorHttpException;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\rest\RestClientDataProvider;
-use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipSaleableModel;
-// use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipCardProductModel;
+use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
-class MembershipSaleableSearchModel extends MembershipSaleableModel
+class MembershipCardProductSearchModel extends MembershipCardProductModel
 {
   use \shopack\base\common\db\SearchModelTrait;
 
@@ -40,20 +40,20 @@ class MembershipSaleableSearchModel extends MembershipSaleableModel
 			'sort' => [
 				// 'enableMultiSort' => true,
 				'attributes' => [
-					'slbID',
-					'slbName',
-					'slbCreatedAt' => [
+					'prdID',
+					'prdName',
+					'prdCreatedAt' => [
 						'default' => SORT_DESC,
 					],
-					'slbCreatedBy',
-					'slbUpdatedAt' => [
+					'prdCreatedBy',
+					'prdUpdatedAt' => [
 						'default' => SORT_DESC,
 					],
-					'slbUpdatedBy',
-					'slbRemovedAt' => [
+					'prdUpdatedBy',
+					'prdRemovedAt' => [
 						'default' => SORT_DESC,
 					],
-					'slbRemovedBy',
+					'prdRemovedBy',
 				],
 			],
 		]);
@@ -67,10 +67,7 @@ class MembershipSaleableSearchModel extends MembershipSaleableModel
 			return $dataProvider;
 		}
 
-		if (empty($params['slbProductID']) == false)
-			$query->andWhere(['slbProductID' => $params['slbProductID']]);
-		// else
-		// 	$query->andWhere(['slbType' => enuMhaProductType::Membership]);
+		$query->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard]);
 
 		$this->applySearchValuesInQuery($query);
 

@@ -9,19 +9,19 @@ use shopack\base\common\helpers\StringHelper;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\grid\GridView;
 use shopack\base\common\accounting\enums\enuProductStatus;
-use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipProductModel;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipCardProductModel;
 
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Services Definition and Fee');
-$this->title = Yii::t('mha', 'Membership Products');
+$this->title = Yii::t('mha', 'Membership Card Products');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="membership-product-index w-100">
+<div class="membership-card-product-index w-100">
   <div class='card'>
 		<div class='card-header'>
 			<div class="float-end">
-        <?= MembershipProductModel::canCreate() ? Html::createButton() : '' ?>
+        <?= MembershipCardProductModel::canCreate() ? Html::createButton() : '' ?>
 			</div>
       <div class='card-title'><?= Html::encode($this->title) ?></div>
 			<div class="clearfix"></div>
@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
           ],
           [
             'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
-            'header' => MembershipProductModel::canCreate() ? Html::createButton() : Yii::t('app', 'Actions'),
+            'header' => MembershipCardProductModel::canCreate() ? Html::createButton() : Yii::t('app', 'Actions'),
             'template' => '{update} {delete}{undelete}',
             'visibleButtons' => [
               'update' => function ($model, $key, $index) {

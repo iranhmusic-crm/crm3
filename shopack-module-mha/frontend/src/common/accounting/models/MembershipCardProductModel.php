@@ -11,7 +11,7 @@ use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use shopack\base\common\accounting\enums\enuProductStatus;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
-class MembershipProductModel extends RestClientActiveRecord
+class MembershipCardProductModel extends RestClientActiveRecord
 {
 	use \iranhmusic\shopack\mha\common\accounting\models\ProductModelTrait;
 
@@ -19,7 +19,7 @@ class MembershipProductModel extends RestClientActiveRecord
 
 	public function __construct()
 	{
-		$this->prdMhaType = enuMhaProductType::Membership;
+		$this->prdMhaType = enuMhaProductType::MembershipCard;
 	}
 
 	public function attributeLabels()

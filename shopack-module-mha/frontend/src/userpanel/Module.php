@@ -11,6 +11,7 @@ use shopack\base\common\shop\ShopModuleTrait;
 use iranhmusic\shopack\mha\frontend\common\models\MembershipModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberMembershipModel;
 use iranhmusic\shopack\mha\frontend\common\controllers\BasketController;
+use iranhmusic\shopack\mha\frontend\userpanel\accounting\controllers\AccountingController;
 
 class Module
 	extends \shopack\base\common\base\BaseModule
@@ -31,6 +32,7 @@ class Module
 	public function bootstrap($app)
 	{
 		if ($app instanceof \yii\web\Application) {
+			$this->controllerMap['accounting'] = AccountingController::class;
 			$this->controllerMap['basket'] = BasketController::class;
 
 			// $rules = [

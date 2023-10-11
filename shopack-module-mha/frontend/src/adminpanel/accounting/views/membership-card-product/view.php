@@ -10,18 +10,18 @@ use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\PopoverX;
 use shopack\base\frontend\common\widgets\DetailView;
 use shopack\base\common\accounting\enums\enuProductStatus;
-use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipSaleableModel;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipCardSaleableModel;
 
 $modelClass = Yii::$app->controller->modelClass;
 
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Services Definition and Fee');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Membership Product'), 'url' => ['index']];
-$this->title = Yii::t('mha', 'Membership Product') . ': ' . $model->prdID . ' - ' . $model->prdName;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Membership Card Product'), 'url' => ['index']];
+$this->title = Yii::t('mha', 'Membership Card Product') . ': ' . $model->prdID . ' - ' . $model->prdName;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="membership-product-view w-100">
+<div class="membership-card-product-view w-100">
   <div class='card'>
 		<div class='card-header'>
 			<div class="float-end">
@@ -113,11 +113,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class='card-body'>
       <div class='card'>
         <div class='card-header'>
-          <div class='card-title'><?= Yii::t('mha', 'Membership Saleables') ?></div>
+          <div class='card-title'><?= Yii::t('mha', 'Membership Card Saleables') ?></div>
         </div>
         <div class='card-body'>
           <?php
-            echo Yii::$app->runAction('mha/accounting/membership-saleable', ArrayHelper::merge($_GET, [
+            echo Yii::$app->runAction('mha/accounting/membership-card-saleable', ArrayHelper::merge($_GET, [
               'isPartial' => true,
               'params' => [
                 'slbProductID' => $model->prdID,

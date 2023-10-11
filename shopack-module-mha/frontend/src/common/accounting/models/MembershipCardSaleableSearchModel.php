@@ -9,10 +9,10 @@ use yii\base\Model;
 use yii\web\ServerErrorHttpException;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\rest\RestClientDataProvider;
-use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipSaleableModel;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipCardSaleableModel;
 // use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
-class MembershipSaleableSearchModel extends MembershipSaleableModel
+class MembershipCardSaleableSearchModel extends MembershipCardSaleableModel
 {
   use \shopack\base\common\db\SearchModelTrait;
 
@@ -70,7 +70,7 @@ class MembershipSaleableSearchModel extends MembershipSaleableModel
 		if (empty($params['slbProductID']) == false)
 			$query->andWhere(['slbProductID' => $params['slbProductID']]);
 		// else
-		// 	$query->andWhere(['slbType' => enuMhaProductType::Membership]);
+		// 	$query->andWhere(['slbType' => enuMhaProductType::MembershipCard]);
 
 		$this->applySearchValuesInQuery($query);
 

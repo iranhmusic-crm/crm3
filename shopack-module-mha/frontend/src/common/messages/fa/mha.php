@@ -143,23 +143,23 @@ return [
 	'Card Issuance' => 'صدور کارت',
 	'Postage' => 'خدمات پستی',
 
+
+
+
+
+
+
+
+
+
+
+
+
 	'Memberships' => 'دوره‌های عضویت',
 	'Membership' => 'دوره‌ی عضویت',
 	'Membership Info' => 'مشخصات دوره‌ی عضویت',
 	'Create Membership' => 'ایجاد دوره‌ی عضویت',
 	'Update Membership' => 'ویرایش دوره‌ی عضویت',
-
-	'Membership Products' => 'دوره‌های عضویت',
-	'Membership Product' => 'دوره‌ی عضویت',
-	'Membership Product Info' => 'مشخصات دوره‌ی عضویت',
-	'Create Membership Product' => 'ایجاد دوره‌ی عضویت',
-	'Update Membership Product' => 'ویرایش دوره‌ی عضویت',
-
-	'Membership Saleables' => 'طرح‌های فروش دوره‌ عضویت',
-	'Membership Saleable' => 'طرح فروش دوره‌ی عضویت',
-	'Membership Saleable Info' => 'مشخصات طرح فروش دوره‌ی عضویت',
-	'Create Membership Saleable' => 'ایجاد طرح فروش دوره‌ی عضویت',
-	'Update Membership Saleable' => 'ویرایش طرح فروش دوره‌ی عضویت',
 
 	'Memberships Definitions' => 'تعاریف دوره‌های عضویت',
 	'Membership Definition' => 'تعریف دوره‌ی عضویت',
@@ -172,6 +172,39 @@ return [
 	'Member Membership Info' => 'مشخصات دوره‌ی عضویت عضو',
 	'Create Member Membership' => 'ایجاد دوره‌ی عضویت عضو',
 	'Update Member Membership' => 'ویرایش دوره‌ی عضویت عضو',
+
+
+
+
+	'Membership Products' => 'دوره‌های عضویت',
+	'Membership Product' => 'دوره‌ی عضویت',
+	'Membership Product Info' => 'مشخصات دوره‌ی عضویت',
+	'Create Membership Product' => 'ایجاد دوره‌ی عضویت',
+	'Update Membership Product' => 'ویرایش دوره‌ی عضویت',
+
+	'Membership Saleables' => 'قیمت گذاری‌های دوره‌ی عضویت',
+	'Membership Saleable' => 'قیمت گذاری‌ دوره‌ی عضویت',
+	'Membership Saleable Info' => 'مشخصات قیمت گذاری‌ دوره‌ی عضویت',
+	'Create Membership Saleable' => 'ایجاد قیمت گذاری‌ دوره‌ی عضویت',
+	'Update Membership Saleable' => 'ویرایش قیمت گذاری‌ دوره‌ی عضویت',
+
+
+	'Membership Card Products' => 'صدور کارت عضویت',
+	'Membership Card Product' => 'صدور کارت عضویت',
+	'Membership Card Product Info' => 'مشخصات صدور کارت عضویت',
+	'Create Membership Card Product' => 'ایجاد صدور کارت عضویت',
+	'Update Membership Card Product' => 'ویرایش صدور کارت عضویت',
+
+	'Membership Card Saleables' => 'قیمت گذاری‌های کارت عضویت',
+	'Membership Card Saleable' => 'قیمت گذاری‌ کارت عضویت',
+	'Membership Card Saleable Info' => 'مشخصات قیمت گذاری‌ کارت عضویت',
+	'Create Membership Card Saleable' => 'ایجاد قیمت گذاری‌ کارت عضویت',
+	'Update Membership Card Saleable' => 'ویرایش قیمت گذاری‌ کارت عضویت',
+
+
+
+
+
 
 	'Yearly Price' => 'مبلغ سالیانه',
 

@@ -5,13 +5,14 @@
 
 use shopack\base\frontend\common\helpers\Html;
 
-$this->title = Yii::t('mha', 'Create Membership Product');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
+$this->params['breadcrumbs'][] = Yii::t('mha', 'Services Definition and Fee');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Membership Product'), 'url' => ['index']];
+$this->title = Yii::t('mha', 'Create Membership Product');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div id='"membership-product-create' class='d-flex justify-content-center'>
+<div id='membership-product-create' class='d-flex justify-content-center'>
 	<div class='w-sm-75 card border-primary'>
 
 		<div class='card-header bg-primary text-white'>

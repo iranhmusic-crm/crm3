@@ -180,27 +180,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
               'url' => ['/mha/member-membership'],
             ],
             [
-              'label' => Yii::t('mha', 'Services Definition and Fee'),
-              'icon' => 'info-sign',
-              'items' => [
-                [
-                  'label' => Yii::t('mha', 'Memberships'),
-                  'icon' => 'info-sign',
-                  'url' => ['/mha/accounting/membership-saleable'],
-                ],
-                [
-                  'label' => Yii::t('mha', 'Card Issuance'),
-                  'icon' => 'info-sign',
-                  'url' => ['/mha/accounting/card-saleable'],
-                ],
-                [
-                  'label' => Yii::t('mha', 'Postage'),
-                  'icon' => 'info-sign',
-                  'url' => ['/mha/accounting/postage-saleable'],
-                ],
-              ],
-            ],
-            [
               'label' => Yii::t('mha', 'Kanoons'),
               'icon' => 'info-sign',
               'items' => [
@@ -216,7 +195,27 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                 ['label' => Yii::t('mha', 'Supplementary Insurance Documents List'), 'icon' => 'info-sign', 'url' => ['/mha/member-supplementary-ins-doc']],
               ],
             ],
-
+            [
+              'label' => Yii::t('mha', 'Services Definition and Fee'),
+              'icon' => 'info-sign',
+              'items' => [
+                [
+                  'label' => Yii::t('mha', 'Memberships'),
+                  'icon' => 'info-sign',
+                  'url' => ['/mha/accounting/membership-product'],
+                ],
+                [
+                  'label' => Yii::t('mha', 'Membership Card Products'), //'Card Issuance'),
+                  'icon' => 'info-sign',
+                  'url' => ['/mha/accounting/membership-card-product'],
+                ],
+                [
+                  'label' => Yii::t('mha', 'Postage'),
+                  'icon' => 'info-sign',
+                  'url' => ['/mha/accounting/postage-product'],
+                ],
+              ],
+            ],
             [
               'label' => Yii::t('app', 'Settings'),
               'items' => [

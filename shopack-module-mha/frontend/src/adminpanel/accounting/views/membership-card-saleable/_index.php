@@ -10,7 +10,7 @@ use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
 use shopack\aaa\frontend\common\models\SaleableModel;
 use shopack\base\common\accounting\enums\enuSaleableStatus;
-use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipSaleableModel;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipCardSaleableModel;
 ?>
 
 <?php
@@ -70,11 +70,11 @@ use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipSaleableM
       ],
       [
         'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
-        'header' => MembershipSaleableModel::canCreate() ? Html::createButton(null, [
-          // 'membership-saleable/create',
+        'header' => MembershipCardSaleableModel::canCreate() ? Html::createButton(null, [
+          // 'card-saleable/create',
           'slbProductID' => $slbProductID,
         ], [
-          'title' => yii::t('mha', 'Create Membership Saleable'),
+          'title' => yii::t('mha', 'Create Card Saleable'),
         ]) : Yii::t('app', 'Actions'),
         'template' => '{update} {delete}{undelete}',
         'visibleButtons' => [

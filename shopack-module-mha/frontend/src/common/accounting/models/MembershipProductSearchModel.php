@@ -10,7 +10,7 @@ use yii\web\ServerErrorHttpException;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\rest\RestClientDataProvider;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipProductModel;
-use iranhmusic\shopack\mha\common\accounting\enums\enuProductType;
+use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
 class MembershipProductSearchModel extends MembershipProductModel
 {
@@ -67,7 +67,7 @@ class MembershipProductSearchModel extends MembershipProductModel
 			return $dataProvider;
 		}
 
-		$query->andWhere(['prdType' => enuProductType::Membership]);
+		$query->andWhere(['prdMhaType' => enuMhaProductType::Membership]);
 
 		$this->applySearchValuesInQuery($query);
 
