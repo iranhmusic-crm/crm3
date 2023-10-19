@@ -8,12 +8,14 @@
 use shopack\base\frontend\common\widgets\grid\GridView;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
-use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
-use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
+// use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
+// use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
+use shopack\base\common\accounting\enums\enuUserAssetStatus;
 ?>
 
 <?php
-  $mbrshpMemberID = Yii::$app->request->queryParams['mbrshpMemberID'] ?? null;
+//todo: rename mbrshpMemberID to uasActorID
+  $uasActorID = Yii::$app->request->queryParams['uasActorID'] ?? null;
 ?>
 
 <?php
@@ -28,14 +30,14 @@ use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
     ],
   ];
 
-  if (empty($mbrshpMemberID)) {
+  if (empty($uasActorID)) {
     $columns = array_merge($columns, [
       [
         'class' => \iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberDataColumn::class,
-        'attribute' => 'mbrshpMemberID',
+        'attribute' => 'uasActorID',
         'format' => 'raw',
         'value' => function ($model, $key, $index, $widget) {
-          return Html::a($model->member->displayName(), ['/mha/member/view', 'id' => $model->mbrshpMemberID]); //, ['class' => ['btn', 'btn-sm', 'btn-outline-secondary']]);
+          return Html::a($model->member->displayName(), ['/mha/member/view', 'id' => $model->uasActorID]); //, ['class' => ['btn', 'btn-sm', 'btn-outline-secondary']]);
         },
       ],
     ]);
@@ -44,30 +46,30 @@ use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
   $columns = array_merge($columns, [
     [
       // 'class' => \iranhmusic\shopack\mha\frontend\common\widgets\grid\MembershipDataColumn::class,
-      'attribute' => 'mbrshpMembershipID',
+      'attribute' => 'uasSaleableID',
       'value' => function ($model, $key, $index, $widget) {
-        return $model->membership->mshpTitle;
+        return $model->saleable->slbName;
       },
     ],
-    'mbrshpStartDate:jalali',
-    'mbrshpEndDate:jalali',
+    'uasValidFromDate:jalali',
+    'uasValidToDate:jalali',
     [
-      'attribute' => 'mbrshpVoucherID',
+      'attribute' => 'uasVoucherID',
       'format' => 'raw',
       'value' => function ($model, $key, $index, $widget) {
-        return Html::a($model->mbrshpVoucherID, ['/aaa/voucher/view', 'id' => $model->mbrshpVoucherID]);
+        return Html::a($model->uasVoucherID, ['/aaa/voucher/view', 'id' => $model->uasVoucherID]);
       },
     ],
     [
-      'attribute' => 'mbrshpStatus',
+      'attribute' => 'uasStatus',
       'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
-      'enumClass' => enuMemberMembershipStatus::class,
+      'enumClass' => enuUserAssetStatus::class,
     ],
     [
       'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
       'header' => /* MemberModel::canCreate() ? Html::createButton(null, [
         'create',
-        'mbrshpMemberID' => $mbrshpMemberID ?? $_GET['mbrshpMemberID'] ?? null,
+        'uasActorID' => $uasActorID ?? $_GET['uasActorID'] ?? null,
       ]) : */ Yii::t('app', 'Actions'),
       'template' => '',
     ],
@@ -78,11 +80,11 @@ use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
       'label' => 'ایجاد / ویرایش',
       'value' => function($model) {
         return Html::formatRowDates(
-          $model->mbrshpCreatedAt,
+          $model->uasCreatedAt,
           $model->createdByUser,
-          $model->mbrshpUpdatedAt,
+          $model->uasUpdatedAt,
           $model->updatedByUser,
-          // $model->mbrshpRemovedAt,
+          // $model->uasRemovedAt,
           // $model->removedByUser,
         );
       },

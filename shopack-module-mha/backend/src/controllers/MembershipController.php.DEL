@@ -29,7 +29,7 @@ class MembershipController extends BaseRestController implements ISaleableContro
 	{
 		return 'options';
 	}
-
+/*
 	protected function findModel($id)
 	{
 		if (($model = MembershipModel::findOne($id)) !== null)
@@ -151,7 +151,7 @@ class MembershipController extends BaseRestController implements ISaleableContro
 			// ],
 		];
 	}
-
+*/
 	//ISaleableController:
 	public function actionAddToBasket()
 	{

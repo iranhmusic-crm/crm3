@@ -201,7 +201,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
               [
                 'label' => Yii::t('mha', 'Memberships'),
                 // 'icon' => 'badge-dollar',
-                'url' => '/mha/member-membership',
+                // 'url' => '/mha/member-membership',
+                'url' => '/mha/accounting/membership',
               ],
             ]);
           }

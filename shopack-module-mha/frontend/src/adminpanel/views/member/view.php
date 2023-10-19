@@ -415,8 +415,9 @@ $this->params['breadcrumbs'][] = $this->title;
       ); ?>
 
       <?php $tabs->newAjaxTabPage(Yii::t('mha', 'Memberships'), [
-          '/mha/member-membership/index',
-          'mbrshpMemberID' => $model->mbrUserID,
+          // '/mha/member-membership/index',
+          '/mha/accounting/membership-user-asset/index',
+          'uasActorID' => $model->mbrUserID,
         ],
         'member-memberships'
       ); ?>

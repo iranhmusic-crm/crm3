@@ -177,7 +177,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
             [
               'label' => Yii::t('mha', 'Members Memberships'),
               'icon' => 'info-sign',
-              'url' => ['/mha/member-membership'],
+              // 'url' => ['/mha/member-membership'],
+              'url' => ['/mha/accounting/membership-user-asset'],
             ],
             [
               'label' => Yii::t('mha', 'Kanoons'),

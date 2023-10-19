@@ -7,16 +7,16 @@ namespace iranhmusic\shopack\mha\backend;
 
 use Yii;
 use yii\base\BootstrapInterface;
-use shopack\base\common\shop\ShopModuleTrait;
-use shopack\base\backend\accounting\AccountingModule;
-use iranhmusic\shopack\mha\backend\models\MembershipModel;
-use iranhmusic\shopack\mha\backend\models\MemberMembershipModel;
+// use shopack\base\common\shop\ShopModuleTrait;
+// use iranhmusic\shopack\mha\backend\models\MembershipModel;
+// use iranhmusic\shopack\mha\backend\models\MemberMembershipModel;
+use iranhmusic\shopack\mha\backend\accounting\AccountingModule;
 
 class Module
 	extends \shopack\base\common\base\BaseModule
 	implements BootstrapInterface
 {
-	use ShopModuleTrait;
+	// use ShopModuleTrait;
 
 	//used for trust message channel
 	public $servicePrivateKey;
@@ -44,7 +44,7 @@ class Module
 			'class' => AccountingModule::class,
 		]);
 
-		$this->registerSaleable(MembershipModel::class, MemberMembershipModel::class);
+		// $this->registerSaleable(MembershipModel::class, MemberMembershipModel::class);
 	}
 
 	public function bootstrap($app)
@@ -178,26 +178,28 @@ class Module
 					'controller' => [$this->id . '/member-sponsorship'],
 					'pluralize' => false,
 				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/membership'],
-					'pluralize' => false,
+				// [
+				// 	'class' => \yii\rest\UrlRule::class,
+				// 	// 'prefix' => 'v1',
+				// 	'controller' => [$this->id . '/membership'],
+				// 	'pluralize' => false,
 
-					'extraPatterns' => [
-						'POST add-to-basket' => 'add-to-basket',
-					],
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/member-membership'],
-					'pluralize' => false,
+				// 	// 'extraPatterns' => [
+				// 	'patterns' => [
+				// 		'POST add-to-basket' => 'add-to-basket',
+				// 	],
+				// ],
+				// [
+				// 	'class' => \yii\rest\UrlRule::class,
+				// 	// 'prefix' => 'v1',
+				// 	'controller' => [$this->id . '/member-membership'],
+				// 	'pluralize' => false,
 
-					'extraPatterns' => [
-						'GET renewal-info' => 'renewal-info',
-					],
-				],
+				// 	// 'extraPatterns' => [
+				// 	'patterns' => [
+				// 		'GET renewal-info' => 'renewal-info',
+				// 	],
+				// ],
 				[
 					'class' => \yii\rest\UrlRule::class,
 					// 'prefix' => 'v1',
