@@ -21,7 +21,7 @@ class SaleableModel extends MhaActiveRecord
 		return '{{%MHA_Accounting_Saleable}}';
 	}
 
-	public static function ProcessVoucherItem($voucherID, $voucherItemdata)
+	public static function ProcessVoucherItem($voucherID, $userid, $voucherItemdata)
 	{
 		$slbid = $voucherItemdata['slbid'];
 		$saleableModel = SaleableModel::find()->andWhere(['slbid' => $slbid])
@@ -38,7 +38,6 @@ class SaleableModel extends MhaActiveRecord
 			return true; //already exists
 
 		//1: save user asset
-		$userid			= $voucherItemdata['userid'];
 		$service		= $voucherItemdata['service'];
 		// $slbkey			= $voucherItemdata['slbkey'];
 		$desc				= $voucherItemdata['desc'];
@@ -48,8 +47,8 @@ class SaleableModel extends MhaActiveRecord
     //discount
     //tax
     //totalprice
-		$startDate	= $voucherItemdata['slbinfo']['startDate'];
-		$endDate		= $voucherItemdata['slbinfo']['endDate'];
+		$startDate	= $voucherItemdata['slbinfo']['startDate'] ?? null;
+		$endDate		= $voucherItemdata['slbinfo']['endDate'] ?? null;
 
 		$userAssetModel = new UserAssetModel;
 		$userAssetModel->uasActorID         = $userid;
@@ -57,7 +56,7 @@ class SaleableModel extends MhaActiveRecord
 		$userAssetModel->uasQty             = $qty;
 		$userAssetModel->uasVoucherID       = $voucherID;
 		$userAssetModel->uasVoucherItemUUID = $key;
-		$userAssetModel->uasVoucherItemInfo = $desc;
+		$userAssetModel->uasVoucherItemInfo = $voucherItemdata;
 		// $userAssetModel->uasCouponID        =
 		// $userAssetModel->uasDiscountAmount  =
 		// $userAssetModel->uasPrefered        =

@@ -43,10 +43,11 @@ class ServiceController extends BaseRestController
 			$data = base64_decode($data);
 		else
 			$data = RsaPrivate::model(Yii::$app->controller->module->servicePrivateKey)->decrypt($data);
-
 		$data = Json::decode($data);
 
-		SaleableModel::ProcessVoucherItem($voucherID, $data);
+		$userid = $_POST['userid'];
+
+		SaleableModel::ProcessVoucherItem($voucherID, $userid, $data);
 	}
 
 }

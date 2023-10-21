@@ -129,11 +129,13 @@ class MembershipForm extends Model
 		if ($cardPrintSalealeModel == null)
 			throw new NotFoundHttpException('Definition of membership card at this date was not found.');
 
+		$parentModule = Yii::$app->controller->module->module;
+
 		$data = [
 			'userid' => Yii::$app->user->id,
 			'items' => [
 				[//1: membership
-					'service'		=> Yii::$app->controller->module->id,
+					'service'		=> $parentModule->id,
 					// 'slbkey'		=> self::saleableKey(),
 					'slbid'			=> $saleableModel->slbID,
 					'desc' 			=> $desc,
@@ -149,7 +151,7 @@ class MembershipForm extends Model
 					'qtystep'		=> 0, //0: do not allow to change qty in basket
 				],
 				[//2: card print
-					'service'		=> Yii::$app->controller->module->id,
+					'service'		=> $parentModule->id,
 					'slbid'			=> $cardPrintSalealeModel->slbID,
 					'desc' 			=> $cardPrintSalealeModel->slbName,
 					'qty'				=> 1,
@@ -163,17 +165,17 @@ class MembershipForm extends Model
 		];
 		$data = Json::encode($data);
 
-		if (empty(Yii::$app->controller->module->servicePrivateKey))
+		if (empty($parentModule->servicePrivateKey))
 			$data = base64_encode($data);
 		else
-			$data = RsaPrivate::model(Yii::$app->controller->module->servicePrivateKey)->encrypt($data);
+			$data = RsaPrivate::model($parentModule->servicePrivateKey)->encrypt($data);
 
 		list ($resultStatus, $resultData) = HttpHelper::callApi('aaa/basket/item',
 			HttpHelper::METHOD_POST,
 			[],
 			[
 				'data' => $data,
-				'service'	=> Yii::$app->controller->module->id,
+				'service'	=> $parentModule->id,
 			]
 		);
 
