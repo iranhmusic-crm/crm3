@@ -14,7 +14,7 @@ use shopack\base\common\helpers\Json;
 use shopack\base\backend\controller\BaseRestController;
 use shopack\base\backend\helpers\PrivHelper;
 use shopack\base\common\security\RsaPrivate;
-use iranhmusic\shopack\mha\backend\models\MembershipModel;
+use iranhmusic\shopack\mha\backend\accounting\models\SaleableModel;
 
 class ServiceController extends BaseRestController
 {
@@ -46,13 +46,7 @@ class ServiceController extends BaseRestController
 
 		$data = Json::decode($data);
 
-		$slbkey = $data['slbkey'];
-
-		if ($slbkey == MembershipModel::saleableKey()) {
-			return MembershipModel::ProcessVoucherItem($voucherID, $data);
-		}
-
-		throw new UnprocessableEntityHttpException("Invalid saleable key ({$slbkey})");
+		SaleableModel::ProcessVoucherItem($voucherID, $data);
 	}
 
 }

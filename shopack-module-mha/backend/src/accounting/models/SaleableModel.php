@@ -6,7 +6,11 @@
 namespace iranhmusic\shopack\mha\backend\accounting\models;
 
 use Yii;
+use yii\web\ServerErrorHttpException;
+use yii\web\UnprocessableEntityHttpException;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
+use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
+use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
 
 class SaleableModel extends MhaActiveRecord
 {
@@ -15,6 +19,74 @@ class SaleableModel extends MhaActiveRecord
 	public static function tableName()
 	{
 		return '{{%MHA_Accounting_Saleable}}';
+	}
+
+	public static function ProcessVoucherItem($voucherID, $voucherItemdata)
+	{
+		$slbid = $voucherItemdata['slbid'];
+		$saleableModel = SaleableModel::find()->andWhere(['slbid' => $slbid])
+			->joinWith('product')
+			->one();
+
+		if ($saleableModel == null)
+			throw new UnprocessableEntityHttpException("Invalid saleable id ({$slbid})");
+
+		//check existance
+		$key = $voucherItemdata['key'];
+		$userAssetModel = UserAssetModel::find()->andWhere(['uasVoucherItemUUID' => $key])->one();
+		if ($userAssetModel != null)
+			return true; //already exists
+
+		//1: save user asset
+		$userid			= $voucherItemdata['userid'];
+		$service		= $voucherItemdata['service'];
+		// $slbkey			= $voucherItemdata['slbkey'];
+		$desc				= $voucherItemdata['desc'];
+		$qty				= $voucherItemdata['qty'];
+		$unitprice	= $voucherItemdata['unitprice'];
+    //additives
+    //discount
+    //tax
+    //totalprice
+		$startDate	= $voucherItemdata['slbinfo']['startDate'];
+		$endDate		= $voucherItemdata['slbinfo']['endDate'];
+
+		$userAssetModel = new UserAssetModel;
+		$userAssetModel->uasActorID         = $userid;
+		$userAssetModel->uasSaleableID      = $slbid;
+		$userAssetModel->uasQty             = $qty;
+		$userAssetModel->uasVoucherID       = $voucherID;
+		$userAssetModel->uasVoucherItemUUID = $key;
+		$userAssetModel->uasVoucherItemInfo = $desc;
+		// $userAssetModel->uasCouponID        =
+		// $userAssetModel->uasDiscountAmount  =
+		// $userAssetModel->uasPrefered        =
+		$userAssetModel->uasValidFromDate   = $startDate;
+		$userAssetModel->uasValidToDate     = $endDate;
+		// $userAssetModel->uasValidFromHour   =
+		// $userAssetModel->uasValidToHour     =
+		// $userAssetModel->uasDurationMinutes =
+		// $userAssetModel->uasBreakedAt       =
+		// $userAssetModel->uasStatus          =
+
+		if ($userAssetModel->save() == false)
+			throw new ServerErrorHttpException('It is not possible to create user asset');
+
+		//2: ?
+		if ($saleableModel->product->prdMhaType == enuMhaProductType::Membership) {
+			self::ProcessVoucherItem_Membership($userAssetModel, $voucherItemdata);
+		} else if ($saleableModel->product->prdMhaType == enuMhaProductType::MembershipCard) {
+			self::ProcessVoucherItem_MembershipCard($userAssetModel, $voucherItemdata);
+		} else
+			throw new UnprocessableEntityHttpException("Invalid mha product type ({$saleableModel->product->prdMhaType})");
+	}
+
+	public static function ProcessVoucherItem_Membership($userAssetModel, $voucherItemdata)
+	{
+	}
+
+	public static function ProcessVoucherItem_MembershipCard($userAssetModel, $voucherItemdata)
+	{
 	}
 
 }

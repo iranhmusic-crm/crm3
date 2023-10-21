@@ -150,7 +150,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
             ],
             ['label' => Yii::t('aaa', 'Users'), 'icon' => 'info-sign', 'url' => ['/aaa/user']],
             ['label' => Yii::t('aaa', 'Gateways'), 'icon' => 'info-sign', 'url' => ['/aaa/gateway']],
-
             [
               'label' => Yii::t('aaa', 'Files'),
               'items' => [
@@ -158,13 +157,17 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                 ['label' => Yii::t('aaa', 'Upload Queue'), 'icon' => 'info-sign', 'url' => ['/aaa/upload-queue']],
               ],
             ],
-
             [
               'label' => Yii::t('aaa', 'Messages'),
               'items' => [
                 ['label' => Yii::t('aaa', 'Messages'), 'icon' => 'info-sign', 'url' => ['/aaa/message']],
                 ['label' => Yii::t('aaa', 'Message Templates'), 'icon' => 'info-sign', 'url' => ['/aaa/message-template']],
               ],
+            ],
+            [
+              'label' => Yii::t('aaa', 'Delivery Methods'),
+              'icon' => 'info-sign',
+              'url' => ['/aaa/delivery-method'],
             ],
           ],
         ],
