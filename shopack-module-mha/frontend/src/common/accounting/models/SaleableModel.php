@@ -7,11 +7,16 @@ namespace iranhmusic\shopack\mha\frontend\common\accounting\models;
 
 use Yii;
 use shopack\base\common\helpers\HttpHelper;
+use shopack\base\common\accounting\enums\enuSaleableStatus;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
 
 class SaleableModel extends RestClientActiveRecord
 {
 	use \iranhmusic\shopack\mha\common\accounting\models\SaleableModelTrait;
 
+	public function isSoftDeleted()
+  {
+    return ($this->slbStatus == enuSaleableStatus::Removed);
+  }
 
 }

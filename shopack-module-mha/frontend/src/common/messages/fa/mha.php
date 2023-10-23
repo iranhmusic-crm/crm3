@@ -258,6 +258,7 @@ return [
 
 	'The member does not have a register code' => 'کد عضویت خالی است',
 	'Membership start date is blank' => 'تاریخ شروع عضویت مشخص نشده است',
+	'Active Membership not found' => 'شما دوره عضویت فعالی ندارید',
 
 	'Print Card (Front)' => 'چاپ روی کارت',
 	'Print Card (Back)' => 'چاپ پشت کارت',

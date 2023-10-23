@@ -10,7 +10,6 @@ use yii\base\Model;
 use yii\db\Expression;
 use yii\web\NotFoundHttpException;
 use yii\web\UnprocessableEntityHttpException;
-use Ramsey\Uuid\Uuid;
 use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\common\security\RsaPrivate;
@@ -22,9 +21,9 @@ use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
 use iranhmusic\shopack\mha\backend\accounting\models\SaleableModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
-class MembershipForm extends Model
+class MembershipCardForm extends Model
 {
-	//list ($startDate, $endDate, $years, $price, $saleableModel)
+	//list ($membershipUserAssetID, $price, $saleableModel, $lastMembership)
 	public static function getRenewalInfo($memberID)
 	{
 		if (empty($memberID))
@@ -44,55 +43,25 @@ class MembershipForm extends Model
 			->joinWith('saleable', false, 'INNER JOIN')
 			->joinWith('saleable.product', false, 'INNER JOIN')
 			->andWhere(['uasActorID' => $memberID])
+			->andWhere(['>=', 'uasValidToDate', new Expression('NOW()')])
 			->orderBy('uasValidToDate DESC')
 			->one();
 
-		$now = new \DateTime('now');
-
-		if (empty($lastMembership->uasValidToDate)) {
-			$startDate = new \DateTime($memberModel->mbrAcceptedAt);
-			$startDate->setTime(0, 0);
-		} else {
-			$startDate = new \DateTime($lastMembership->uasValidToDate);
-			$startDate->setTime(0, 0);
-			// $startDate->add(\DateInterval::createFromDateString('1 day'));
-
-			if ($startDate > $now) {
-				$remained = date_diff($now, $startDate);
-				if ($remained->days > 30) {
-					throw new UnprocessableEntityHttpException('There are more than 30 days of current membership left');
-				}
-			}
-		}
-
-		$endDate = clone $startDate;
-		$endDate->add(\DateInterval::createFromDateString('1 year'));
-		// $endDate->sub(\DateInterval::createFromDateString('1 day'));
-
-		$years = 1;
-		while ($endDate < $now) {
-			$endDate->add(\DateInterval::createFromDateString('1 year'));
-			++$years;
-		}
-
-		$startDate = $startDate->format('Y-m-d');
-		$endDate = $endDate->format('Y-m-d');
+		if ($lastMembership == null)
+			throw new UnprocessableEntityHttpException('Active Membership not found');
 
 		$saleableModel = SaleableModel::find()
 			->joinWith('product', false, 'INNER JOIN')
-			->andWhere(['prdMhaType' => enuMhaProductType::Membership])
+			->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard])
 			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
 			->andWhere(['slbStatus' => enuSaleableStatus::Active])
 			->orderBy('slbAvailableFromDate DESC')
 			->one();
 
 		if ($saleableModel == null)
-			throw new NotFoundHttpException('Definition of membership at this date was not found.');
+			throw new NotFoundHttpException('Definition of membership card at this date was not found.');
 
-		$unitPrice = $saleableModel->slbBasePrice;
-		$totalPrice = $years * $unitPrice;
-
-		return [$startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableModel];
+		return [$lastMembership->uasID, $saleableModel->slbBasePrice, $saleableModel, $lastMembership];
 	}
 
 	public static function addToBasket($basketdata, $saleableID = null)
@@ -104,67 +73,27 @@ class MembershipForm extends Model
 			$basketdata = [];
 
 		//get saleable info
-		list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableModel)
-			= self::getRenewalInfo(Yii::$app->user->id);
-
-		//todo: check user langauge from request header
-		$desc = $saleableModel->slbName
-			. ' - از '
-			. Yii::$app->formatter->asJalali($startDate)
-			. ' تا '
-			. Yii::$app->formatter->asJalali($endDate)
-			. ' به مدت '
-			. $years
-			. ' سال'
-		;
-
-		//card print
-		$cardPrintSaleableModel = SaleableModel::find()
-			->joinWith('product', false, 'INNER JOIN')
-			->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard])
-			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
-			->andWhere(['slbStatus' => enuSaleableStatus::Active])
-			->orderBy('slbAvailableFromDate DESC')
-			->one();
-
-		if ($cardPrintSaleableModel == null)
-			throw new NotFoundHttpException('Definition of membership card at this date was not found.');
+		list ($membershipUserAssetID, $price, $saleableModel, $lastMembership) = self::getRenewalInfo(Yii::$app->user->id);
 
 		$parentModule = Yii::$app->controller->module->module;
-
-		$membershipKey = Uuid::uuid4()->toString();
 
 		$data = [
 			'userid' => Yii::$app->user->id,
 			'items' => [
-				[//1: membership
-					'key'				=> $membershipKey,
+				[//1: membership card
 					'service'		=> $parentModule->id,
-					// 'slbkey'		=> self::saleableKey(),
 					'slbid'			=> $saleableModel->slbID,
-					'desc' 			=> $desc,
-					'qty'				=> $years,
+					'desc' 			=> $saleableModel->slbName,
+					'qty'				=> 1,
 					'unit'			=> $saleableModel->product->unit->untName,
 					'prdtype'		=> $saleableModel->product->prdType,
-					'unitprice' => $unitPrice,
-					'slbinfo'		=> [
-						'startDate' => $startDate,
-						'endDate' => $endDate,
-					],
-					'maxqty'		=> $years,
-					'qtystep'		=> 0, //0: do not allow to change qty in basket
-				],
-				[//2: card print
-					'service'		=> $parentModule->id,
-					'slbid'			=> $cardPrintSaleableModel->slbID,
-					'desc' 			=> $cardPrintSaleableModel->slbName,
-					'qty'				=> 1,
-					'unit'			=> $cardPrintSaleableModel->product->unit->untName,
-					'prdtype'		=> $cardPrintSaleableModel->product->prdType, //always is physical
-					'unitprice' => $cardPrintSaleableModel->slbBasePrice,
+					'unitprice' => $price,
+					'dependencies' => [$lastMembership->uasUUID],
+					// 'slbinfo'		=> [
+					// 	'membershipUserAssetID' => $membershipUserAssetID,
+					// ],
 					'maxqty'		=> 1,
 					'qtystep'		=> 0, //0: do not allow to change qty in basket
-					'dependencies' => [$membershipKey],
 				],
 			],
 		];

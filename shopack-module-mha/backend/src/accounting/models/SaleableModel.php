@@ -33,7 +33,7 @@ class SaleableModel extends MhaActiveRecord
 
 		//check existance
 		$key = $voucherItemdata['key'];
-		$userAssetModel = UserAssetModel::find()->andWhere(['uasVoucherItemUUID' => $key])->one();
+		$userAssetModel = UserAssetModel::find()->andWhere(['uasUUID' => $key])->one();
 		if ($userAssetModel != null)
 			return true; //already exists
 
@@ -51,11 +51,11 @@ class SaleableModel extends MhaActiveRecord
 		$endDate		= $voucherItemdata['slbinfo']['endDate'] ?? null;
 
 		$userAssetModel = new UserAssetModel;
+		$userAssetModel->uasUUID						= $key;
 		$userAssetModel->uasActorID         = $userid;
 		$userAssetModel->uasSaleableID      = $slbid;
 		$userAssetModel->uasQty             = $qty;
 		$userAssetModel->uasVoucherID       = $voucherID;
-		$userAssetModel->uasVoucherItemUUID = $key;
 		$userAssetModel->uasVoucherItemInfo = $voucherItemdata;
 		// $userAssetModel->uasCouponID        =
 		// $userAssetModel->uasDiscountAmount  =

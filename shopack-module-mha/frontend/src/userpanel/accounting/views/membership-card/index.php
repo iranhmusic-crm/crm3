@@ -7,20 +7,14 @@
 
 use shopack\base\frontend\common\helpers\Html;
 
-$this->title = Yii::t('mha', 'Memberships');
+$this->title = Yii::t('mha', 'Membership Cards');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="member-membership-index w-100">
+<div class="member-membership-card-index w-100">
   <div class='card'>
 		<div class='card-header'>
 			<div class="float-end">
-        <?= Html::createButton('تمدید عضویت', [
-						'/mha/accounting/membership/add-to-basket'
-					], [
-						// 'localdbs' => 'basketdata=basket',
-					])
-				?>
         <?php
 					if (true) { //has non-expired membership?
 						echo Html::createButton('درخواست صدور مجدد کارت عضویت', [

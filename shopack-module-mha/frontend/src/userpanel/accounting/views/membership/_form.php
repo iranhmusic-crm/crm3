@@ -42,12 +42,12 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 			[
 				'unitPrice',
 				'type' => FormBuilder::FIELD_STATIC,
-				'staticFormat' => 'decimal',
+				'staticFormat' => 'toman',
 			],
 			[
 				'totalPrice',
 				'type' => FormBuilder::FIELD_STATIC,
-				'staticFormat' => 'decimal', //['currency', 'IRT'],
+				'staticFormat' => 'toman', //['currency', 'IRT'],
 			],
 			// [
 			// 	'saleableID',
