@@ -5,12 +5,12 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\widgets\PopoverX;
+use shopack\base\frontend\common\widgets\PopoverX;
 use shopack\base\common\helpers\Url;
 use shopack\base\common\helpers\ArrayHelper;
-use shopack\base\frontend\widgets\tabs\Tabs;
-use shopack\base\frontend\widgets\DetailView;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\widgets\tabs\Tabs;
+use shopack\base\frontend\common\widgets\DetailView;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\aaa\common\enums\enuUserStatus;
 use shopack\aaa\common\enums\enuGender;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
@@ -23,8 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="member-view w-100">
-  <div class='card border-default'>
-		<div class='card-header bg-default'>
+  <div class='card'>
+		<div class='card-header'>
 			<div class="float-end">
 				<?= MemberModel::canCreate() ? Html::createButton() : '' ?>
         <?php
@@ -199,7 +199,7 @@ $this->params['breadcrumbs'][] = $this->title;
               ?>
             </div>
             <div class='col-3'>
-              <div class='card border-default'>
+              <div class='card'>
                 <div class='card-body'>
                   <?php
                     $buttons = [];
@@ -269,7 +269,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (empty($defects) == false) {
               ?>
               <div class='card border-default mt-3'>
-                <div class='card-header bg-default'>
+                <div class='card-header'>
                   <div class="float-end">
                     <div class='badge bg-danger'><?= count($defects) ?></div>
                   </div>
@@ -299,7 +299,7 @@ $this->params['breadcrumbs'][] = $this->title;
               ?>
 
               <div class='card border-default mt-3'>
-                <div class='card-header bg-default'>
+                <div class='card-header'>
                   <div class="float-end">
                   </div>
                   <div class='card-title'><?= Yii::t('aaa', 'Image') ?></div>
@@ -415,8 +415,9 @@ $this->params['breadcrumbs'][] = $this->title;
       ); ?>
 
       <?php $tabs->newAjaxTabPage(Yii::t('mha', 'Memberships'), [
-          '/mha/member-membership/index',
-          'mbrshpMemberID' => $model->mbrUserID,
+          // '/mha/member-membership/index',
+          '/mha/accounting/membership-user-asset/index',
+          'uasActorID' => $model->mbrUserID,
         ],
         'member-memberships'
       ); ?>

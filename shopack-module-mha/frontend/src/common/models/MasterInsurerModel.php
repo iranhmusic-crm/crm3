@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuInsurerStatus;
 
 class MasterInsurerModel extends RestClientActiveRecord
@@ -14,7 +14,6 @@ class MasterInsurerModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MasterInsurerModelTrait;
 
 	public static $resourceName = 'mha/master-insurer';
-  public static $primaryKey = ['minsID'];
 
 	public function attributeLabels()
 	{

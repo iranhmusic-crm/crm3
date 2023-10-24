@@ -139,6 +139,7 @@ $config = [
 		],
 		// 'db' => $db,
 		'urlManager' => [
+			'class' => \shopack\base\common\web\UrlManager::class,
 			'cache' => (YII_DEBUG ? false : 'cache'),
 			'enablePrettyUrl' => true,
 			'enableStrictParsing' => true,
@@ -153,7 +154,7 @@ $config = [
 			],
 		],
 		'view' => [
-			'class' => \shopack\base\frontend\web\View::class,
+			'class' => \shopack\base\frontend\common\web\View::class,
 			// 'driver' => 'pjax', //Because the token is sent in the cookie, there is no need
 		],
 		'assetManager' => [

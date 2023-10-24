@@ -5,8 +5,8 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\widgets\grid\GridView;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\widgets\grid\GridView;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
 use iranhmusic\shopack\mha\common\enums\enuInsurerStatus;
 use iranhmusic\shopack\mha\frontend\common\models\SupplementaryInsurerModel;
@@ -17,8 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="supplementary-insurer-index w-100">
-  <div class='card border-default'>
-		<div class='card-header bg-default'>
+  <div class='card'>
+		<div class='card-header'>
 			<div class="float-end">
         <?= SupplementaryInsurerModel::canCreate() ? Html::createButton() : '' ?>
 			</div>
@@ -46,12 +46,12 @@ $this->params['breadcrumbs'][] = $this->title;
             },
           ],
           [
-            'class' => \shopack\base\frontend\widgets\grid\EnumDataColumn::class,
+            'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
             'enumClass' => enuInsurerStatus::class,
             'attribute' => 'sinsStatus',
           ],
           [
-            'class' => \shopack\base\frontend\widgets\ActionColumn::class,
+            'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
             'header' => SupplementaryInsurerModel::canCreate() ? Html::createButton() : Yii::t('app', 'Actions'),
             'template' => '{update} {delete}{undelete}',
             'visibleButtons' => [

@@ -8,7 +8,7 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 use Yii;
 use yii\web\NotFoundHttpException;
 use shopack\base\common\helpers\HttpHelper;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 
 use function Ramsey\Uuid\v1;
@@ -18,7 +18,6 @@ class MemberKanoonModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberKanoonModelTrait;
 
 	public static $resourceName = 'mha/member-kanoon';
-  public static $primaryKey = 'mbrknnID';
 
 	public function attributeLabels()
 	{

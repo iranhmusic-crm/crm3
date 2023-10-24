@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuSpecialtyStatus;
 use shopack\aaa\frontend\common\models\UserModel;
 use shopack\base\common\validators\GroupRequiredValidator;
@@ -16,7 +16,6 @@ class SpecialtyModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\SpecialtyModelTrait;
 
 	public static $resourceName = 'mha/specialty';
-  public static $primaryKey = ['spcID'];
 
 	public $parentid = null;
 	public function getParentKey() {

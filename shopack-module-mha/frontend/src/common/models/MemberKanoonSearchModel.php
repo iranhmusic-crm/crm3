@@ -7,7 +7,7 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use yii\base\Model;
 use yii\web\ServerErrorHttpException;
-use shopack\base\frontend\rest\RestClientDataProvider;
+use shopack\base\frontend\common\rest\RestClientDataProvider;
 use iranhmusic\shopack\mha\frontend\common\models\MemberKanoonModel;
 
 class MemberKanoonSearchModel extends MemberKanoonModel

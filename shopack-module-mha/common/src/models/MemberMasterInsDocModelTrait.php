@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\enums\enuInsurerDocStatus;
 
@@ -27,6 +28,8 @@ use iranhmusic\shopack\mha\common\enums\enuInsurerDocStatus;
 */
 trait MemberMasterInsDocModelTrait
 {
+	public static $primaryKey = ['mbrminsdocID'];
+
 	public function primaryKeyValue() {
 		return $this->mbrminsdocID;
 	}
@@ -40,7 +43,7 @@ trait MemberMasterInsDocModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'mbrminsdocUUID' => ModelColumnHelper::UUID(),
 			'mbrminsdocMemberID' => [
@@ -49,7 +52,7 @@ trait MemberMasterInsDocModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrminsdocDocNumber' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
@@ -81,7 +84,7 @@ trait MemberMasterInsDocModelTrait
 				enuColumnInfo::default    => enuInsurerDocStatus::WaitForSurvey,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'mbrminsdocCreatedAt' => ModelColumnHelper::CreatedAt(),

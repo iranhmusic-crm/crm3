@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
 
@@ -29,6 +30,8 @@ use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
 */
 trait MemberDocumentModelTrait
 {
+  public static $primaryKey = 'mbrdocID';
+
 	public function primaryKeyValue() {
 		return $this->mbrdocID;
 	}
@@ -42,7 +45,7 @@ trait MemberDocumentModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'mbrdocUUID' => ModelColumnHelper::UUID(),
 			'mbrdocMemberID' => [
@@ -51,7 +54,7 @@ trait MemberDocumentModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrdocDocumentID' => [
 				enuColumnInfo::type       => 'integer',
@@ -59,7 +62,7 @@ trait MemberDocumentModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrdocTitle' => [
 				enuColumnInfo::type       => ['string', 'max' => 256],
@@ -67,7 +70,7 @@ trait MemberDocumentModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => 'like',
+				enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'mbrdocFileID' => [
 				enuColumnInfo::type       => 'safe', //'integer',
@@ -83,7 +86,7 @@ trait MemberDocumentModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrdocHistory' => [
 				enuColumnInfo::type       => JsonValidator::class,
@@ -100,7 +103,7 @@ trait MemberDocumentModelTrait
 				enuColumnInfo::default    => enuMemberDocumentStatus::WaitForApprove,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => true,
+				enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'mbrdocCreatedAt' => ModelColumnHelper::CreatedAt(),

@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionStatus;
 
@@ -25,6 +26,8 @@ use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionStatus;
 */
 trait BasicDefinitionModelTrait
 {
+  public static $primaryKey = ['bdfID'];
+
 	public function primaryKeyValue() {
 		return $this->bdfID;
 	}
@@ -38,7 +41,7 @@ trait BasicDefinitionModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'bdfUUID' => ModelColumnHelper::UUID(),
 			'bdfType' => [
@@ -47,7 +50,7 @@ trait BasicDefinitionModelTrait
 				enuColumnInfo::default    => null, //enuBasicDefinitionType
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => true,
+				enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'bdfName' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
@@ -55,7 +58,7 @@ trait BasicDefinitionModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => 'like',
+        enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'bdfStatus' => [
 				enuColumnInfo::isStatus   => true,
@@ -64,7 +67,7 @@ trait BasicDefinitionModelTrait
 				enuColumnInfo::default    => enuBasicDefinitionStatus::Active,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'bdfCreatedAt' => ModelColumnHelper::CreatedAt(),

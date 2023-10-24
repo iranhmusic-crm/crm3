@@ -4,12 +4,12 @@
  */
 
 use shopack\base\common\helpers\Url;
-use shopack\base\frontend\widgets\Select2;
-use shopack\base\frontend\widgets\DepDrop;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\widgets\Select2;
+use shopack\base\frontend\common\widgets\DepDrop;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\HttpHelper;
-use shopack\base\frontend\widgets\ActiveForm;
-use shopack\base\frontend\widgets\FormBuilder;
+use shopack\base\frontend\common\widgets\ActiveForm;
+use shopack\base\frontend\common\widgets\FormBuilder;
 use iranhmusic\shopack\mha\common\enums\enuInsurerStatus;
 ?>
 

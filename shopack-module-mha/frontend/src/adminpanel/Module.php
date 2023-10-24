@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\frontend\adminpanel;
 
 use Yii;
 use yii\base\BootstrapInterface;
+use shopack\base\frontend\adminpanel\accounting\AccountingModule;
 use iranhmusic\shopack\mha\frontend\common\controllers\BasketController;
 
 class Module
@@ -19,6 +20,11 @@ class Module
 			$this->id = 'mha';
 
 		parent::init();
+
+		$this->setModule('accounting', [
+			'class' => AccountingModule::class,
+			'basePath' => $this->getBasePath() . DIRECTORY_SEPARATOR . 'accounting',
+		]);
 	}
 
 	public function bootstrap($app)
@@ -36,6 +42,9 @@ class Module
 		} elseif ($app instanceof \yii\console\Application) {
 			$this->controllerNamespace = 'iranhmusic\shopack\mha\frontend\adminpanel\commands';
 		}
+
+		$accounting = $this->getModule('accounting');
+		$accounting->bootstrap($app);
 	}
 
 }

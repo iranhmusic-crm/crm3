@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuKanoonStatus;
 
 class KanoonModel extends RestClientActiveRecord
@@ -14,7 +14,6 @@ class KanoonModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\KanoonModelTrait;
 
 	public static $resourceName = 'mha/kanoon';
-  public static $primaryKey = ['knnID'];
 
 	public function attributeLabels()
 	{

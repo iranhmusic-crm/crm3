@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 use shopack\base\common\validators\JsonValidator;
 
 /*
@@ -30,6 +31,8 @@ use shopack\base\common\validators\JsonValidator;
 */
 trait MemberMasterInsuranceModelTrait
 {
+	public static $primaryKey = ['mbrminshstID'];
+
 	public function primaryKeyValue() {
 		return $this->mbrminshstID;
 	}
@@ -43,7 +46,7 @@ trait MemberMasterInsuranceModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'mbrminshstUUID' => ModelColumnHelper::UUID(),
 			'mbrminshstMemberID' => [
@@ -52,7 +55,7 @@ trait MemberMasterInsuranceModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrminshstMasterInsTypeID' => [
 				enuColumnInfo::type       => 'integer',
@@ -60,7 +63,7 @@ trait MemberMasterInsuranceModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrminshstSubstation' => [
 				enuColumnInfo::type       => ['string', 'max' => 128], //JsonValidator::class,

@@ -38,6 +38,8 @@ return [
 	'Are you sure you want to un-delete this item?\n{name}' => 'آیا از بازگردانی این آیتم اطمینان دارید؟\n{name}',
 
 	'Start From' => 'شروع از',
+	'Available From' => 'تاریخ شروع',
+	'Available To' => 'تاریخ پایان',
 
 	'Comment' => 'توضیح',
 	'Status' => 'وضعیت',

@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use iranhmusic\shopack\mha\frontend\common\models\MasterInsuranceModel;
 use iranhmusic\shopack\mha\common\enums\enuInsurerDocStatus;
@@ -16,7 +16,6 @@ class MemberMasterInsDocModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberMasterInsDocModelTrait;
 
 	public static $resourceName = 'mha/member-master-ins-doc';
-  public static $primaryKey = 'mbrminsdocID';
 
 	public function attributeLabels()
 	{

@@ -5,8 +5,8 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\widgets\grid\GridView;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\widgets\grid\GridView;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionStatus;
@@ -18,8 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="basic-definition-index w-100">
-  <div class='card border-default'>
-		<div class='card-header bg-default'>
+  <div class='card'>
+		<div class='card-header'>
 			<div class="float-end">
         <?= BasicDefinitionModel::canCreate() ? Html::createButton() : '' ?>
 			</div>
@@ -47,17 +47,17 @@ $this->params['breadcrumbs'][] = $this->title;
             },
           ],
           [
-            'class' => \shopack\base\frontend\widgets\grid\EnumDataColumn::class,
+            'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
             'enumClass' => enuBasicDefinitionType::class,
             'attribute' => 'bdfType',
           ],
           [
-            'class' => \shopack\base\frontend\widgets\grid\EnumDataColumn::class,
+            'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
             'enumClass' => enuBasicDefinitionStatus::class,
             'attribute' => 'bdfStatus',
           ],
           [
-            'class' => \shopack\base\frontend\widgets\ActionColumn::class,
+            'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
             'header' => BasicDefinitionModel::canCreate() ? Html::createButton() : Yii::t('app', 'Actions'),
             'template' => '{update} {delete}{undelete}',
             'visibleButtons' => [

@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\common\widgets\grid;
 
 use shopack\base\common\helpers\ArrayHelper;
-use shopack\base\frontend\widgets\Select2;
+use shopack\base\frontend\common\widgets\Select2;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 
 class KanoonDataColumn extends \kartik\grid\DataColumn

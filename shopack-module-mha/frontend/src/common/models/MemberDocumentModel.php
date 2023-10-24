@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
 
 class MemberDocumentModel extends RestClientActiveRecord
@@ -14,7 +14,6 @@ class MemberDocumentModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberDocumentModelTrait;
 
 	public static $resourceName = 'mha/member-document';
-  public static $primaryKey = 'mbrdocID';
 
 	public function attributeLabels()
 	{

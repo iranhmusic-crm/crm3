@@ -1,6 +1,6 @@
 <?php
-use shopack\base\frontend\helpers\Html;
-use shopack\base\frontend\widgets\ActiveForm;
+use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\widgets\ActiveForm;
 use iranhmusic\shopack\mha\frontend\common\models\MemberSearchModel;
 ?>
 

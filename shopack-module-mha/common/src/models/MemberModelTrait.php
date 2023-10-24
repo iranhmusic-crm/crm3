@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 // use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 
@@ -39,6 +40,8 @@ use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 */
 trait MemberModelTrait
 {
+	public static $primaryKey = ['mbrUserID'];
+
 	public function primaryKeyValue() {
 		return $this->mbrUserID;
 	}
@@ -52,7 +55,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false, //true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'mbrUUID' => ModelColumnHelper::UUID(),
 			'mbrRegisterCode' => [
@@ -61,7 +64,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrAcceptedAt' => [
 				enuColumnInfo::type       => 'safe',
@@ -69,7 +72,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrExpireDate' => [
 				enuColumnInfo::type       => 'safe',
@@ -77,7 +80,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrMusicExperiences' => [
 				enuColumnInfo::type       => ['string', 'max' => 65000], //TEXT
@@ -117,7 +120,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => 'like',
+        enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'mbrInstrumentID' => [
 				enuColumnInfo::type       => 'integer',
@@ -125,7 +128,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrSingID' => [
 				enuColumnInfo::type       => 'integer',
@@ -133,7 +136,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrResearchID' => [
 				enuColumnInfo::type       => 'integer',
@@ -141,7 +144,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrJob' => [
 				enuColumnInfo::type       => ['string', 'max' => 512],
@@ -149,7 +152,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => 'like',
+        enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'mbrArtDegree' => [
 				enuColumnInfo::type       => 'integer',
@@ -157,7 +160,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrHonarCreditCode' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
@@ -165,7 +168,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => 'like',
+        enuColumnInfo::search     => enuColumnSearchType::like,
 			],
 			'mbrStatus' => [
 				enuColumnInfo::isStatus   => true,
@@ -174,7 +177,7 @@ trait MemberModelTrait
 				enuColumnInfo::default    => enuMemberStatus::WaitingForApproval,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'mbrCreatedAt' => ModelColumnHelper::CreatedAt(),

@@ -3,9 +3,9 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-use shopack\base\frontend\helpers\Html;
-use shopack\base\frontend\widgets\PopoverX;
-use shopack\base\frontend\widgets\DetailView;
+use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\widgets\PopoverX;
+use shopack\base\frontend\common\widgets\DetailView;
 use shopack\aaa\frontend\common\models\UserModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberKanoonModel;
@@ -19,8 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div id='member-report-view' class='w-100'>
-	<div class='card border-default'>
-		<div class='card-header bg-default'>
+	<div class='card'>
+		<div class='card-header'>
 			<div class="float-end">
 				<?= Html::confirmButton(yii::t('mha', 'Run Report'), [
 					'run',

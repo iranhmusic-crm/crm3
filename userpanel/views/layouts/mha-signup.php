@@ -4,7 +4,7 @@
 
 use app\assets\AppAsset;
 use app\widgets\Alert;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 
 // $this->registerJs('var globalBaseUrl = "' . Yii::$app->request->baseUrl . '";', \yii\web\View::POS_BEGIN);
 AppAsset::register($this);

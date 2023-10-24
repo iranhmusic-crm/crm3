@@ -5,7 +5,7 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
 
 $this->title = Yii::t('mha', 'Documents');
@@ -14,8 +14,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="member-document-index w-100">
-  <div class='card border-default'>
-		<div class='card-header bg-default'>
+  <div class='card'>
+		<div class='card-header'>
 			<div class="float-end">
         <?= MemberDocumentModel::canCreate() ? Html::createButton() : '' ?>
 			</div>

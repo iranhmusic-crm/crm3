@@ -7,8 +7,8 @@
 
 use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\StringHelper;
-use shopack\base\frontend\helpers\Html;
-use shopack\base\frontend\widgets\grid\GridView;
+use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\widgets\grid\GridView;
 use shopack\aaa\common\enums\enuGender;
 use shopack\aaa\common\enums\enuUserStatus;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;

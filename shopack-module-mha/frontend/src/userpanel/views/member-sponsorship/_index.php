@@ -5,8 +5,8 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\widgets\grid\GridView;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\widgets\grid\GridView;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use shopack\aaa\common\enums\enuGender;
@@ -31,12 +31,12 @@ use iranhmusic\shopack\mha\common\enums\enuSponsorshipType;
       'mbrspsFirstName',
       'mbrspsLastName',
       [
-        'class' => \shopack\base\frontend\widgets\grid\EnumDataColumn::class,
+        'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
         'enumClass' => enuSponsorshipType::class,
         'attribute' => 'mbrspsType',
       ],
       [
-        'class' => \shopack\base\frontend\widgets\grid\EnumDataColumn::class,
+        'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
         'enumClass' => enuGender::class,
         'attribute' => 'mbrspsGender',
       ],
@@ -55,7 +55,7 @@ use iranhmusic\shopack\mha\common\enums\enuSponsorshipType;
       // 'mbrspsSubstation',
       // 'mbrspsInsuranceCode',
       [
-        'class' => \shopack\base\frontend\widgets\ActionColumn::class,
+        'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
         'header' => MemberModel::canCreate() ? Html::createButton() : Yii::t('app', 'Actions'),
         'template' => '{update} {delete}{undelete}',
         'visibleButtons' => [

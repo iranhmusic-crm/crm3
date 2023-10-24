@@ -5,7 +5,7 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\frontend\common\models\MemberSpecialtyModel;
 
 $this->title = Yii::t('mha', 'Specialties');
@@ -13,8 +13,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="member-specialty-index w-100">
-  <div class='card border-default'>
-		<div class='card-header bg-default'>
+  <div class='card'>
+		<div class='card-header'>
 			<div class="float-end">
         <?= MemberSpecialtyModel::canCreate() ? Html::createButton() : '' ?>
 			</div>

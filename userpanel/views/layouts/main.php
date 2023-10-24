@@ -7,8 +7,8 @@ use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 use app\assets\AppAsset;
 use app\widgets\Alert;
-use shopack\base\frontend\helpers\Html;
-use shopack\base\frontend\web\SideNav;
+use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\web\SideNav;
 
 // $this->registerJs('var globalBaseUrl = "' . Yii::$app->request->baseUrl . '";', \yii\web\View::POS_BEGIN);
 AppAsset::register($this);
@@ -201,7 +201,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
               [
                 'label' => Yii::t('mha', 'Memberships'),
                 // 'icon' => 'badge-dollar',
-                'url' => '/mha/member-membership',
+                // 'url' => '/mha/member-membership',
+                'url' => '/mha/accounting/membership',
               ],
             ]);
           }

@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use iranhmusic\shopack\mha\frontend\common\models\MasterInsuranceModel;
 
@@ -15,7 +15,6 @@ class MemberMasterInsuranceModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberMasterInsuranceModelTrait;
 
 	public static $resourceName = 'mha/member-master-insurance';
-  public static $primaryKey = 'mbrminshstID';
 
 	public function attributeLabels()
 	{

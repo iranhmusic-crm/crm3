@@ -139,6 +139,22 @@ return [
 	'Description Field Type' => 'نوع فیلد توضیحات',
 	'Description Field Label' => 'عنوان فیلد توضیحات',
 
+	'Services Definition and Fee' => 'تعاریف و هزینه‌های خدمات',
+	'Card Issuance' => 'صدور کارت',
+	'Postage' => 'خدمات پستی',
+
+
+
+
+
+
+
+
+
+
+
+
+
 	'Memberships' => 'دوره‌های عضویت',
 	'Membership' => 'دوره‌ی عضویت',
 	'Membership Info' => 'مشخصات دوره‌ی عضویت',
@@ -156,6 +172,44 @@ return [
 	'Member Membership Info' => 'مشخصات دوره‌ی عضویت عضو',
 	'Create Member Membership' => 'ایجاد دوره‌ی عضویت عضو',
 	'Update Member Membership' => 'ویرایش دوره‌ی عضویت عضو',
+
+
+
+
+	'Membership Products' => 'دوره‌های عضویت',
+	'Membership Product' => 'دوره‌ی عضویت',
+	'Membership Product Info' => 'مشخصات دوره‌ی عضویت',
+	'Create Membership Product' => 'ایجاد دوره‌ی عضویت',
+	'Update Membership Product' => 'ویرایش دوره‌ی عضویت',
+
+	'Membership Saleables' => 'قیمت گذاری‌های دوره‌ی عضویت',
+	'Membership Saleable' => 'قیمت گذاری‌ دوره‌ی عضویت',
+	'Membership Saleable Info' => 'مشخصات قیمت گذاری‌ دوره‌ی عضویت',
+	'Create Membership Saleable' => 'ایجاد قیمت گذاری‌ دوره‌ی عضویت',
+	'Update Membership Saleable' => 'ویرایش قیمت گذاری‌ دوره‌ی عضویت',
+
+	'Membership Cards' => 'کارت‌های عضویت',
+	'Membership Card' => 'کارت عضویت',
+	'Membership Card Info' => 'مشخصات کارت عضویت',
+	'Create Membership Card' => 'ایجاد کارت عضویت',
+	'Update Membership Card' => 'ویرایش کارت عضویت',
+
+	'Membership Card Products' => 'صدور کارت عضویت',
+	'Membership Card Product' => 'صدور کارت عضویت',
+	'Membership Card Product Info' => 'مشخصات صدور کارت عضویت',
+	'Create Membership Card Product' => 'ایجاد صدور کارت عضویت',
+	'Update Membership Card Product' => 'ویرایش صدور کارت عضویت',
+
+	'Membership Card Saleables' => 'قیمت گذاری‌های کارت عضویت',
+	'Membership Card Saleable' => 'قیمت گذاری‌ کارت عضویت',
+	'Membership Card Saleable Info' => 'مشخصات قیمت گذاری‌ کارت عضویت',
+	'Create Membership Card Saleable' => 'ایجاد قیمت گذاری‌ کارت عضویت',
+	'Update Membership Card Saleable' => 'ویرایش قیمت گذاری‌ کارت عضویت',
+
+
+
+
+
 
 	'Yearly Price' => 'مبلغ سالیانه',
 
@@ -209,6 +263,7 @@ return [
 
 	'The member does not have a register code' => 'کد عضویت خالی است',
 	'Membership start date is blank' => 'تاریخ شروع عضویت مشخص نشده است',
+	'Active Membership not found' => 'شما دوره عضویت فعالی ندارید',
 
 	'Print Card (Front)' => 'چاپ روی کارت',
 	'Print Card (Back)' => 'چاپ پشت کارت',

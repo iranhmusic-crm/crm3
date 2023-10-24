@@ -5,19 +5,33 @@
 
 namespace iranhmusic\shopack\mha\backend;
 
+use Yii;
 use yii\base\BootstrapInterface;
-use shopack\base\common\shop\ShopModuleTrait;
-use iranhmusic\shopack\mha\backend\models\MembershipModel;
-use iranhmusic\shopack\mha\backend\models\MemberMembershipModel;
+// use shopack\base\common\shop\ShopModuleTrait;
+// use iranhmusic\shopack\mha\backend\models\MembershipModel;
+// use iranhmusic\shopack\mha\backend\models\MemberMembershipModel;
+use iranhmusic\shopack\mha\backend\accounting\AccountingModule;
 
 class Module
 	extends \shopack\base\common\base\BaseModule
 	implements BootstrapInterface
 {
-	use ShopModuleTrait;
+	// use ShopModuleTrait;
 
 	//used for trust message channel
 	public $servicePrivateKey;
+
+	// public $modules = [
+	// 	'accounting' => [
+	// 		'class' => AccountingModule::class,
+	// 	],
+	// ];
+
+	// public function __construct($id)
+	// {
+
+	// 	Yii::$app->bootstrap[] = $id . '/accounting';
+	// }
 
 	public function init()
 	{
@@ -26,14 +40,19 @@ class Module
 
 		parent::init();
 
-		$this->registerSaleable(MembershipModel::class, MemberMembershipModel::class);
+		$this->setModule('accounting', [
+			'class' => AccountingModule::class,
+		]);
+
+		// $this->registerSaleable(MembershipModel::class, MemberMembershipModel::class);
 	}
 
 	public function bootstrap($app)
 	{
-		if ($app instanceof \yii\web\Application)
-		{
-			$rules = [
+		if ($app instanceof \yii\web\Application) {
+			$rules = [];
+
+			$rules = array_merge($rules, [
 				[
 					'class' => \yii\rest\UrlRule::class,
 					// 'prefix' => 'v1',
@@ -159,26 +178,28 @@ class Module
 					'controller' => [$this->id . '/member-sponsorship'],
 					'pluralize' => false,
 				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/membership'],
-					'pluralize' => false,
+				// [
+				// 	'class' => \yii\rest\UrlRule::class,
+				// 	// 'prefix' => 'v1',
+				// 	'controller' => [$this->id . '/membership'],
+				// 	'pluralize' => false,
 
-					'extraPatterns' => [
-						'POST add-to-basket' => 'add-to-basket',
-					],
-				],
-				[
-					'class' => \yii\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/member-membership'],
-					'pluralize' => false,
+				// 	// 'extraPatterns' => [
+				// 	'patterns' => [
+				// 		'POST add-to-basket' => 'add-to-basket',
+				// 	],
+				// ],
+				// [
+				// 	'class' => \yii\rest\UrlRule::class,
+				// 	// 'prefix' => 'v1',
+				// 	'controller' => [$this->id . '/member-membership'],
+				// 	'pluralize' => false,
 
-					'extraPatterns' => [
-						'GET renewal-info' => 'renewal-info',
-					],
-				],
+				// 	// 'extraPatterns' => [
+				// 	'patterns' => [
+				// 		'GET renewal-info' => 'renewal-info',
+				// 	],
+				// ],
 				[
 					'class' => \yii\rest\UrlRule::class,
 					// 'prefix' => 'v1',
@@ -226,13 +247,17 @@ class Module
 					],
 				],
 
-			];
+			]);
 
 			$app->urlManager->addRules($rules, false);
 
 		} elseif ($app instanceof \yii\console\Application) {
 			$this->controllerNamespace = 'iranhmusic\shopack\mha\backend\commands';
 		}
+
+		$accounting = $this->getModule('accounting');
+		$accounting->bootstrap($app);
+
 	}
 
 }

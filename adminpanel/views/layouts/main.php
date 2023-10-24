@@ -7,8 +7,8 @@ use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 use app\assets\AppAsset;
 use app\widgets\Alert;
-use shopack\base\frontend\helpers\Html;
-use shopack\base\frontend\web\SideNav;
+use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\web\SideNav;
 
 // $this->registerJs('var globalBaseUrl = "' . Yii::$app->request->baseUrl . '";', \yii\web\View::POS_BEGIN);
 AppAsset::register($this);
@@ -150,7 +150,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
             ],
             ['label' => Yii::t('aaa', 'Users'), 'icon' => 'info-sign', 'url' => ['/aaa/user']],
             ['label' => Yii::t('aaa', 'Gateways'), 'icon' => 'info-sign', 'url' => ['/aaa/gateway']],
-
             [
               'label' => Yii::t('aaa', 'Files'),
               'items' => [
@@ -158,13 +157,17 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                 ['label' => Yii::t('aaa', 'Upload Queue'), 'icon' => 'info-sign', 'url' => ['/aaa/upload-queue']],
               ],
             ],
-
             [
               'label' => Yii::t('aaa', 'Messages'),
               'items' => [
                 ['label' => Yii::t('aaa', 'Messages'), 'icon' => 'info-sign', 'url' => ['/aaa/message']],
                 ['label' => Yii::t('aaa', 'Message Templates'), 'icon' => 'info-sign', 'url' => ['/aaa/message-template']],
               ],
+            ],
+            [
+              'label' => Yii::t('aaa', 'Delivery Methods'),
+              'icon' => 'info-sign',
+              'url' => ['/aaa/delivery-method'],
             ],
           ],
         ],
@@ -175,12 +178,15 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
             ['label' => Yii::t('mha', 'Members'), 'icon' => 'info-sign', 'url' => ['/mha/member']],
             ['label' => Yii::t('mha', 'Documents'), 'icon' => 'info-sign', 'url' => ['/mha/member-document']],
             [
-              'label' => Yii::t('mha', 'Memberships'),
+              'label' => Yii::t('mha', 'Members Memberships'),
               'icon' => 'info-sign',
-              'items' => [
-                ['label' => Yii::t('mha', 'Memberships Definitions'), 'icon' => 'info-sign', 'url' => ['/mha/membership']],
-                ['label' => Yii::t('mha', 'Members Memberships'), 'icon' => 'info-sign', 'url' => ['/mha/member-membership']],
-              ],
+              // 'url' => ['/mha/member-membership'],
+              'url' => ['/mha/accounting/membership-user-asset'],
+            ],
+            [
+              'label' => Yii::t('mha', 'Membership Cards'),
+              'icon' => 'info-sign',
+              'url' => ['/mha/accounting/membership-card-user-asset'],
             ],
             [
               'label' => Yii::t('mha', 'Kanoons'),
@@ -198,7 +204,22 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                 ['label' => Yii::t('mha', 'Supplementary Insurance Documents List'), 'icon' => 'info-sign', 'url' => ['/mha/member-supplementary-ins-doc']],
               ],
             ],
-
+            [
+              'label' => Yii::t('mha', 'Services Definition and Fee'),
+              'icon' => 'info-sign',
+              'items' => [
+                [
+                  'label' => Yii::t('mha', 'Memberships'),
+                  'icon' => 'info-sign',
+                  'url' => ['/mha/accounting/membership-product'],
+                ],
+                [
+                  'label' => Yii::t('mha', 'Membership Card Products'), //'Card Issuance'),
+                  'icon' => 'info-sign',
+                  'url' => ['/mha/accounting/membership-card-product'],
+                ],
+              ],
+            ],
             [
               'label' => Yii::t('app', 'Settings'),
               'items' => [

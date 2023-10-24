@@ -105,7 +105,7 @@ class MemberController extends BaseRestController
 
 	public function actionCreate()
 	{
-		PrivHelper::checkPriv('mha/member/crud', '1000');
+		PrivHelper::checkPriv(['mha/member/crud' => '1000']);
 
 		$model = new MemberModel();
 		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
@@ -187,7 +187,7 @@ class MemberController extends BaseRestController
 			throw new NotFoundHttpException("parameters not provided");
 
 		if ($model->mbrUserID != Yii::$app->user->id)
-			PrivHelper::checkPriv('mha/member/crud', '1000');
+			PrivHelper::checkPriv(['mha/member/crud' => '1000']);
 
 		try {
 			$result = $model->signup();

@@ -7,7 +7,7 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
 use shopack\base\common\helpers\HttpHelper;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 
 class DocumentModel extends RestClientActiveRecord
@@ -15,7 +15,6 @@ class DocumentModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\DocumentModelTrait;
 
 	public static $resourceName = 'mha/document';
-  public static $primaryKey = ['docID'];
 
 	public function attributeLabels()
 	{
@@ -46,15 +45,15 @@ class DocumentModel extends RestClientActiveRecord
 	}
 
 	public function canUpdate() {
-		return ($this->docType != enuDocumentStatus::Removed);
+		return ($this->docStatus != enuDocumentStatus::Removed);
 	}
 
 	public function canDelete() {
-		return ($this->docType != enuDocumentStatus::Removed);
+		return ($this->docStatus != enuDocumentStatus::Removed);
 	}
 
 	public function canUndelete() {
-		return ($this->docType == enuDocumentStatus::Removed);
+		return ($this->docStatus == enuDocumentStatus::Removed);
 	}
 
 }

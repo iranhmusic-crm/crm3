@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
@@ -33,6 +34,8 @@ trait MemberKanoonModelTrait
 {
 	// public $mbrRegisterCode = null;
 
+	public static $primaryKey = ['mbrknnID'];
+
 	public function primaryKeyValue() {
 		return $this->mbrknnID;
 	}
@@ -55,7 +58,7 @@ trait MemberKanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'mbrknnUUID' => ModelColumnHelper::UUID(),
 			'mbrknnMemberID' => [
@@ -64,7 +67,7 @@ trait MemberKanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrknnKanoonID' => [
 				enuColumnInfo::type       => 'integer',
@@ -72,7 +75,7 @@ trait MemberKanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrknnParams' => [
 				enuColumnInfo::type       => JsonValidator::class,
@@ -88,7 +91,7 @@ trait MemberKanoonModelTrait
 				enuColumnInfo::default    => 1,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => true,
+				enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			//enuKanoonMembershipDegree
 			'mbrknnMembershipDegree' => [
@@ -97,7 +100,7 @@ trait MemberKanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrknnComment' => [
 				enuColumnInfo::type       => ['string', 'max' => 65500],
@@ -105,7 +108,7 @@ trait MemberKanoonModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrknnHistory' => [
 				enuColumnInfo::type       => JsonValidator::class,
@@ -122,7 +125,7 @@ trait MemberKanoonModelTrait
 				enuColumnInfo::default    => enuMemberKanoonStatus::WaitForSend,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => true,
+				enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 
 			'mbrknnCreatedAt' => ModelColumnHelper::CreatedAt(),

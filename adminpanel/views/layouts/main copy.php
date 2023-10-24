@@ -5,11 +5,11 @@
 use app\assets\AppAsset;
 use app\widgets\Alert;
 use yii\bootstrap5\Breadcrumbs;
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
 // use kartik\sidenav\SideNav;
-use shopack\base\frontend\web\SideNav;
+use shopack\base\frontend\common\web\SideNav;
 
 // $this->registerJs('var globalBaseUrl = "' . Yii::$app->request->baseUrl . '";', \yii\web\View::POS_BEGIN);
 AppAsset::register($this);

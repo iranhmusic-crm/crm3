@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
-use shopack\base\frontend\rest\RestClientActiveRecord;
+use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use iranhmusic\shopack\mha\frontend\common\models\SponsorshipModel;
 
@@ -15,7 +15,6 @@ class MemberSponsorshipModel extends RestClientActiveRecord
 	use \iranhmusic\shopack\mha\common\models\MemberSponsorshipModelTrait;
 
 	public static $resourceName = 'mha/member-sponsorship';
-  public static $primaryKey = 'mbrspsID';
 
 	public function attributeLabels()
 	{

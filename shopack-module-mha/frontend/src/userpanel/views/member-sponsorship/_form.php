@@ -3,11 +3,11 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-use shopack\base\frontend\widgets\Select2;
-use shopack\base\frontend\widgets\datetime\DatePicker;
-use shopack\base\frontend\helpers\Html;
-use shopack\base\frontend\widgets\ActiveForm;
-use shopack\base\frontend\widgets\FormBuilder;
+use shopack\base\frontend\common\widgets\Select2;
+use shopack\base\frontend\common\widgets\datetime\DatePicker;
+use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\widgets\ActiveForm;
+use shopack\base\frontend\common\widgets\FormBuilder;
 use shopack\aaa\common\enums\enuGender;
 use iranhmusic\shopack\mha\frontend\common\models\MasterInsurerTypeModel;
 use iranhmusic\shopack\mha\common\enums\enuSponsorshipType;

@@ -5,7 +5,7 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\helpers\Html;
+use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\frontend\common\models\MemberMasterInsuranceModel;
 
 $this->title = Yii::t('mha', 'Member Master Insurances');
@@ -14,8 +14,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="member-master-insurance-index w-100">
-  <div class='card border-default'>
-		<div class='card-header bg-default'>
+  <div class='card'>
+		<div class='card-header'>
 			<div class="float-end">
         <?= MemberMasterInsuranceModel::canCreate() ? Html::createButton() : '' ?>
 			</div>

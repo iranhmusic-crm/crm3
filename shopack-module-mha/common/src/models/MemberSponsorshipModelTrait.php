@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\common\models;
 
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
+use shopack\base\common\rest\enuColumnSearchType;
 
 /*
 'mbrspsID',
@@ -31,6 +32,8 @@ use shopack\base\common\rest\enuColumnInfo;
 */
 trait MemberSponsorshipModelTrait
 {
+	public static $primaryKey = ['mbrspsID'];
+
 	public function primaryKeyValue() {
 		return $this->mbrspsID;
 	}
@@ -44,7 +47,7 @@ trait MemberSponsorshipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
       'mbrspsUUID' => ModelColumnHelper::UUID(),
 			'mbrspsMemberID' => [
@@ -53,7 +56,7 @@ trait MemberSponsorshipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			//iranhmusic\shopack\mha\common\enums\enuSponsorshipType
 			'mbrspsType' => [
@@ -134,7 +137,7 @@ trait MemberSponsorshipModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => true,
+        enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			'mbrspsSubstation' => [
 				enuColumnInfo::type       => ['string', 'max' => 64],
