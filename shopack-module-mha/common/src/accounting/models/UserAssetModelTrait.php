@@ -18,6 +18,18 @@ trait UserAssetModelTrait
 {
 	use BaseUserAssetModelTrait;
 
+  public static function getActorModelClassInfo()
+	{
+		$className = get_called_class();
+
+		if (str_contains($className, '\\backend\\'))
+			$className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
+		else
+			$className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
+
+		return [$className, 'mbrUserID'];
+	}
+
 	public static function getSaleableModelClass()
 	{
 		$className = get_called_class();

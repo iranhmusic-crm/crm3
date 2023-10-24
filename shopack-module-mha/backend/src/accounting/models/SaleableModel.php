@@ -11,6 +11,7 @@ use yii\web\UnprocessableEntityHttpException;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
+use shopack\base\common\accounting\enums\enuUserAssetStatus;
 
 class SaleableModel extends MhaActiveRecord
 {
@@ -66,7 +67,14 @@ class SaleableModel extends MhaActiveRecord
 		// $userAssetModel->uasValidToHour     =
 		// $userAssetModel->uasDurationMinutes =
 		// $userAssetModel->uasBreakedAt       =
-		// $userAssetModel->uasStatus          =
+
+		if ($saleableModel->product->prdMhaType == enuMhaProductType::Membership) {
+			$userAssetModel->uasStatus = enuUserAssetStatus::Active;
+		} else if ($saleableModel->product->prdMhaType == enuMhaProductType::MembershipCard) {
+			// $userAssetModel->uasStatus = wait for card print
+		} else {
+			throw new UnprocessableEntityHttpException("Invalid mha product type ({$saleableModel->product->prdMhaType})");
+		}
 
 		if ($userAssetModel->save() == false)
 			throw new ServerErrorHttpException('It is not possible to create user asset');
@@ -76,8 +84,7 @@ class SaleableModel extends MhaActiveRecord
 			self::ProcessVoucherItem_Membership($userAssetModel, $voucherItemdata);
 		} else if ($saleableModel->product->prdMhaType == enuMhaProductType::MembershipCard) {
 			self::ProcessVoucherItem_MembershipCard($userAssetModel, $voucherItemdata);
-		} else
-			throw new UnprocessableEntityHttpException("Invalid mha product type ({$saleableModel->product->prdMhaType})");
+		}
 	}
 
 	public static function ProcessVoucherItem_Membership($userAssetModel, $voucherItemdata)

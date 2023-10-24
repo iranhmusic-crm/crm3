@@ -57,6 +57,7 @@ class UserAssetController extends BaseUserAssetController
 		return [
 			'index' => function($query) {
 				$query
+					->joinWith('actor')
 					->joinWith('saleable')
 					->joinWith('saleable.product')
 					->joinWith('coupon')
@@ -67,6 +68,7 @@ class UserAssetController extends BaseUserAssetController
 			},
 			'view' => function($query) {
 				$query
+					->joinWith('actor')
 					->joinWith('saleable')
 					->joinWith('saleable.product')
 					->joinWith('coupon')

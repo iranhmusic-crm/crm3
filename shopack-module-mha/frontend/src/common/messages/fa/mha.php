@@ -188,6 +188,11 @@ return [
 	'Create Membership Saleable' => 'ایجاد قیمت گذاری‌ دوره‌ی عضویت',
 	'Update Membership Saleable' => 'ویرایش قیمت گذاری‌ دوره‌ی عضویت',
 
+	'Membership Cards' => 'کارت‌های عضویت',
+	'Membership Card' => 'کارت عضویت',
+	'Membership Card Info' => 'مشخصات کارت عضویت',
+	'Create Membership Card' => 'ایجاد کارت عضویت',
+	'Update Membership Card' => 'ویرایش کارت عضویت',
 
 	'Membership Card Products' => 'صدور کارت عضویت',
 	'Membership Card Product' => 'صدور کارت عضویت',

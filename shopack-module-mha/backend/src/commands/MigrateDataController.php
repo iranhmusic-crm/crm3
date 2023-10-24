@@ -31,21 +31,16 @@ use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 use shopack\aaa\common\enums\enuUserEducationLevel;
 use shopack\aaa\common\enums\enuUserMaritalStatus;
 use shopack\aaa\common\enums\enuUserMilitaryStatus;
+use shopack\base\common\accounting\enums\enuUserAssetStatus;
 
 /*
 USE dbiranhmusic_yii;
 
-UPDATE tbl_AAA_User SET usrImageFileID = NULL
-	WHERE usrID > 100 AND usrImageFileID IS NOT NULL;
-
-DELETE FROM tbl_SYS_ActionLogs;
 DELETE FROM tbl_MHA_MemberMasterInsuranceHistory;
-DELETE FROM tbl_MHA_MemberMasterInsDocHistory;
 DELETE FROM tbl_MHA_MemberMasterInsDoc;
 DELETE FROM tbl_MHA_MasterInsurer;
 DELETE FROM tbl_MHA_MasterInsurerType;
 DELETE FROM tbl_MHA_SupplementaryInsurer;
-DELETE FROM tbl_MHA_MemberSupplementaryInsDocHistory;
 DELETE FROM tbl_MHA_MemberSupplementaryInsDoc;
 DELETE FROM tbl_MHA_Member_Specialty;
 DELETE FROM tbl_MHA_Specialty;
@@ -55,32 +50,33 @@ DELETE FROM tbl_MHA_Member_Document;
 DELETE FROM tbl_MHA_Document;
 DELETE FROM tbl_MHA_MemberMembership;
 DELETE FROM tbl_MHA_Membership;
-DELETE FROM tbl_MHA_BasicDefinition;
 DELETE FROM tbl_MHA_Member WHERE mbrUserID > 100;
-DELETE FROM tbl_AAA_UploadFile WHERE tbl_AAA_UploadFile.uflOwnerUserID > 100;
-DELETE FROM tbl_AAA_Wallet WHERE tbl_AAA_Wallet.walOwnerUserID > 100;
-DELETE FROM tbl_AAA_Message WHERE tbl_AAA_Message.msgUserID > 100;
-DELETE FROM tbl_AAA_ApprovalRequest WHERE tbl_AAA_ApprovalRequest.aprUserID > 100;
-DELETE FROM tbl_AAA_ForgotPasswordRequest WHERE tbl_AAA_ForgotPasswordRequest.fprUserID > 100;
+DELETE FROM tbl_MHA_BasicDefinition;
 
 UPDATE tbl_AAA_User
 	SET tbl_AAA_User.usrCreatedBy = NULL
     , tbl_AAA_User.usrUpdatedBy = NULL
+    , tbl_AAA_User.usrImageFileID = null
 	WHERE usrID > 100;
 
-UPDATE tbl_AAA_User
-	SET tbl_AAA_User.usrStateID = NULL
-    , tbl_AAA_User.usrCityOrVillageID = NULL
-;
+DELETE FROM tbl_AAA_UploadFile WHERE tbl_AAA_UploadFile.uflOwnerUserID > 100;
+
+DELETE tbl_AAA_WalletTransaction FROM tbl_AAA_WalletTransaction INNER JOIN tbl_AAA_Wallet ON tbl_AAA_Wallet.walID = tbl_AAA_WalletTransaction.wtrWalletID WHERE tbl_AAA_Wallet.walOwnerUserID > 100;
+delete from tbl_AAA_OfflinePayment WHERE ofpOwnerUserID > 100;
+DELETE FROM tbl_AAA_Wallet WHERE tbl_AAA_Wallet.walOwnerUserID > 100;
+
+DELETE FROM tbl_AAA_Message WHERE tbl_AAA_Message.msgUserID > 100;
+DELETE FROM tbl_AAA_ApprovalRequest WHERE tbl_AAA_ApprovalRequest.aprUserID > 100;
+DELETE FROM tbl_AAA_ForgotPasswordRequest WHERE tbl_AAA_ForgotPasswordRequest.fprUserID > 100;
+
+DELETE FROM tbl_MHA_Report;
+DELETE FROM tbl_AAA_Voucher WHERE tbl_AAA_Voucher.vchOwnerUserID > 100;
+DELETE FROM tbl_AAA_User WHERE tbl_AAA_User.usrID > 100;
+
+DELETE FROM tbl_convert;
 
 DELETE FROM tbl_SYS_ActionLogs;
 
-DELETE FROM tbl_AAA_GeoCityOrVillage;
-DELETE FROM tbl_AAA_GeoState;
-
-DELETE FROM tbl_AAA_User WHERE usrID > 100;
-
-DELETE FROM tbl_convert;
 
 
 
@@ -253,13 +249,13 @@ class MigrateDataController extends Controller
 
       $this->convert_expert_to_Mbr_Specialty($convertTableData);
 
-      $this->convert_profile_to_UserImage($convertTableData);
+      // $this->convert_profile_to_UserImage($convertTableData);
 
-      $this->convert_document_to_Mbr_Document($convertTableData);
+      // $this->convert_document_to_Mbr_Document($convertTableData);
 
       $this->convert_billing($convertTableData);
 
-      // $this->convert_onlinebank($convertTableData);
+      // NOT COMPLETED $this->convert_onlinebank($convertTableData);
 
       $this->convert_create_default_password_for_members($convertTableData);
 
@@ -2649,6 +2645,47 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
+  public function ensureMembershipSaleableExists()
+  {
+    $this->log("ensureMembershipSaleableExists");
+
+    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+
+    $qry =<<<SQL
+  INSERT IGNORE INTO tbl_MHA_Accounting_Unit
+     SET untID       = 1
+       , untUUID     = UUID()
+       , untName     = 'سال'
+       , untI18NData = '{"en": {"untName": "Year"}}'
+SQL;
+    $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+    $qry =<<<SQL
+  INSERT IGNORE INTO tbl_MHA_Accounting_Product
+     SET prdID      = 1
+       , prdUUID    = UUID()
+       , prdName    = 'حق عضویت سالیانه'
+       , prdType    = 'D'
+       , prdUnitID  = 1
+       , prdMhaType = 'M'
+SQL;
+    $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+    $qry =<<<SQL
+  INSERT IGNORE INTO tbl_MHA_Accounting_Saleable
+     SET slbID                = 1
+       , slbUUID              = UUID()
+       , slbProductID         = 1
+       , slbCode              = UUID()
+       , slbName              = 'پیش فرض برای کانورت اطلاعات'
+       , slbAvailableFromDate = '1921/03/21 00:00:00'
+       , slbBasePrice         = 50000
+SQL;
+    $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+    return 1;
+  }
+
   public function convert_billing(&$convertTableData)
   {
     $this->log("billing:");
@@ -2775,17 +2812,7 @@ SQL;
   //  WHERE convert_fullname IS NULL
     $oldcrmdbv2->createCommand($qry)->execute();
 
-    //-- check default membership -------------------------------
-    $membershipID = 1;
-    $qry =<<<SQL
-  INSERT IGNORE INTO tbl_MHA_Membership
-     SET mshpID          = {$membershipID}
-       , mshpUUID        = UUID()
-       , mshpTitle       = 'پیش فرض برای کانورت اطلاعات'
-       , mshpStartFrom   = '1921/03/21 00:00:00'
-       , mshpYearlyPrice = 50000
-SQL;
-    $this->queryExecute($qry, __FUNCTION__, __LINE__);
+    $membershipID = $this->ensureMembershipSaleableExists();
 
     //---------------------------------
     $fnGetConst = function($value) { return $value; };
@@ -3079,6 +3106,7 @@ SQL;
             , vchOwnerUserID = {$userid}
             , vchType        = '{$fnGetConst(enuVoucherType::Credit)}'
             , vchAmount      = {$tbl_billing_price}
+            , vchTotalAmount = {$tbl_billing_price}
             , vchOfflinePaid = {$tbl_billing_price}
             , vchItems       = '{"inc-wallet-id":"{$walid}"}'
             , vchStatus      = '{$fnGetConst(enuVoucherStatus::Finished)}'
@@ -3133,17 +3161,25 @@ SQL;
 
               //phase 2: membership
               //create basket voucher
+              $vchItemKey = Uuid::uuid4()->toString();
               $vchItems = Json::encode([
                 [
-                  'key'       => Uuid::uuid4()->toString(),
-                  'userid'    => $userid,
+                  'key'       => $vchItemKey,
+                  // 'userid'    => $userid,
                   'service'   => 'mha',
                   // 'slbkey'    => 'mbrshp',
                   'slbid'     => $membershipID,
                   'desc'      => 'حق عضویت تا ' . $tbl_billing_expire_jalali,
                   'qty'       => 1,
-                  'maxqty'    => 1,
+                  'unit'			=> 'سال',
+                  'prdtype'		=> 'D',
                   'unitprice' => $tbl_billing_price,
+                  // 'slbinfo'		=> [
+                  //   'startDate' => $startDate,
+                  //   'endDate' => $endDate,
+                  // ],
+                  'maxqty'    => 1,
+                  'qtystep'		=> 0, //0: do not allow to change qty in basket
                 ],
               ]);
 
@@ -3153,6 +3189,7 @@ SQL;
             , vchOwnerUserID  = {$userid}
             , vchType         = '{$fnGetConst(enuVoucherType::Basket)}'
             , vchAmount       = {$tbl_billing_price}
+            , vchTotalAmount  = {$tbl_billing_price}
             , vchPaidByWallet = {$tbl_billing_price}
             , vchTotalPaid    = {$tbl_billing_price}
             , vchItems        = '{$vchItems}'
@@ -3181,14 +3218,16 @@ SQL;
 
               //member membership
               $qry =<<<SQL
-  INSERT INTO tbl_MHA_MemberMembership
-          SET mbrshpUUID         = UUID()
-            , mbrshpMemberID     = {$userid}
-            , mbrshpMembershipID = {$membershipID}
-            , mbrshpVoucherID    = {$voucherid}
-            , mbrshpStartDate    = {$tbl_billing_expire}
-            , mbrshpEndDate      = {$tbl_billing_expire}
-            , mbrshpStatus       = '{$fnGetConst(enuMemberMembershipStatus::Paid)}'
+  INSERT INTO tbl_MHA_Accounting_UserAsset
+          SET uasUUID						 = {$vchItemKey}
+            , uasActorID         = {$userid}
+            , uasSaleableID      = {$membershipID}
+            , uasQty             = 1
+            , uasVoucherID       = {$voucherid}
+            , uasVoucherItemInfo = '{$vchItems}'
+            , uasValidFromDate   = NULL
+            , uasValidToDate     = {$tbl_billing_expire}
+            , uasStatus          = '{$fnGetConst(enuUserAssetStatus::Active)}'
 SQL;
               $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
@@ -3318,17 +3357,7 @@ SQL;
     $gatewayID = intval($gtwrow['gtwID']);
 
     //-- check default membership -------------------------------
-    $membershipID = 1;
-    $qry =<<<SQL
-  INSERT IGNORE INTO tbl_MHA_Membership
-     SET mshpID          = {$membershipID}
-       , mshpUUID        = UUID()
-       , mshpTitle       = 'پیش فرض برای کانورت اطلاعات'
-       , mshpStartFrom   = '1921/03/21 00:00:00'
-       , mshpYearlyPrice = 50000
-SQL;
-    $this->queryExecute($qry, __FUNCTION__, __LINE__);
-// return;
+    $membershipID = $this->ensureMembershipSaleableExists();
 
     //---------------------------------
     $fnGetConst = function($value) { return $value; };
@@ -3543,6 +3572,7 @@ SQL;
             , vchOwnerUserID = {$userid}
             , vchType        = '{$fnGetConst(enuVoucherType::Credit)}'
             , vchAmount      = {$tbl_onlinebank_price}
+            , vchTotalAmount = {$tbl_onlinebank_price}
             , vchOnlinePaid  = {$vchOnlinePaid}
             , vchItems       = '{"inc-wallet-id":"{$walid}"}'
             , vchStatus      = '{$vchStatus}'
@@ -3617,6 +3647,7 @@ SQL;
             , vchOwnerUserID  = {$userid}
             , vchType         = '{$fnGetConst(enuVoucherType::Basket)}'
             , vchAmount       = {$tbl_onlinebank_price}
+            , vchTotalAmount  = {$tbl_onlinebank_price}
             , vchPaidByWallet = {$tbl_onlinebank_price}
             , vchTotalPaid    = {$tbl_onlinebank_price}
             , vchItems        = '{$vchItems}'

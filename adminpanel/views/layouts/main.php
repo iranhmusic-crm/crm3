@@ -184,6 +184,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
               'url' => ['/mha/accounting/membership-user-asset'],
             ],
             [
+              'label' => Yii::t('mha', 'Membership Cards'),
+              'icon' => 'info-sign',
+              'url' => ['/mha/accounting/membership-card-user-asset'],
+            ],
+            [
               'label' => Yii::t('mha', 'Kanoons'),
               'icon' => 'info-sign',
               'items' => [
@@ -212,11 +217,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                   'label' => Yii::t('mha', 'Membership Card Products'), //'Card Issuance'),
                   'icon' => 'info-sign',
                   'url' => ['/mha/accounting/membership-card-product'],
-                ],
-                [
-                  'label' => Yii::t('mha', 'Postage'),
-                  'icon' => 'info-sign',
-                  'url' => ['/mha/accounting/postage-product'],
                 ],
               ],
             ],

@@ -47,12 +47,13 @@ use shopack\base\common\accounting\enums\enuUserAssetStatus;
     [
       // 'class' => \iranhmusic\shopack\mha\frontend\common\widgets\grid\MembershipDataColumn::class,
       'attribute' => 'uasSaleableID',
+      'label' => 'عنوان',
       'value' => function ($model, $key, $index, $widget) {
         return $model->saleable->slbName;
       },
     ],
-    'uasValidFromDate:jalali',
-    'uasValidToDate:jalali',
+    // 'uasValidFromDate:jalali',
+    // 'uasValidToDate:jalali',
     [
       'attribute' => 'uasVoucherID',
       'format' => 'raw',
@@ -67,10 +68,10 @@ use shopack\base\common\accounting\enums\enuUserAssetStatus;
     ],
     [
       'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
-      'header' => /* MemberModel::canCreate() ? Html::createButton(null, [
-        'create',
-        'uasActorID' => $uasActorID ?? $_GET['uasActorID'] ?? null,
-      ]) : */ Yii::t('app', 'Actions'),
+      // 'header' => /* MemberModel::canCreate() ? Html::createButton(null, [
+      //   'create',
+      //   'uasActorID' => $uasActorID ?? $_GET['uasActorID'] ?? null,
+      // ]) : */ Yii::t('app', 'Actions'),
       'template' => '',
     ],
     [
