@@ -24,7 +24,7 @@ class KanoonController extends BaseCrudController
 
 		$behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
 			'index',
-			// 'view',
+			'view',
 		];
 
 		return $behaviors;
@@ -36,7 +36,7 @@ class KanoonController extends BaseCrudController
 	{
 		return [
 			// 'index'  => ['mha/kanoon/crud', '0100'],
-			'view'   => ['mha/kanoon/crud', '0100'],
+			// 'view'   => ['mha/kanoon/crud', '0100'],
 			'create' => ['mha/kanoon/crud', '1000'],
 			'update' => ['mha/kanoon/crud', '0010'],
 			'delete' => ['mha/kanoon/crud', '0001'],
@@ -79,6 +79,8 @@ class KanoonController extends BaseCrudController
 
 	public function actionSendMessage()
 	{
+		PrivHelper::checkPriv(['mha/kanoon/send-message']);
+
 		$model = new KanoonSendMessageForm();
 
 		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)

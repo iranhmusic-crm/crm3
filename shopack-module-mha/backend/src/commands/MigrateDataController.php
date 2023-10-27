@@ -40,16 +40,17 @@ DELETE FROM tbl_MHA_MemberMasterInsuranceHistory;
 DELETE FROM tbl_MHA_MemberMasterInsDoc;
 DELETE FROM tbl_MHA_MasterInsurer;
 DELETE FROM tbl_MHA_MasterInsurerType;
-DELETE FROM tbl_MHA_SupplementaryInsurer;
 DELETE FROM tbl_MHA_MemberSupplementaryInsDoc;
+DELETE FROM tbl_MHA_SupplementaryInsurer;
 DELETE FROM tbl_MHA_Member_Specialty;
 DELETE FROM tbl_MHA_Specialty;
 DELETE FROM tbl_MHA_Member_Kanoon;
 DELETE FROM tbl_MHA_Kanoon;
 DELETE FROM tbl_MHA_Member_Document;
 DELETE FROM tbl_MHA_Document;
-DELETE FROM tbl_MHA_MemberMembership;
-DELETE FROM tbl_MHA_Membership;
+-- DELETE FROM tbl_MHA_MemberMembership;
+-- DELETE FROM tbl_MHA_Membership;
+DELETE FROM tbl_MHA_Accounting_UserAsset WHERE uasActorID > 100;
 DELETE FROM tbl_MHA_Member WHERE mbrUserID > 100;
 DELETE FROM tbl_MHA_BasicDefinition;
 
@@ -71,11 +72,15 @@ DELETE FROM tbl_AAA_ForgotPasswordRequest WHERE tbl_AAA_ForgotPasswordRequest.fp
 
 DELETE FROM tbl_MHA_Report;
 DELETE FROM tbl_AAA_Voucher WHERE tbl_AAA_Voucher.vchOwnerUserID > 100;
-DELETE FROM tbl_AAA_User WHERE tbl_AAA_User.usrID > 100;
-
-DELETE FROM tbl_convert;
 
 DELETE FROM tbl_SYS_ActionLogs;
+
+DELETE FROM tbl_AAA_User WHERE tbl_AAA_User.usrID > 100;
+
+DELETE FROM tbl_AAA_GeoCityOrVillage;
+DELETE FROM tbl_AAA_GeoState;
+
+DELETE FROM tbl_convert;
 
 
 
@@ -84,6 +89,8 @@ cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin
 
 cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii mha/migrate-data/from-v2 2>&1 >>logs/mha-migrate-data-from-v2.log
 
+
+SELECT uquStatus, COUNT(*) FROM tbl_AAA_UploadQueue group by uquStatus;
 
 
 ----------------------------------------------------------
@@ -249,15 +256,9 @@ class MigrateDataController extends Controller
 
       $this->convert_expert_to_Mbr_Specialty($convertTableData);
 
-      // $this->convert_profile_to_UserImage($convertTableData);
-
-      // $this->convert_document_to_Mbr_Document($convertTableData);
-
       $this->convert_billing($convertTableData);
 
       // NOT COMPLETED $this->convert_onlinebank($convertTableData);
-
-      $this->convert_create_default_password_for_members($convertTableData);
 
       $this->convert_profile_to_Mbr_Kanoon($convertTableData);
 
@@ -265,6 +266,11 @@ class MigrateDataController extends Controller
 
       $this->convert_profile_to_Mbr_other_1($convertTableData);
 
+      $this->convert_profile_to_UserImage($convertTableData);
+
+      $this->convert_document_to_Mbr_Document($convertTableData);
+
+      $this->convert_create_default_password_for_members($convertTableData);
 
 
 
@@ -3219,7 +3225,7 @@ SQL;
               //member membership
               $qry =<<<SQL
   INSERT INTO tbl_MHA_Accounting_UserAsset
-          SET uasUUID						 = {$vchItemKey}
+          SET uasUUID						 = '{$vchItemKey}'
             , uasActorID         = {$userid}
             , uasSaleableID      = {$membershipID}
             , uasQty             = 1

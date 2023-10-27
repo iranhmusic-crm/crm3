@@ -250,13 +250,21 @@ $this->params['breadcrumbs'][] = $this->title;
                       'target' => '_blank',
                     ]);
 
-                    $buttons[] = Html::a('چاپ نامه صندوق هنر', [
+                    $buttons[] = Html::a('چاپ معرفی نامه صندوق هنر', [
                       'print-art-fund-letter',
                       'id' => $model->mbrUserID,
                     ], [
                       'class' => 'btn btn-sm btn-primary',
                       // 'modal' => true,
                       'target' => '_blank',
+                    ]);
+
+                    $buttons[] = Html::a('ارسال پیامک', [
+                      '/aaa/user/send-message',
+                      'id' => $model->mbrUserID,
+                    ], [
+                      'class' => 'btn btn-sm btn-primary',
+                      'modal' => true,
                     ]);
 
                     if (empty($buttons) == false)
