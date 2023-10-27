@@ -278,6 +278,7 @@ ENGINE=InnoDB
 SQLSTR
     );
 
+/*
     $this->execute(<<<SQLSTR
 CREATE TABLE `tbl_MHA_Accounting_AssetUsage` (
 	`usgUserAssetID` BIGINT(20) UNSIGNED NOT NULL,
@@ -301,6 +302,7 @@ ENGINE=InnoDB
 ;
 SQLSTR
     );
+*/
 
     $this->execute(<<<SQLSTR
 INSERT IGNORE INTO tbl_MHA_Accounting_Unit(untID, untUUID, untName, untI18NData)

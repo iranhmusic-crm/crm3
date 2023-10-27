@@ -167,20 +167,23 @@ $this->registerCss($css);
     <label style="width:100%;"><h1>Full Name</h1><h2>
       <?php
         $parts = [];
-        if ($model->user->usrGender == enuGender::Male)
-          $parts[] = 'Mr.';
-        else if ($model->user->usrGender == enuGender::Female)
-          $parts[] = 'Ms.';
 
-        $parts[] = ucfirst($model->user->usrFirstName_en);
-        $parts[] = strtoupper($model->user->usrLastName_en);
+        // if ($model->user->usrGender == enuGender::Male)
+        //   $parts[] = 'Mr.';
+        // else if ($model->user->usrGender == enuGender::Female)
+        //   $parts[] = 'Ms.';
+
+        $parts[] = $model->user->usrFirstName_en;
+        $parts[] = $model->user->usrLastName_en;
+        // $parts[] = ucfirst($model->user->usrFirstName_en);
+        // $parts[] = strtoupper($model->user->usrLastName_en);
 
         echo implode(' ', $parts);
       ?>
     </h2></label>
     <label><h1>Birthday</h1><h2><?= (new \DateTime($model->user->usrBirthDate))->format('Y/m/d') ?></h2></label>
     <label><h1>National Code</h1><h2><?= $model->user->usrSSID ?></h2></label>
-    <label><h1>Father Name</h1><h2><?= ucfirst($model->user->usrFatherName_en) ?></h2></label>
+    <label><h1>Father Name</h1><h2><?= $model->user->usrFatherName_en ?></h2></label>
     <label><h1>Club</h1><h2><?= $mbrkanoon->kanoon->knnNameEn ?></h2></label>
     <label style="width: 100%;"><h1>Member Code</h1><h2><?= $model->mbrRegisterCode ?> - <?= enuKanoonMembershipDegree::$list[$mbrkanoon->mbrknnMembershipDegree] ?></h2></label>
     <label><h1>Expire Date</h1><h2><?php
