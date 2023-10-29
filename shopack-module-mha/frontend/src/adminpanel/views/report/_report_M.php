@@ -5,6 +5,7 @@
 
 /** @var yii\web\View $this */
 
+use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\StringHelper;
 use shopack\base\frontend\common\helpers\Html;
@@ -114,7 +115,14 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
         'label' => Yii::t('aaa', 'Email Approved At'),
         'format' => 'jalaliWithTime',
       ],
-      'usrMobile'              => Yii::t('aaa', 'Mobile'),
+      'usrMobile'              => [
+        'label' => Yii::t('aaa', 'Mobile'),
+        'format' => 'phone',
+        // 'template' => '<phone>{value}</phone>',
+        // 'value' => function ($model, $key, $index, $widget) {
+        //   return '<phone>' . Yii::$app->formatter->asPhone($model['usrMobile']) . '</phone>';
+        // },
+      ],
       'usrMobileApprovedAt'    => [
         'label' => Yii::t('aaa', 'Mobile Approved At'),
         'format' => 'jalaliWithTime',
@@ -179,7 +187,13 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
       ];
 
       if (is_array($v)) {
+        // $template = ArrayHelper::remove($v, 'template', null);
         $column = array_merge($column, $v);
+        // if (empty($template) == false) {
+        //   $column['value'] = function($model) use ($template) {
+        //     return strtr($template, '{value}', formatted value)
+        //   };
+        // }
       } else {
         $column['label'] = $v;
       }

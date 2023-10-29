@@ -183,6 +183,34 @@ JS;
 			//edit mode
 		}
 
+		if ($model->isNewRecord == false) {
+			$builder->fields([
+				// ['mbrRegisterCode'],
+				['mbrAcceptedAt',
+					'type' => FormBuilder::FIELD_WIDGET,
+					'widget' => DatePicker::class,
+					'fieldOptions' => [
+						'addon' => [
+							'append' => [
+								'content' => '<i class="far fa-calendar-alt"></i>',
+							],
+						],
+					],
+				],
+				['mbrExpireDate',
+					'type' => FormBuilder::FIELD_WIDGET,
+					'widget' => DatePicker::class,
+					'fieldOptions' => [
+						'addon' => [
+							'append' => [
+								'content' => '<i class="far fa-calendar-alt"></i>',
+							],
+						],
+					],
+				],
+			]);
+		}
+
 		$builder->fields([
 			// ['mbrStatus',
 			// 	'type' => FormBuilder::FIELD_RADIOLIST,
@@ -194,7 +222,7 @@ JS;
 			// ['mbrRegisterCode'],
 			// ['mbrAcceptedAt'],
 			['mbrMusicExperiences'],
-			['mbrMusicExperienceStartAt',  //Y/M/D
+			['mbrMusicExperienceStartAt', //Y/M/D
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
 				'fieldOptions' => [

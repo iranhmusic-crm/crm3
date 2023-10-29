@@ -46,7 +46,6 @@ DELETE FROM tbl_MHA_Member_Specialty;
 DELETE FROM tbl_MHA_Specialty;
 DELETE FROM tbl_MHA_Member_Kanoon;
 DELETE FROM tbl_MHA_Kanoon;
-DELETE FROM tbl_MHA_Member_Document;
 DELETE FROM tbl_MHA_Document;
 -- DELETE FROM tbl_MHA_MemberMembership;
 -- DELETE FROM tbl_MHA_Membership;
@@ -57,9 +56,13 @@ DELETE FROM tbl_MHA_BasicDefinition;
 UPDATE tbl_AAA_User
 	SET tbl_AAA_User.usrCreatedBy = NULL
     , tbl_AAA_User.usrUpdatedBy = NULL
-    , tbl_AAA_User.usrImageFileID = null
 	WHERE usrID > 100;
 
+-- user images and docs:
+DELETE FROM tbl_MHA_Member_Document;
+UPDATE tbl_AAA_User
+	SET tbl_AAA_User.usrImageFileID = null
+	WHERE usrID > 100;
 DELETE FROM tbl_AAA_UploadFile WHERE tbl_AAA_UploadFile.uflOwnerUserID > 100;
 
 DELETE tbl_AAA_WalletTransaction FROM tbl_AAA_WalletTransaction INNER JOIN tbl_AAA_Wallet ON tbl_AAA_Wallet.walID = tbl_AAA_WalletTransaction.wtrWalletID WHERE tbl_AAA_Wallet.walOwnerUserID > 100;
@@ -83,14 +86,29 @@ DELETE FROM tbl_AAA_GeoState;
 DELETE FROM tbl_convert;
 
 
+----------------------------------------------------------
 
+-- SMS:
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/message/process-queue 2>&1 >>logs/aaa_message_process-queue.log
 
+-- FILE:
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/file/process-queue 200 2>&1 >>logs/aaa_file_process-queue.log
+
+TEST(1) item:
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/file/process-queue 1 2>&1 >>logs/aaa_file_process-queue.log
+
+-- MIGRATE:
 cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii migrate/up --interactive 0 2>&1 >>logs/migrate.log
 
+-- CONVERT:
 cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii mha/migrate-data/from-v2 2>&1 >>logs/mha-migrate-data-from-v2.log
 
+SELECT uquStatus, COUNT(*) FROM tbl_AAA_UploadQueue GROUP BY uquStatus WITH ROLLUP;
 
-SELECT uquStatus, COUNT(*) FROM tbl_AAA_UploadQueue group by uquStatus;
+SELECT * FROM tbl_convert;
+
+
+SELECT * FROM tbl_AAA_UploadQueue uqu INNER JOIN tbl_AAA_UploadFile ufl ON ufl.uflID = uqu.uquID WHERE uquStatus = 'E'
 
 
 ----------------------------------------------------------
@@ -266,11 +284,15 @@ class MigrateDataController extends Controller
 
       $this->convert_profile_to_Mbr_other_1($convertTableData);
 
+      // $this->copylostimages();
       $this->convert_profile_to_UserImage($convertTableData);
-
       $this->convert_document_to_Mbr_Document($convertTableData);
 
       $this->convert_create_default_password_for_members($convertTableData);
+
+      $this->convert_update_members_expiredate($convertTableData);
+
+      $this->convert_profile_to_Mbr_expiredate($convertTableData);
 
 
 
@@ -2366,7 +2388,8 @@ SQL;
             /* owner_id           */ $userid,
             /* subdir             */ 'user',
             /* overwrite          */ true,
-            /* doStore            */ false
+            /* doStore            */ false,
+            /* deleteLocalFileAfterUpload */ true
           );
         }
 
@@ -2441,7 +2464,7 @@ SQL;
 
     $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
 
-    $convertKey = 'v2.tbl_document';
+    $convertKey = 'v2.tbl_document->member-document';
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 0;
 
     $tmpPath = Yii::$app->params['convert_source_files_path_document'];
@@ -2477,12 +2500,14 @@ SQL;
     }
 
     //--------------------
-    $fetchCount = 1000;
+    $fetchCount = 500;
     $loopCount = 0;
+    $maxLoopCount = 1;
     while (true) {
       ++$loopCount;
 
-// if ($loopCount == 2) break;
+      if (($maxLoopCount > 0) && ($loopCount > $maxLoopCount))
+        break;
 
 		$qry =<<<SQL
       SELECT tbl_document.*
@@ -2558,6 +2583,7 @@ SQL;
 
         $uuid = trim($row['tbl_profile_systemcode']);
         $userid = trim($row['tbl_profile_id']);
+        $userid = $userid + 100;
         $checkImgUsed = false;
 
         //check tbl_AAA_UploadFile
@@ -2579,10 +2605,11 @@ SQL;
             /* sourceIsFromUpload */ false,
             /* originalFileName   */ $originalFileName,
             /* owner_uuid         */ $uuid,
-            /* owner_id           */ $userid + 100,
+            /* owner_id           */ $userid,
             /* subdir             */ 'document',
             /* overwrite          */ true,
-            /* doStore            */ false
+            /* doStore            */ false,
+            /* deleteLocalFileAfterUpload */ true
           );
         }
 
@@ -2612,7 +2639,7 @@ SQL;
         $fnPutData(implode(',', [
 //          /* mbrdocID         */ $lastID,
           /* mbrdocUUID       */ 'UUID()',
-          /* mbrdocMemberID   */ $userid + 100,
+          /* mbrdocMemberID   */ $userid,
           /* mbrdocDocumentID */ $docid,
           /* mbrdocTitle      */ $this->quotedString($row['tbl_document_title']),
           /* mbrdocFileID     */ $imageFileID,
@@ -3797,14 +3824,15 @@ SQL;
       ]);
     };
 
-    $fetchCount = 100;
     $saveCount = 8;
+    $fetchCount = $saveCount;
     $loopCount = 0;
+    $maxLoopCount = 3;
     while (true) {
       ++$loopCount;
 
-      // if ($loopCount > 1)
-      //   break;
+      if (($maxLoopCount > 0) && ($loopCount > $maxLoopCount))
+        break;
 
       $qry =<<<SQL
       SELECT usrID
@@ -4277,6 +4305,234 @@ SQL;
       ];
 
     $this->log("  converted to '{$queryLastID}'");
+  }
+
+  public function copylostimages()
+  {
+/*
+    $files = [
+      "userprofile_1613821716.jpg" => "/home2/iranhmus/domains/api.iranhmusic.ir/public_html/tmp/upload/user/69/1D/99/691D9952/10499/user/userprofile_1613821716.jpg",
+    ];
+
+    $tmpPathUser = Yii::$app->params['convert_source_files_path_user'];
+    $tmpPathDocument = Yii::$app->params['convert_source_files_path_document'];
+
+    foreach ($files as $k => $v) {
+      if (strpos($v, '/document/') === false) {
+        $org = $tmpPathUser . $k;
+      } else {
+        $org = $tmpPathDocument . $k;
+      }
+
+      copy($org, $v);
+    }
+*/
+  }
+
+  public function convert_update_members_expiredate(&$convertTableData)
+  {
+    $this->log("update members expire date:");
+
+    $qry =<<<SQL
+    UPDATE tbl_MHA_Member mbr
+INNER JOIN (
+    SELECT uas.uasActorID
+         , MAX(uas.uasValidToDate) AS dtexpire
+      FROM tbl_MHA_Accounting_UserAsset uas
+INNER JOIN tbl_MHA_Accounting_Saleable slb
+        ON slb.slbID = uas.uasSaleableID
+INNER JOIN tbl_MHA_Accounting_Product prd
+        ON prd.prdID = slb.slbProductID
+     WHERE prd.prdMhaType = 'M'
+  GROUP BY uas.uasActorID
+           ) t1
+        ON t1.uasActorID = mbr.mbrUserID
+       SET mbr.mbrExpireDate = t1.dtexpire
+     WHERE mbr.mbrExpireDate IS NULL
+        OR mbr.mbrExpireDate < t1.dtexpire
+SQL;
+
+    $rowsCount = $this->queryExecute($qry, __FUNCTION__, __LINE__);
+    $this->log("update members expire date: {$rowsCount}");
+  }
+
+  public function convert_profile_to_Mbr_expiredate(&$convertTableData)
+  {
+    $this->log("profile_to_Mbr_expiredate:");
+
+    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+
+    $convertKey = 'v2.tbl_profile->member.expiredate';
+
+    list ($queryLastID, $errorids) = $this->initializeWorker($convertTableData, $convertKey);
+
+    $processedErrorIds = [];
+
+    //-----------------
+    $fnPutData = function(array $values, $lastID) use($convertKey, &$errorids, &$processedErrorIds) {
+      $this->putData('tbl_MHA_Member', [
+        'mbrUserID',
+        'mbrExpireDate_convert',
+      ], $values, $lastID, $convertKey, [
+        'mbrExpireDate_convert',
+      ]);
+
+      $this->fnUnLogErrorFromConvertTable(array_keys($values), $convertKey, $errorids, $processedErrorIds);
+    };
+
+    try {
+      //phase 1: add column
+      $this->log('  check mbrExpireDate_convert column');
+      $qry =<<<SQL
+  SELECT COLUMN_NAME
+    FROM INFORMATION_SCHEMA.COLUMNS
+   WHERE TABLE_SCHEMA = DATABASE()
+     AND TABLE_NAME   = 'tbl_MHA_Member'
+     AND COLUMN_NAME  = 'mbrExpireDate_convert';
+SQL;
+      $cnt1 = $this->queryOne($qry, __FUNCTION__, __LINE__);
+      if (empty($cnt1)) {
+        $this->log('  creating mbrExpireDate_convert column');
+
+        $qry =<<<SQL
+ALTER TABLE `tbl_MHA_Member`
+  ADD COLUMN `mbrExpireDate_convert` VARCHAR(256) NULL DEFAULT NULL;
+SQL;
+        if ($this->queryExecute($qry, __FUNCTION__, __LINE__) == 0)
+          $this->log('  error creating mbrExpireDate_convert column');
+        else
+          $this->log('  created mbrExpireDate_convert column');
+      }
+
+      //phase 2: copy old expire dates to tbl_MHA_Member
+      $values = [];
+      $fetchCount = 1000;
+      $saveCount = 100;
+      $loopCount = 0;
+      while (true) {
+        ++$loopCount;
+
+        // if ($loopCount > 1)
+        //   break;
+
+        //-- create where and newFetchCount -------------------------------
+        $thisLoopErrorIDs = array_filter($errorids, function($var) use($queryLastID) {
+          return ($var <= $queryLastID);
+        });
+
+        $erroridsCount = count($thisLoopErrorIDs);
+        $newFetchCount = $fetchCount;
+        if ($erroridsCount > $newFetchCount)
+          $newFetchCount += $erroridsCount;
+
+        $where = "(tbl_profile.tbl_profile_id > {$queryLastID} AND tbl_profile.tbl_profile_id != 4)";
+        if (empty($thisLoopErrorIDs) == false) {
+          $where = '(' . $where . "\nOR tbl_profile.tbl_profile_id IN (" . implode(',', $thisLoopErrorIDs) . ")\n)";
+        }
+        $where .= "\n";
+        if (empty($processedErrorIds) == false) {
+          $where .= "AND tbl_profile.tbl_profile_id NOT IN (" . implode(',', $processedErrorIds) . ")\n";
+        }
+
+        // var_dump(['thisLoopErrorIDs' => $thisLoopErrorIDs, 'where' => $where]);
+
+        $qry =<<<SQL
+  SELECT tbl_profile.*
+
+    FROM tbl_profile
+
+    WHERE {$where}
+      AND tbl_profile_expiredate IS NOT NULL
+      AND tbl_profile_expiredate != ''
+
+ORDER BY tbl_profile.tbl_profile_id
+
+    LIMIT {$newFetchCount}
+SQL;
+
+        $this->log("  fetching data from ({$queryLastID})+1...");
+        $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+
+        if (empty($rows)) {
+          if ($loopCount == 1) {
+            $this->log("  nothing to do");
+            return;
+          }
+          //else:
+          break;
+        }
+
+        $this->log("  source data fetched");
+
+        foreach ($rows as $row) {
+          $lastID = trim($row['tbl_profile_id']);
+
+          if ($lastID > $queryLastID)
+            $queryLastID = $lastID;
+
+          //------------
+          try {
+            // $this->log("  >{$lastID}");
+
+            $tbl_profile_expiredate_jalali = trim($row['tbl_profile_expiredate'] ?? '');
+            $tbl_profile_expiredate = $this->jalaliToMiladi($row['tbl_profile_expiredate']);
+
+            $values[$lastID] = implode(',', [
+              /* mbrUserID             */ $lastID + 100,
+              /* mbrExpireDate_convert */ $tbl_profile_expiredate,
+            ]);
+
+          } catch (\Throwable $exp) {
+            $this->fnLogErrorToConvertTable($lastID, $exp->getMessage(), $convertKey, $errorids, $processedErrorIds);
+            // echo "** ERROR: ID: {$lastID} **\n";
+            // throw $exp;
+          }
+
+          if (count($values) >= $saveCount) {
+            $fnPutData($values, $queryLastID);
+            $values = [];
+          }
+        } //foreach ($rows as $row)
+
+        if (empty($values) == false) {
+          $fnPutData($values, $queryLastID);
+          $values = [];
+        }
+      } //while (true)
+
+      if (isset($convertTableData[$convertKey]))
+        $convertTableData[$convertKey]['lastID'] = $queryLastID;
+      else
+        $convertTableData[$convertKey] = [
+          'lastID' => $queryLastID
+        ];
+
+      $this->log("  converted to '{$queryLastID}'");
+
+      //phase 3: convert mbrExpireDate_convert to mbrExpireDate if can
+      $qry =<<<SQL
+ UPDATE tbl_MHA_Member
+    SET mbrExpireDate = mbrExpireDate_convert
+  WHERE mbrExpireDate_convert IS NOT NULL
+    AND (
+        mbrExpireDate IS NULL
+     OR mbrExpireDate < mbrExpireDate_convert
+        )
+SQL;
+
+      $rowsCount = $this->queryExecute($qry, __FUNCTION__, __LINE__);
+      $this->log("update members expire date: {$rowsCount}");
+
+    } catch (\Throwable $th) {
+      $this->log($th->getMessage(), 'ERROR');
+
+    } finally {
+      $qry =<<<SQL
+ALTER TABLE `tbl_MHA_Member`
+  DROP COLUMN `mbrExpireDate_convert`;
+SQL;
+      $this->queryExecute($qry, __FUNCTION__, __LINE__);
+    }
   }
 
 }

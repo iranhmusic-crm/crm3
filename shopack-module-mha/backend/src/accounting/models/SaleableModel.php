@@ -12,6 +12,7 @@ use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
 use shopack\base\common\accounting\enums\enuUserAssetStatus;
+use iranhmusic\shopack\mha\backend\models\MemberModel;
 
 class SaleableModel extends MhaActiveRecord
 {
@@ -89,6 +90,13 @@ class SaleableModel extends MhaActiveRecord
 
 	public static function ProcessVoucherItem_Membership($userAssetModel, $voucherItemdata)
 	{
+		$memberModel = MemberModel::find()
+			->andWhere(['mbrUserID' => $userAssetModel->uasActorID])
+			->one();
+
+		$memberModel->mbrExpireDate = $userAssetModel->uasValidToDate;
+
+		$memberModel->save();
 	}
 
 	public static function ProcessVoucherItem_MembershipCard($userAssetModel, $voucherItemdata)

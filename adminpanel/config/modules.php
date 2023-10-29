@@ -12,6 +12,7 @@ return [
 				'url' => '/mha/member/view',
 				'idField' => 'id',
 			],
+			'globalOwnerUserLabel' => ['mha', 'Member'],
 			'globalSearchUserForSelect2ListUrl' => '/mha/member/select2-list',
 		],
 		'mha' => [
