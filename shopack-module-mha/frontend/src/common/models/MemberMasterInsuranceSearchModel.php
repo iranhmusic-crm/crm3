@@ -51,7 +51,7 @@ class MemberMasterInsuranceSearchModel extends MemberMasterInsuranceModel
 		if (empty($params['mbrminshstMemberID']) == false)
 			$query->andWhere(['mbrminshstMemberID' => $params['mbrminshstMemberID']]);
 
-		$this->applySearchValuesInQuery($query);
+		$this->applySearchValuesInQuery($query, $params);
 
 		return $dataProvider;
 	}

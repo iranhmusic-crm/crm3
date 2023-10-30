@@ -72,7 +72,7 @@ class MembershipCardSaleableSearchModel extends MembershipCardSaleableModel
 		// else
 		// 	$query->andWhere(['slbType' => enuMhaProductType::MembershipCard]);
 
-		$this->applySearchValuesInQuery($query);
+		$this->applySearchValuesInQuery($query, $params);
 
 		return $dataProvider;
 	}

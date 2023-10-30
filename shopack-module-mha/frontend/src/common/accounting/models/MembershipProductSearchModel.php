@@ -69,7 +69,7 @@ class MembershipProductSearchModel extends MembershipProductModel
 
 		$query->andWhere(['prdMhaType' => enuMhaProductType::Membership]);
 
-		$this->applySearchValuesInQuery($query);
+		$this->applySearchValuesInQuery($query, $params);
 
 		return $dataProvider;
 	}

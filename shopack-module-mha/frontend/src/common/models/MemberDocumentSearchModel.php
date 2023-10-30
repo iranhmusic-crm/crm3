@@ -51,7 +51,7 @@ class MemberDocumentSearchModel extends MemberDocumentModel
 		if (empty($params['mbrdocMemberID']) == false)
 			$query->andWhere(['mbrdocMemberID' => $params['mbrdocMemberID']]);
 
-		$this->applySearchValuesInQuery($query);
+		$this->applySearchValuesInQuery($query, $params);
 
 		return $dataProvider;
 	}

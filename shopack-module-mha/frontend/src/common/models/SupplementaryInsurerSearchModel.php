@@ -66,7 +66,7 @@ class SupplementaryInsurerSearchModel extends SupplementaryInsurerModel
 			return $dataProvider;
 		}
 
-		$this->applySearchValuesInQuery($query);
+		$this->applySearchValuesInQuery($query, $params);
 
 		return $dataProvider;
 	}

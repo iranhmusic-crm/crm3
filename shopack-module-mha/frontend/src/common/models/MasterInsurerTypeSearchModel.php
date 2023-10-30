@@ -66,7 +66,7 @@ class MasterInsurerTypeSearchModel extends MasterInsurerTypeModel
 			return $dataProvider;
 		}
 
-		$this->applySearchValuesInQuery($query);
+		$this->applySearchValuesInQuery($query, $params);
 
 		return $dataProvider;
 	}

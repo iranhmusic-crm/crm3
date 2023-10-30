@@ -138,7 +138,7 @@ class MemberSearchModel extends MemberModel
 			->andFilterWhere(['like', 'usrLastName_en', $this->usrLastName_en])
 		;
 
-		$this->applySearchValuesInQuery($query);
+		$this->applySearchValuesInQuery($query, $params);
 
 		switch ($this->filter_mode)
 		{

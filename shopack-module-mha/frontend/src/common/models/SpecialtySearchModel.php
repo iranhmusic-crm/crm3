@@ -56,7 +56,7 @@ class SpecialtySearchModel extends SpecialtyModel
 			return $dataProvider;
 		}
 
-		$this->applySearchValuesInQuery($query);
+		$this->applySearchValuesInQuery($query, $params);
 
 		return $dataProvider;
 	}

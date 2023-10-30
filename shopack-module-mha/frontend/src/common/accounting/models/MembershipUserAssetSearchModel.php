@@ -70,7 +70,7 @@ class MembershipUserAssetSearchModel extends MembershipUserAssetModel
 		if (empty($params['uasActorID']) == false)
 			$query->andWhere(['uasActorID' => $params['uasActorID']]);
 
-		$this->applySearchValuesInQuery($query);
+		$this->applySearchValuesInQuery($query, $params);
 
 		return $dataProvider;
 	}
