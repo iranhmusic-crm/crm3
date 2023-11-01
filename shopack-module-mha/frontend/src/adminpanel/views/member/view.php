@@ -6,6 +6,7 @@
 /** @var yii\web\View $this */
 
 use shopack\base\frontend\common\widgets\PopoverX;
+use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\Url;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\widgets\tabs\Tabs;
@@ -13,6 +14,9 @@ use shopack\base\frontend\common\widgets\DetailView;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\aaa\common\enums\enuUserStatus;
 use shopack\aaa\common\enums\enuGender;
+use shopack\aaa\common\enums\enuUserEducationLevel;
+use shopack\aaa\common\enums\enuUserMaritalStatus;
+use shopack\aaa\common\enums\enuUserMilitaryStatus;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 
@@ -82,40 +86,44 @@ $this->params['breadcrumbs'][] = $this->title;
                   'model' => $model,
                   'enableEditMode' => false,
                   'cols' => 2,
-                  'isVertical' => false,
+                  'isVertical' => true,
                   'attributes' => [
                     [
                       'attribute' => 'mbrRegisterCode',
                       'value' => '[' . ($model->mbrRegisterCode ?? 'ندارد') . ']',
                     ],
                     [
-                      'attribute' => 'mbrUserID',
-                      'format' => 'raw',
-                      'value' => Html::a($model->user->displayName(), ['/aaa/user/view', 'id' => $model->mbrUserID]), //, ['class' => ['btn', 'btn-sm', 'btn-outline-secondary']]),
-                    ],
-                    [
                       'attribute' => 'mbrStatus',
                       'value' => enuMemberStatus::getLabel($model->mbrStatus),
-                    ],
-                    [
-                      'attribute' => 'usrStatus',
-                      'value' => enuUserStatus::getLabel($model->user->usrStatus),
                     ],
                     'mbrAcceptedAt:jalaliWithTime',
                     'mbrExpireDate:jalali',
                     [
                       'group' => true,
-                      // 'cols' => 1,
+                      'cols' => 2,
                       'label' => 'اطلاعات پایه',
                       'groupOptions' => ['class' => 'info-row'],
+                      'isVertical' => false,
                     ],
                     [
                       'attribute' => 'usrGender',
                       'value' => enuGender::getLabel($model->user->usrGender),
                     ],
                     [
+                      'attribute' => 'mbrUserID',
+                      'format' => 'raw',
+                      'value' => Html::a($model->user->displayName(), ['/aaa/user/view', 'id' => $model->mbrUserID]) . ' (' . enuUserStatus::getLabel($model->user->usrStatus) . ')', //, ['class' => ['btn', 'btn-sm', 'btn-outline-secondary']]),
+                    ],
+                    // [
+                    //   'group' => true,
+                    // ],
+                    [
                       'attribute' => 'usrSSID',
                       'value' => $model->user->usrSSID,
+                    ],
+                    [
+                      'attribute' => 'usrBirthCertID',
+                      'value' => $model->user->usrBirthCertID,
                     ],
                     [
                       'attribute' => 'usrFirstName',
@@ -142,6 +150,47 @@ $this->params['breadcrumbs'][] = $this->title;
                       'value' => $model->user->usrFatherName_en,
                     ],
                     [
+                      'attribute' => 'usrBirthCityID',
+                      'value' => $model->user->birthCityOrVillage->ctvName ?? null,
+                    ],
+                    [
+                      'attribute' => 'usrBirthDate',
+                      'value' => $model->user->usrBirthDate,
+                      'format' => 'jalali',
+                    ],
+
+                    [
+                      'attribute' => 'usrEducationLevel',
+                      'value' => enuUserEducationLevel::getLabel($model->user->usrEducationLevel),
+                    ],
+                    [
+                      'attribute' => 'usrFieldOfStudy',
+                      'value' => $model->user->usrFieldOfStudy,
+                    ],
+                    [
+                      'attribute' => 'usrYearOfGraduation',
+                      'value' => $model->user->usrYearOfGraduation,
+                    ],
+                    [
+                      'attribute' => 'usrEducationPlace',
+                      'value' => $model->user->usrEducationPlace,
+                    ],
+                    [
+                      'attribute' => 'usrMaritalStatus',
+                      'value' => enuUserMaritalStatus::getLabel($model->user->usrMaritalStatus),
+                    ],
+                    [
+                      'attribute' => 'usrMilitaryStatus',
+                      'value' => enuUserMilitaryStatus::getLabel($model->user->usrMilitaryStatus),
+                    ],
+
+                    [
+                      'group' => 'true',
+                      'label' => 'اطلاعات ورود و دسترسی',
+                      'isVertical' => false,
+                      'groupOptions' => ['class' => 'info-row'],
+                    ],
+                    [
                       'attribute' => 'usrEmail',
                       'valueColOptions' => ['class' => ['dir-ltr', 'text-start']],
                       'value' => $model->user->usrEmail,
@@ -161,6 +210,74 @@ $this->params['breadcrumbs'][] = $this->title;
                       'format' => 'jalaliWithTime',
                       'value' => $model->user->usrMobileApprovedAt,
                     ],
+                    [
+                      'attribute' => 'hasPassword',
+                      'format' => 'boolean',
+                      'value' => $model->user->hasPassword,
+                    ],
+                    [
+                      'attribute' => 'usrPasswordCreatedAt',
+                      'format' => 'jalaliWithTime',
+                      'value' => $model->user->usrPasswordCreatedAt,
+                    ],
+                    [
+                      'attribute' => 'usrRoleID',
+                      'label' => 'جایگاه دسترسی',
+                      'value' => $model->user->role->rolName,
+                    ],
+                    [
+                      'attribute' => 'usrPrivs',
+                      'visible' => $model->user->canViewColumn('usrPrivs'),
+                      'value' => Json::encode($model->user->usrPrivs),
+                    ],
+
+                    [
+                      'group' => true,
+                      'cols' => 1,
+                      'label' => 'اطلاعات آدرس',
+                      'groupOptions' => ['class' => 'info-row'],
+                    ],
+                    [
+                      'attribute' => 'usrCountryID',
+                      'value' => $model->user->country->cntrName ?? null,
+                    ],
+                    [
+                      'attribute' => 'usrStateID',
+                      'value' => $model->user->state->sttName ?? null,
+                    ],
+                    [
+                      'attribute' => 'usrCityOrVillageID',
+                      'value' => $model->user->cityOrVillage->ctvName ?? null,
+                    ],
+                    [
+                      'attribute' => 'usrTownID',
+                      'value' => $model->user->town->twnName ?? null,
+                    ],
+                    [
+                      'attribute' => 'usrHomeAddress',
+                      'value' => $model->user->usrHomeAddress,
+                    ],
+                    [
+                      'attribute' => 'usrZipCode',
+                      'value' => $model->user->usrZipCode,
+                    ],
+                    [
+                      'attribute' => 'usrPhones',
+                      'value' => $model->user->usrPhones,
+                    ],
+                    [
+                      'attribute' => 'usrWorkAddress',
+                      'value' => $model->user->usrWorkAddress,
+                    ],
+                    [
+                      'attribute' => 'usrWorkPhones',
+                      'value' => $model->user->usrWorkPhones,
+                    ],
+                    [
+                      'attribute' => 'usrWebsite',
+                      'value' => $model->user->usrWebsite,
+                    ],
+
                     [
                       'group' => true,
                       'cols' => 1,
