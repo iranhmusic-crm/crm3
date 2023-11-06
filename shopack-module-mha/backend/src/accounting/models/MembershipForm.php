@@ -20,7 +20,9 @@ use iranhmusic\shopack\mha\common\enums\enuMembershipStatus;
 use iranhmusic\shopack\mha\backend\models\MemberModel;
 use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
 use iranhmusic\shopack\mha\backend\accounting\models\SaleableModel;
+use iranhmusic\shopack\mha\backend\models\MemberMemberGroupModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
+use shopack\base\common\accounting\enums\enuDiscountType;
 
 class MembershipForm extends Model
 {
@@ -108,15 +110,17 @@ class MembershipForm extends Model
 			= self::getRenewalInfo(Yii::$app->user->id);
 
 		//todo: check user langauge from request header
-		$desc = $saleableModel->slbName
-			. ' - از '
-			. Yii::$app->formatter->asJalali($startDate)
-			. ' تا '
-			. Yii::$app->formatter->asJalali($endDate)
-			. ' به مدت '
-			. $years
-			. ' سال'
-		;
+		$desc = implode(' ', [
+			$saleableModel->slbName,
+			'-',
+			'از',
+			Yii::$app->formatter->asJalali($startDate),
+			'تا',
+			Yii::$app->formatter->asJalali($endDate),
+			'به مدت',
+			$years,
+			'سال'
+		]);
 
 		//card print
 		$cardPrintSaleableModel = SaleableModel::find()
@@ -134,6 +138,55 @@ class MembershipForm extends Model
 
 		$membershipKey = Uuid::uuid4()->toString();
 
+		//member group
+		$memberMemberGroupModels = MemberMemberGroupModel::find()
+			->innerJoinWith('memberGroup')
+			->andWhere(['mbrmgpMemberID' => Yii::$app->user->id])
+			->andWhere(['OR',
+				'mbrmgpStartAt IS NULL',
+				['<=', 'mbrmgpStartAt', new Expression('NOW()')],
+			])
+			->andWhere(['OR',
+				'mbrmgpEndAt IS NULL',
+				['>=', 'mbrmgpEndAt', new Expression('NOW()')],
+			])
+			->all();
+
+		$membershipDiscountAmount = 0;
+		$membershipCardDiscountAmount = 0;
+
+		if (empty($memberMemberGroupModels) == false) {
+			foreach ($memberMemberGroupModels as $memberGroup) {
+				if ((empty($memberGroup->memberGroup->mgpMembershipDiscountAmount) == false)
+					&& (empty($memberGroup->memberGroup->mgpMembershipDiscountType) == false)
+				) {
+					if ($memberGroup->memberGroup->mgpMembershipDiscountType == enuDiscountType::Percent) {
+						$amount = $memberGroup->memberGroup->mgpMembershipDiscountAmount * $totalPrice / 100.0;
+					} else {
+						$amount = min($totalPrice, $memberGroup->memberGroup->mgpMembershipDiscountAmount);
+					}
+
+					if ($amount > $membershipDiscountAmount)
+						$membershipDiscountAmount = $amount;
+				}
+
+				if ((empty($memberGroup->memberGroup->mgpMembershipCardDiscountAmount) == false)
+					&& (empty($memberGroup->memberGroup->mgpMembershipCardDiscountType) == false)
+				) {
+					if ($memberGroup->memberGroup->mgpMembershipCardDiscountType == enuDiscountType::Percent) {
+						$amount = $memberGroup->memberGroup->mgpMembershipCardDiscountAmount * $cardPrintSaleableModel->slbBasePrice / 100.0;
+					} else {
+						$amount = min($cardPrintSaleableModel->slbBasePrice, $memberGroup->memberGroup->mgpMembershipCardDiscountAmount);
+					}
+
+					if ($amount > $membershipCardDiscountAmount)
+						$membershipCardDiscountAmount = $amount;
+				}
+			}
+
+		}
+
+		//
 		$data = [
 			'userid' => Yii::$app->user->id,
 			'items' => [
@@ -153,6 +206,7 @@ class MembershipForm extends Model
 					],
 					'maxqty'		=> $years,
 					'qtystep'		=> 0, //0: do not allow to change qty in basket
+					'discount'	=> $membershipDiscountAmount,
 				],
 				[//2: card print
 					'service'		=> $parentModule->id,
@@ -164,6 +218,7 @@ class MembershipForm extends Model
 					'unitprice' => $cardPrintSaleableModel->slbBasePrice,
 					'maxqty'		=> 1,
 					'qtystep'		=> 0, //0: do not allow to change qty in basket
+					'discount'	=> $membershipCardDiscountAmount,
 					'dependencies' => [$membershipKey],
 				],
 			],
