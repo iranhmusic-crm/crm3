@@ -224,6 +224,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
             [
               'label' => Yii::t('app', 'Settings'),
               'items' => [
+                ['label' => Yii::t('mha', 'Member Groups'), 'icon' => 'info-sign', 'url' => ['/mha/member-group']],
                 ['label' => Yii::t('mha', 'Master Insurers'), 'icon' => 'info-sign', 'url' => ['/mha/master-insurer']],
                 ['label' => Yii::t('mha', 'Supplementary Insurers'), 'icon' => 'info-sign', 'url' => ['/mha/supplementary-insurer']],
                 ['label' => Yii::t('mha', 'Specialties'), 'icon' => 'info-sign', 'url' => ['/mha/specialty']],

@@ -284,4 +284,23 @@ return [
 	'Financial Report' => 'گزارش مالی',
 	'Create Financial Report' => 'ایجاد گزارش مالی',
 
+	'Member Groups' => 'گروه‌های عضویت',
+	'Member Group' => 'گروه عضویت',
+	'Member Group Info' => 'مشخصات گروه عضویت',
+	'Create Member Group' => 'ایجاد گروه عضویت',
+	'Update Member Group' => 'ویرایش گروه عضویت',
+
+	'Member Member Groups' => 'گروه‌های عضویت عضو',
+	'Member Member Group' => 'گروه عضویت عضو',
+	'Member Member Group Info' => 'مشخصات گروه عضویت عضو',
+	'Create Member Member Group' => 'ایجاد گروه عضویت عضو',
+	'Update Member Member Group' => 'ویرایش گروه عضویت عضو',
+
+	'Membership Discount Amount' => 'تخفیف دوره عضویت',
+	'Membership Discount Type' => 'نوع تخفیف دوره عضویت',
+	'Membership Card Discount Amount' => 'تخفیف صدور کارت عضویت',
+	'Membership Card Discount Type' => 'نوع تخفیف صدور کارت عضویت',
+	'Delivery Discount Amount' => 'تخفیف ارسال مرسوله',
+	'Delivery Discount Type' => 'نوع تخفیف ارسال مرسوله',
+
 ];

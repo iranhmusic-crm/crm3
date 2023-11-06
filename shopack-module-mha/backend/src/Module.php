@@ -246,6 +246,18 @@ class Module
 						'GET,HEAD run' => 'run',
 					],
 				],
+				[
+					'class' => \yii\rest\UrlRule::class,
+					// 'prefix' => 'v1',
+					'controller' => [$this->id . '/member-group'],
+					'pluralize' => false,
+				],
+				[
+					'class' => \yii\rest\UrlRule::class,
+					// 'prefix' => 'v1',
+					'controller' => [$this->id . '/member-member-group'],
+					'pluralize' => false,
+				],
 
 			]);
 

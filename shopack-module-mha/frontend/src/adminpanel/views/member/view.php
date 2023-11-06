@@ -450,6 +450,13 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
       <?php $tabs->endTabPage(); ?>
 
+      <?php $tabs->newAjaxTabPage(Yii::t('mha', 'Member Groups'), [
+          '/mha/member-member-group/index',
+          'mbrmgpMemberID' => $model->mbrUserID,
+        ],
+        'member-member-groups'
+      ); ?>
+
       <?php $tabs->newAjaxTabPage(Yii::t('mha', 'Documents'), [
           '/mha/member-document/index',
           'mbrdocMemberID' => $model->mbrUserID,
