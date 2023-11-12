@@ -46,6 +46,25 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 		$builder->fields([
 			['@section', 'label' => 'فیلترهای ورودی'],
 
+			['rptInputFields[mbrRegisterCode]',
+				'label' => 'کد عضویت',
+				'fieldOptions' => [
+					'addon' => [
+						'prepend' => [
+							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrRegisterCode_None]'),
+								($model->rptInputFields['mbrRegisterCode_None'] ?? 0) == 1,
+								[
+									'id' => Html::getInputId($model, 'rptInputFields[mbrRegisterCode_None]'),
+									'label' => 'ندارد',
+								]),
+						],
+					],
+				],
+			],
+
+			['@col-break'],
+			'<hr>',
+
 			['rptInputFields[mbrAcceptedAt_None]',
 				// 'label' => 'تاریخ تایید عضویت',
 				'label' => 'ندارد',

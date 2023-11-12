@@ -210,6 +210,15 @@ class ReportModel extends MhaActiveRecord
 				},
 			],
 
+			'mbrRegisterCode' => [
+				'filterCallback' => function($query, $key, $value) use ($fnApplyLikeSearchCondition) {
+					$fnApplyLikeSearchCondition($key, $value);
+				},
+				'noneCallback' => function($query, $key, $value) {
+					$query->andWhere([$key => null]);
+				},
+			],
+
 		];
 
 		$fnApplyFilter = function($key, $value, $applyNone)
