@@ -37,121 +37,21 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 
 		$builder->fields([
 			['rptName'],
-			['@cols' => 3, 'vertical' => true],
+
+			'<hr>',
+
+			['@cols' => 2, 'vertical' => true],
 		]);
 
 		$builder->fields([
 			['@section', 'label' => 'فیلترهای ورودی'],
 
-			['rptInputFields[usrBirthLocation][State]',
-				'label' => 'استان محل تولد',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => Select2::class,
-				'widgetOptions' => [
-					'data' => ArrayHelper::map(GeoStateModel::find()->asArray()->noLimit()->all(), 'sttID', 'sttName'),
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'pluginOptions' => [
-						'allowClear' => true,
-					],
-				],
+			['rptInputFields[mbrAcceptedAt_None]',
+				// 'label' => 'تاریخ تایید عضویت',
+				'label' => 'ندارد',
+				'type' => FormBuilder::FIELD_CHECKBOX,
+				'widgetOptions' => [[], true],
 			],
-			['rptInputFields[usrBirthLocation][City]',
-				'label' => 'شهر محل تولد',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => DepDrop::class,
-				'widgetOptions' => [
-					'type' => DepDrop::TYPE_SELECT2,
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'select2Options' => [
-						'pluginOptions' => [
-							'allowClear' => true,
-						],
-					],
-					'pluginOptions' => [
-						'depends' => ["{$formNameLower}-rptinputfields-usrbirthlocation-state"],
-						'initialize' => true,
-						'url' => Url::to(['/aaa/geo-city-or-village/depdrop-list', 'sel' => $model->rptInputFields['usrBirthLocation']['City'] ?? null]),
-						'loadingText' => Yii::t('app', 'Loading...'),
-					],
-				],
-			],
-			['rptInputFields[usrBirthDate][From]',
-				'label' => 'تاریخ تولد (از)',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => DatePicker::class,
-				'fieldOptions' => [
-					'addon' => [
-						'append' => [
-							'content' => '<i class="far fa-calendar-alt"></i>',
-						],
-					],
-				],
-				'widgetOptions' => [
-					'allowClear' => true,
-				],
-			],
-			['rptInputFields[usrBirthDate][To]',
-				'label' => 'تاریخ تولد (تا)',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => DatePicker::class,
-				'fieldOptions' => [
-					'addon' => [
-						'append' => [
-							'content' => '<i class="far fa-calendar-alt"></i>',
-						],
-					],
-				],
-				'widgetOptions' => [
-					'allowClear' => true,
-				],
-			],
-			['rptInputFields[usrStateID]',
-				'label' => 'استان محل سکونت',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => Select2::class,
-				'widgetOptions' => [
-					'data' => ArrayHelper::map(GeoStateModel::find()->asArray()->noLimit()->all(), 'sttID', 'sttName'),
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'pluginOptions' => [
-						'allowClear' => true,
-					],
-				],
-			],
-			['rptInputFields[usrCityOrVillageID]',
-				'label' => 'شهر محل سکونت',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => DepDrop::class,
-				'widgetOptions' => [
-					'type' => DepDrop::TYPE_SELECT2,
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'select2Options' => [
-						'pluginOptions' => [
-							'allowClear' => true,
-						],
-					],
-					'pluginOptions' => [
-						'depends' => ["{$formNameLower}-rptinputfields-usrstateid"],
-						'initialize' => true,
-						'url' => Url::to(['/aaa/geo-city-or-village/depdrop-list', 'sel' => $model->rptInputFields['usrCityOrVillageID'] ?? null]),
-						'loadingText' => Yii::t('app', 'Loading...'),
-					],
-				],
-			],
-
-			['@col-break'],
-
 			['rptInputFields[mbrAcceptedAt][From]',
 				'label' => 'تاریخ تایید عضویت (از)',
 				'type' => FormBuilder::FIELD_WIDGET,
@@ -181,6 +81,15 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 				'widgetOptions' => [
 					'allowClear' => true,
 				],
+			],
+
+			['@col-break'],
+
+			['rptInputFields[mbrExpireDate_None]',
+				// 'label' => 'تاریخ انقضای عضویت',
+				'label' => 'ندارد',
+				'type' => FormBuilder::FIELD_CHECKBOX,
+				'widgetOptions' => [[], true],
 			],
 			['rptInputFields[mbrExpireDate][From]',
 				'label' => 'تاریخ انقضای عضویت (از)',
@@ -214,6 +123,169 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 			],
 
 			['@col-break'],
+			'<hr>',
+
+			['rptInputFields[usrBirthLocation_None]',
+				// 'label' => 'محل تولد',
+				'label' => 'ندارد',
+				'type' => FormBuilder::FIELD_CHECKBOX,
+				'widgetOptions' => [[], true],
+			],
+			['rptInputFields[usrBirthLocation][State]',
+				'label' => 'استان محل تولد',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => Select2::class,
+				'widgetOptions' => [
+					'data' => ArrayHelper::map(GeoStateModel::find()->asArray()->noLimit()->all(), 'sttID', 'sttName'),
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'pluginOptions' => [
+						'allowClear' => true,
+					],
+				],
+			],
+			['rptInputFields[usrBirthLocation][City]',
+				'label' => 'شهر',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => DepDrop::class,
+				'widgetOptions' => [
+					'type' => DepDrop::TYPE_SELECT2,
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'select2Options' => [
+						'pluginOptions' => [
+							'allowClear' => true,
+						],
+					],
+					'pluginOptions' => [
+						'depends' => ["{$formNameLower}-rptinputfields-usrbirthlocation-state"],
+						'initialize' => true,
+						'url' => Url::to(['/aaa/geo-city-or-village/depdrop-list', 'sel' => $model->rptInputFields['usrBirthLocation']['City'] ?? null]),
+						'loadingText' => Yii::t('app', 'Loading...'),
+					],
+				],
+			],
+			['rptInputFields[usrBirthLocation][Town]',
+				'label' => 'منطقه',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => DepDrop::class,
+				'widgetOptions' => [
+					'type' => DepDrop::TYPE_SELECT2,
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'select2Options' => [
+						'pluginOptions' => [
+							'allowClear' => true,
+						],
+					],
+					'pluginOptions' => [
+						'depends' => ["{$formNameLower}-rptinputfields-usrbirthlocation-city"],
+						'initialize' => true,
+						'url' => Url::to(['/aaa/geo-town/depdrop-list', 'sel' => $model->rptInputFields['usrBirthLocation']['City'] ?? null]),
+						'loadingText' => Yii::t('app', 'Loading...'),
+					],
+				],
+			],
+
+			['@col-break'],
+
+			['rptInputFields[usrBirthDate_None]',
+				// 'label' => 'تاریخ تولد',
+				'label' => 'ندارد',
+				'type' => FormBuilder::FIELD_CHECKBOX,
+				'widgetOptions' => [[], true],
+			],
+			['rptInputFields[usrBirthDate][From]',
+				'label' => 'تاریخ تولد (از)',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => DatePicker::class,
+				'fieldOptions' => [
+					'addon' => [
+						'append' => [
+							'content' => '<i class="far fa-calendar-alt"></i>',
+						],
+					],
+				],
+				'widgetOptions' => [
+					'allowClear' => true,
+				],
+			],
+			['rptInputFields[usrBirthDate][To]',
+				'label' => 'تاریخ تولد (تا)',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => DatePicker::class,
+				'fieldOptions' => [
+					'addon' => [
+						'append' => [
+							'content' => '<i class="far fa-calendar-alt"></i>',
+						],
+					],
+				],
+				'widgetOptions' => [
+					'allowClear' => true,
+				],
+			],
+
+			['@col-break'],
+			'<hr>',
+
+			['rptInputFields[Location_None]',
+				// 'label' => 'محل سکونت',
+				'label' => 'ندارد',
+				'type' => FormBuilder::FIELD_CHECKBOX,
+				'widgetOptions' => [[], true],
+			],
+
+			['rptInputFields[usrStateID]',
+				'label' => 'استان محل سکونت',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => Select2::class,
+				'widgetOptions' => [
+					'data' => ArrayHelper::map(GeoStateModel::find()->asArray()->noLimit()->all(), 'sttID', 'sttName'),
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'pluginOptions' => [
+						'allowClear' => true,
+					],
+				],
+			],
+			['rptInputFields[usrCityOrVillageID]',
+				'label' => 'شهر',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => DepDrop::class,
+				'widgetOptions' => [
+					'type' => DepDrop::TYPE_SELECT2,
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'select2Options' => [
+						'pluginOptions' => [
+							'allowClear' => true,
+						],
+					],
+					'pluginOptions' => [
+						'depends' => ["{$formNameLower}-rptinputfields-usrstateid"],
+						'initialize' => true,
+						'url' => Url::to(['/aaa/geo-city-or-village/depdrop-list', 'sel' => $model->rptInputFields['usrCityOrVillageID'] ?? null]),
+						'loadingText' => Yii::t('app', 'Loading...'),
+					],
+				],
+			],
+
+			['@col-break'],
+
+
+			['@col-break'],
+			'<hr>',
 
 			['rptInputFields[mbrknnKanoonID]',
 				'label' => 'کانون',
@@ -227,6 +299,18 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 					],
 					'pluginOptions' => [
 						'allowClear' => true,
+					],
+				],
+				'fieldOptions' => [
+					'addon' => [
+						'prepend' => [
+							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrknnKanoonID_None]'),
+								($model->rptInputFields['mbrknnKanoonID_None'] ?? 0) == 1,
+								[
+									'id' => Html::getInputId($model, 'rptInputFields[mbrknnKanoonID_None]'),
+									'label' => 'ندارد',
+								]),
+						],
 					],
 				],
 			],
@@ -244,7 +328,21 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 						'allowClear' => true,
 					],
 				],
+				'fieldOptions' => [
+					'addon' => [
+						'prepend' => [
+							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrknnMembershipDegree_None]'),
+								($model->rptInputFields['mbrknnMembershipDegree_None'] ?? 0) == 1,
+								[
+									'id' => Html::getInputId($model, 'rptInputFields[mbrknnMembershipDegree_None]'),
+									'label' => 'ندارد',
+								]),
+						],
+					],
+				],
 			],
+
+			['@col-break'],
 
 			['rptInputFields[mbrInstrumentID]',
 				'label' => 'ساز',
@@ -258,6 +356,18 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 					],
 					'pluginOptions' => [
 						'allowClear' => true,
+					],
+				],
+				'fieldOptions' => [
+					'addon' => [
+						'prepend' => [
+							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrInstrumentID_None]'),
+								($model->rptInputFields['mbrInstrumentID_None'] ?? 0) == 1,
+								[
+									'id' => Html::getInputId($model, 'rptInputFields[mbrInstrumentID_None]'),
+									'label' => 'ندارد',
+								]),
+						],
 					],
 				],
 			],
@@ -275,6 +385,18 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 						'allowClear' => true,
 					],
 				],
+				'fieldOptions' => [
+					'addon' => [
+						'prepend' => [
+							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrSingID_None]'),
+								($model->rptInputFields['mbrSingID_None'] ?? 0) == 1,
+								[
+									'id' => Html::getInputId($model, 'rptInputFields[mbrSingID_None]'),
+									'label' => 'ندارد',
+								]),
+						],
+					],
+				],
 			],
 			['rptInputFields[mbrResearchID]',
 				'label' => 'پژوهش',
@@ -290,12 +412,33 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 						'allowClear' => true,
 					],
 				],
+				'fieldOptions' => [
+					'addon' => [
+						'prepend' => [
+							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrResearchID_None]'),
+								($model->rptInputFields['mbrResearchID_None'] ?? 0) == 1,
+								[
+									'id' => Html::getInputId($model, 'rptInputFields[mbrResearchID_None]'),
+									'label' => 'ندارد',
+								]),
+						],
+					],
+				],
 			],
+
+			'<hr>',
+
+			['rptInputFields[mbrJob]',
+				'label' => 'شغل',
+				'type' => FormBuilder::FIELD_TEXT,
+			],
+
+			'<hr>',
 		]);
 
 		$builder->fields([
 			['@section', 'label' => 'ستون‌های خروجی'],
-			['@cols' => 4, 'vertical' => false],
+			['@cols' => 4, 'vertical' => true],
 		]);
 
 		$outputFields = [
@@ -308,7 +451,10 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
       'usrLastName_en'        => Yii::t('aaa', 'Last Name (en)'),
       'usrFatherName'         => Yii::t('aaa', 'Father Name'),
       'usrFatherName_en'      => Yii::t('aaa', 'Father Name (en)'),
-      'usrEmail'              => Yii::t('aaa', 'Email'),
+
+			'@col-break',
+
+			'usrEmail'              => Yii::t('aaa', 'Email'),
       'usrEmailApprovedAt'    => Yii::t('aaa', 'Email Approved At'),
       'usrMobile'             => Yii::t('aaa', 'Mobile'),
       'usrMobileApprovedAt'   => Yii::t('aaa', 'Mobile Approved At'),
@@ -321,14 +467,22 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
       'hasPassword'           => Yii::t('aaa', 'Has Password'),
       'usrPasswordCreatedAt'  => Yii::t('aaa', 'Password Created At'),
       // 'usrMustChangePassword' => Yii::t('aaa', 'Must Change Password'),
+
+			'@col-break',
+
 			'usrBirthDate'          => Yii::t('aaa', 'Birth Date'),
 			'usrBirthCityID'        => Yii::t('aaa', 'Birth Location'),
 			'usrCountryID'          => Yii::t('aaa', 'Country'),
 			'usrStateID'            => Yii::t('aaa', 'State'),
 			'usrCityOrVillageID'    => Yii::t('aaa', 'City Or Village'),
 			'usrTownID'             => Yii::t('aaa', 'Town'),
-			'usrHomeAddress'        => Yii::t('aaa', 'Home Address'),
 			'usrZipCode'            => Yii::t('aaa', 'Zip Code'),
+			'usrHomeAddress'        => Yii::t('aaa', 'Home Address'),
+
+			'mbrJob'									=> Yii::t('mha', 'Job'),
+
+			'@col-break',
+
       'usrStatus'             => Yii::t('app', 'Status'),
       // 'usrCreatedAt'          => Yii::t('app', 'Created At'),
       // 'usrCreatedBy'          => Yii::t('app', 'Created By'),
@@ -343,26 +497,33 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 			'mbrRegisterCode'					=> Yii::t('mha', 'Register Code'),
 			'mbrAcceptedAt'						=> Yii::t('mha', 'Registration Accepted At'),
 			'mbrExpireDate'						=> Yii::t('mha', 'Expire Date'),
-			'mbrInstrumentID'					=> Yii::t('mha', 'Instrument'),
-			'mbrSingID'								=> Yii::t('mha', 'Sing'),
-			'mbrResearchID'						=> Yii::t('mha', 'Research'),
 
 			'knnName'									=> Yii::t('mha', 'Kanoon'),
 			'mbrknnMembershipDegree'	=> Yii::t('mha', 'Membership Degree'),
+
+			'mbrInstrumentID'					=> Yii::t('mha', 'Instrument'),
+			'mbrSingID'								=> Yii::t('mha', 'Sing'),
+			'mbrResearchID'						=> Yii::t('mha', 'Research'),
 		];
 
 		foreach ($outputFields as $k => $v) {
-			$builder->fields([
-				[
-					"rptOutputFields[{$k}]",
-					'label' => $v,
-					'type' => FormBuilder::FIELD_CHECKBOX,
-					'widgetOptions' => [[], true],
-					'fieldOptions' => [
-						'autoOffset' => false,
+			if ($v == '@col-break') {
+				$builder->fields([
+					['@col-break'],
+				]);
+			} else {
+				$builder->fields([
+					[
+						"rptOutputFields[{$k}]",
+						'label' => $v,
+						'type' => FormBuilder::FIELD_CHECKBOX,
+						'widgetOptions' => [[], true],
+						'fieldOptions' => [
+							'autoOffset' => false,
+						],
 					],
-				],
-			]);
+				]);
+			}
 		}
 	?>
 

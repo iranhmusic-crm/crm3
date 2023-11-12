@@ -357,7 +357,7 @@ h5, .h5 {
 }
 
 /* .col-form-label { */
-label {
+label.col-form-label {
   font-weight: bold;
   /* text-align: end; */
 }

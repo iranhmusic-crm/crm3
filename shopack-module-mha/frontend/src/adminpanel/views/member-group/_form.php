@@ -64,18 +64,18 @@ use shopack\base\common\accounting\enums\enuDiscountType;
 					'inline' => true,
 				],
 			],
-			['mgpDeliveryDiscountAmount',
-				'widgetOptions' => [
-					'style' => 'direction:ltr',
-				],
-			],
-			['mgpDeliveryDiscountType',
-				'type' => FormBuilder::FIELD_RADIOLIST,
-				'data' => enuDiscountType::listData(),
-				'widgetOptions' => [
-					'inline' => true,
-				],
-			],
+			// ['mgpDeliveryDiscountAmount',
+			// 	'widgetOptions' => [
+			// 		'style' => 'direction:ltr',
+			// 	],
+			// ],
+			// ['mgpDeliveryDiscountType',
+			// 	'type' => FormBuilder::FIELD_RADIOLIST,
+			// 	'data' => enuDiscountType::listData(),
+			// 	'widgetOptions' => [
+			// 		'inline' => true,
+			// 	],
+			// ],
 		]);
 	?>
 

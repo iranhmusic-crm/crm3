@@ -89,14 +89,14 @@ $this->params['breadcrumbs'][] = $this->title;
                   ? yii::t('aaa', 'Percent') : yii::t('aaa', 'Toman'))
             ),
           ],
-          [
-            'attribute' => 'mgpDeliveryDiscountAmount',
-            'value' => (empty($model->mgpDeliveryDiscountAmount) ? null
-              : Yii::$app->formatter->asDecimal($model->mgpDeliveryDiscountAmount) . ' '
-                . ($model->mgpDeliveryDiscountType == enuDiscountType::Percent
-                  ? yii::t('aaa', 'Percent') : yii::t('aaa', 'Toman'))
-            ),
-          ],
+          // [
+          //   'attribute' => 'mgpDeliveryDiscountAmount',
+          //   'value' => (empty($model->mgpDeliveryDiscountAmount) ? null
+          //     : Yii::$app->formatter->asDecimal($model->mgpDeliveryDiscountAmount) . ' '
+          //       . ($model->mgpDeliveryDiscountType == enuDiscountType::Percent
+          //         ? yii::t('aaa', 'Percent') : yii::t('aaa', 'Toman'))
+          //   ),
+          // ],
 
           // [
           //   'attribute' => 'mgpStatus',

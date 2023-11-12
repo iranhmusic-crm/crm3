@@ -61,6 +61,8 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 			'SingName'							 => Yii::t('mha', 'Sing'),
 			'ResearchName'					 => Yii::t('mha', 'Research'),
 
+      'mbrJob'					 => Yii::t('mha', 'Job'),
+
       // 'mbrknnParams'           => [
       //   'label' => 'تخصص',
       //   'value' => function($model) {
@@ -178,7 +180,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
       'HomeCityName'           => 'شهر سکونت',
     ];
 
-    foreach ($outputFields as $k    => $v) {
+    foreach ($outputFields as $k => $v) {
       if (array_key_exists($k, $dataProvider->allModels[0]) == false)
         continue;
 
