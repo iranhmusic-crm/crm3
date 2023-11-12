@@ -5,6 +5,7 @@
 
 /** @var yii\web\View $this */
 
+use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipUserAssetModel;
 use shopack\base\frontend\common\widgets\grid\GridView;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
@@ -67,10 +68,10 @@ use shopack\base\common\accounting\enums\enuUserAssetStatus;
     ],
     [
       'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
-      'header' => /* MemberModel::canCreate() ? Html::createButton(null, [
+      'header' => MembershipUserAssetModel::canCreate() ? Html::createButton(null, [
         'create',
         'uasActorID' => $uasActorID ?? $_GET['uasActorID'] ?? null,
-      ]) : */ Yii::t('app', 'Actions'),
+      ]) : Yii::t('app', 'Actions'),
       'template' => '',
     ],
     [

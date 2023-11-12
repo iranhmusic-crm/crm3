@@ -55,7 +55,9 @@ class MemberController extends BaseCrudController
       $mbrkanoons = $searchModel->find()
         ->andWhere(['mbrknnMemberID' => $model->mbrUserID])
         ->andWhere(['mbrknnStatus' => enuMemberKanoonStatus::Accepted])
+        ->orderBy('mbrknnIsMaster DESC')
         ->all();
+
       if (empty($mbrkanoons))
         throw new UnprocessableEntityHttpException('این عضو دارای هیچ کانون تایید شده‌ای نیست.');
 
@@ -67,7 +69,7 @@ class MemberController extends BaseCrudController
 
     return $this->render('printCardFront', [
       'model' => $model,
-      'mbrkanoon' => $mbrkanoons[0],
+      'mbrkanoons' => $mbrkanoons,
 		]);
   }
 
@@ -79,7 +81,9 @@ class MemberController extends BaseCrudController
     $mbrkanoons = $searchModel->find()
       ->andWhere(['mbrknnMemberID' => $model->mbrUserID])
       ->andWhere(['mbrknnStatus' => enuMemberKanoonStatus::Accepted])
+      ->orderBy('mbrknnIsMaster DESC')
       ->all();
+
     if (empty($mbrkanoons))
       throw new UnprocessableEntityHttpException('این عضو دارای هیچ کانون تایید شده‌ای نیست.');
 
@@ -87,7 +91,7 @@ class MemberController extends BaseCrudController
 
     return $this->render('printCardBack', [
       'model' => $model,
-      'mbrkanoon' => $mbrkanoons[0],
+      'mbrkanoons' => $mbrkanoons,
 		]);
   }
 

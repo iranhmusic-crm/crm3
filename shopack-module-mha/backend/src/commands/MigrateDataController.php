@@ -1652,7 +1652,9 @@ SQL;
         'mbrknnHistory',
         'mbrknnStatus',
         // 'mbrknnCreatedAt',
-      ], $values, $lastID, $convertKey);
+      ], $values, $lastID, $convertKey, [
+        'mbrknnIsMaster', // for ignore duplicate error
+      ]);
 
       $this->fnUnLogErrorFromConvertTable(array_keys($values), $convertKey, $errorids, $processedErrorIds);
     };
@@ -1844,7 +1846,7 @@ SQL;
             $history = Json::encode($history);
 
           foreach ($ids as $clubidx => $clubid) {
-            $values[$lastID] = implode(',', [
+            $values[$lastID + ($clubidx * 100000)] = implode(',', [
               /* mbrknnUUID             */ 'UUID()',
               /* mbrknnMemberID         */ $lastID + 100,
               /* mbrknnKanoonID         */ $clubid,

@@ -158,6 +158,15 @@ h2 {
 CSS;
 
 $this->registerCss($css);
+
+$kanoonNames = [];
+$kanoonDegrees = [];
+foreach ($mbrkanoons as $mbrkanoon) {
+  $kanoonNames[] = $mbrkanoon->kanoon->knnNameEn;
+  $kanoonDegrees[] = enuKanoonMembershipDegree::$list[$mbrkanoon->mbrknnMembershipDegree];
+}
+$kanoonNames = implode(' - ' , $kanoonNames);
+$kanoonDegrees = implode(' - ' , $kanoonDegrees);
 ?>
 
 <div class="cardbox">
@@ -184,8 +193,8 @@ $this->registerCss($css);
     <label><h1>Birthday</h1><h2><?= (new \DateTime($model->user->usrBirthDate))->format('Y/m/d') ?></h2></label>
     <label><h1>National Code</h1><h2><?= $model->user->usrSSID ?></h2></label>
     <label><h1>Father Name</h1><h2><?= $model->user->usrFatherName_en ?></h2></label>
-    <label><h1>Club</h1><h2><?= $mbrkanoon->kanoon->knnNameEn ?></h2></label>
-    <label style="width: 100%;"><h1>Member Code</h1><h2><?= $model->mbrRegisterCode ?> - <?= enuKanoonMembershipDegree::$list[$mbrkanoon->mbrknnMembershipDegree] ?></h2></label>
+    <label><h1>Club</h1><h2><?= $kanoonNames ?></h2></label>
+    <label style="width: 100%;"><h1>Member Code</h1><h2><?= $model->mbrRegisterCode ?> - <?= $kanoonDegrees ?></h2></label>
     <label><h1>Expire Date</h1><h2><?php
       if (empty($model->mbrExpireDate) == false)
         echo (new \DateTime($model->mbrExpireDate))->format('Y/m/d');

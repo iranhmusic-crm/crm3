@@ -38,7 +38,7 @@ class MembershipUserAssetModel extends UserAssetModel
   }
 
 	public static function canCreate() {
-		return false;
+		return true;
 	}
 
 	public function canUpdate() {
