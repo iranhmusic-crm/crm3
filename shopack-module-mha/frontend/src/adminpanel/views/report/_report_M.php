@@ -32,7 +32,13 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
     ];
 
     $outputFields = [
-      'mbrUserID'              => Yii::t('app', 'User ID'),
+      'mbrUserID'              => [
+        'label' => 'کد کاربری', //Yii::t('aaa', 'User ID'),
+        'format' => 'raw',
+        'value' => function ($model, $key, $index, $widget) {
+          return Html::a($model['mbrUserID'], ['/mha/member/view', 'id' => $model['mbrUserID']]);
+        },
+      ],
       'usrImageFileID'         => Yii::t('aaa', 'Image'),
       'usrGender'              => [
         'label' => Yii::t('aaa', 'Gender'),

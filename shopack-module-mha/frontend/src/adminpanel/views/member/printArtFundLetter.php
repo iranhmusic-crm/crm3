@@ -105,8 +105,14 @@ $searchModel = new MemberKanoonModel();
 $mbrkanoons = $searchModel->find()
   ->andWhere(['mbrknnMemberID' => $model->mbrUserID])
   ->andWhere(['mbrknnStatus' => enuMemberKanoonStatus::Accepted])
+  ->orderBy('mbrknnIsMaster DESC')
   ->all();
-$mbrkanoon = $mbrkanoons[0];
+
+$kanoonNames = [];
+foreach ($mbrkanoons as $mbrkanoon) {
+  $kanoonNames[] = $mbrkanoon->kanoon->knnName;
+}
+$kanoonNames = implode(' - ' , $kanoonNames);
 ?>
 
 <div class="print a5" id="dcapture">
@@ -127,7 +133,7 @@ $mbrkanoon = $mbrkanoons[0];
     با کد ملی <strong><?= Yii::$app->formatter->asPersianNum($model->user->usrSSID) ?></strong>
     متولد <strong><?= Yii::$app->formatter->asPersianNum(Yii::$app->formatter->asJalali($model->user->usrBirthDate)) ?></strong>
     و کد عضویت <strong><?= Yii::$app->formatter->asPersianNum($model->mbrRegisterCode) ?></strong>
-    از اعضای کانون <strong><?= $mbrkanoon->kanoon->knnName ?></strong>
+    از اعضای کانون <strong><?= $kanoonNames ?></strong>
     خانه‌ی موسیقی ایران که شرایط عضویت در صندوق اعتباری هنر را
     به مدت <strong>۳</strong> سال
     (قابل تمدید در صورت استمرار فعالیت و ارائه اثر جدید در مدت عضویت) دارا می‌باشند؛ به حضور معرفی می‌دارد.%
