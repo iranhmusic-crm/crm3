@@ -258,14 +258,17 @@ class MemberModel extends RestClientActiveRecord
 		return false;
 	}
 
-	public function displayName()
+	public function displayName($format = null)
 	{
 		$result = '';
+
+		if ($format == null)
+			$format = '{fn} {ln} {em} {mob}';
 
 		// if ($this->mbrRegisterCode)
 			$result = '[عضویت: ' . ($this->mbrRegisterCode ?? 'ندارد') . '] ';
 
-		return $result . $this->user->displayName('{fn} {ln} {em} {mob}');
+		return $result . $this->user->displayName($format);
 	}
 
 	public function getDefects()

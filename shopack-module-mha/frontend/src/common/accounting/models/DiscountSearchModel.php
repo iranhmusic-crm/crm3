@@ -9,9 +9,9 @@ use yii\base\Model;
 use yii\web\ServerErrorHttpException;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\rest\RestClientDataProvider;
-use iranhmusic\shopack\mha\frontend\common\accounting\models\CouponModel;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\DiscountModel;
 
-class CouponSearchModel extends CouponModel
+class DiscountSearchModel extends DiscountModel
 {
   use \shopack\base\common\db\SearchModelTrait;
 
@@ -39,20 +39,20 @@ class CouponSearchModel extends CouponModel
 			'sort' => [
 				// 'enableMultiSort' => true,
 				'attributes' => [
-					'cpnID',
-					'cpnName',
-					'cpnCreatedAt' => [
+					'dscID',
+					'dscName',
+					'dscCreatedAt' => [
 						'default' => SORT_DESC,
 					],
-					'cpnCreatedBy',
-					'cpnUpdatedAt' => [
+					'dscCreatedBy',
+					'dscUpdatedAt' => [
 						'default' => SORT_DESC,
 					],
-					'cpnUpdatedBy',
-					'cpnRemovedAt' => [
+					'dscUpdatedBy',
+					'dscRemovedAt' => [
 						'default' => SORT_DESC,
 					],
-					'cpnRemovedBy',
+					'dscRemovedBy',
 				],
 			],
 		]);

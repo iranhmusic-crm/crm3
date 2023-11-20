@@ -59,7 +59,7 @@ class SaleableModel extends MhaActiveRecord
 		$userAssetModel->uasQty             = $qty;
 		$userAssetModel->uasVoucherID       = $voucherID;
 		$userAssetModel->uasVoucherItemInfo = $voucherItemdata;
-		// $userAssetModel->uasCouponID        =
+		// $userAssetModel->uasDiscountID        =
 		// $userAssetModel->uasDiscountAmount  =
 		// $userAssetModel->uasPrefered        =
 		$userAssetModel->uasValidFromDate   = $startDate;

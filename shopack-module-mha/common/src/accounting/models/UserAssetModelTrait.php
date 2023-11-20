@@ -42,14 +42,14 @@ trait UserAssetModelTrait
 		return $className;
 	}
 
-	public static function getCouponModelClass()
+	public static function getDiscountModelClass()
 	{
 		$className = get_called_class();
 
 		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\accounting\models\CouponModel';
+			$className = '\iranhmusic\shopack\mha\backend\accounting\models\DiscountModel';
 		else
-			$className = '\iranhmusic\shopack\mha\frontend\common\accounting\models\CouponModel';
+			$className = '\iranhmusic\shopack\mha\frontend\common\accounting\models\DiscountModel';
 
 		return $className;
 	}

@@ -8,13 +8,13 @@ namespace iranhmusic\shopack\mha\backend\accounting\models;
 use Yii;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 
-class CouponModel extends MhaActiveRecord
+class DiscountModel extends MhaActiveRecord
 {
-	use \iranhmusic\shopack\mha\common\accounting\models\CouponModelTrait;
+	use \iranhmusic\shopack\mha\common\accounting\models\DiscountModelTrait;
 
 	public static function tableName()
 	{
-		return '{{%MHA_Accounting_Coupon}}';
+		return '{{%MHA_Accounting_Discount}}';
 	}
 
 }

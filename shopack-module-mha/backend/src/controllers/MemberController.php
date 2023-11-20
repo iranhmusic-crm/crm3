@@ -38,6 +38,24 @@ class MemberController extends BaseRestController
 		throw new NotFoundHttpException('The requested item not exist.');
 	}
 
+	public function fillGlobalSearchFromRequest(\yii\db\ActiveQuery $query, $q)
+	{
+		if (empty($q))
+			return;
+
+		$query->andWhere([
+			'OR',
+			['LIKE', 'mbrRegisterCode', $q],
+			['LIKE', 'usrFirstName', $q],
+			['LIKE', 'usrFirstName_en', $q],
+			['LIKE', 'usrLastName', $q],
+			['LIKE', 'usrLastName_en', $q],
+			['LIKE', 'usrEmail', $q],
+			['LIKE', 'usrMobile', $q],
+			['LIKE', 'usrSSID', $q],
+		]);
+	}
+
 	public function actionIndex($q = null)
 	{
 		$filter = $this->checkPrivAndGetFilter('mha/member/crud', '0100', 'mbrUserID');
@@ -54,19 +72,7 @@ class MemberController extends BaseRestController
 			->asArray()
 		;
 
-		if (empty($q) == false) {
-			$query->andWhere([
-				'OR',
-				['LIKE', 'mbrRegisterCode', $q],
-				['LIKE', 'usrFirstName', $q],
-				['LIKE', 'usrFirstName_en', $q],
-				['LIKE', 'usrLastName', $q],
-				['LIKE', 'usrLastName_en', $q],
-				['LIKE', 'usrEmail', $q],
-				['LIKE', 'usrMobile', $q],
-				['LIKE', 'usrSSID', $q],
-			]);
-		}
+		$this->fillGlobalSearchFromRequest($query, $q);
 
 		$searchModel->fillQueryFromRequest($query);
 

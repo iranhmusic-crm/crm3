@@ -14,6 +14,8 @@ class SaleableModel extends RestClientActiveRecord
 {
 	use \iranhmusic\shopack\mha\common\accounting\models\SaleableModelTrait;
 
+	public static $resourceName = 'mha/accounting/saleable';
+
 	public function isSoftDeleted()
   {
     return ($this->slbStatus == enuSaleableStatus::Removed);

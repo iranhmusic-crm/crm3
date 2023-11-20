@@ -165,23 +165,23 @@ a.desc:after {
 }
 
 h1, .h1 {
-  font-size: 1.9rem;
-}
-
-h2, .h2 {
-  font-size: 1.6rem;
-}
-
-h3, .h3 {
   font-size: 1.4rem;
 }
 
-h4, .h4 {
+h2, .h2 {
+  font-size: 1.3rem;
+}
+
+h3, .h3 {
   font-size: 1.2rem;
 }
 
-h5, .h5 {
+h4, .h4 {
   font-size: 1.1rem;
+}
+
+h5, .h5 {
+  font-size: 1.0rem;
 }
 
 .card-title {
@@ -520,4 +520,29 @@ pre {
 
 .card:not(:first-child) {
   margin-top: 25px;
+}
+
+.form-section {
+	border-top: 1px solid var(--bs-gray-300);
+	border-bottom: 1px solid var(--bs-gray-300);
+	background-color: var(--bs-gray-100);
+	padding: 8px;
+	line-height: 1.42857143;
+	vertical-align: top;
+	font-weight: bold;
+	/* margin-left: -15px; */
+	/* margin-right: -15px; */
+}
+
+.modal-dialog {
+  max-height: 100vh;
+  overflow-y: initial !important;
+}
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.select2-container .select2-selection--multiple .select2-selection__rendered {
+  white-space: wrap !important;
 }

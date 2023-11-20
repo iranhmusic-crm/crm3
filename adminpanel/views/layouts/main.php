@@ -219,6 +219,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                   'icon' => 'info-sign',
                   'url' => ['/mha/accounting/membership-card-product'],
                 ],
+                [
+                  'label' => Yii::t('aaa', 'Discounts'),
+                  'icon' => 'info-sign',
+                  'url' => ['/mha/accounting/discount'],
+                ],
               ],
             ],
             [

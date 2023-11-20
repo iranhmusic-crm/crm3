@@ -89,4 +89,11 @@ return [
 	'Logs' => 'لاگ',
 	'Search' => 'جستجو',
 
+	'Valid From' => 'اعتبار از',
+	'Valid To' => 'اعتبار تا',
+	'Valid From Date' => 'اعتبار از تاریخ',
+	'Valid To Date' => 'اعتبار تا تاریخ',
+	'Valid From Hour' => 'اعتبار از ساعت',
+	'Valid To Hour' => 'اعتبار تا ساعت',
+
 ];

@@ -13,7 +13,7 @@ use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 use shopack\base\common\accounting\models\BaseProductModelTrait;
 
 /*
-`prdMhaType`
+'prdMhaType',
 */
 
 trait ProductModelTrait

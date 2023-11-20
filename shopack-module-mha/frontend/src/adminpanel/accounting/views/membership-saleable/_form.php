@@ -29,13 +29,11 @@ use shopack\base\common\accounting\enums\enuSaleableStatus;
 		$builder = $form->getBuilder();
 
 		$builder->fields([
-			[
-				'slbProductID',
+			['slbProductID',
 				'type' => FormBuilder::FIELD_STATIC,
 				'staticValue' => $model->slbProductID . ' - ' . $model->product->prdName,
 			],
-			[
-				'slbStatus',
+			['slbStatus',
 				'type' => FormBuilder::FIELD_RADIOLIST,
 				'data' => enuSaleableStatus::listData('form'),
 				'widgetOptions' => [
@@ -45,8 +43,7 @@ use shopack\base\common\accounting\enums\enuSaleableStatus;
 			['slbName'],
 			// ['slbCode'],
 			// ['slbDesc'],
-			[
-				'slbBasePrice',
+			['slbBasePrice',
 				'fieldOptions' => [
 					'addon' => [
 						'append' => [
@@ -58,8 +55,7 @@ use shopack\base\common\accounting\enums\enuSaleableStatus;
 					'style' => 'direction:ltr',
 				],
 			],
-			[
-				'slbAvailableFromDate',
+			['slbAvailableFromDate',
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
 				'fieldOptions' => [

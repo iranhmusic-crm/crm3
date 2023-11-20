@@ -15,6 +15,8 @@ use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
+use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberChooseFormField;
+
 ?>
 
 <div class='member-kanoon-form'>
@@ -33,78 +35,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 
 		//from member view or side bar?
 		if (empty($model->mbrknnMemberID)) {
-			$formatJs =<<<JS
-var formatMember = function(item) {
-	if (item.loading)
-		return 'در حال جستجو...'; //item.text;
-	return '<div style="overflow:hidden;">' + item.name + '</div>';
-};
-var formatMemberSelection = function(item) {
-	if (item.text)
-		return item.text;
-	return item.name;
-}
-JS;
-			$this->registerJs($formatJs, \yii\web\View::POS_HEAD);
-
-			// script to parse the results into the format expected by Select2
-			$resultsJs =<<<JS
-function(data, params) {
-	if ((data == null) || (params == null))
-		return;
-
-	// params.page = params.page || 1;
-	if (params.page == null)
-		params.page = 0;
-
-	return {
-		results: data.items,
-		pagination: {
-			more: ((params.page + 1) * 20) < data.total_count
-		}
-	};
-}
-JS;
-
-			if (empty($model->mbrknnMemberID))
-				$initValueText = null;
-			else {
-				$memberModel = MemberModel::findOne($model->mbrknnMemberID);
-				$initValueText = $memberModel->displayName();
-			}
-
-			$builder->fields([
-				[
-					'mbrknnMemberID',
-					'type' => FormBuilder::FIELD_WIDGET,
-					'widget' => Select2::class,
-					'widgetOptions' => [
-						'initValueText' => $initValueText,
-						'value' => $model->mbrknnMemberID,
-						'pluginOptions' => [
-							'allowClear' => false,
-							'minimumInputLength' => 2, //qom, rey
-							'ajax' => [
-								'url' => Url::to(['/mha/member/select2-list']),
-								'dataType' => 'json',
-								'delay' => 50,
-								'data' => new JsExpression('function(params) { return {q:params.term, page:params.page}; }'),
-								'processResults' => new JsExpression($resultsJs),
-								'cache' => true,
-							],
-							'escapeMarkup' => new JsExpression('function(markup) { return markup; }'),
-							'templateResult' => new JsExpression('formatMember'),
-							'templateSelection' => new JsExpression('formatMemberSelection'),
-						],
-						'options' => [
-							'placeholder' => '-- جستجو کنید --',
-							'dir' => 'rtl',
-							// 'multiple' => true,
-						],
-					],
-				],
-			]);
-
+			$builder->fields(MemberChooseFormField::field($this, $model, 'mbrknnMemberID', false));
 		} else {
 			$builder->fields([
 				[

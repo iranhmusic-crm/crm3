@@ -148,6 +148,7 @@ class MemberController extends BaseCrudController
           'email'     => $model->user->usrEmail,
 
           'name' => $model->displayName(),
+          'title' => $model->displayName('{fn} {ln}'),
         ];
 			}
     }

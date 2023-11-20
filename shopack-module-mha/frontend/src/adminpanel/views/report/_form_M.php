@@ -38,8 +38,6 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 		$builder->fields([
 			['rptName'],
 
-			'<hr>',
-
 			['@cols' => 2, 'vertical' => true],
 		]);
 
@@ -451,8 +449,6 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 				'label' => 'شغل',
 				'type' => FormBuilder::FIELD_TEXT,
 			],
-
-			'<hr>',
 		]);
 
 		$builder->fields([

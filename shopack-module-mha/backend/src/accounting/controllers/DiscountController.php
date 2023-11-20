@@ -11,10 +11,10 @@ use yii\web\NotFoundHttpException;
 use yii\web\UnprocessableEntityHttpException;
 use yii\data\ActiveDataProvider;
 use shopack\base\common\helpers\ExceptionHelper;
-use shopack\base\backend\accounting\controllers\BaseCouponController;
+use shopack\base\backend\accounting\controllers\BaseDiscountController;
 use shopack\base\backend\helpers\PrivHelper;
 
-class CouponController extends BaseCouponController
+class DiscountController extends BaseDiscountController
 {
 	public function behaviors()
 	{
@@ -28,16 +28,16 @@ class CouponController extends BaseCouponController
 		return $behaviors;
 	}
 
-	public $modelClass = \iranhmusic\shopack\mha\backend\accounting\models\CouponModel::class;
+	public $modelClass = \iranhmusic\shopack\mha\backend\accounting\models\DiscountModel::class;
 
 	public function permissions()
 	{
 		return [
-			// 'index'  => ['mha/accounting/coupon/crud', '0100'],
-			// 'view'   => ['mha/accounting/coupon/crud', '0100'],
-			'create' => ['mha/accounting/coupon/crud', '1000'],
-			'update' => ['mha/accounting/coupon/crud', '0010'],
-			'delete' => ['mha/accounting/coupon/crud', '0001'],
+			// 'index'  => ['mha/accounting/discount/crud', '0100'],
+			// 'view'   => ['mha/accounting/discount/crud', '0100'],
+			'create' => ['mha/accounting/discount/crud', '1000'],
+			'update' => ['mha/accounting/discount/crud', '0010'],
+			'delete' => ['mha/accounting/discount/crud', '0001'],
 		];
 	}
 
