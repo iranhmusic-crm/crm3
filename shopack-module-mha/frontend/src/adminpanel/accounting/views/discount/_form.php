@@ -3,22 +3,24 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonChooseFormField;
 use yii\web\JsExpression;
 use shopack\base\common\helpers\Url;
+use shopack\base\common\helpers\HttpHelper;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\datetime\DatePicker;
 use shopack\base\frontend\common\widgets\Select2;
 use shopack\base\frontend\common\widgets\DepDrop;
-use shopack\base\frontend\common\helpers\Html;
-use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
+use shopack\base\common\accounting\enums\enuDiscountType;
 use shopack\base\common\accounting\enums\enuDiscountStatus;
 use shopack\base\common\accounting\enums\enuAmountType;
 use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberChooseFormField;
 use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberGroupChooseFormField;
 use iranhmusic\shopack\mha\frontend\common\widgets\grid\ProductChooseFormField;
 use iranhmusic\shopack\mha\frontend\common\widgets\grid\SaleableChooseFormField;
+use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
+use iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonChooseFormField;
 
 // \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);
 ?>
@@ -44,8 +46,114 @@ use iranhmusic\shopack\mha\frontend\common\widgets\grid\SaleableChooseFormField;
 				],
 			],
 			['dscName'],
-			['dscCode'],
+		]);
 
+		$builder->fields([
+			[
+				'dscType',
+				'type' => FormBuilder::FIELD_RADIOLIST,
+				'data' => enuDiscountType::listData(),
+				'widgetOptions' => ['inline' => true],
+			],
+			[
+				'dscCodeString',
+				'visibleConditions' => [
+					'dscType' => enuDiscountType::Coupon,
+				],
+				'widgetOptions' => [
+					'disabled' => (!$model->isNewRecord && ($model->dscType == enuDiscountType::Coupon) && $model->dscCodeHasSerial),
+					'maxlength' => true,
+					'style' => 'direction:ltr',
+				],
+			],
+			[
+				'dscCodeHasSerial',
+				'visibleConditions' => [
+					'dscType' => enuDiscountType::Coupon,
+				],
+				'type' => FormBuilder::FIELD_CHECKBOX,
+				'widgetOptions' => [[
+					'disabled' => (!$model->isNewRecord && ($model->dscType == enuDiscountType::Coupon)),
+				], false],
+			],
+			['@col' => 2],
+			[
+				'dscCodeSerialCount',
+				'visibleConditions' => [
+					'dscType' => enuDiscountType::Coupon,
+					'dscCodeHasSerial' => 1,
+				],
+				'fieldOptions' => [
+					'addon' => [
+						'append' => [
+							'content' => 'عدد',
+						],
+					],
+				],
+				'widgetOptions' => [
+					'disabled' => (!$model->isNewRecord && ($model->dscType == enuDiscountType::Coupon)),
+					'style' => 'direction:ltr',
+				],
+			],
+			[
+				'dscCodeSerialLength',
+				'visibleConditions' => [
+					'dscType' => enuDiscountType::Coupon,
+					'dscCodeHasSerial' => 1,
+				],
+				'fieldOptions' => [
+					'addon' => [
+						'append' => [
+							'content' => 'کاراکتر',
+						],
+					],
+				],
+				'widgetOptions' => [
+					'disabled' => (!$model->isNewRecord && ($model->dscType == enuDiscountType::Coupon)),
+					'style' => 'direction:ltr',
+				],
+			],
+		]);
+
+		$builder->fields([
+			['@reset-cols'],
+			['@section', 'label' => Yii::t('app', 'Conditions')],
+		]);
+
+		$builder->fields(MemberChooseFormField::field($this, $model, 'dscTargetUserIDs', true, true));
+
+		$builder->fields(ProductChooseFormField::field($this, $model, 'dscTargetProductIDs', true, true));
+
+		$builder->fields(SaleableChooseFormField::field($this, $model, 'dscTargetSaleableIDs', true, true));
+
+		// $builder->fields([
+		// 	['dscSaleableBasedMultiplier'],
+		// ]);
+
+		$builder->fields(MemberGroupChooseFormField::field($this, $model, 'dscTargetMemberGroupIDs', true, true));
+
+		$builder->fields(KanoonChooseFormField::field($this, $model, 'dscTargetKanoonIDs', true, true));
+
+		$builder->fields([
+			['dscTargetProductMhaTypes',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => Select2::class,
+				'widgetOptions' => [
+					'data' => enuMhaProductType::getList(),
+					'pluginOptions' => [
+						'allowClear' => true,
+					],
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+						'multiple' => true,
+					],
+				],
+			],
+		]);
+
+
+		$builder->fields([
 			['@cols' => 2],
 
 			['@section', 'label' => 'محدودیت‌ها'],
@@ -109,27 +217,6 @@ use iranhmusic\shopack\mha\frontend\common\widgets\grid\SaleableChooseFormField;
 					],
 				],
 			],
-
-			['@reset-cols'],
-			['@section', 'label' => Yii::t('aaa', 'Conditions')],
-		]);
-
-		$builder->fields(MemberChooseFormField::field($this, $model, 'dscTargetUserIDs', true, true));
-
-		$builder->fields(ProductChooseFormField::field($this, $model, 'dscTargetProductIDs', true, true));
-
-		$builder->fields(SaleableChooseFormField::field($this, $model, 'dscTargetSaleableIDs', true, true));
-
-		$builder->fields([
-			['dscSaleableBasedMultiplier'],
-		]);
-
-		$builder->fields(MemberGroupChooseFormField::field($this, $model, 'dscTargetMemberGroupIDs', true, true));
-
-		$builder->fields(KanoonChooseFormField::field($this, $model, 'dscTargetKanoonIDs', true, true));
-
-		$builder->fields([
-			['dscTargetProductMhaTypes'],
 		]);
 
 		$builder->fields([

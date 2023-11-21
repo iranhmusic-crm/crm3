@@ -10,6 +10,7 @@ use shopack\base\common\helpers\Url;
 use shopack\base\frontend\common\widgets\Select2;
 use iranhmusic\shopack\mha\frontend\common\models\MemberGroupModel;
 use shopack\base\frontend\common\widgets\FormBuilder;
+use Yii;
 
 class MemberGroupChooseFormField
 {
@@ -98,7 +99,7 @@ JS;
 					'templateSelection' => new JsExpression('formatMemberGroupSelection'),
 				],
 				'options' => [
-					'placeholder' => '-- جستجو کنید --',
+					'placeholder' => Yii::t('app', '-- Search (*** for all) --'),
 					'dir' => 'rtl',
 					'multiple' => $multiSelect,
 				],

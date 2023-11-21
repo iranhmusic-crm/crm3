@@ -22,6 +22,8 @@ use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
+use iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonChooseFormField;
+
 ?>
 
 <div class='members-report-form'>
@@ -303,34 +305,55 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 
 			['@col-break'],
 			'<hr>',
+		]);
 
-			['rptInputFields[mbrknnKanoonID]',
-				'label' => 'کانون',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => Select2::class,
-				'widgetOptions' => [
-					'data' => ArrayHelper::map(KanoonModel::find()->asArray()->noLimit()->all(), 'knnID', 'knnName'),
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'pluginOptions' => [
-						'allowClear' => true,
-					],
-				],
-				'fieldOptions' => [
-					'addon' => [
-						'prepend' => [
-							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrknnKanoonID_None]'),
-								($model->rptInputFields['mbrknnKanoonID_None'] ?? 0) == 1,
-								[
-									'id' => Html::getInputId($model, 'rptInputFields[mbrknnKanoonID_None]'),
-									'label' => 'ندارد',
-								]),
-						],
+		$builder->fields(KanoonChooseFormField::field($this, $model, 'rptInputFields[mbrknnKanoonID]', true, true, [
+			'label' => 'کانون',
+			'fieldOptions' => [
+				'addon' => [
+					'prepend' => [
+						'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrknnKanoonID_None]'),
+							($model->rptInputFields['mbrknnKanoonID_None'] ?? 0) == 1,
+							[
+								'id' => Html::getInputId($model, 'rptInputFields[mbrknnKanoonID_None]'),
+								'label' => 'ندارد',
+							]),
 					],
 				],
 			],
+		]));
+
+		// $builder->fields([
+		// 	['rptInputFields[mbrknnKanoonID]',
+		// 		'label' => 'کانون',
+		// 		'type' => FormBuilder::FIELD_WIDGET,
+		// 		'widget' => Select2::class,
+		// 		'widgetOptions' => [
+		// 			'data' => ArrayHelper::map(KanoonModel::find()->asArray()->noLimit()->all(), 'knnID', 'knnName'),
+		// 			'options' => [
+		// 				'placeholder' => Yii::t('app', '-- Choose --'),
+		// 				'dir' => 'rtl',
+		// 			],
+		// 			'pluginOptions' => [
+		// 				'allowClear' => true,
+		// 			],
+		// 		],
+		// 		'fieldOptions' => [
+		// 			'addon' => [
+		// 				'prepend' => [
+		// 					'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrknnKanoonID_None]'),
+		// 						($model->rptInputFields['mbrknnKanoonID_None'] ?? 0) == 1,
+		// 						[
+		// 							'id' => Html::getInputId($model, 'rptInputFields[mbrknnKanoonID_None]'),
+		// 							'label' => 'ندارد',
+		// 						]),
+		// 				],
+		// 			],
+		// 		],
+		// 	],
+		// ]);
+
+		$builder->fields([
 			['rptInputFields[mbrknnMembershipDegree]',
 				'label' => 'رده عضویت',
 				'type' => FormBuilder::FIELD_WIDGET,
@@ -340,6 +363,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',
+						'multiple' => true,
 					],
 					'pluginOptions' => [
 						'allowClear' => true,
@@ -370,6 +394,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',
+						'multiple' => true,
 					],
 					'pluginOptions' => [
 						'allowClear' => true,
@@ -397,6 +422,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',
+						'multiple' => true,
 					],
 					'pluginOptions' => [
 						'allowClear' => true,
@@ -424,6 +450,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',
+						'multiple' => true,
 					],
 					'pluginOptions' => [
 						'allowClear' => true,

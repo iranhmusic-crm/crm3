@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\backend\models;
 
 use shopack\aaa\backend\classes\AAAActiveRecord;
-use shopack\base\common\accounting\enums\enuDiscountType;
+use shopack\base\common\accounting\enums\enuAmountType;
 use yii\base\InvalidValueException;
 use yii\web\UnprocessableEntityHttpException;
 
@@ -41,7 +41,7 @@ class MemberGroupModel extends AAAActiveRecord
 		} else if ((empty($this->mgpMembershipDiscountType) == false) && empty($this->mgpMembershipDiscountAmount)) {
 			$this->mgpMembershipDiscountType = null;
 		}
-		if (($this->mgpMembershipDiscountType == enuDiscountType::Percent)
+		if (($this->mgpMembershipDiscountType == enuAmountType::Percent)
 			&& ($this->mgpMembershipDiscountAmount > 100)
 		) {
 			throw new UnprocessableEntityHttpException('The percentage cannot be greater than 100');
@@ -54,7 +54,7 @@ class MemberGroupModel extends AAAActiveRecord
 		} else if ((empty($this->mgpMembershipCardDiscountType) == false) && empty($this->mgpMembershipCardDiscountAmount)) {
 			$this->mgpMembershipCardDiscountType = null;
 		}
-		if (($this->mgpMembershipCardDiscountType == enuDiscountType::Percent)
+		if (($this->mgpMembershipCardDiscountType == enuAmountType::Percent)
 			&& ($this->mgpMembershipCardDiscountAmount > 100)
 		) {
 			throw new UnprocessableEntityHttpException('The percentage cannot be greater than 100');
@@ -67,7 +67,7 @@ class MemberGroupModel extends AAAActiveRecord
 		} else if ((empty($this->mgpDeliveryDiscountType) == false) && empty($this->mgpDeliveryDiscountAmount)) {
 			$this->mgpDeliveryDiscountType = null;
 		}
-		if (($this->mgpDeliveryDiscountType == enuDiscountType::Percent)
+		if (($this->mgpDeliveryDiscountType == enuAmountType::Percent)
 			&& ($this->mgpDeliveryDiscountAmount > 100)
 		) {
 			throw new UnprocessableEntityHttpException('The percentage cannot be greater than 100');

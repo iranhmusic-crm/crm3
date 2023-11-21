@@ -22,14 +22,19 @@ class DiscountModel extends RestClientActiveRecord
 			'dscID'                      => Yii::t('app', 'ID'),
 			// 'dscUUID'
 			'dscName'                    => Yii::t('app', 'Name'),
-			'dscCode'                    => Yii::t('aaa', 'Code'),
+			'dscType'                    => Yii::t('app', 'Type'),
+			'dscCodeString'              => Yii::t('aaa', 'Code'),
+			'dscValidFrom'               => Yii::t('app', 'Valid From Date'),
+			'dscValidTo'                 => Yii::t('app', 'Valid To Date'),
 			'dscTotalMaxCount'           => Yii::t('aaa', 'Total Max Count'),
 			'dscTotalMaxPrice'           => Yii::t('aaa', 'Total Max Amount'),
 			'dscPerUserMaxCount'         => Yii::t('aaa', 'Per User Max Count'),
 			'dscPerUserMaxPrice'         => Yii::t('aaa', 'Per User Max Amount'),
-			'dscValidFrom'               => Yii::t('app', 'Valid From Date'),
-			'dscValidTo'                 => Yii::t('app', 'Valid To Date'),
-			'dscAmount'               	 => Yii::t('aaa', 'Amount'),
+			'dscTargetUserIDs'           => Yii::t('mha', 'Members'),
+			'dscTargetProductIDs'        => Yii::t('aaa', 'Products'),
+			'dscTargetSaleableIDs'       => Yii::t('aaa', 'Saleables'),
+			'dscSaleableBasedMultiplier' => Yii::t('aaa', 'Saleable Based Multiplier'),
+			'dscAmount'               	 => Yii::t('aaa', 'Discount Amount'),
 			'dscAmountType'              => Yii::t('aaa', 'Amount Type'),
 			'dscMaxAmount'               => Yii::t('aaa', 'Max Amount'),
 			'dscSaleableBasedMultiplier' => Yii::t('aaa', 'Saleable Based Multiplier'),
@@ -46,6 +51,11 @@ class DiscountModel extends RestClientActiveRecord
 			'dscRemovedAt'               => Yii::t('app', 'Removed At'),
 			'dscRemovedBy'               => Yii::t('app', 'Removed By'),
 			'dscRemovedBy_User'          => Yii::t('app', 'Removed By'),
+
+			//-- mha --
+			'dscTargetMemberGroupIDs'    => Yii::t('mha', 'Member Groups'),
+			'dscTargetKanoonIDs'         => Yii::t('mha', 'Kanoons'),
+			'dscTargetProductMhaTypes'   => Yii::t('mha', 'Mha Product Type'),
 		];
 	}
 

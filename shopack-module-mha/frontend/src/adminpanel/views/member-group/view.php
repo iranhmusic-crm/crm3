@@ -10,7 +10,7 @@ use shopack\base\frontend\common\widgets\PopoverX;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\DetailView;
 use iranhmusic\shopack\mha\frontend\common\models\MemberGroupModel;
-use shopack\base\common\accounting\enums\enuDiscountType;
+use shopack\base\common\accounting\enums\enuAmountType;
 
 $this->title = Yii::t('mha', 'Member Group') . ': ' . $model->mgpID . ' - ' . $model->mgpName;
 $this->params['breadcrumbs'][] = Yii::t('aaa', 'System');
@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'mgpMembershipDiscountAmount',
             'value' => (empty($model->mgpMembershipDiscountAmount) ? null
               : Yii::$app->formatter->asDecimal($model->mgpMembershipDiscountAmount) . ' '
-                . ($model->mgpMembershipDiscountType == enuDiscountType::Percent
+                . ($model->mgpMembershipDiscountType == enuAmountType::Percent
                   ? yii::t('aaa', 'Percent') : yii::t('aaa', 'Toman'))
             ),
           ],
@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'mgpMembershipCardDiscountAmount',
             'value' => (empty($model->mgpMembershipCardDiscountAmount) ? null
               : Yii::$app->formatter->asDecimal($model->mgpMembershipCardDiscountAmount) . ' '
-                . ($model->mgpMembershipCardDiscountType == enuDiscountType::Percent
+                . ($model->mgpMembershipCardDiscountType == enuAmountType::Percent
                   ? yii::t('aaa', 'Percent') : yii::t('aaa', 'Toman'))
             ),
           ],
@@ -93,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
           //   'attribute' => 'mgpDeliveryDiscountAmount',
           //   'value' => (empty($model->mgpDeliveryDiscountAmount) ? null
           //     : Yii::$app->formatter->asDecimal($model->mgpDeliveryDiscountAmount) . ' '
-          //       . ($model->mgpDeliveryDiscountType == enuDiscountType::Percent
+          //       . ($model->mgpDeliveryDiscountType == enuAmountType::Percent
           //         ? yii::t('aaa', 'Percent') : yii::t('aaa', 'Toman'))
           //   ),
           // ],

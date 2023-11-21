@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
           'attributes' => [
             'dscID',
             'dscName',
-            'dscCode',
+            'dscCodeString',
             'dscTotalMaxCount',
             'dscTotalMaxPrice',
             'dscPerUserMaxCount',

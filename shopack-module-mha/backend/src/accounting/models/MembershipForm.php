@@ -22,7 +22,7 @@ use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
 use iranhmusic\shopack\mha\backend\accounting\models\SaleableModel;
 use iranhmusic\shopack\mha\backend\models\MemberMemberGroupModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
-use shopack\base\common\accounting\enums\enuDiscountType;
+use shopack\base\common\accounting\enums\enuAmountType;
 
 class MembershipForm extends Model
 {
@@ -160,7 +160,7 @@ class MembershipForm extends Model
 				if ((empty($memberGroup->memberGroup->mgpMembershipDiscountAmount) == false)
 					&& (empty($memberGroup->memberGroup->mgpMembershipDiscountType) == false)
 				) {
-					if ($memberGroup->memberGroup->mgpMembershipDiscountType == enuDiscountType::Percent) {
+					if ($memberGroup->memberGroup->mgpMembershipDiscountType == enuAmountType::Percent) {
 						$amount = $memberGroup->memberGroup->mgpMembershipDiscountAmount * $totalPrice / 100.0;
 					} else {
 						$amount = min($totalPrice, $memberGroup->memberGroup->mgpMembershipDiscountAmount);
@@ -173,7 +173,7 @@ class MembershipForm extends Model
 				if ((empty($memberGroup->memberGroup->mgpMembershipCardDiscountAmount) == false)
 					&& (empty($memberGroup->memberGroup->mgpMembershipCardDiscountType) == false)
 				) {
-					if ($memberGroup->memberGroup->mgpMembershipCardDiscountType == enuDiscountType::Percent) {
+					if ($memberGroup->memberGroup->mgpMembershipCardDiscountType == enuAmountType::Percent) {
 						$amount = $memberGroup->memberGroup->mgpMembershipCardDiscountAmount * $cardPrintSaleableModel->slbBasePrice / 100.0;
 					} else {
 						$amount = min($cardPrintSaleableModel->slbBasePrice, $memberGroup->memberGroup->mgpMembershipCardDiscountAmount);

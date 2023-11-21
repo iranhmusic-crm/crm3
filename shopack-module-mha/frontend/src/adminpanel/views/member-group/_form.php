@@ -12,7 +12,7 @@ use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
-use shopack\base\common\accounting\enums\enuDiscountType;
+use shopack\base\common\accounting\enums\enuAmountType;
 // use iranhmusic\shopack\mha\common\enums\enuMemberGroupStatus;
 
 // \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);
@@ -47,7 +47,7 @@ use shopack\base\common\accounting\enums\enuDiscountType;
 			],
 			['mgpMembershipDiscountType',
 				'type' => FormBuilder::FIELD_RADIOLIST,
-				'data' => enuDiscountType::listData(),
+				'data' => enuAmountType::listData(),
 				'widgetOptions' => [
 					'inline' => true,
 				],
@@ -59,7 +59,7 @@ use shopack\base\common\accounting\enums\enuDiscountType;
 			],
 			['mgpMembershipCardDiscountType',
 				'type' => FormBuilder::FIELD_RADIOLIST,
-				'data' => enuDiscountType::listData(),
+				'data' => enuAmountType::listData(),
 				'widgetOptions' => [
 					'inline' => true,
 				],
@@ -71,7 +71,7 @@ use shopack\base\common\accounting\enums\enuDiscountType;
 			// ],
 			// ['mgpDeliveryDiscountType',
 			// 	'type' => FormBuilder::FIELD_RADIOLIST,
-			// 	'data' => enuDiscountType::listData(),
+			// 	'data' => enuAmountType::listData(),
 			// 	'widgetOptions' => [
 			// 		'inline' => true,
 			// 	],

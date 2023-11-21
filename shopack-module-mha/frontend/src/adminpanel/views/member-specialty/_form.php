@@ -74,7 +74,7 @@ use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberChooseFormField;
 					// 	'templateSelection' => new JsExpression('formatSpecialtySelection'),
 					// ],
 					'options' => [
-						'placeholder' => '-- جستجو کنید --',
+						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',
 						// 'multiple' => true,
 					],

@@ -9,7 +9,9 @@ use yii\web\JsExpression;
 use shopack\base\common\helpers\Url;
 use shopack\base\frontend\common\widgets\Select2;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
+use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\widgets\FormBuilder;
+use Yii;
 
 class KanoonChooseFormField
 {
@@ -18,7 +20,8 @@ class KanoonChooseFormField
 		$model,
 		$attribute,
 		$allowClear = true,
-		$multiSelect = false
+		$multiSelect = false,
+		$builderOptions = null
 	) {
 		$formatJs =<<<JS
 var formatKanoon = function(item)
@@ -55,27 +58,45 @@ function(data, params)
 }
 JS;
 
-		if (!empty($model->$attribute)) {
+		if (strpos($attribute, '[') !== false) {
+			$parts = explode('[', $attribute, 2);
+
+			$attr = $parts[0];
+			$key = str_replace("]", "", str_replace("[", "", str_replace("][", ".", $parts[1])));
+
+			$attrValue = ArrayHelper::getValue($model->$attr, $key);
+		} else {
+			$attrValue = $model->$attribute ?? null;
+		}
+
+		if (empty($attrValue)) {
+			$vals = null; //$attrValue;
+			$desc = null;
+		} else {
 			if ($multiSelect) {
-				$models = KanoonModel::findAll($model->$attribute);
+				$models = KanoonModel::findAll((array)$attrValue);
 				$vals = [];
 				$desc = [];
 				foreach ($models as $item) {
 					$vals[] = $item->knnID;
 					$desc[] = $item->knnName;
 				}
-				$model->$attribute = $vals;
+
+				if (isset($key)) {
+					$atv = $model->$attr;
+					ArrayHelper::setValue($atv, $key, $vals);
+					$model->$attr = $atv;
+				} else
+					$model->$attribute = $vals;
+
 			} else {
-				$KanoonModel = KanoonModel::findOne($model->$attribute);
-				$vals = $model->$attribute;
+				$KanoonModel = KanoonModel::findOne($attrValue);
+				$vals = $attrValue;
 				$desc = $KanoonModel->knnName;
 			}
-		} else {
-			$vals = $model->$attribute;
-			$desc = null;
 		}
 
-		return [
+		return array_merge_recursive([
 			$attribute,
 			'type' => FormBuilder::FIELD_WIDGET,
 			'widget' => Select2::class,
@@ -98,12 +119,12 @@ JS;
 					'templateSelection' => new JsExpression('formatKanoonSelection'),
 				],
 				'options' => [
-					'placeholder' => '-- جستجو کنید --',
+					'placeholder' => Yii::t('app', '-- Search (*** for all) --'),
 					'dir' => 'rtl',
 					'multiple' => $multiSelect,
 				],
 			],
-		];
+		], $builderOptions ?? []);
 	}
 
 }

@@ -9,7 +9,7 @@ use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
 use shopack\base\common\rest\enuColumnSearchType;
 // use shopack\base\common\validators\JsonValidator;
-// use shopack\base\common\accounting\enums\enuDiscountType;
+// use shopack\base\common\accounting\enums\enuAmountType;
 use iranhmusic\shopack\mha\common\enums\enuMemberGroupStatus;
 
 /*
@@ -67,7 +67,7 @@ trait MemberGroupModelTrait
       'mgpMembershipDiscountType' => [
         enuColumnInfo::type       => ['string', 'max' => 1],
         enuColumnInfo::validator  => null,
-        enuColumnInfo::default    => null, //enuDiscountType::Percent,
+        enuColumnInfo::default    => null, //enuAmountType::Percent,
         enuColumnInfo::required   => false,
         enuColumnInfo::selectable => true,
         enuColumnInfo::search     => enuColumnSearchType::exact,
@@ -82,7 +82,7 @@ trait MemberGroupModelTrait
       'mgpMembershipCardDiscountType' => [
         enuColumnInfo::type       => ['string', 'max' => 1],
         enuColumnInfo::validator  => null,
-        enuColumnInfo::default    => null, //enuDiscountType::Percent,
+        enuColumnInfo::default    => null, //enuAmountType::Percent,
         enuColumnInfo::required   => false,
         enuColumnInfo::selectable => true,
         enuColumnInfo::search     => enuColumnSearchType::exact,
@@ -97,7 +97,7 @@ trait MemberGroupModelTrait
       'mgpDeliveryDiscountType' => [
         enuColumnInfo::type       => ['string', 'max' => 1],
         enuColumnInfo::validator  => null,
-        enuColumnInfo::default    => null, //enuDiscountType::Percent,
+        enuColumnInfo::default    => null, //enuAmountType::Percent,
         enuColumnInfo::required   => false,
         enuColumnInfo::selectable => true,
         enuColumnInfo::search     => enuColumnSearchType::exact,

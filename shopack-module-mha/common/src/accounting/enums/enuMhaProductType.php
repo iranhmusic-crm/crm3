@@ -11,14 +11,14 @@ abstract class enuMhaProductType extends BaseEnum
 {
 	const Membership			= 'M';
 	const MembershipCard  = 'C';
-	const PostPacket 			= 'P';
+	// const PostPacket 			= 'P';
 
 	public static $messageCategory = 'mha';
 
 	public static $list = [
 		self::Membership 			=> 'Membership',
 		self::MembershipCard  => 'Membership Card',
-		self::PostPacket 			=> 'Post Packet',
+		// self::PostPacket 			=> 'Post Packet',
 	];
 
 };

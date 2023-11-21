@@ -183,7 +183,7 @@ class ReportModel extends MhaActiveRecord
 
 			'mbrknnMembershipDegree' => [
 				'filterCallback' => function($query, $key, $value) {
-					$query->andWhere([$key => $value]);
+					$query->andWhere(['IN', $key, $value]);
 				},
 				'noneCallback' => function($query, $key, $value) {
 					$query->andWhere([$key => null]);
@@ -229,7 +229,7 @@ class ReportModel extends MhaActiveRecord
 			} else {
 				$schema = [
 					'filterCallback' => function($query, $key, $value) {
-						$query->andWhere([$key => $value]);
+						$query->andWhere(['IN', $key, $value]);
 					},
 					'noneCallback' => function($query, $key, $value) {
 						$query->andWhere([$key => null]);

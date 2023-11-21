@@ -21,9 +21,4 @@ class DiscountController extends BaseDiscountController
     $this->setViewPath(null);
   }
 
-	// public function actionCreate_afterCreateModel(&$model)
-  // {
-	// 	$model->docStatus = enuDocumentStatus::Active;
-  // }
-
 }

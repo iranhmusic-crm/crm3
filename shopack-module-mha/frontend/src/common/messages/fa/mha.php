@@ -175,6 +175,7 @@ return [
 
 
 
+	'Mha Product Type' => 'نوع کالای خانه موسیقی',
 
 	'Membership Products' => 'دوره‌های عضویت',
 	'Membership Product' => 'دوره‌ی عضویت',

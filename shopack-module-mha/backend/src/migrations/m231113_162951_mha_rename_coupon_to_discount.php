@@ -94,7 +94,7 @@ SQLSTR
 
 		$this->execute(<<<SQLSTR
 ALTER TABLE `tbl_MHA_Accounting_Discount`
-	CHANGE COLUMN `dscValidFrom` `dscValidFrom` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `dscCode`,
+	CHANGE COLUMN `dscValidFrom` `dscValidFrom` DATETIME NULL DEFAULT NULL AFTER `dscCode`,
 	CHANGE COLUMN `dscValidTo` `dscValidTo` DATETIME NULL DEFAULT NULL AFTER `dscValidFrom`,
 	ADD COLUMN `dscTargetUserIDs` JSON NULL AFTER `dscPerUserMaxAmount`,
 	ADD COLUMN `dscTargetMemberGroupIDs` JSON NULL AFTER `dscRemovedBy`,
@@ -109,7 +109,7 @@ ALTER TABLE `tbl_MHA_Accounting_Discount`
 	ADD COLUMN `dscTargetSaleableIDs` JSON NULL DEFAULT NULL AFTER `dscTargetProductIDs`,
 	CHANGE COLUMN `dscSaleableBasedMultiplier` `dscSaleableBasedMultiplier` JSON NULL DEFAULT NULL AFTER `dscTargetSaleableIDs`,
 	CHANGE COLUMN `dscAmount` `dscAmount` INT(10) UNSIGNED NOT NULL AFTER `dscSaleableBasedMultiplier`,
-	CHANGE COLUMN `dscAmountType` `dscAmountType` CHAR(1) NOT NULL DEFAULT '%' COMMENT '%:Percent, $:Amount, Z:Free' COLLATE 'utf8mb4_unicode_ci' AFTER `dscAmount`,
+	CHANGE COLUMN `dscAmountType` `dscAmountType` CHAR(1) NOT NULL DEFAULT '%' COMMENT '%:Percent, $:Amount' COLLATE 'utf8mb4_unicode_ci' AFTER `dscAmount`,
 	CHANGE COLUMN `dscMaxAmount` `dscMaxAmount` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `dscAmountType`,
 	ADD COLUMN `dscTargetProductMhaTypes` JSON NULL DEFAULT NULL AFTER `dscTargetKanoonIDs`;
 SQLSTR
@@ -123,6 +123,33 @@ ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscAmount` `dscAmount` DOUBLE UNSIGNED NOT NULL DEFAULT 0 AFTER `dscSaleableBasedMultiplier`,
 	CHANGE COLUMN `dscMaxAmount` `dscMaxAmount` DOUBLE UNSIGNED NULL DEFAULT NULL AFTER `dscAmountType`,
 	CHANGE COLUMN `dscTotalUsedAmount` `dscTotalUsedPrice` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `dscTotalUsedCount`;
+SQLSTR
+    );
+
+		$this->execute(<<<SQLSTR
+ALTER TABLE `tbl_MHA_Accounting_Discount`
+	ADD COLUMN `dscType` CHAR(1) NOT NULL DEFAULT 'C' COMMENT 'S:System, C:Coupon' AFTER `dscName`;
+SQLSTR
+    );
+
+		$this->execute(<<<SQLSTR
+ALTER TABLE `tbl_MHA_Accounting_Discount`
+	ADD COLUMN `dscCodeHasSerial` BIT NULL DEFAULT NULL AFTER `dscCode`,
+	ADD COLUMN `dscCodeSerialCount` MEDIUMINT NULL DEFAULT NULL AFTER `dscCodeHasSerial`,
+	ADD COLUMN `dscCodeSerialLength` TINYINT NULL DEFAULT NULL AFTER `dscCodeSerialCount`;
+SQLSTR
+    );
+
+		$this->execute(<<<SQLSTR
+ALTER TABLE `tbl_MHA_Accounting_Discount`
+	CHANGE COLUMN `dscCode` `dscCodeString` VARCHAR(32) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `dscType`,
+	DROP INDEX `dscCode_dscRemovedAt`,
+	ADD UNIQUE INDEX `dscCodeString_dscRemovedAt` (`dscCodeString`, `dscRemovedAt`) USING BTREE;
+SQLSTR
+    );
+
+		$this->execute(<<<SQLSTR
+
 SQLSTR
     );
 
