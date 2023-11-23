@@ -19,8 +19,8 @@ use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberChooseFormField;
 use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberGroupChooseFormField;
 use iranhmusic\shopack\mha\frontend\common\widgets\grid\ProductChooseFormField;
 use iranhmusic\shopack\mha\frontend\common\widgets\grid\SaleableChooseFormField;
-use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 use iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonChooseFormField;
+use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
 // \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);
 ?>
@@ -156,7 +156,7 @@ use iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonChooseFormField;
 		$builder->fields([
 			['@cols' => 2],
 
-			['@section', 'label' => 'محدودیت‌ها'],
+			['@section', 'label' => Yii::t('app', 'Limitations')],
 
 			['dscValidFrom',
 				'type' => FormBuilder::FIELD_WIDGET,
@@ -220,7 +220,7 @@ use iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonChooseFormField;
 		]);
 
 		$builder->fields([
-			['@section', 'label' => 'عملیات'],
+			['@section', 'label' => Yii::t('app', 'Actions')],
 			['@col' => 2, 'vertical' => true],
 
 			['dscAmount',

@@ -23,7 +23,7 @@ trait DiscountModelTrait
 		columnsInfo as trait_columnsInfo;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
   {
 		$cols = static::trait_columnsInfo();
 

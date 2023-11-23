@@ -73,4 +73,18 @@ class ProductModel extends RestClientActiveRecord
 		return ($this->prdStatus == enuProductStatus::Removed);
 	}
 
+	public static function toString($ids)
+	{
+		if (empty($ids))
+			return null;
+
+		$models = self::findAll($ids);
+		$desc = [];
+		foreach ($models as $item) {
+			$desc[] = $item->prdName;
+		}
+
+		return implode('|', $desc);
+	}
+
 }

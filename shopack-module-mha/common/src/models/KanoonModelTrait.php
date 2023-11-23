@@ -41,7 +41,7 @@ trait KanoonModelTrait
 		return $this->knnID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'knnID' => [

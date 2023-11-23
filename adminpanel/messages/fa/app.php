@@ -97,4 +97,7 @@ return [
 	'Valid To Hour' => 'اعتبار تا ساعت',
 
 	'Conditions' => 'شرایط',
+	'Limitations' => 'محدودیت‌ها',
+	'Usage' => 'مصرف',
+
 ];

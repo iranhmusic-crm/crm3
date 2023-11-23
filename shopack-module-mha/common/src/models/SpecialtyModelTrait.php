@@ -41,7 +41,7 @@ trait SpecialtyModelTrait
 		return $this->spcID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'spcID' => [

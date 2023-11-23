@@ -34,7 +34,7 @@ trait MemberMasterInsDocModelTrait
 		return $this->mbrminsdocID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'mbrminsdocID' => [

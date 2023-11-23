@@ -39,7 +39,7 @@ trait MemberGroupModelTrait
 		return $this->mgpID;
 	}
 
-  public static function columnsInfo()
+  public function columnsInfo()
   {
     return [
       'mgpID' => [

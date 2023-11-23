@@ -21,4 +21,18 @@ class SaleableModel extends RestClientActiveRecord
     return ($this->slbStatus == enuSaleableStatus::Removed);
   }
 
+  public static function toString($ids)
+	{
+		if (empty($ids))
+			return null;
+
+		$models = self::findAll($ids);
+		$desc = [];
+		foreach ($models as $item) {
+			$desc[] = $item->slbName;
+		}
+
+		return implode('|', $desc);
+	}
+
 }

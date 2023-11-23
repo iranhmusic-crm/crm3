@@ -64,4 +64,18 @@ class KanoonModel extends RestClientActiveRecord
 		return ($this->knnStatus == enuKanoonStatus::Removed);
 	}
 
+	public static function toString($ids)
+	{
+		if (empty($ids))
+			return null;
+
+		$models = self::findAll($ids);
+		$desc = [];
+		foreach ($models as $item) {
+			$desc[] = $item->knnName;
+		}
+
+		return implode('|', $desc);
+	}
+
 }

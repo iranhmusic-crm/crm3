@@ -9,6 +9,9 @@ use Yii;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
+use shopack\base\common\accounting\enums\enuAmountType;
+use shopack\base\common\accounting\enums\enuDiscountType;
+use shopack\base\frontend\common\helpers\Html;
 
 class DiscountModel extends RestClientActiveRecord
 {
@@ -22,8 +25,13 @@ class DiscountModel extends RestClientActiveRecord
 			'dscID'                      => Yii::t('app', 'ID'),
 			// 'dscUUID'
 			'dscName'                    => Yii::t('app', 'Name'),
-			'dscType'                    => Yii::t('app', 'Type'),
-			'dscCodeString'              => Yii::t('aaa', 'Code'),
+
+			'dscType'                    => Yii::t('aaa', 'Discount Type'),
+			'dscCodeString'              => Yii::t('aaa', 'Discount Code'),
+			'dscCodeHasSerial'           => Yii::t('aaa', 'Code Has Serial'),
+			'dscCodeSerialCount'         => Yii::t('aaa', 'Code Serial Count'),
+			'dscCodeSerialLength'        => Yii::t('aaa', 'Code SerialL ength'),
+
 			'dscValidFrom'               => Yii::t('app', 'Valid From Date'),
 			'dscValidTo'                 => Yii::t('app', 'Valid To Date'),
 			'dscTotalMaxCount'           => Yii::t('aaa', 'Total Max Count'),
@@ -39,7 +47,7 @@ class DiscountModel extends RestClientActiveRecord
 			'dscMaxAmount'               => Yii::t('aaa', 'Max Amount'),
 			'dscSaleableBasedMultiplier' => Yii::t('aaa', 'Saleable Based Multiplier'),
 			'dscTotalUsedCount'          => Yii::t('aaa', 'Total Used Count'),
-			'dscTotalUsedPrice'          => Yii::t('aaa', 'Total Used Amount'),
+			'dscTotalUsedPrice'          => Yii::t('aaa', 'Total Used Price'),
 			// 'dscI18NData'            =>
 			'dscStatus'                  => Yii::t('app', 'Status'),
 			'dscCreatedAt'               => Yii::t('app', 'Created At'),
@@ -56,6 +64,42 @@ class DiscountModel extends RestClientActiveRecord
 			'dscTargetMemberGroupIDs'    => Yii::t('mha', 'Member Groups'),
 			'dscTargetKanoonIDs'         => Yii::t('mha', 'Kanoons'),
 			'dscTargetProductMhaTypes'   => Yii::t('mha', 'Mha Product Type'),
+		];
+	}
+
+	public function extraRules()
+	{
+    $fnGetConst = function($value) { return $value; };
+		$fnGetConstQouted = function($value) { return "'{$value}'"; };
+		$fnGetFieldId = function($field) { return Html::getInputId($this, $field); };
+
+		return [
+			['dscCodeString',
+				'required',
+				'whenClient' => "function (attribute, value) {
+					return ($('#{$fnGetFieldId('dscType')} :checked').val() == {$fnGetConstQouted(enuDiscountType::Coupon)});
+				}",
+			],
+			['dscCodeSerialCount',
+				'required',
+				'whenClient' => "function (attribute, value) {
+					return (($('#{$fnGetFieldId('dscType')} :checked').val() == {$fnGetConstQouted(enuDiscountType::Coupon)}) && $('#{$fnGetFieldId('dscCodeHasSerial')}')[0].checked);
+				}",
+			],
+			['dscCodeSerialLength',
+				'required',
+				'whenClient' => "function (attribute, value) {
+					return (($('#{$fnGetFieldId('dscType')} :checked').val() == {$fnGetConstQouted(enuDiscountType::Coupon)}) && $('#{$fnGetFieldId('dscCodeHasSerial')}')[0].checked);
+				}",
+			],
+			['dscAmount',
+				'number',
+				'min' => 0,
+				'max' => 100,
+				'whenClient' => "function (attribute, value) {
+					return ($('#{$fnGetFieldId('dscAmountType')} :checked').val() == {$fnGetConstQouted(enuAmountType::Percent)});
+				}",
+			],
 		];
 	}
 

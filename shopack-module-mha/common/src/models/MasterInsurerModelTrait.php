@@ -31,7 +31,7 @@ trait MasterInsurerModelTrait
 		return $this->minsID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'minsID' => [

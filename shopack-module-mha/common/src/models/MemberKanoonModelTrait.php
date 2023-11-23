@@ -40,7 +40,7 @@ trait MemberKanoonModelTrait
 		return $this->mbrknnID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
       'mbrRegisterCode' => [

@@ -31,7 +31,7 @@ trait SupplementaryInsurerModelTrait
 		return $this->sinsID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'sinsID' => [

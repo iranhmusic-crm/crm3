@@ -22,9 +22,9 @@ trait ProductModelTrait
 		columnsInfo as trait_columnsInfo;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
   {
-		$cols = static::trait_columnsInfo(); //BaseProductModelTrait::columnsInfo();
+		$cols = static::trait_columnsInfo();
 
 		$cols = array_merge($cols, [
 			'prdMhaType' => [

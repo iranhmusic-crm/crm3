@@ -46,7 +46,7 @@ trait MemberModelTrait
 		return $this->mbrUserID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'mbrUserID' => [

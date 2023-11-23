@@ -32,7 +32,7 @@ trait BasicDefinitionModelTrait
 		return $this->bdfID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'bdfID' => [

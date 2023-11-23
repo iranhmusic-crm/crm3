@@ -31,7 +31,7 @@ trait DocumentModelTrait
 		return $this->docID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'docID' => [

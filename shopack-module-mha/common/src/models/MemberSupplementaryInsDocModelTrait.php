@@ -33,7 +33,7 @@ trait MemberSupplementaryInsDocModelTrait
 		return $this->mbrsinsdocID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'mbrsinsdocID' => [

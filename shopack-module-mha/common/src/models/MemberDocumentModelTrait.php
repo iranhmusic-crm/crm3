@@ -36,7 +36,7 @@ trait MemberDocumentModelTrait
 		return $this->mbrdocID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'mbrdocID' => [

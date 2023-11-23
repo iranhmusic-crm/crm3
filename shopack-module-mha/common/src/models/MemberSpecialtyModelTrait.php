@@ -31,7 +31,7 @@ trait MemberSpecialtyModelTrait
 		return $this->mbrspcID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'mbrspcID' => [

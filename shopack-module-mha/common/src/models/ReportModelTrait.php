@@ -35,7 +35,7 @@ trait ReportModelTrait
 		return $this->rptID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'rptID' => [

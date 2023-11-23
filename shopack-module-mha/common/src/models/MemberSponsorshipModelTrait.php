@@ -38,7 +38,7 @@ trait MemberSponsorshipModelTrait
 		return $this->mbrspsID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'mbrspsID' => [

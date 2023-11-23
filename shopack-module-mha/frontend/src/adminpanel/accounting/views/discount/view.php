@@ -5,16 +5,25 @@
 
 /** @var yii\web\View $this */
 
+use shopack\base\common\accounting\enums\enuAmountType;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\common\accounting\enums\enuDiscountStatus;
+use shopack\base\common\accounting\enums\enuDiscountType;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\PopoverX;
 use shopack\base\frontend\common\widgets\DetailView;
+use shopack\aaa\frontend\common\models\UserModel;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\ProductModel;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\SaleableModel;
+use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
+use iranhmusic\shopack\mha\frontend\common\models\MemberGroupModel;
+use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
 $modelClass = Yii::$app->controller->modelClass;
 
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Services Definition and Fee');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('aaa', 'Discounts'), 'url' => ['index']];
 $this->title = Yii::t('aaa', 'Discount') . ': ' . $model->dscID . ' - ' . $model->dscName;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -23,8 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
   <div class='card'>
 		<div class='card-header'>
 			<div class="float-end">
-				<?= $modelClass::canCreate() ? Html::createButton() : '' ?>
-        <?= $model->canUpdate()   ? Html::updateButton(null,   ['id' => $model->dscID]) : '' ?>
+				<?= $modelClass::canCreate() ? Html::createButton(null, null, [
+          'data-popup-size' => 'lg',
+        ]) : '' ?>
+        <?= $model->canUpdate()   ? Html::updateButton(null,   ['id' => $model->dscID], [
+          'data-popup-size' => 'lg',
+        ]) : '' ?>
         <?= $model->canDelete()   ? Html::deleteButton(null,   ['id' => $model->dscID]) : '' ?>
         <?= $model->canUndelete() ? Html::undeleteButton(null, ['id' => $model->dscID]) : '' ?>
         <?php
@@ -72,32 +85,128 @@ $this->params['breadcrumbs'][] = $this->title;
 		</div>
     <div class='card-body'>
       <?php
+				$attributes = [
+          [
+            'attribute' => 'dscStatus',
+            'value' => enuDiscountStatus::getLabel($model->dscStatus),
+          ],
+          'dscID',
+          'dscName',
+          'dscType',
+        ];
+
+        if ($model->dscType == enuDiscountType::Coupon) {
+          $attributes = array_merge($attributes, [
+            'dscCodeString',
+            'dscCodeHasSerial',
+            'dscCodeSerialCount',
+            'dscCodeSerialLength',
+          ]);
+        }
+
+        $attributes = array_merge($attributes, [
+					[
+						'group' => true,
+						'label' => Yii::t('app', 'Conditions'),
+						'rowOptions' => ['class' => 'info'],
+					],
+          [
+            'attribute' => 'dscTargetUserIDs',
+            'format' => 'raw',
+            'value' => Html::splitAsList(UserModel::toString($model->dscTargetUserIDs), '|', [
+              'encode' => false
+            ]),
+          ],
+          [
+            'attribute' => 'dscTargetProductIDs',
+            'format' => 'raw',
+            'value' => Html::splitAsList(ProductModel::toString($model->dscTargetProductIDs), '|', [
+              'encode' => false
+            ]),
+          ],
+          [
+            'attribute' => 'dscTargetSaleableIDs',
+            'format' => 'raw',
+            'value' => Html::splitAsList(SaleableModel::toString($model->dscTargetSaleableIDs), '|', [
+              'encode' => false
+            ]),
+          ],
+          // 'dscSaleableBasedMultiplier',
+          [
+            'attribute' => 'dscTargetMemberGroupIDs',
+            'format' => 'raw',
+            'value' => Html::splitAsList(MemberGroupModel::toString($model->dscTargetMemberGroupIDs), '|', [
+              'encode' => false
+            ]),
+          ],
+          [
+            'attribute' => 'dscTargetKanoonIDs',
+            'format' => 'raw',
+            'value' => Html::splitAsList(KanoonModel::toString($model->dscTargetKanoonIDs), '|', [
+              'encode' => false
+            ]),
+          ],
+          [
+            'attribute' => 'dscTargetProductMhaTypes',
+            'format' => 'raw',
+            'value' => Html::splitAsList(enuMhaProductType::getLabel($model->dscTargetProductMhaTypes), '|', [
+              'encode' => false
+            ]),
+          ],
+        ]);
+
+        $attributes = array_merge($attributes, [
+					[
+						'group' => true,
+						'label' => Yii::t('app', 'Limitations'),
+						'rowOptions' => ['class' => 'info'],
+					],
+          'dscValidFrom:jalali',
+          'dscValidTo:jalali',
+          'dscTotalMaxCount:decimal',
+          'dscTotalMaxPrice:toman',
+          'dscPerUserMaxCount:decimal',
+          'dscPerUserMaxPrice:toman',
+        ]);
+
+        $attributes = array_merge($attributes, [
+					[
+						'group' => true,
+						'label' => Yii::t('app', 'Actions'),
+						'rowOptions' => ['class' => 'info'],
+					],
+          [
+            'attribute' => 'dscAmount',
+            'value' => Yii::$app->formatter->asDecimal($model->dscAmount)
+              . ' '
+              . ($model->dscAmountType == enuAmountType::Percent ? 'درصد' : 'تومان')
+          ],
+          [
+            'attribute' => 'dscMaxAmount',
+            'value' => (empty($model->dscMaxAmount) ? 'نامحدود'
+              : Yii::$app->formatter->asDecimal($model->dscMaxAmount)
+                . ' '
+                . ($model->dscAmountType == enuAmountType::Percent ? 'تومان' : 'درصد')
+            ),
+          ],
+        ]);
+
+        $attributes = array_merge($attributes, [
+					[
+						'group' => true,
+						'label' => Yii::t('app', 'Usage'),
+						'rowOptions' => ['class' => 'info'],
+					],
+          'dscTotalUsedCount:decimal',
+          'dscTotalUsedPrice:toman',
+        ]);
+
         echo DetailView::widget([
           'model' => $model,
           'enableEditMode' => false,
           // 'cols' => 2,
           // 'isVertical' => false,
-          'attributes' => [
-            'dscID',
-            'dscName',
-            'dscCodeString',
-            'dscTotalMaxCount',
-            'dscTotalMaxPrice',
-            'dscPerUserMaxCount',
-            'dscPerUserMaxPrice',
-            'dscValidFrom',
-            'dscValidTo',
-            'dscAmount',
-            'dscAmountType',
-            'dscMaxAmount',
-            'dscSaleableBasedMultiplier',
-            'dscTotalUsedCount',
-            'dscTotalUsedPrice',
-            [
-              'attribute' => 'dscStatus',
-              'value' => enuDiscountStatus::getLabel($model->dscStatus),
-            ],
-          ],
+          'attributes' => $attributes,
         ]);
       ?>
     </div>

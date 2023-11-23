@@ -79,4 +79,18 @@ class MemberGroupModel extends RestClientActiveRecord
 		return false; //($this->mgpStatus == enuMemberGroupStatus::Removed);
 	}
 
+	public static function toString($ids)
+	{
+		if (empty($ids))
+			return null;
+
+		$models = self::findAll($ids);
+		$desc = [];
+		foreach ($models as $item) {
+			$desc[] = $item->mgpName;
+		}
+
+		return implode('|', $desc);
+	}
+
 }

@@ -32,7 +32,7 @@ trait MemberMemberGroupModelTrait
 		return $this->mbrmgpID;
 	}
 
-  public static function columnsInfo()
+  public function columnsInfo()
   {
     return [
       'mbrmgpID' => [

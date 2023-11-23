@@ -96,4 +96,8 @@ return [
 	'Valid From Hour' => 'اعتبار از ساعت',
 	'Valid To Hour' => 'اعتبار تا ساعت',
 
+	'Conditions' => 'شرایط',
+	'Limitations' => 'محدودیت‌ها',
+	'Usage' => 'مصرف',
+
 ];

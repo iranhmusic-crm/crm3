@@ -37,7 +37,7 @@ trait MemberMasterInsuranceModelTrait
 		return $this->mbrminshstID;
 	}
 
-	public static function columnsInfo()
+	public function columnsInfo()
 	{
 		return [
 			'mbrminshstID' => [
