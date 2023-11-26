@@ -122,14 +122,6 @@ use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
 		$builder->fields(MemberChooseFormField::field($this, $model, 'dscTargetUserIDs', true, true));
 
-		$builder->fields(ProductChooseFormField::field($this, $model, 'dscTargetProductIDs', true, true));
-
-		$builder->fields(SaleableChooseFormField::field($this, $model, 'dscTargetSaleableIDs', true, true));
-
-		// $builder->fields([
-		// 	['dscSaleableBasedMultiplier'],
-		// ]);
-
 		$builder->fields(MemberGroupChooseFormField::field($this, $model, 'dscTargetMemberGroupIDs', true, true));
 
 		$builder->fields(KanoonChooseFormField::field($this, $model, 'dscTargetKanoonIDs', true, true));
@@ -152,6 +144,13 @@ use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 			],
 		]);
 
+		$builder->fields(ProductChooseFormField::field($this, $model, 'dscTargetProductIDs', true, true));
+
+		$builder->fields(SaleableChooseFormField::field($this, $model, 'dscTargetSaleableIDs', true, true));
+
+		// $builder->fields([
+		// 	['dscSaleableBasedMultiplier'],
+		// ]);
 
 		$builder->fields([
 			['@cols' => 2],

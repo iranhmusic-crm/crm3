@@ -18,6 +18,7 @@ use iranhmusic\shopack\mha\frontend\common\accounting\models\SaleableModel;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberGroupModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
+use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 
 $modelClass = Yii::$app->controller->modelClass;
 
@@ -92,13 +93,16 @@ $this->params['breadcrumbs'][] = $this->title;
           ],
           'dscID',
           'dscName',
-          'dscType',
+          [
+            'attribute' => 'dscType',
+            'value' => enuDiscountType::getLabel($model->dscType),
+          ],
         ];
 
         if ($model->dscType == enuDiscountType::Coupon) {
           $attributes = array_merge($attributes, [
             'dscCodeString',
-            'dscCodeHasSerial',
+            'dscCodeHasSerial:boolean',
             'dscCodeSerialCount',
             'dscCodeSerialLength',
           ]);
@@ -113,25 +117,10 @@ $this->params['breadcrumbs'][] = $this->title;
           [
             'attribute' => 'dscTargetUserIDs',
             'format' => 'raw',
-            'value' => Html::splitAsList(UserModel::toString($model->dscTargetUserIDs), '|', [
+            'value' => Html::splitAsList(MemberModel::toString($model->dscTargetUserIDs), '|', [
               'encode' => false
             ]),
           ],
-          [
-            'attribute' => 'dscTargetProductIDs',
-            'format' => 'raw',
-            'value' => Html::splitAsList(ProductModel::toString($model->dscTargetProductIDs), '|', [
-              'encode' => false
-            ]),
-          ],
-          [
-            'attribute' => 'dscTargetSaleableIDs',
-            'format' => 'raw',
-            'value' => Html::splitAsList(SaleableModel::toString($model->dscTargetSaleableIDs), '|', [
-              'encode' => false
-            ]),
-          ],
-          // 'dscSaleableBasedMultiplier',
           [
             'attribute' => 'dscTargetMemberGroupIDs',
             'format' => 'raw',
@@ -153,6 +142,21 @@ $this->params['breadcrumbs'][] = $this->title;
               'encode' => false
             ]),
           ],
+          [
+            'attribute' => 'dscTargetProductIDs',
+            'format' => 'raw',
+            'value' => Html::splitAsList(ProductModel::toString($model->dscTargetProductIDs), '|', [
+              'encode' => false
+            ]),
+          ],
+          [
+            'attribute' => 'dscTargetSaleableIDs',
+            'format' => 'raw',
+            'value' => Html::splitAsList(SaleableModel::toString($model->dscTargetSaleableIDs), '|', [
+              'encode' => false
+            ]),
+          ],
+          // 'dscSaleableBasedMultiplier',
         ]);
 
         $attributes = array_merge($attributes, [

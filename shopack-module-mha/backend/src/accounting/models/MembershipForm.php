@@ -156,27 +156,27 @@ class MembershipForm extends Model
 		$membershipCardDiscountAmount = 0;
 
 		if (empty($memberMemberGroupModels) == false) {
-			foreach ($memberMemberGroupModels as $memberGroup) {
-				if ((empty($memberGroup->memberGroup->mgpMembershipDiscountAmount) == false)
-					&& (empty($memberGroup->memberGroup->mgpMembershipDiscountType) == false)
+			foreach ($memberMemberGroupModels as $memberMemberGroup) {
+				if ((empty($memberMemberGroup->memberGroup->mgpMembershipDiscountAmount) == false)
+					&& (empty($memberMemberGroup->memberGroup->mgpMembershipDiscountType) == false)
 				) {
-					if ($memberGroup->memberGroup->mgpMembershipDiscountType == enuAmountType::Percent) {
-						$amount = $memberGroup->memberGroup->mgpMembershipDiscountAmount * $totalPrice / 100.0;
+					if ($memberMemberGroup->memberGroup->mgpMembershipDiscountType == enuAmountType::Percent) {
+						$amount = $memberMemberGroup->memberGroup->mgpMembershipDiscountAmount * $totalPrice / 100.0;
 					} else {
-						$amount = min($totalPrice, $memberGroup->memberGroup->mgpMembershipDiscountAmount);
+						$amount = min($totalPrice, $memberMemberGroup->memberGroup->mgpMembershipDiscountAmount);
 					}
 
 					if ($amount > $membershipDiscountAmount)
 						$membershipDiscountAmount = $amount;
 				}
 
-				if ((empty($memberGroup->memberGroup->mgpMembershipCardDiscountAmount) == false)
-					&& (empty($memberGroup->memberGroup->mgpMembershipCardDiscountType) == false)
+				if ((empty($memberMemberGroup->memberGroup->mgpMembershipCardDiscountAmount) == false)
+					&& (empty($memberMemberGroup->memberGroup->mgpMembershipCardDiscountType) == false)
 				) {
-					if ($memberGroup->memberGroup->mgpMembershipCardDiscountType == enuAmountType::Percent) {
-						$amount = $memberGroup->memberGroup->mgpMembershipCardDiscountAmount * $cardPrintSaleableModel->slbBasePrice / 100.0;
+					if ($memberMemberGroup->memberGroup->mgpMembershipCardDiscountType == enuAmountType::Percent) {
+						$amount = $memberMemberGroup->memberGroup->mgpMembershipCardDiscountAmount * $cardPrintSaleableModel->slbBasePrice / 100.0;
 					} else {
-						$amount = min($cardPrintSaleableModel->slbBasePrice, $memberGroup->memberGroup->mgpMembershipCardDiscountAmount);
+						$amount = min($cardPrintSaleableModel->slbBasePrice, $memberMemberGroup->memberGroup->mgpMembershipCardDiscountAmount);
 					}
 
 					if ($amount > $membershipCardDiscountAmount)
