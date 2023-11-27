@@ -13,7 +13,7 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
 use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberChooseFormField;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
 use shopack\base\frontend\common\widgets\datetime\DatePicker;
 
 ?>

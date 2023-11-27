@@ -3,16 +3,16 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-namespace iranhmusic\shopack\mha\frontend\common\widgets\grid;
+namespace iranhmusic\shopack\mha\frontend\common\widgets\form;
 
 use yii\web\JsExpression;
 use shopack\base\common\helpers\Url;
 use shopack\base\frontend\common\widgets\Select2;
-use iranhmusic\shopack\mha\frontend\common\models\MemberGroupModel;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\SaleableModel;
 use shopack\base\frontend\common\widgets\FormBuilder;
 use Yii;
 
-class MemberGroupChooseFormField
+class SaleableChooseFormField
 {
 	public static function field(
 		$view,
@@ -22,13 +22,13 @@ class MemberGroupChooseFormField
 		$multiSelect = false
 	) {
 		$formatJs =<<<JS
-var formatMemberGroup = function(item)
+var formatSaleable = function(item)
 {
 	if (item.loading)
 		return 'در حال جستجو...'; //item.text;
 	return '<div style="overflow:hidden;">' + item.title + '</div>';
 };
-var formatMemberGroupSelection = function(item)
+var formatSaleableSelection = function(item)
 {
 	if (item.text)
 		return item.text;
@@ -58,18 +58,18 @@ JS;
 
 		if (!empty($model->$attribute)) {
 			if ($multiSelect) {
-				$models = MemberGroupModel::findAll($model->$attribute);
+				$models = SaleableModel::findAll($model->$attribute);
 				$vals = [];
 				$desc = [];
 				foreach ($models as $item) {
-					$vals[] = $item->mgpID;
-					$desc[] = $item->mgpName;
+					$vals[] = $item->slbID;
+					$desc[] = $item->product->prdName . ' - ' . $item->slbName;
 				}
 				$model->$attribute = $vals;
 			} else {
-				$memberGroupModel = MemberGroupModel::findOne($model->$attribute);
+				$saleableModel = SaleableModel::findOne($model->$attribute);
 				$vals = $model->$attribute;
-				$desc = $memberGroupModel->mgpName;
+				$desc = $saleableModel->product->prdName . ' - ' . $saleableModel->slbName;
 			}
 		} else {
 			$vals = $model->$attribute;
@@ -87,7 +87,7 @@ JS;
 					'allowClear' => $allowClear,
 					'minimumInputLength' => 3,
 					'ajax' => [
-						'url' => Url::to(['/mha/member-group/select2-list']),
+						'url' => Url::to(['/mha/accounting/saleable/select2-list']),
 						'dataType' => 'json',
 						'delay' => 50,
 						'data' => new JsExpression('function(params) { return {q:params.term, page:params.page}; }'),
@@ -95,8 +95,8 @@ JS;
 						'cache' => true,
 					],
 					'escapeMarkup' => new JsExpression('function(markup) { return markup; }'),
-					'templateResult' => new JsExpression('formatMemberGroup'),
-					'templateSelection' => new JsExpression('formatMemberGroupSelection'),
+					'templateResult' => new JsExpression('formatSaleable'),
+					'templateSelection' => new JsExpression('formatSaleableSelection'),
 				],
 				'options' => [
 					'placeholder' => Yii::t('app', '-- Search (*** for all) --'),

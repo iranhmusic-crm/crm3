@@ -22,7 +22,7 @@ use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonChooseFormField;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\KanoonChooseFormField;
 
 ?>
 

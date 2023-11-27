@@ -3,7 +3,7 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-namespace iranhmusic\shopack\mha\frontend\common\widgets\grid;
+namespace iranhmusic\shopack\mha\frontend\common\widgets\form;
 
 use yii\web\JsExpression;
 use shopack\base\common\helpers\Url;

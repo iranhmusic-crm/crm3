@@ -15,7 +15,7 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 use iranhmusic\shopack\mha\frontend\common\models\SpecialtyModel;
 use shopack\base\common\helpers\ArrayHelper;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberChooseFormField;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
 
 ?>
 

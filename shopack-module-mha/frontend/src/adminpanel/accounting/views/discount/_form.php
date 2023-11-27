@@ -15,11 +15,11 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 use shopack\base\common\accounting\enums\enuDiscountType;
 use shopack\base\common\accounting\enums\enuDiscountStatus;
 use shopack\base\common\accounting\enums\enuAmountType;
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberChooseFormField;
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberGroupChooseFormField;
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\ProductChooseFormField;
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\SaleableChooseFormField;
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonChooseFormField;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberGroupChooseFormField;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\ProductChooseFormField;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\SaleableChooseFormField;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\KanoonChooseFormField;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
 // \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);

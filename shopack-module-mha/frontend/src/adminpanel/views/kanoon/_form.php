@@ -13,7 +13,7 @@ use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
 use iranhmusic\shopack\mha\common\enums\enuKanoonStatus;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberChooseFormField;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
 
 ?>
 

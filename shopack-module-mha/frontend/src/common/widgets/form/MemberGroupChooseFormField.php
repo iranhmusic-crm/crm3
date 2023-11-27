@@ -3,16 +3,16 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-namespace iranhmusic\shopack\mha\frontend\common\widgets\grid;
+namespace iranhmusic\shopack\mha\frontend\common\widgets\form;
 
 use yii\web\JsExpression;
 use shopack\base\common\helpers\Url;
 use shopack\base\frontend\common\widgets\Select2;
-use iranhmusic\shopack\mha\frontend\common\accounting\models\ProductModel;
+use iranhmusic\shopack\mha\frontend\common\models\MemberGroupModel;
 use shopack\base\frontend\common\widgets\FormBuilder;
 use Yii;
 
-class ProductChooseFormField
+class MemberGroupChooseFormField
 {
 	public static function field(
 		$view,
@@ -22,13 +22,13 @@ class ProductChooseFormField
 		$multiSelect = false
 	) {
 		$formatJs =<<<JS
-var formatProduct = function(item)
+var formatMemberGroup = function(item)
 {
 	if (item.loading)
 		return 'در حال جستجو...'; //item.text;
 	return '<div style="overflow:hidden;">' + item.title + '</div>';
 };
-var formatProductSelection = function(item)
+var formatMemberGroupSelection = function(item)
 {
 	if (item.text)
 		return item.text;
@@ -58,18 +58,18 @@ JS;
 
 		if (!empty($model->$attribute)) {
 			if ($multiSelect) {
-				$models = ProductModel::findAll($model->$attribute);
+				$models = MemberGroupModel::findAll($model->$attribute);
 				$vals = [];
 				$desc = [];
 				foreach ($models as $item) {
-					$vals[] = $item->prdID;
-					$desc[] = $item->prdName;
+					$vals[] = $item->mgpID;
+					$desc[] = $item->mgpName;
 				}
 				$model->$attribute = $vals;
 			} else {
-				$productModel = ProductModel::findOne($model->$attribute);
+				$memberGroupModel = MemberGroupModel::findOne($model->$attribute);
 				$vals = $model->$attribute;
-				$desc = $productModel->prdName;
+				$desc = $memberGroupModel->mgpName;
 			}
 		} else {
 			$vals = $model->$attribute;
@@ -87,7 +87,7 @@ JS;
 					'allowClear' => $allowClear,
 					'minimumInputLength' => 3,
 					'ajax' => [
-						'url' => Url::to(['/mha/accounting/product/select2-list']),
+						'url' => Url::to(['/mha/member-group/select2-list']),
 						'dataType' => 'json',
 						'delay' => 50,
 						'data' => new JsExpression('function(params) { return {q:params.term, page:params.page}; }'),
@@ -95,8 +95,8 @@ JS;
 						'cache' => true,
 					],
 					'escapeMarkup' => new JsExpression('function(markup) { return markup; }'),
-					'templateResult' => new JsExpression('formatProduct'),
-					'templateSelection' => new JsExpression('formatProductSelection'),
+					'templateResult' => new JsExpression('formatMemberGroup'),
+					'templateSelection' => new JsExpression('formatMemberGroupSelection'),
 				],
 				'options' => [
 					'placeholder' => Yii::t('app', '-- Search (*** for all) --'),

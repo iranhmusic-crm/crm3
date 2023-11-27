@@ -15,7 +15,7 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 // use shopack\aaa\common\enums\enuMemberMemberGroupStatus;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberGroupModel;
-use iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberChooseFormField;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
 use shopack\base\frontend\common\widgets\datetime\DatePicker;
 
 // \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);

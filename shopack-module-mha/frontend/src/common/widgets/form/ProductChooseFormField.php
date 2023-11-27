@@ -3,16 +3,16 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-namespace iranhmusic\shopack\mha\frontend\common\widgets\grid;
+namespace iranhmusic\shopack\mha\frontend\common\widgets\form;
 
 use yii\web\JsExpression;
 use shopack\base\common\helpers\Url;
 use shopack\base\frontend\common\widgets\Select2;
-use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
+use iranhmusic\shopack\mha\frontend\common\accounting\models\ProductModel;
 use shopack\base\frontend\common\widgets\FormBuilder;
 use Yii;
 
-class MemberChooseFormField
+class ProductChooseFormField
 {
 	public static function field(
 		$view,
@@ -21,23 +21,18 @@ class MemberChooseFormField
 		$allowClear = true,
 		$multiSelect = false
 	) {
-		if ($multiSelect)
-			$nameField = 'title';
-		else
-			$nameField = 'name';
-
 		$formatJs =<<<JS
-var formatMember = function(item)
+var formatProduct = function(item)
 {
 	if (item.loading)
 		return 'در حال جستجو...'; //item.text;
-	return '<div style="overflow:hidden;">' + item.{$nameField} + '</div>';
+	return '<div style="overflow:hidden;">' + item.title + '</div>';
 };
-var formatMemberSelection = function(item)
+var formatProductSelection = function(item)
 {
 	if (item.text)
 		return item.text;
-	return item.{$nameField};
+	return item.title;
 }
 JS;
 		$view->registerJs($formatJs, \yii\web\View::POS_HEAD);
@@ -63,23 +58,22 @@ JS;
 
 		if (!empty($model->$attribute)) {
 			if ($multiSelect) {
-				$models = MemberModel::findAll($model->$attribute);
+				$models = ProductModel::findAll($model->$attribute);
 				$vals = [];
-				$memberDesc = [];
+				$desc = [];
 				foreach ($models as $item) {
-					$vals[] = $item->mbrUserID;
-					$memberDesc[] = $item->displayName('{fn} {ln}');
+					$vals[] = $item->prdID;
+					$desc[] = $item->prdName;
 				}
 				$model->$attribute = $vals;
-				// $memberDesc = implode('، ', $memberDesc);
 			} else {
-				$memberModel = MemberModel::findOne($model->$attribute);
+				$productModel = ProductModel::findOne($model->$attribute);
 				$vals = $model->$attribute;
-				$memberDesc = $memberModel->displayName();
+				$desc = $productModel->prdName;
 			}
 		} else {
 			$vals = $model->$attribute;
-			$memberDesc = null;
+			$desc = null;
 		}
 
 		return [
@@ -88,12 +82,12 @@ JS;
 			'widget' => Select2::class,
 			'widgetOptions' => [
 				'value' => $vals,
-				'initValueText' => $memberDesc,
+				'initValueText' => $desc,
 				'pluginOptions' => [
 					'allowClear' => $allowClear,
 					'minimumInputLength' => 3,
 					'ajax' => [
-						'url' => Url::to(['/mha/member/select2-list']),
+						'url' => Url::to(['/mha/accounting/product/select2-list']),
 						'dataType' => 'json',
 						'delay' => 50,
 						'data' => new JsExpression('function(params) { return {q:params.term, page:params.page}; }'),
@@ -101,8 +95,8 @@ JS;
 						'cache' => true,
 					],
 					'escapeMarkup' => new JsExpression('function(markup) { return markup; }'),
-					'templateResult' => new JsExpression('formatMember'),
-					'templateSelection' => new JsExpression('formatMemberSelection'),
+					'templateResult' => new JsExpression('formatProduct'),
+					'templateSelection' => new JsExpression('formatProductSelection'),
 				],
 				'options' => [
 					'placeholder' => Yii::t('app', '-- Search (*** for all) --'),
