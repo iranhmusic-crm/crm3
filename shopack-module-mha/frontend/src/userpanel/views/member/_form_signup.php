@@ -22,6 +22,11 @@ use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use shopack\aaa\frontend\common\models\GeoCountryModel;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
+use shopack\aaa\frontend\common\widgets\form\GeoCityOrVillageChooseFormField;
+use shopack\aaa\frontend\common\widgets\form\GeoCountryChooseFormField;
+use shopack\aaa\frontend\common\widgets\form\GeoStateChooseFormField;
+use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
+
 ?>
 
 <div class='member-form'>
@@ -129,71 +134,16 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 					['usrBirthDate']
 				]);
 			}
+
 			if (empty($model->user->usrCountryID)
 				|| empty($model->user->usrStateID)
 				|| empty($model->user->usrCityOrVillageID)
 			) {
 				$builder->fields([
-					['usrCountryID',
-						'type' => FormBuilder::FIELD_WIDGET,
-						'widget' => Select2::class,
-						'widgetOptions' => [
-							'data' => ArrayHelper::map(GeoCountryModel::find()->asArray()->noLimit()->all(), 'cntrID', 'cntrName'),
-							'options' => [
-								'placeholder' => Yii::t('app', '-- Choose --'),
-								'dir' => 'rtl',
-							],
-							'pluginOptions' => [
-								'allowClear' => true,
-							],
-						],
-					],
-					['usrStateID',
-						'type' => FormBuilder::FIELD_WIDGET,
-						'widget' => DepDrop::class,
-						'widgetOptions' => [
-							'type' => DepDrop::TYPE_SELECT2,
-							'options' => [
-								'placeholder' => Yii::t('app', '-- Choose --'),
-								'dir' => 'rtl',
-							],
-							'select2Options' => [
-								'pluginOptions' => [
-									'allowClear' => true,
-								],
-							],
-							'pluginOptions' => [
-								'depends' => ["{$formNameLower}-usrcountryid"],
-								'initialize' => true,
-								// 'initDepends' => ["{$formName}-usrcountryid"],
-								'url' => Url::to(['/aaa/geo-state/depdrop-list', 'sel' => $model->usrStateID]),
-								'loadingText' => Yii::t('app', 'Loading...'),
-							],
-						],
-					],
-					['usrCityOrVillageID',
-						'type' => FormBuilder::FIELD_WIDGET,
-						'widget' => DepDrop::class,
-						'widgetOptions' => [
-							'type' => DepDrop::TYPE_SELECT2,
-							'options' => [
-								'placeholder' => Yii::t('app', '-- Choose --'),
-								'dir' => 'rtl',
-							],
-							'select2Options' => [
-								'pluginOptions' => [
-									'allowClear' => true,
-								],
-							],
-							'pluginOptions' => [
-								'depends' => ["{$formNameLower}-usrstateid"],
-								'initialize' => true,
-								// 'initDepends' => ["{$formName}-usrcountryid", "{$formName}-usrstateid"],
-								'url' => Url::to(['/aaa/geo-city-or-village/depdrop-list', 'sel' => $model->usrCityOrVillageID]),
-								'loadingText' => Yii::t('app', 'Loading...'),
-							],
-						],
-					],
+					GeoCountryChooseFormField::field($this, $model, 'usrCountryID', true, false),
+					GeoStateChooseFormField::field($this, $model, 'usrStateID', true, false, 'usrCountryID'),
+					GeoCityOrVillageChooseFormField::field($this, $model, 'usrCityOrVillageID', true, false, 'usrStateID'),
+					// GeoTownChooseFormField::field($this, $model, 'usrTownID', true, false, 'usrCityOrVillageID'),
 				]);
 			}
 

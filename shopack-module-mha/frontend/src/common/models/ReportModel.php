@@ -87,8 +87,13 @@ class ReportModel extends RestClientActiveRecord
 		$params = ['id' => $this->rptID];
 
 		if (empty($_GET['sort']) == false) $params['sort'] = $_GET['sort'];
+
 		if (empty($_GET['page']) == false) $params['page'] = $_GET['page'];
-		if (empty($_GET['per-page']) == false) $params['per-page'] = $_GET['per-page'];
+
+		if ((empty($_GET['per-page']) == false) || (
+					isset($_GET['per-page']) && ($_GET['per-page'] == 0)
+				))
+			$params['per-page'] = $_GET['per-page'];
 
 		$result = HttpHelper::callApi(self::$resourceName . "/run", HttpHelper::METHOD_GET, $params);
 
@@ -150,6 +155,23 @@ class ReportModel extends RestClientActiveRecord
 
 		return $dataProvider;
 		*/
+	}
+
+	public function export()
+	{
+		$params = ['id' => $this->rptID];
+
+		if (empty($_GET['sort']) == false)
+			$params['sort'] = $_GET['sort'];
+
+		$params['per-page'] = 0;
+
+		$result = HttpHelper::callApi(self::$resourceName . "/run", HttpHelper::METHOD_GET, $params);
+
+    if ($result[0] != 200)
+			return null;
+
+		return $result[1]['data'];
 	}
 
 }

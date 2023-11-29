@@ -16,7 +16,16 @@ $this->params['breadcrumbs'][] = $this->title;
   <div class='card'>
 		<div class='card-header'>
 			<div class="float-end">
-				<?= $model->canUpdate()   ? Html::updateButton(null,   ['id' => $model->rptID], ['modal' => false]) : '' ?>
+				<?= $model->canUpdate() ? Html::updateButton(null, ['id' => $model->rptID], ['modal' => false]) : '' ?>
+				<?= Html::a('نمایش همه', ['run', 'id' => $model->rptID, 'per-page' => 0], [
+					'class' => ['btn', 'btn-sm', 'btn-success'],
+				]) ?>
+				<?= Html::confirmButton(yii::t('mha', 'Export Report'), [
+					'export',
+					'id' => $model->rptID
+				], 'آیا می‌خواهید فایل خروجی این گزارش را دریافت کنید؟', [
+					'btn' => 'success',
+				]) ?>
 			</div>
       <div class='card-title'><?= Html::encode($this->title) ?></div>
 			<div class="clearfix"></div>

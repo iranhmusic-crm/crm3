@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
               'header' => /*ReportModel::canCreate() ? Html::createButton() :*/ Yii::t('app', 'Actions'),
-              'template' => '{run} {update} {delete}{undelete}',
+              'template' => '{run} {export} {update} {delete}{undelete}',
               'updateOptions' => [
                 'modal' => false,
               ],
@@ -97,6 +97,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'run' => function ($model, $key, $index) {
                   return true;
                 },
+                'export' => function ($model, $key, $index) {
+                  return true;
+                },
               ],
               'buttons' => [
                 'run' => function ($url, $model, $key) {
@@ -104,6 +107,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     'run',
                     'id' => $model->rptID
                   ], 'آیا می‌خواهید این گزارش اجرا شود؟', [
+                    'btn' => 'success',
+                  ]);
+                },
+                'export' => function ($url, $model, $key) {
+                  return Html::confirmButton(yii::t('mha', 'Export Report'), [
+                    'export',
+                    'id' => $model->rptID
+                  ], 'آیا می‌خواهید فایل خروجی این گزارش را دریافت کنید؟', [
                     'btn' => 'success',
                   ]);
                 },

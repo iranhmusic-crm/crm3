@@ -278,6 +278,7 @@ return [
 	'Report Result' => 'اجرای گزارش',
 	'Report Title' => 'عنوان گزارش',
 	'Run Report' => 'اجرای گزارش',
+	'Export Report' => 'دریافت فایل خروجی گزارش',
 
 	'Member Report' => 'گزارش اعضا',
 	'Create Member Report' => 'ایجاد گزارش اعضا',

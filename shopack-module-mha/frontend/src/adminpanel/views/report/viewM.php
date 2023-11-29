@@ -28,6 +28,12 @@ $this->params['breadcrumbs'][] = $this->title;
 				], 'آیا می‌خواهید این گزارش اجرا شود؟', [
 					'btn' => 'success',
 				]) ?>
+				<?= Html::confirmButton(yii::t('mha', 'Export Report'), [
+					'export',
+					'id' => $model->rptID
+				], 'آیا می‌خواهید فایل خروجی این گزارش را دریافت کنید؟', [
+					'btn' => 'success',
+				]) ?>
 				<?= $model->canUpdate()   ? Html::updateButton(null,   ['id' => $model->rptID], ['modal' => false]) : '' ?>
 				<?= $model->canDelete()   ? Html::deleteButton(null,   ['id' => $model->rptID]) : '' ?>
 				<?= $model->canUndelete() ? Html::undeleteButton(null, ['id' => $model->rptID]) : '' ?>

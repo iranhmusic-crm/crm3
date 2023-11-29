@@ -9,6 +9,19 @@ class m231113_162951_mha_rename_coupon_to_discount extends Migration
 {
 	public function safeUp()
 	{
+
+throw new \Exception('not implemented yet!');
+
+
+
+
+
+
+
+
+
+
+
 		$this->execute(<<<SQLSTR
 RENAME TABLE `tbl_MHA_Accounting_Coupon` TO `tbl_MHA_Accounting_Discount`;
 SQLSTR

@@ -61,4 +61,27 @@ class ReportController extends BaseCrudController
     return $this->render('report' . $model->rptType, $viewParams);
   }
 
+  public function actionExport($id)
+  {
+		$model = $this->findModel($id);
+
+		$data = $model->export();
+
+    if (empty($data)) {
+      return 'error';
+    }
+
+
+
+
+    $content = '';
+
+
+
+
+    $fileName = "report_{$id}_" . date('Ymd_His') . '.csv';
+
+    return $this->response->sendContentAsFile($content, $fileName);
+  }
+
 }

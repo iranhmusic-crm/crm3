@@ -23,6 +23,9 @@ use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 use iranhmusic\shopack\mha\frontend\common\widgets\form\KanoonChooseFormField;
+use shopack\aaa\frontend\common\widgets\form\GeoCityOrVillageChooseFormField;
+use shopack\aaa\frontend\common\widgets\form\GeoStateChooseFormField;
+use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 
 ?>
 
@@ -58,6 +61,24 @@ use iranhmusic\shopack\mha\frontend\common\widgets\form\KanoonChooseFormField;
 									'label' => 'ندارد',
 								]),
 						],
+					],
+				],
+			],
+
+			['@col-break'],
+
+			['rptInputFields[usrGender]',
+				'label' => 'جنسیت',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => Select2::class,
+				'widgetOptions' => [
+					'data' => enuGender::listData(),
+					'options' => [
+						'placeholder' => Yii::t('app', '-- Choose --'),
+						'dir' => 'rtl',
+					],
+					'pluginOptions' => [
+						'allowClear' => true,
 					],
 				],
 			],
@@ -150,67 +171,18 @@ use iranhmusic\shopack\mha\frontend\common\widgets\form\KanoonChooseFormField;
 				'type' => FormBuilder::FIELD_CHECKBOX,
 				'widgetOptions' => [[], true],
 			],
-			['rptInputFields[usrBirthLocation][State]',
+
+			GeoStateChooseFormField::field($this, $model, 'rptInputFields[usrBirthLocation][State]', true, false, null, [
 				'label' => 'استان محل تولد',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => Select2::class,
-				'widgetOptions' => [
-					'data' => ArrayHelper::map(GeoStateModel::find()->asArray()->noLimit()->all(), 'sttID', 'sttName'),
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'pluginOptions' => [
-						'allowClear' => true,
-					],
-				],
-			],
-			['rptInputFields[usrBirthLocation][City]',
+			]),
+
+			GeoCityOrVillageChooseFormField::field($this, $model, 'rptInputFields[usrBirthLocation][City]', true, false, 'rptInputFields[usrBirthLocation][State]', [
 				'label' => 'شهر',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => DepDrop::class,
-				'widgetOptions' => [
-					'type' => DepDrop::TYPE_SELECT2,
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'select2Options' => [
-						'pluginOptions' => [
-							'allowClear' => true,
-						],
-					],
-					'pluginOptions' => [
-						'depends' => ["{$formNameLower}-rptinputfields-usrbirthlocation-state"],
-						'initialize' => true,
-						'url' => Url::to(['/aaa/geo-city-or-village/depdrop-list', 'sel' => $model->rptInputFields['usrBirthLocation']['City'] ?? null]),
-						'loadingText' => Yii::t('app', 'Loading...'),
-					],
-				],
-			],
-			['rptInputFields[usrBirthLocation][Town]',
+			]),
+
+			GeoTownChooseFormField::field($this, $model, 'rptInputFields[usrBirthLocation][Town]', true, false, 'rptInputFields[usrBirthLocation][City]', [
 				'label' => 'منطقه',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => DepDrop::class,
-				'widgetOptions' => [
-					'type' => DepDrop::TYPE_SELECT2,
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'select2Options' => [
-						'pluginOptions' => [
-							'allowClear' => true,
-						],
-					],
-					'pluginOptions' => [
-						'depends' => ["{$formNameLower}-rptinputfields-usrbirthlocation-city"],
-						'initialize' => true,
-						'url' => Url::to(['/aaa/geo-town/depdrop-list', 'sel' => $model->rptInputFields['usrBirthLocation']['City'] ?? null]),
-						'loadingText' => Yii::t('app', 'Loading...'),
-					],
-				],
-			],
+			]),
 
 			['@col-break'],
 
@@ -261,47 +233,13 @@ use iranhmusic\shopack\mha\frontend\common\widgets\form\KanoonChooseFormField;
 				'widgetOptions' => [[], true],
 			],
 
-			['rptInputFields[usrStateID]',
+			GeoStateChooseFormField::field($this, $model, 'rptInputFields[usrStateID]', true, false, null, [
 				'label' => 'استان محل سکونت',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => Select2::class,
-				'widgetOptions' => [
-					'data' => ArrayHelper::map(GeoStateModel::find()->asArray()->noLimit()->all(), 'sttID', 'sttName'),
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'pluginOptions' => [
-						'allowClear' => true,
-					],
-				],
-			],
-			['rptInputFields[usrCityOrVillageID]',
+			]),
+
+			GeoCityOrVillageChooseFormField::field($this, $model, 'rptInputFields[usrCityOrVillageID]', true, false, 'rptInputFields[usrStateID]', [
 				'label' => 'شهر',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => DepDrop::class,
-				'widgetOptions' => [
-					'type' => DepDrop::TYPE_SELECT2,
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'select2Options' => [
-						'pluginOptions' => [
-							'allowClear' => true,
-						],
-					],
-					'pluginOptions' => [
-						'depends' => ["{$formNameLower}-rptinputfields-usrstateid"],
-						'initialize' => true,
-						'url' => Url::to(['/aaa/geo-city-or-village/depdrop-list', 'sel' => $model->rptInputFields['usrCityOrVillageID'] ?? null]),
-						'loadingText' => Yii::t('app', 'Loading...'),
-					],
-				],
-			],
-
-			['@col-break'],
-
+			]),
 
 			['@col-break'],
 			'<hr>',
