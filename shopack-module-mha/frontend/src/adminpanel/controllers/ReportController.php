@@ -68,19 +68,43 @@ class ReportController extends BaseCrudController
 		$data = $model->export();
 
     if (empty($data)) {
-      return 'error';
+      return 'empty';
     }
 
+    $content = [];
 
+    //--header
+    $labels = [];
+    $outputFields = $model->outputFields();
+    foreach ($data[0] as $k => $v) {
+      if (isset($outputFields[$k]['label'])) {
+        $labels[] = $outputFields[$k]['label'];
+      } else if (isset($outputFields[$k])) {
+        $labels[] = $outputFields[$k];
+      } else {
+        $labels[] = $k;
+      }
+    }
+    $content[] = implode(',', $labels);
 
+    //rows
+    foreach ($data as $row) {
+      $line = [];
 
-    $content = '';
+      foreach ($row as $k => $v) {
+        if (($v !== null) && isset($outputFields[$k]['export'])) {
+          $line[] = call_user_func($outputFields[$k]['export'], $v);
+        } else {
+          $line[] = $v;
+        }
+      }
 
+      $content[] = implode(',', $line);
+    }
 
-
+    $content = implode("\r\n", $content);
 
     $fileName = "report_{$id}_" . date('Ymd_His') . '.csv';
-
     return $this->response->sendContentAsFile($content, $fileName);
   }
 
