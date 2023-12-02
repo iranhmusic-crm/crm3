@@ -10,13 +10,47 @@ class m231113_162951_mha_rename_coupon_to_discount extends Migration
 	public function safeUp()
 	{
 		$this->execute(<<<SQLSTR
+ALTER TABLE `tbl_MHA_Accounting_UserAsset`
+	DROP INDEX `FK_tbl_MHA_Accounting_UserAsset_tbl_Coupon`,
+	DROP FOREIGN KEY `FK_tbl_MHA_Accounting_UserAsset_tbl_Coupon`;
+SQLSTR
+    );
+
+		$this->execute(<<<SQLSTR
 RENAME TABLE `tbl_MHA_Accounting_Coupon` TO `tbl_MHA_Accounting_Discount`;
 SQLSTR
     );
 
 		$this->execute(<<<SQLSTR
 ALTER TABLE `tbl_MHA_Accounting_Discount`
-	CHANGE COLUMN `cpnID` `dscID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
+	CHANGE COLUMN `cpnID` `dscID` INT(10) UNSIGNED NOT NULL FIRST,
+	DROP PRIMARY KEY;
+SQLSTR
+		);
+
+		$this->execute(<<<SQLSTR
+ALTER TABLE `tbl_MHA_Accounting_Discount`
+	CHANGE COLUMN `dscID` `dscID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
+	ADD PRIMARY KEY (`dscID`) USING BTREE;
+SQLSTR
+		);
+
+		$this->execute(<<<SQLSTR
+ALTER TABLE `tbl_MHA_Accounting_Discount`
+	DROP INDEX `cpnUUID`,
+	DROP INDEX `cpnCode_cpnRemovedAt`,
+	DROP INDEX `cpnValidTo`,
+	DROP INDEX `cpnCreatedBy`,
+	DROP INDEX `cpnCreatedAt`,
+	DROP INDEX `cpnUpdatedBy`,
+	DROP INDEX `cpnStatus`,
+	DROP INDEX `cpnValidFrom`,
+	DROP INDEX `cpnType`;
+SQLSTR
+    );
+
+		$this->execute(<<<SQLSTR
+ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `cpnUUID` `dscUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `dscID`,
 	CHANGE COLUMN `cpnCode` `dscCode` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `dscUUID`,
 	CHANGE COLUMN `cpnName` `dscName` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `dscCode`,
@@ -40,25 +74,14 @@ ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `cpnUpdatedBy` `dscUpdatedBy` BIGINT(20) UNSIGNED NULL DEFAULT NULL AFTER `dscUpdatedAt`,
 	CHANGE COLUMN `cpnRemovedAt` `dscRemovedAt` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `dscUpdatedBy`,
 	CHANGE COLUMN `cpnRemovedBy` `dscRemovedBy` BIGINT(20) UNSIGNED NULL DEFAULT NULL AFTER `dscRemovedAt`,
-	DROP PRIMARY KEY,
-	ADD PRIMARY KEY (`dscID`) USING BTREE,
-	DROP INDEX `cpnUUID`,
 	ADD UNIQUE INDEX `dscUUID` (`dscUUID`) USING BTREE,
-	DROP INDEX `cpnCode_cpnRemovedAt`,
 	ADD UNIQUE INDEX `dscCode_dscRemovedAt` (`dscCode`, `dscRemovedAt`) USING BTREE,
-	DROP INDEX `cpnValidTo`,
 	ADD INDEX `dscValidTo` (`dscValidTo`) USING BTREE,
-	DROP INDEX `cpnCreatedBy`,
 	ADD INDEX `dscCreatedBy` (`dscCreatedBy`) USING BTREE,
-	DROP INDEX `cpnCreatedAt`,
 	ADD INDEX `dscCreatedAt` (`dscCreatedAt`) USING BTREE,
-	DROP INDEX `cpnUpdatedBy`,
 	ADD INDEX `dscUpdatedBy` (`dscUpdatedBy`) USING BTREE,
-	DROP INDEX `cpnStatus`,
 	ADD INDEX `dscStatus` (`dscStatus`) USING BTREE,
-	DROP INDEX `cpnValidFrom`,
 	ADD INDEX `dscValidFrom` (`dscValidFrom`) USING BTREE,
-	DROP INDEX `cpnType`,
 	ADD INDEX `dscType` (`dscAmountType`) USING BTREE;
 SQLSTR
     );
@@ -69,13 +92,6 @@ ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscCode` `dscCode` VARCHAR(32) NULL COLLATE 'utf8mb4_unicode_ci' AFTER `dscName`,
 	CHANGE COLUMN `dscPrimaryCount` `dscPrimaryCount` INT(10) UNSIGNED NULL AFTER `dscCode`,
 	CHANGE COLUMN `dscTotalMaxAmount` `dscTotalMaxAmount` INT(10) UNSIGNED NULL AFTER `dscPrimaryCount`;
-SQLSTR
-    );
-
-		$this->execute(<<<SQLSTR
-ALTER TABLE `tbl_MHA_Accounting_UserAsset`
-	DROP INDEX `FK_tbl_MHA_Accounting_UserAsset_tbl_Coupon`,
-	DROP FOREIGN KEY `FK_tbl_MHA_Accounting_UserAsset_tbl_Coupon`;
 SQLSTR
     );
 
@@ -159,6 +175,7 @@ ALTER TABLE `tbl_MHA_Accounting_Discount`
 SQLSTR
     );
 
+		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_Coupon;");
 		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_Discount;");
 		$this->execute(<<<SQLSTR
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Discount AFTER UPDATE ON tbl_MHA_Accounting_Discount FOR EACH ROW BEGIN
