@@ -99,6 +99,9 @@ class MemberKanoonModel extends RestClientActiveRecord
 	public function canCancel() {
 		return ($this->mbrknnStatus == enuMemberKanoonStatus::Accepted);
 	}
+	public function canChangeDegree() {
+		return ($this->mbrknnStatus == enuMemberKanoonStatus::Accepted);
+	}
 
 	/*
 	public function doAccept()

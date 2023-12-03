@@ -154,7 +154,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
         'mbrknnMemberID' => $mbrknnMemberID ?? $_GET['mbrknnMemberID'] ?? null,
       ]) : Yii::t('app', 'Actions'),
 
-      'template' => '{waitForSurvey} {waitForResurvey} {azmoon} {accept} {reject} {cancel}',
+      'template' => '{waitForSurvey} {waitForResurvey} {azmoon} {accept} {reject} {changeDegree} {cancel}',
 
       'buttons' => [
         'waitForSurvey' => function ($url, $model, $key) {
@@ -207,6 +207,16 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
             'title' => enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Rejected),
           ]);
         },
+        'changeDegree' => function ($url, $model, $key) {
+          return Html::a('تغیر رده', [
+            'change-degree',
+            'id' => $model->mbrknnID,
+          ], [
+            'class' => 'btn btn-sm btn-primary',
+            'modal' => true,
+            'title' => 'تغیر رده',
+          ]);
+        },
         'cancel' => function ($url, $model, $key) {
           return Html::confirmButton(enuMemberKanoonStatus::getActionLabel(enuMemberKanoonStatus::Cancelled), [
             'change-status',
@@ -233,6 +243,9 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
         },
         'reject' => function ($model, $key, $index) {
           return $model->canReject();
+        },
+        'changeDegree' => function ($model, $key, $index) {
+          return $model->canChangeDegree();
         },
         'cancel' => function ($model, $key, $index) {
           return $model->canCancel();
