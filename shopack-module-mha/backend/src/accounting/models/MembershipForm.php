@@ -138,6 +138,22 @@ class MembershipForm extends Model
 
 		$membershipKey = Uuid::uuid4()->toString();
 
+
+
+
+
+		//discount
+		$membershipSystemDiscounts = DiscountModel::findSystemDiscount($saleableModel->slbID);
+
+
+		$membershipCardSystemDiscounts = DiscountModel::findSystemDiscount($cardPrintSaleableModel->slbID);
+
+
+
+
+
+
+
 		//member group
 		$memberMemberGroupModels = MemberMemberGroupModel::find()
 			->innerJoinWith('memberGroup')

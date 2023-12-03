@@ -40,4 +40,47 @@ class DiscountModel extends MhaActiveRecord
 		];
 	}
 
+	public static function findSystemDiscount($saleableID)
+	{
+		$userGroups
+
+
+		$models = self::find()
+			->andWhere([])
+			->asArray()
+			->all();
+
+/*
+'dscID',
+'dscUUID',
+'dscName',
+'dscType',
+'dscCodeString',
+'dscCodeHasSerial',
+'dscCodeSerialCount',
+'dscCodeSerialLength',
+'dscValidFrom',
+'dscValidTo',
+'dscTotalMaxCount',
+'dscTotalMaxPrice',
+'dscPerUserMaxCount',
+'dscPerUserMaxPrice',
+'dscTargetUserIDs',
+'dscTargetProductIDs',
+'dscTargetSaleableIDs',
+'dscSaleableBasedMultiplier',
+'dscAmount',
+'dscAmountType',
+'dscMaxAmount',
+'dscTotalUsedCount',
+'dscTotalUsedPrice',
+'dscI18NData',
+'dscStatus',
+
+'dscTargetMemberGroupIDs',
+'dscTargetKanoonIDs',
+'dscTargetProductMhaTypes',
+*/
+	}
+
 }
