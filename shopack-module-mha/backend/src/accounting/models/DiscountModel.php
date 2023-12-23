@@ -42,13 +42,13 @@ class DiscountModel extends MhaActiveRecord
 
 	public static function findSystemDiscount($saleableID)
 	{
-		$userGroups
+		// $userGroups
 
 
-		$models = self::find()
-			->andWhere([])
-			->asArray()
-			->all();
+		// $models = self::find()
+		// 	->andWhere([])
+		// 	->asArray()
+		// 	->all();
 
 /*
 'dscID',
