@@ -155,7 +155,7 @@ $kanoonDegrees = implode(' - ' , $kanoonDegrees);
   <div class="sign"><img src="/images/sign.png"></div>
   <div class="logo_type"><img src="/images/logo_type.jpg"></div>
   <div class="logo_title"><img src="/images/logo_iran.jpg"></div>
-  <div class="user_img" style="background:url(<?= $model->user->imageFile->fullFileUrl ?? null ?>);background-size: cover;background-position: center center;"></div>
+  <div class="user_img" style="background:url('<?= $model->user->imageFile->fullFileUrl ?? null ?>');background-size: cover;background-position: center center;"></div>
   <div class="info">
     <label style="width: 31%;"><h1>نام</h1><h2><?= $model->user->usrFirstName ?></h2></label>
     <label style="width: 69%;"><h1>نام خانوادگی</h1><h2><?= $model->user->usrLastName ?></h2></label>

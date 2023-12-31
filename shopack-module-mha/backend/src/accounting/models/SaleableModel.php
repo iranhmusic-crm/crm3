@@ -17,6 +17,7 @@ use iranhmusic\shopack\mha\backend\models\MemberModel;
 class SaleableModel extends MhaActiveRecord
 {
 	use \iranhmusic\shopack\mha\common\accounting\models\SaleableModelTrait;
+	use \shopack\base\backend\accounting\models\BackendSaleableModelTrait;
 
 	public static function tableName()
 	{

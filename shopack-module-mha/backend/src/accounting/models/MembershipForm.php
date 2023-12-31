@@ -109,6 +109,62 @@ class MembershipForm extends Model
 		list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableModel)
 			= self::getRenewalInfo(Yii::$app->user->id);
 
+
+
+		$cardPrintSaleableModel = SaleableModel::find()
+			->joinWith('product', false, 'INNER JOIN')
+			->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard])
+			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+			->andWhere(['slbStatus' => enuSaleableStatus::Active])
+			->orderBy('slbAvailableFromDate DESC')
+			->one();
+
+		if ($cardPrintSaleableModel == null)
+			throw new NotFoundHttpException('Definition of membership card at this date was not found.');
+
+
+
+		//1: add membership to basket:
+		$membershipBasketModel = new BasketModel;
+		$membershipBasketModel->saleableCode   = $saleableModel->slbCode;
+		$membershipBasketModel->qty            = $years;
+		$membershipBasketModel->orderParams    = [
+			'startDate' => $startDate,
+			'endDate' => $endDate,
+		];
+		// $membershipBasketModel->orderAdditives = ;
+		// $membershipBasketModel->discountCode   = ;
+		// $membershipBasketModel->referrer       = ;
+		// $membershipBasketModel->referrerParams = ;
+		// $membershipBasketModel->apiTokenID     = ;
+		// $membershipBasketModel->itemUUID       = ;
+		[$membershipItemUUID, $lastPreVoucher] = $membershipBasketModel->addToBasket();
+
+		//2: add membership CARD to basket:
+		$membershipCardBasketModel = new BasketModel;
+		$membershipCardBasketModel->saleableCode   = $cardPrintSaleableModel->slbCode;
+		$membershipCardBasketModel->qty            = 1;
+		// $membershipCardBasketModel->orderParams    = ;
+		// $membershipCardBasketModel->orderAdditives = ;
+		// $membershipCardBasketModel->discountCode   = ;
+		// $membershipCardBasketModel->referrer       = ;
+		// $membershipCardBasketModel->referrerParams = ;
+		// $membershipCardBasketModel->apiTokenID     = ;
+		// $membershipCardBasketModel->itemUUID       = ;
+		$membershipCardBasketModel->dependencies		= [$membershipItemUUID];
+		[$membershipCardItemUUID, $lastPreVoucher] = $membershipCardBasketModel->addToBasket();
+
+
+
+
+
+
+
+
+
+
+		/*
+
 		//todo: check user langauge from request header
 		$desc = implode(' ', [
 			$saleableModel->slbName,
@@ -259,6 +315,7 @@ class MembershipForm extends Model
 			throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
 
 		return $resultData;
+		*/
 	}
 
 }
