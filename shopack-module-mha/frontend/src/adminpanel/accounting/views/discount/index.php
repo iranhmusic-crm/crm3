@@ -57,6 +57,12 @@ $this->params['breadcrumbs'][] = $this->title;
               return enuDiscountType::getLabel($model->dscType);
             },
           ],
+          [
+            'attribute' => 'dscDiscountGroupID',
+            'value' => function ($model, $key, $index, $widget) {
+              return $model->discountGroup->dscgrpName ?? null;
+            },
+          ],
           'dscCodeString',
           'dscCodeHasSerial:boolean',
           'dscCodeSerialCount:decimal',

@@ -54,4 +54,16 @@ trait DiscountModelTrait
 		return $cols;
 	}
 
+  public static function getDiscountGroupModelClass()
+	{
+		$className = get_called_class();
+
+		if (str_contains($className, '\\backend\\'))
+			$className = '\iranhmusic\shopack\mha\backend\accounting\models\DiscountGroupModel';
+		else
+			$className = '\iranhmusic\shopack\mha\frontend\common\accounting\models\DiscountGroupModel';
+
+		return $className;
+	}
+
 }

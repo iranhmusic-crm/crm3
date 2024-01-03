@@ -5,10 +5,62 @@
 
 use shopack\base\common\db\Migration;
 
-class m240102_060725_mha_add_referrer_to_discount extends Migration
+class m240102_060725_mha_create_discountgroup_and_referrer extends Migration
 {
 	public function safeUp()
 	{
+    $this->execute(<<<SQLSTR
+CREATE TABLE `tbl_MHA_Accounting_DiscountGroup` (
+	`dscgrpID` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`dscgrpUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`dscgrpName` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`dscgrpCreatedAt` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+	`dscgrpCreatedBy` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+	`dscgrpUpdatedAt` DATETIME NULL DEFAULT NULL,
+	`dscgrpUpdatedBy` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+	`dscgrpRemovedAt` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+	`dscgrpRemovedBy` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+	PRIMARY KEY (`dscgrpID`) USING BTREE,
+	UNIQUE INDEX `dscgrpUUID` (`dscgrpUUID`) USING BTREE,
+	UNIQUE INDEX `dscgrpName` (`dscgrpName`) USING BTREE,
+	INDEX `dscgrpCreatedAt` (`dscgrpCreatedAt`) USING BTREE
+)
+COLLATE='utf8mb4_unicode_ci'
+ENGINE=InnoDB
+;
+SQLSTR
+    );
+
+    $this->execute(<<<SQLSTR
+ALTER TABLE `tbl_MHA_Accounting_Discount`
+  ADD COLUMN `dscDiscountGroupID` SMALLINT UNSIGNED NULL AFTER `dscType`;
+SQLSTR
+    );
+
+    $this->execute(<<<SQLSTR
+ALTER TABLE `tbl_MHA_Accounting_Discount`
+	ADD CONSTRAINT `FK_tbl_MHA_Accounting_Discount_tbl_MHA_Accounting_DiscountGroup` FOREIGN KEY (`dscDiscountGroupID`) REFERENCES `tbl_MHA_Accounting_DiscountGroup` (`dscgrpID`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+SQLSTR
+    );
+
+    $this->execute(<<<SQLSTR
+SQLSTR
+    );
+
+    $this->execute(<<<SQLSTR
+SQLSTR
+    );
+
+    $this->execute(<<<SQLSTR
+SQLSTR
+    );
+
+
+
+
+
+
+
     $this->execute(<<<SQLSTR
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	ADD COLUMN `dscReferrers` JSON NULL DEFAULT NULL AFTER `dscTargetSaleableIDs`;
@@ -70,7 +122,7 @@ SQLSTR
 
 	public function safeDown()
 	{
-		echo "m240102_060725_mha_add_referrer_to_discount cannot be reverted.\n";
+		echo "m240102_060725_mha_create_discountgroup_and_referrer cannot be reverted.\n";
 		return false;
 	}
 

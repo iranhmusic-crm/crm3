@@ -25,8 +25,9 @@ class DiscountModel extends RestClientActiveRecord
 			'dscID'                      => Yii::t('app', 'ID'),
 			// 'dscUUID'
 			'dscName'                    => Yii::t('app', 'Name'),
-
 			'dscType'                    => Yii::t('aaa', 'Discount Type'),
+			'dscDiscountGroupID'         => Yii::t('aaa', 'Discount Group'),
+
 			'dscCodeString'              => Yii::t('aaa', 'Discount Code'),
 			'dscCodeHasSerial'           => Yii::t('aaa', 'Code Has Serial'),
 			'dscCodeSerialCount'         => Yii::t('aaa', 'Code Serial Count'),
