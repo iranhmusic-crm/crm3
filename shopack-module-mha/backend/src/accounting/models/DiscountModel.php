@@ -68,6 +68,7 @@ class DiscountModel extends MhaActiveRecord
 'dscTargetUserIDs',
 'dscTargetProductIDs',
 'dscTargetSaleableIDs',
+'dscReferrers',
 'dscSaleableBasedMultiplier',
 'dscAmount',
 'dscAmountType',

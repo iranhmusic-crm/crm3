@@ -188,7 +188,7 @@ class MigrateDataController extends Controller
 
   public function queryExecute($qry, $function, $line) {
     try {
-      return Yii::$app->db->createCommand($qry )->execute();
+      return Yii::$app->db->createCommand($qry)->execute();
     } catch (\Throwable $th) {
       $this->trace('** EXCEPTION: ' . $th->getMessage());
       $this->trace($qry);
@@ -199,7 +199,7 @@ class MigrateDataController extends Controller
 
   public function queryAll($qry, $function, $line) {
     try {
-      return Yii::$app->db->createCommand($qry )->queryAll();
+      return Yii::$app->db->createCommand($qry)->queryAll();
     } catch (\Throwable $th) {
       $this->trace('** EXCEPTION: ' . $th->getMessage());
       $this->trace($qry);
@@ -210,7 +210,7 @@ class MigrateDataController extends Controller
 
   public function queryOne($qry, $function, $line) {
     try {
-      return Yii::$app->db->createCommand($qry )->queryOne();
+      return Yii::$app->db->createCommand($qry)->queryOne();
     } catch (\Throwable $th) {
       $this->trace('** EXCEPTION: ' . $th->getMessage());
       $this->trace($qry);

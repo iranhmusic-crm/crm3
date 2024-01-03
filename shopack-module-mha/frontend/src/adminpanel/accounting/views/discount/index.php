@@ -8,6 +8,9 @@
 use shopack\base\common\helpers\StringHelper;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\grid\GridView;
+use shopack\base\common\accounting\enums\enuAmountType;
+use shopack\base\common\accounting\enums\enuDiscountStatus;
+use shopack\base\common\accounting\enums\enuDiscountType;
 
 $modelClass = Yii::$app->controller->modelClass;
 
@@ -48,11 +51,27 @@ $this->params['breadcrumbs'][] = $this->title;
               return Html::a($model->dscName, ['view', 'id' => $model->dscID]);
             },
           ],
-          // [
-          //   'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
-          //   'enumClass' => enuDiscountStatus::class,
-          //   'attribute' => 'dscStatus',
-          // ],
+          [
+            'attribute' => 'dscType',
+            'value' => function ($model, $key, $index, $widget) {
+              return enuDiscountType::getLabel($model->dscType);
+            },
+          ],
+          'dscCodeString',
+          'dscCodeHasSerial:boolean',
+          'dscCodeSerialCount:decimal',
+          'dscAmount:decimal',
+          [
+            'attribute' => 'dscAmountType',
+            'value' => function ($model, $key, $index, $widget) {
+              return enuAmountType::getLabel($model->dscAmountType);
+            },
+          ],
+          [
+            'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
+            'enumClass' => enuDiscountStatus::class,
+            'attribute' => 'dscStatus',
+          ],
           [
             'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
             'header' => $modelClass::canCreate() ? Html::createButton(null, null, [

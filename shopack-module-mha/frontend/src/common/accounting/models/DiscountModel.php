@@ -41,6 +41,7 @@ class DiscountModel extends RestClientActiveRecord
 			'dscTargetUserIDs'           => Yii::t('mha', 'Members'),
 			'dscTargetProductIDs'        => Yii::t('aaa', 'Products'),
 			'dscTargetSaleableIDs'       => Yii::t('aaa', 'Saleables'),
+			'dscReferrers'               => Yii::t('aaa', 'Referrers'),
 			'dscSaleableBasedMultiplier' => Yii::t('aaa', 'Saleable Based Multiplier'),
 			'dscAmount'               	 => Yii::t('aaa', 'Discount Amount'),
 			'dscAmountType'              => Yii::t('aaa', 'Amount Type'),

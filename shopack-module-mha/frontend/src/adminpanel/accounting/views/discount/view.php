@@ -156,6 +156,14 @@ $this->params['breadcrumbs'][] = $this->title;
               'encode' => false
             ]),
           ],
+          [
+            'attribute' => 'dscReferrers',
+            'format' => 'raw',
+            'value' => Html::splitAsList(SaleableModel::toString($model->dscReferrers), '|', [
+              'encode' => false
+            ]),
+          ],
+
           // 'dscSaleableBasedMultiplier',
         ]);
 

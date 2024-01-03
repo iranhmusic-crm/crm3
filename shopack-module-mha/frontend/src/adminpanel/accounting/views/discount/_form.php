@@ -148,6 +148,21 @@ use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
 		$builder->fields(SaleableChooseFormField::field($this, $model, 'dscTargetSaleableIDs', true, true));
 
+		//json array
+		// $builder->fields([
+		// 	[
+		// 		'dscReferrers',
+		// 		'type' => FormBuilder::FIELD_WIDGET,
+		// 		'widget' => JsonTableWidget::class,
+		// 		'widgetOptions' => [
+		// 			'columns' => [
+		// 				'url',
+		// 				'params',
+		// 			],
+		// 		],
+		// 	],
+		// ]);
+
 		// $builder->fields([
 		// 	['dscSaleableBasedMultiplier'],
 		// ]);

@@ -326,6 +326,8 @@ END
 SQLSTR
     );
 
+		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Membership;");
+
     $this->execute(<<<SQLSTR
 RENAME TABLE `tbl_MHA_Membership` TO `DELETED_tbl_MHA_Membership`;
 SQLSTR
@@ -341,6 +343,7 @@ SQLSTR
 
     $this->execute("DROP TRIGGER IF EXISTS trg_tbl_MHA_MemberMembership_after_insert;");
     $this->execute("DROP TRIGGER IF EXISTS trg_tbl_MHA_MemberMembership_after_update;");
+		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_MemberMembership;");
 
     $this->execute(<<<SQLSTR
 RENAME TABLE `tbl_MHA_MemberMembership` TO `DELETED_tbl_MHA_MemberMembership`;
@@ -591,7 +594,6 @@ SQLSTR
 //     tbl_MHA_Accounting_AssetUsage
 //     $this->execute("XXXXXXXXXXX");
 //     $this->execute(<<<SQLSTR
-
 // SQLSTR
 //     );
 
