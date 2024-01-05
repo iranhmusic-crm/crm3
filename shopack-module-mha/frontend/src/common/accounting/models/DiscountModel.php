@@ -68,6 +68,12 @@ class DiscountModel extends RestClientActiveRecord
 			'dscTargetProductMhaTypes'   => Yii::t('mha', 'Mha Product Type'),
 		];
 	}
+	public function attributeHints()
+	{
+		return [
+			'dscDiscountGroupID' => 'برای محاسبه تخفیف سیستمی، از تعاریف موجود در هر گروه تخفیف، فقط بیشترین آن در نظر گرفته خواهد شد. تخفیفات سیستمی بدون گروه شامل این موضوع نبوده و تمام آنها همزمان موثر خواهند بود.',
+		];
+	}
 
 	public function extraRules()
 	{

@@ -72,6 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class='card-title'><?= Html::encode($this->title) ?></div>
 			<div class="clearfix"></div>
 		</div>
+
     <div class='card-body'>
       <?php
         echo DetailView::widget([
