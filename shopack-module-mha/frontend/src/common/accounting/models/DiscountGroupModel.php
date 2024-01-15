@@ -24,6 +24,9 @@ class DiscountGroupModel extends RestClientActiveRecord
 			'dscgrpID'                      => Yii::t('app', 'ID'),
 			// 'dscgrpUUID'
 			'dscgrpName'                    => Yii::t('app', 'Name'),
+			'dscgrpComputeType'             => Yii::t('app', 'Compute Type'),
+			'dscgrpMaxAmount'               => Yii::t('app', 'Max Amount'),
+			'dscgrpMaxType'                 => Yii::t('app', 'Max Type'),
 
 			'dscgrpCreatedAt'               => Yii::t('app', 'Created At'),
 			'dscgrpCreatedBy'               => Yii::t('app', 'Created By'),

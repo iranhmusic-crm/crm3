@@ -9,10 +9,10 @@ class m230331_063403_mha_make_mbrRegisterCode_nullable extends Migration
 {
 	public function safeUp()
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member`
 	CHANGE COLUMN `mbrRegisterCode` `mbrRegisterCode` BIGINT(20) UNSIGNED NULL AFTER `mbrUserID`;
-SQLSTR
+SQL
 		);
 }
 

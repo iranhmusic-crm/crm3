@@ -9,7 +9,7 @@ class m221015_200000_mha_init extends Migration
 {
 	public function up()
 	{
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_Member` (
   `mbrUserID` bigint unsigned NOT NULL,
   `mbrRegisterCode` bigint unsigned NOT NULL,
@@ -34,10 +34,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_Member` (
   CONSTRAINT `FK_tbl_MHA_Member_tbl_AAA_User_modifier` FOREIGN KEY (`mbrUpdatedBy`) REFERENCES `tbl_AAA_User` (`usrID`),
   CONSTRAINT `FK_tbl_MHA_Member_tbl_AAA_User_remover` FOREIGN KEY (`mbrRemovedBy`) REFERENCES `tbl_AAA_User` (`usrID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_Document` (
   `docID` int unsigned NOT NULL AUTO_INCREMENT,
   `docName` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -52,10 +52,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_Document` (
   PRIMARY KEY (`docID`),
   KEY `docCreatedAt` (`docCreatedAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_Kanoon` (
   `knnID` int unsigned NOT NULL AUTO_INCREMENT,
   `knnName` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -95,10 +95,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_Kanoon` (
   CONSTRAINT `FK_tbl_MHA_Kanoon_tbl_MHA_Member_vicePresident` FOREIGN KEY (`knnVicePresidentMemberID`) REFERENCES `tbl_MHA_Member` (`mbrUserID`),
   CONSTRAINT `FK_tbl_MHA_Kanoon_tbl_MHA_Member_warden` FOREIGN KEY (`knnWardenMemberID`) REFERENCES `tbl_MHA_Member` (`mbrUserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_MasterInsurer` (
   `minsID` int unsigned NOT NULL AUTO_INCREMENT,
   `minsName` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -117,10 +117,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_MasterInsurer` (
   CONSTRAINT `FK_tbl_MHA_MasterInsurer_tbl_AAA_User_modifier` FOREIGN KEY (`minsUpdatedBy`) REFERENCES `tbl_AAA_User` (`usrID`),
   CONSTRAINT `FK_tbl_MHA_MasterInsurer_tbl_AAA_User_remover` FOREIGN KEY (`minsRemovedBy`) REFERENCES `tbl_AAA_User` (`usrID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_MasterInsurerType` (
   `minstypID` int unsigned NOT NULL AUTO_INCREMENT,
   `minstypMasterInsurerID` int unsigned NOT NULL,
@@ -142,10 +142,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_MasterInsurerType` (
   CONSTRAINT `FK_tbl_MHA_MasterInsurerType_tbl_AAA_User_remover` FOREIGN KEY (`minstypRemovedBy`) REFERENCES `tbl_AAA_User` (`usrID`),
   CONSTRAINT `FK_tbl_MHA_MasterInsurerType_tbl_MHA_MasterInsurer` FOREIGN KEY (`minstypMasterInsurerID`) REFERENCES `tbl_MHA_MasterInsurer` (`minsID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberMasterInsDoc` (
   `mbrminsdocID` bigint unsigned NOT NULL AUTO_INCREMENT,
   `mbrminsdocMemberID` bigint unsigned NOT NULL,
@@ -166,10 +166,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberMasterInsDoc` (
   CONSTRAINT `FK_tbl_MHA_MemberMasterInsDoc_tbl_AAA_User_modifer` FOREIGN KEY (`mbrminsdocUpdatedBy`) REFERENCES `tbl_AAA_User` (`usrID`),
   CONSTRAINT `FK_tbl_MHA_MemberMasterInsDoc_tbl_MHA_Member` FOREIGN KEY (`mbrminsdocMemberID`) REFERENCES `tbl_MHA_Member` (`mbrUserID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberMasterInsDocHistory` (
   `mbrminsdochstID` bigint unsigned NOT NULL AUTO_INCREMENT,
   `mbrminsdochstMasterInsDocID` bigint unsigned NOT NULL,
@@ -186,10 +186,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberMasterInsDocHistory` (
   CONSTRAINT `FK_tbl_MHA_MemberMasterInsDocHistory_tbl_AAA_User_creator` FOREIGN KEY (`mbrminsdochstCreatedBy`) REFERENCES `tbl_AAA_User` (`usrID`),
   CONSTRAINT `FK_tbl_MHA_MemberMasterInsDocHistory_tbl_MHA_MemberMasterInsDoc` FOREIGN KEY (`mbrminsdochstMasterInsDocID`) REFERENCES `tbl_MHA_MemberMasterInsDoc` (`mbrminsdocID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberMasterInsuranceHistory` (
   `mbrminshstID` bigint unsigned NOT NULL AUTO_INCREMENT,
   `mbrminshstMemberID` bigint unsigned NOT NULL,
@@ -213,10 +213,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberMasterInsuranceHistory` (
   CONSTRAINT `FK_tbl_MHA_MemberMasterInsHistory_tbl_MHA_MasterInsurerType` FOREIGN KEY (`mbrminshstMasterInsTypeID`) REFERENCES `tbl_MHA_MasterInsurerType` (`minstypID`),
   CONSTRAINT `FK_tbl_MHA_MemberMasterInsHistory_tbl_MHA_Member` FOREIGN KEY (`mbrminshstMemberID`) REFERENCES `tbl_MHA_Member` (`mbrUserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_Membership` (
   `mshpID` int unsigned NOT NULL AUTO_INCREMENT,
   `mshpTitle` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -232,15 +232,15 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_Membership` (
   PRIMARY KEY (`mshpID`),
   UNIQUE KEY `mshpStartFrom_mshpRemovedAt` (`mshpStartFrom`,`mshpRemovedAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 ALTER TABLE {{%MHA_Membership}} AUTO_INCREMENT=10;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberMembership` (
   `mbrshpID` bigint unsigned NOT NULL AUTO_INCREMENT,
   `mbrshpMemberID` bigint unsigned NOT NULL,
@@ -260,10 +260,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberMembership` (
   CONSTRAINT `FK_tbl_MHA_MemberMembership_tbl_MHA_Member` FOREIGN KEY (`mbrshpMemberID`) REFERENCES `tbl_MHA_Member` (`mbrUserID`) ON DELETE CASCADE,
   CONSTRAINT `FK_tbl_MHA_MemberMembership_tbl_MHA_Membership` FOREIGN KEY (`mbrshpMembershipID`) REFERENCES `tbl_MHA_Membership` (`mshpID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberSponsorship` (
   `mbrspsID` bigint unsigned NOT NULL AUTO_INCREMENT,
   `mbrspsMemberID` bigint unsigned NOT NULL,
@@ -289,10 +289,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberSponsorship` (
   KEY `FK_tbl_MHA_MemberSponsorship_tbl_MHA_Member` (`mbrspsMemberID`) USING BTREE,
   CONSTRAINT `FK_tbl_MHA_MemberSponsorship_tbl_MHA_Member` FOREIGN KEY (`mbrspsMemberID`) REFERENCES `tbl_MHA_Member` (`mbrUserID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_SupplementaryInsurer` (
   `sinsID` int unsigned NOT NULL AUTO_INCREMENT,
   `sinsName` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -311,10 +311,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_SupplementaryInsurer` (
   CONSTRAINT `FK_tbl_MHA_SupplementaryInsurer_tbl_AAA_User_modifier` FOREIGN KEY (`sinsUpdatedBy`) REFERENCES `tbl_AAA_User` (`usrID`),
   CONSTRAINT `FK_tbl_MHA_SupplementaryInsurer_tbl_AAA_User_remover` FOREIGN KEY (`sinsRemovedBy`) REFERENCES `tbl_AAA_User` (`usrID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberSupplementaryInsDoc` (
   `mbrsinsdocID` bigint unsigned NOT NULL AUTO_INCREMENT,
   `mbrsinsdocMemberID` bigint unsigned NOT NULL,
@@ -338,10 +338,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberSupplementaryInsDoc` (
   CONSTRAINT `FK_tbl_MHA_MemberSupplementaryInsDoc_tbl_AAA_User_modifier` FOREIGN KEY (`mbrsinsdocUpdatedBy`) REFERENCES `tbl_AAA_User` (`usrID`),
   CONSTRAINT `FK_tbl_MHA_MemberSupplementaryInsDoc_tbl_MHA_Member` FOREIGN KEY (`mbrsinsdocMemberID`) REFERENCES `tbl_MHA_Member` (`mbrUserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberSupplementaryInsDocHistory` (
   `mbrsinsdochstID` bigint unsigned NOT NULL AUTO_INCREMENT,
   `mbrsinsdochstSupplementaryInsDocID` bigint unsigned NOT NULL,
@@ -358,10 +358,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_MemberSupplementaryInsDocHistory` (
   CONSTRAINT `FK_tbl_MHA_MemberSuppInsDocHistory_tbl_AAA_User_creator` FOREIGN KEY (`mbrsinsdochstCreatedBy`) REFERENCES `tbl_AAA_User` (`usrID`),
   CONSTRAINT `FK_tbl_MHA_MemberSuppInsDocHistory_tbl_MHA_MemberSuppInsDoc` FOREIGN KEY (`mbrsinsdochstSupplementaryInsDocID`) REFERENCES `tbl_MHA_MemberSupplementaryInsDoc` (`mbrsinsdocID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_Member_Document` (
   `mbrdocID` bigint unsigned NOT NULL AUTO_INCREMENT,
   `mbrdocMemberID` bigint unsigned NOT NULL,
@@ -381,10 +381,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_Member_Document` (
   CONSTRAINT `FK_tbl_MHA_Member_Document_tbl_MHA_Document` FOREIGN KEY (`mbrdocDocumentID`) REFERENCES `tbl_MHA_Document` (`docID`),
   CONSTRAINT `FK_tbl_MHA_Member_Document_tbl_MHA_Member` FOREIGN KEY (`mbrdocMemberID`) REFERENCES `tbl_MHA_Member` (`mbrUserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_Member_Kanoon` (
   `mbrknnID` bigint unsigned NOT NULL AUTO_INCREMENT,
   `mbrknnMemberID` bigint unsigned NOT NULL,
@@ -403,10 +403,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_Member_Kanoon` (
   CONSTRAINT `FK_tbl_MHA_Member_Kanoon_tbl_MHA_Kanoon` FOREIGN KEY (`mbrknnKanoonID`) REFERENCES `tbl_MHA_Kanoon` (`knnID`),
   CONSTRAINT `FK_tbl_MHA_Member_Kanoon_tbl_MHA_Member` FOREIGN KEY (`mbrknnMemberID`) REFERENCES `tbl_MHA_Member` (`mbrUserID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_Specialty` (
   `spcID` int unsigned NOT NULL AUTO_INCREMENT,
   `spcRoot` int unsigned DEFAULT NULL,
@@ -435,10 +435,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_Specialty` (
   CONSTRAINT `FK_tbl_MHA_Specialty_tbl_AAA_User_modifier` FOREIGN KEY (`spcUpdatedBy`) REFERENCES `tbl_AAA_User` (`usrID`),
   CONSTRAINT `FK_tbl_MHA_Specialty_tbl_AAA_User_remover` FOREIGN KEY (`spcRemovedBy`) REFERENCES `tbl_AAA_User` (`usrID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE IF NOT EXISTS `tbl_MHA_Member_Specialty` (
   `mbrspcMemberID` bigint unsigned NOT NULL,
   `mbrspcSpecialtyID` int unsigned NOT NULL,
@@ -451,10 +451,10 @@ CREATE TABLE IF NOT EXISTS `tbl_MHA_Member_Specialty` (
   `mbrspcRemovedBy` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`mbrspcMemberID`,`mbrspcSpecialtyID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_MemberMasterInsDoc_after_insert` AFTER INSERT ON `tbl_MHA_MemberMasterInsDoc` FOR EACH ROW BEGIN
 	INSERT INTO tbl_MHA_MemberMasterInsDocHistory(
 		mbrminsdochstMasterInsDocID,
@@ -468,10 +468,10 @@ CREATE TRIGGER `trg_tbl_MHA_MemberMasterInsDoc_after_insert` AFTER INSERT ON `tb
 		NEW.mbrminsdocCreatedBy
 	);
 END ;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_MemberMasterInsDoc_after_update` AFTER UPDATE ON `tbl_MHA_MemberMasterInsDoc` FOR EACH ROW BEGIN
 	IF (NEW.mbrminsdocStatus != OLD.mbrminsdocStatus) THEN
 		INSERT INTO tbl_MHA_MemberMasterInsDocHistory(
@@ -487,10 +487,10 @@ CREATE TRIGGER `trg_tbl_MHA_MemberMasterInsDoc_after_update` AFTER UPDATE ON `tb
 		);
 	END IF;
 END ;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_MemberSupplementaryInsDoc_after_insert` AFTER INSERT ON `tbl_MHA_MemberSupplementaryInsDoc` FOR EACH ROW BEGIN
 	INSERT INTO tbl_MHA_MemberSupplementaryInsDocHistory(
 		mbrsinsdochstSupplementaryInsDocID,
@@ -504,10 +504,10 @@ CREATE TRIGGER `trg_tbl_MHA_MemberSupplementaryInsDoc_after_insert` AFTER INSERT
 		NEW.mbrsinsdocCreatedBy
 	);
 END ;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_MemberSupplementaryInsDoc_after_update` AFTER UPDATE ON `tbl_MHA_MemberSupplementaryInsDoc` FOR EACH ROW BEGIN
 	IF (NEW.mbrsinsdocStatus != OLD.mbrsinsdocStatus) THEN
 		INSERT INTO tbl_MHA_MemberSupplementaryInsDocHistory(
@@ -523,10 +523,10 @@ CREATE TRIGGER `trg_tbl_MHA_MemberSupplementaryInsDoc_after_update` AFTER UPDATE
 		);
 	END IF;
 END ;
-SQLSTR
+SQL
 		);
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_Document` AFTER UPDATE ON `tbl_MHA_Document` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -547,10 +547,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_Document` AFTER UPDATE ON `tbl_MHA_Documen
          , atlInfo   = JSON_OBJECT("docID", OLD.docID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_Kanoon` AFTER UPDATE ON `tbl_MHA_Kanoon` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -577,10 +577,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_Kanoon` AFTER UPDATE ON `tbl_MHA_Kanoon` F
          , atlInfo   = JSON_OBJECT("knnID", OLD.knnID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_MasterInsurer` AFTER UPDATE ON `tbl_MHA_MasterInsurer` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -600,10 +600,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_MasterInsurer` AFTER UPDATE ON `tbl_MHA_Ma
          , atlInfo   = JSON_OBJECT("minsID", OLD.minsID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_MasterInsurerType` AFTER UPDATE ON `tbl_MHA_MasterInsurerType` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -624,10 +624,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_MasterInsurerType` AFTER UPDATE ON `tbl_MH
          , atlInfo   = JSON_OBJECT("minstypID", OLD.minstypID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_Member` AFTER UPDATE ON `tbl_MHA_Member` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -652,10 +652,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_Member` AFTER UPDATE ON `tbl_MHA_Member` F
          , atlInfo   = JSON_OBJECT("mbrUserID", OLD.mbrUserID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberMasterInsDoc` AFTER UPDATE ON `tbl_MHA_MemberMasterInsDoc` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -677,10 +677,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberMasterInsDoc` AFTER UPDATE ON `tbl_M
          , atlInfo   = JSON_OBJECT("mbrminsdocID", OLD.mbrminsdocID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberMasterInsDocHistory` AFTER UPDATE ON `tbl_MHA_MemberMasterInsDocHistory` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -700,10 +700,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberMasterInsDocHistory` AFTER UPDATE ON
          , atlInfo   = JSON_OBJECT("mbrminsdochstID", OLD.mbrminsdochstID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberMasterInsuranceHistory` AFTER UPDATE ON `tbl_MHA_MemberMasterInsuranceHistory` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -730,10 +730,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberMasterInsuranceHistory` AFTER UPDATE
          , atlInfo   = JSON_OBJECT("mbrminshstID", OLD.mbrminshstID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberMembership` AFTER UPDATE ON `tbl_MHA_MemberMembership` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -756,10 +756,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberMembership` AFTER UPDATE ON `tbl_MHA
          , atlInfo   = JSON_OBJECT("mbrshpID", OLD.mbrshpID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_Membership` AFTER UPDATE ON `tbl_MHA_Membership` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -781,10 +781,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_Membership` AFTER UPDATE ON `tbl_MHA_Membe
          , atlInfo   = JSON_OBJECT("mshpID", OLD.mshpID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberSponsorship` AFTER UPDATE ON `tbl_MHA_MemberSponsorship` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -815,10 +815,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberSponsorship` AFTER UPDATE ON `tbl_MH
          , atlInfo   = JSON_OBJECT("mbrspsID", OLD.mbrspsID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberSupplementaryInsDoc` AFTER UPDATE ON `tbl_MHA_MemberSupplementaryInsDoc` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -841,10 +841,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberSupplementaryInsDoc` AFTER UPDATE ON
          , atlInfo   = JSON_OBJECT("mbrsinsdocID", OLD.mbrsinsdocID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberSupplementaryInsDocHistory` AFTER UPDATE ON `tbl_MHA_MemberSupplementaryInsDocHistory` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -864,10 +864,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_MemberSupplementaryInsDocHistory` AFTER UP
          , atlInfo   = JSON_OBJECT("mbrsinsdochstID", OLD.mbrsinsdochstID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_Member_Document` AFTER UPDATE ON `tbl_MHA_Member_Document` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -888,10 +888,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_Member_Document` AFTER UPDATE ON `tbl_MHA_
          , atlInfo   = JSON_OBJECT("mbrdocID", OLD.mbrdocID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_Member_Kanoon` AFTER UPDATE ON `tbl_MHA_Member_Kanoon` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -913,10 +913,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_Member_Kanoon` AFTER UPDATE ON `tbl_MHA_Me
          , atlInfo   = JSON_OBJECT("mbrknnID", OLD.mbrknnID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_Member_Specialty` AFTER UPDATE ON `tbl_MHA_Member_Specialty` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -935,10 +935,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_Member_Specialty` AFTER UPDATE ON `tbl_MHA
          , atlInfo   = JSON_OBJECT("mbrspcMemberID", OLD.mbrspcMemberID, "mbrspcSpecialtyID", OLD.mbrspcSpecialtyID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_Specialty` AFTER UPDATE ON `tbl_MHA_Specialty` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -964,10 +964,10 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_Specialty` AFTER UPDATE ON `tbl_MHA_Specia
          , atlInfo   = JSON_OBJECT("spcID", OLD.spcID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_updatelog_tbl_MHA_SupplementaryInsurer` AFTER UPDATE ON `tbl_MHA_SupplementaryInsurer` FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -987,7 +987,7 @@ CREATE TRIGGER `trg_updatelog_tbl_MHA_SupplementaryInsurer` AFTER UPDATE ON `tbl
          , atlInfo   = JSON_OBJECT("sinsID", OLD.sinsID, "old", Changes);
   END IF;
 END ;
-SQLSTR
+SQL
     );
 	}
 

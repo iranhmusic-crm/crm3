@@ -18,29 +18,29 @@ class m230728_152547_mha_merge_History_tables_to_master_field_asjson extends Mig
         $this->execute("DROP TRIGGER IF EXISTS `trg_updatelog_tbl_MHA_MemberMasterInsDocHistory`;");
         $this->execute("DROP TRIGGER IF EXISTS `trg_updatelog_tbl_MHA_MemberSupplementaryInsDocHistory`;");
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 DELETE
     FROM tbl_SYS_ActionLogs
     WHERE atlTarget IN ('tbl_MHA_MemberMasterInsDocHistory', 'tbl_MHA_MemberSupplementaryInsDoc')
 ;
-SQLSTR
+SQL
         );
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_MemberMasterInsDoc`
     ADD COLUMN `mbrminsdocHistory` JSON NULL AFTER `mbrminsdocDocDate`;
-SQLSTR
+SQL
         );
         $this->alterColumn('tbl_MHA_MemberMasterInsDoc', 'mbrminsdocHistory', $this->json());
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_MemberSupplementaryInsDoc`
     ADD COLUMN `mbrsinsdocHistory` JSON NULL AFTER `mbrsinsdocDocDate`;
-SQLSTR
+SQL
         );
         $this->alterColumn('tbl_MHA_MemberSupplementaryInsDoc', 'mbrsinsdocHistory', $this->json());
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
         UPDATE tbl_MHA_MemberMasterInsDoc
     INNER JOIN (
         SELECT mbrminsdochstMasterInsDocID
@@ -55,10 +55,10 @@ SQLSTR
                ) t1
             ON t1.mbrminsdochstMasterInsDocID = tbl_MHA_MemberMasterInsDoc.mbrminsdocID
            SET mbrminsdocHistory = t1.history
-SQLSTR
+SQL
         );
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
         UPDATE tbl_MHA_MemberSupplementaryInsDoc
     INNER JOIN (
         SELECT mbrsinsdochstSupplementaryInsDocID
@@ -73,11 +73,11 @@ SQLSTR
                ) t1
             ON t1.mbrsinsdochstSupplementaryInsDocID = tbl_MHA_MemberSupplementaryInsDoc.mbrsinsdocID
            SET mbrsinsdocHistory = t1.history
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_MemberMasterInsDoc_before_insert`;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_MemberMasterInsDoc_before_insert` BEFORE INSERT ON `tbl_MHA_MemberMasterInsDoc` FOR EACH ROW BEGIN
     SET NEW.mbrminsdocHistory = JSON_ARRAY(
         JSON_OBJECT(
@@ -86,11 +86,11 @@ CREATE TRIGGER `trg_tbl_MHA_MemberMasterInsDoc_before_insert` BEFORE INSERT ON `
         )
     );
 END
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_MemberMasterInsDoc_before_update`;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_MemberMasterInsDoc_before_update` BEFORE UPDATE ON `tbl_MHA_MemberMasterInsDoc` FOR EACH ROW BEGIN
     IF IFNULL(NEW.mbrminsdocStatus, '') != IFNULL(OLD.mbrminsdocStatus, '')
     THEN
@@ -102,11 +102,11 @@ CREATE TRIGGER `trg_tbl_MHA_MemberMasterInsDoc_before_update` BEFORE UPDATE ON `
         );
     END IF;
 END
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_MemberSupplementaryInsDoc_before_insert`;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_MemberSupplementaryInsDoc_before_insert` BEFORE INSERT ON `tbl_MHA_MemberSupplementaryInsDoc` FOR EACH ROW BEGIN
     SET NEW.mbrsinsdocHistory = JSON_ARRAY(
         JSON_OBJECT(
@@ -115,11 +115,11 @@ CREATE TRIGGER `trg_tbl_MHA_MemberSupplementaryInsDoc_before_insert` BEFORE INSE
         )
     );
 END
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_MemberSupplementaryInsDoc_before_update`;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_MemberSupplementaryInsDoc_before_update` BEFORE UPDATE ON `tbl_MHA_MemberSupplementaryInsDoc` FOR EACH ROW BEGIN
     IF IFNULL(NEW.mbrsinsdocStatus, '') != IFNULL(OLD.mbrsinsdocStatus, '')
     THEN
@@ -131,27 +131,27 @@ CREATE TRIGGER `trg_tbl_MHA_MemberSupplementaryInsDoc_before_update` BEFORE UPDA
         );
     END IF;
 END
-SQLSTR
+SQL
         );
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_MemberMasterInsDocHistory`
 	DROP FOREIGN KEY `FK_tbl_MHA_MemberMasterInsDocHistory_tbl_AAA_User_creator`,
 	DROP FOREIGN KEY `FK_tbl_MHA_MemberMasterInsDocHistory_tbl_MHA_MemberMasterInsDoc`;
-SQLSTR
+SQL
         );
         $this->execute("RENAME TABLE `tbl_MHA_MemberMasterInsDocHistory` TO `DELETED_tbl_MHA_MemberMasterInsDocHistory`;");
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_MemberSupplementaryInsDocHistory`
 	DROP FOREIGN KEY `FK_tbl_MHA_MemberSuppInsDocHistory_tbl_AAA_User_creator`,
 	DROP FOREIGN KEY `FK_tbl_MHA_MemberSuppInsDocHistory_tbl_MHA_MemberSuppInsDoc`;
-SQLSTR
+SQL
         );
         $this->execute("RENAME TABLE `tbl_MHA_MemberSupplementaryInsDocHistory` TO `DELETED_tbl_MHA_MemberSupplementaryInsDocHistory`;");
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_updatelog_tbl_MHA_MemberMasterInsDoc`;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_MemberMasterInsDoc AFTER UPDATE ON tbl_MHA_MemberMasterInsDoc FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -175,11 +175,11 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_MemberMasterInsDoc AFTER UPDATE ON tbl_MHA_
           , atlInfo   = JSON_OBJECT("mbrminsdocID", OLD.mbrminsdocID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_updatelog_tbl_MHA_MemberSupplementaryInsDoc`;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_MemberSupplementaryInsDoc AFTER UPDATE ON tbl_MHA_MemberSupplementaryInsDoc FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -204,7 +204,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_MemberSupplementaryInsDoc AFTER UPDATE ON t
           , atlInfo   = JSON_OBJECT("mbrsinsdocID", OLD.mbrsinsdocID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
         );
 
     }

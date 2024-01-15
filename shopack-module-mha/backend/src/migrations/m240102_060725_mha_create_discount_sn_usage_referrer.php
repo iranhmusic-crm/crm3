@@ -5,16 +5,19 @@
 
 use shopack\base\common\db\Migration;
 
-class m240102_060725_mha_create_discount_group_sn_usage_referrer extends Migration
+class m240102_060725_mha_create_discount_sn_usage_referrer extends Migration
 {
 	public function safeUp()
 	{
 		//group
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_DiscountGroup` (
 	`dscgrpID` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`dscgrpUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`dscgrpName` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`dscgrpComputeType` CHAR(1) NOT NULL DEFAULT 'X' COMMENT 'S:Sum, N:Min, X:Max' COLLATE 'utf8mb4_unicode_ci',
+	`dscgrpMaxAmount` DOUBLE UNSIGNED NULL DEFAULT NULL,
+	`dscgrpMaxType` CHAR(1) NULL DEFAULT '%' COMMENT '%:Percent, $:Value' COLLATE 'utf8mb4_unicode_ci',
 	`dscgrpCreatedAt` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
 	`dscgrpCreatedBy` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
 	`dscgrpUpdatedAt` DATETIME NULL DEFAULT NULL,
@@ -29,23 +32,23 @@ CREATE TABLE `tbl_MHA_Accounting_DiscountGroup` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
   ADD COLUMN `dscDiscountGroupID` SMALLINT UNSIGNED NULL AFTER `dscType`;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	ADD CONSTRAINT `FK_tbl_MHA_Accounting_Discount_tbl_MHA_Accounting_DiscountGroup` FOREIGN KEY (`dscDiscountGroupID`) REFERENCES `tbl_MHA_Accounting_DiscountGroup` (`dscgrpID`) ON UPDATE NO ACTION ON DELETE NO ACTION;
-SQLSTR
+SQL
 		);
 
 		//serial
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_DiscountSerial` (
 	`dscsnID` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`dscsnDiscountID` INT(10) UNSIGNED NOT NULL,
@@ -58,11 +61,11 @@ CREATE TABLE `tbl_MHA_Accounting_DiscountSerial` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
 		);
 
 		//usage
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_DiscountUsage` (
 	`dscusgID` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`dscusgUserID` BIGINT(20) UNSIGNED NOT NULL,
@@ -82,12 +85,12 @@ CREATE TABLE `tbl_MHA_Accounting_DiscountUsage` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 
-SQLSTR
+SQL
 		);
 
 
@@ -96,15 +99,15 @@ SQLSTR
 
 
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	ADD COLUMN `dscReferrers` JSON NULL DEFAULT NULL AFTER `dscTargetSaleableIDs`;
-SQLSTR
+SQL
 	);
 		$this->alterColumn('tbl_MHA_Accounting_Discount', 'dscReferrers', $this->json());
 
 		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_Discount;");
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Discount AFTER UPDATE ON tbl_MHA_Accounting_Discount FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -150,14 +153,14 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Discount AFTER UPDATE ON tbl_MHA
 		  , atlInfo   = JSON_OBJECT("dscID", OLD.dscID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
 		);
 
 	}
 
 	public function safeDown()
 	{
-		echo "m240102_060725_mha_create_discount_group_sn_usage_referrer cannot be reverted.\n";
+		echo "m240102_060725_mha_create_discount_sn_usage_referrer cannot be reverted.\n";
 		return false;
 	}
 

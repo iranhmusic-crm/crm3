@@ -9,20 +9,20 @@ class m231219_151044_mha_convert_uasVoucherItemInfo extends Migration
 {
   public function safeUp()
   {
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_UserAsset`
   CHANGE COLUMN `uasVoucherItemInfo` `OLD_uasVoucherItemInfo` JSON NULL DEFAULT NULL AFTER `uasVoucherID`;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_UserAsset`
   ADD COLUMN `uasVoucherItemInfo` JSON NULL DEFAULT NULL AFTER `OLD_uasVoucherItemInfo`;
-SQLSTR
+SQL
     );
     $this->alterColumn('tbl_MHA_Accounting_UserAsset', 'uasVoucherItemInfo', $this->json());
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 UPDATE tbl_MHA_Accounting_UserAsset
   INNER JOIN (
       SELECT uasID
@@ -79,7 +79,7 @@ UPDATE tbl_MHA_Accounting_UserAsset
          SET uasVoucherItemInfo = tmpJson.NEW_uasVoucherItemInfo
            , uasDiscountAmount = CASE WHEN tmpJson.discount IS NULL OR CONCAT(tmpJson.discount, '') IN ('', '0') THEN NULL ELSE tmpJson.discount END
 ;
-SQLSTR
+SQL
     );
 
   }

@@ -104,13 +104,25 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
             ];
 
-            if ($model->dscType == enuDiscountType::Coupon) {
+            if ($model->dscType == enuDiscountType::System) {
+              $attributes = array_merge($attributes, [
+                [
+                  'attribute' => 'dscDiscountGroupID',
+                  'value' => $model->discountGroup->dscgrpName ?? null,
+                ],
+              ]);
+            } else if ($model->dscType == enuDiscountType::Coupon) {
               $attributes = array_merge($attributes, [
                 'dscCodeString',
                 'dscCodeHasSerial:boolean',
-                'dscCodeSerialCount',
-                'dscCodeSerialLength',
               ]);
+
+              if ($model->dscCodeHasSerial) {
+                $attributes = array_merge($attributes, [
+                  'dscCodeSerialCount',
+                  'dscCodeSerialLength',
+                ]);
+              }
             }
 
             $attributes = array_merge($attributes, [
@@ -229,14 +241,18 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
       <?php $tabs->endTabPage(); ?>
 
-      <?php $tabs->newAjaxTabPage(Yii::t('aaa', 'Serials'), [
-          '/mha/accounting/discount-serial/index',
-          'dscsnDiscountID' => $model->dscID,
-        ],
-        'discount-serials'
-      ); ?>
+      <?php
+        if (($model->dscType == enuDiscountType::Coupon) && $model->dscCodeHasSerial) {
+          $tabs->newAjaxTabPage(Yii::t('aaa', 'Discount Serials'), [
+              '/mha/accounting/discount-serial/index',
+              'dscsnDiscountID' => $model->dscID,
+            ],
+            'discount-serials'
+          );
+        }
+      ?>
 
-      <?php $tabs->newAjaxTabPage(Yii::t('aaa', 'Usages'), [
+      <?php $tabs->newAjaxTabPage(Yii::t('aaa', 'Discount Usages'), [
           '/mha/accounting/discount-usage/index',
           'dscusgDiscountID' => $model->dscID,
         ],

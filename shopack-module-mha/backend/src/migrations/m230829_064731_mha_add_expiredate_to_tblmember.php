@@ -12,13 +12,13 @@ class m230829_064731_mha_add_expiredate_to_tblmember extends Migration
     {
         $fnGetConst = function($value) { return $value; };
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member`
     ADD COLUMN `mbrExpireDate` DATE NULL DEFAULT NULL AFTER `mbrAcceptedAt`;
-SQLSTR
+SQL
         );
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 UPDATE tbl_MHA_Member
   INNER JOIN (
       SELECT mbrshpMemberID
@@ -33,12 +33,12 @@ UPDATE tbl_MHA_Member
           OR mbrExpireDate < tMax._mbrshpEndDate
              )
 ;
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_MemberMembership_after_insert`;");
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_MemberMembership_after_insert` AFTER INSERT ON `tbl_MHA_MemberMembership` FOR EACH ROW BEGIN
 	DECLARE maxDate DATE DEFAULT NULL;
 
@@ -78,12 +78,12 @@ CREATE TRIGGER `trg_tbl_MHA_MemberMembership_after_insert` AFTER INSERT ON `tbl_
     ;
 */
 END
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_MemberMembership_after_update`;");
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_MemberMembership_after_update` AFTER UPDATE ON `tbl_MHA_MemberMembership` FOR EACH ROW BEGIN
 	DECLARE maxDate DATE DEFAULT NULL;
 
@@ -123,7 +123,7 @@ CREATE TRIGGER `trg_tbl_MHA_MemberMembership_after_update` AFTER UPDATE ON `tbl_
     ;
 */
 END
-SQLSTR
+SQL
         );
 
     }

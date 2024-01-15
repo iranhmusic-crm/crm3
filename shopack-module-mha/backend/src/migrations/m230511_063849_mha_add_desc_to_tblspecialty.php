@@ -12,25 +12,25 @@ class m230511_063849_mha_add_desc_to_tblspecialty extends Migration
 {
 	public function safeUp()
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Specialty`
 	ADD COLUMN `spcDescFieldType` VARCHAR(64) NULL DEFAULT NULL AFTER `spcImage`,
 	ADD COLUMN `spcDescFieldLabel` VARCHAR(64) NULL DEFAULT NULL AFTER `spcDescFieldType`;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 UPDATE tbl_MHA_Member_Specialty
 	SET mbrspcDesc = JSON_OBJECT('desc', mbrspcDesc)
 	WHERE mbrspcDesc IS NOT NULL
 	;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member_Specialty`
 	CHANGE COLUMN `mbrspcDesc` `mbrspcDesc` JSON NULL AFTER `mbrspcSpecialtyID`;
-SQLSTR
+SQL
 		);
 		$this->alterColumn('tbl_MHA_Member_Specialty', 'mbrspcDesc', $this->json());
 

@@ -9,7 +9,7 @@ class m230910_064534_mha_create_accounting extends Migration
 {
   public function safeUp()
   {
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_Unit` (
 	`untID` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`untUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -29,11 +29,11 @@ CREATE TABLE `tbl_MHA_Accounting_Unit` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
     );
     $this->alterColumn('tbl_MHA_Accounting_Unit', 'untI18NData', $this->json());
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_Coupon` (
 	`cpnID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`cpnUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -73,12 +73,12 @@ CREATE TABLE `tbl_MHA_Accounting_Coupon` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
     );
     $this->alterColumn('tbl_MHA_Accounting_Coupon', 'cpnSaleableBasedMultiplier', $this->json());
     $this->alterColumn('tbl_MHA_Accounting_Coupon', 'cpnI18NData', $this->json());
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_Product` (
 	`prdID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`prdUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -125,12 +125,12 @@ CREATE TABLE `tbl_MHA_Accounting_Product` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
     );
     $this->alterColumn('tbl_MHA_Accounting_Product', 'prdPrivs', $this->json());
     $this->alterColumn('tbl_MHA_Accounting_Product', 'prdI18NData', $this->json());
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_Saleable` (
 	`slbID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`slbUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -172,13 +172,13 @@ CREATE TABLE `tbl_MHA_Accounting_Saleable` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
     );
     $this->alterColumn('tbl_MHA_Accounting_Saleable', 'slbPrivs', $this->json());
     $this->alterColumn('tbl_MHA_Accounting_Saleable', 'slbAdditives', $this->json());
     $this->alterColumn('tbl_MHA_Accounting_Saleable', 'slbI18NData', $this->json());
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_SaleableFile` (
 	`slfID` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`slfSaleableID` INT(10) UNSIGNED NOT NULL,
@@ -204,10 +204,10 @@ CREATE TABLE `tbl_MHA_Accounting_SaleableFile` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_UserAsset` (
 	`uasID` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`uasUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -247,11 +247,11 @@ CREATE TABLE `tbl_MHA_Accounting_UserAsset` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
     );
     $this->alterColumn('tbl_MHA_Accounting_UserAsset', 'uasVoucherItemInfo', $this->json());
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_UserAsset_File` (
 	`uasuflID` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`uasuflUserAssetID` BIGINT(20) UNSIGNED NOT NULL,
@@ -275,11 +275,11 @@ COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
 
-SQLSTR
+SQL
     );
 
 /*
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_AssetUsage` (
 	`usgUserAssetID` BIGINT(20) UNSIGNED NOT NULL,
 	`usgResolution` CHAR(1) NOT NULL DEFAULT 'T' COMMENT 'T:Total, Y:Year, M:Month, D:Day, H:Hour, I:Minute' COLLATE 'utf8mb4_unicode_ci',
@@ -300,20 +300,20 @@ CREATE TABLE `tbl_MHA_Accounting_AssetUsage` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
     );
 */
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 INSERT IGNORE INTO tbl_MHA_Accounting_Unit(untID, untUUID, untName, untI18NData)
     VALUES
         (1, UUID(), 'سال', '{"en":{"untName":"Year"}}'),
         (2, UUID(), 'دفعه', '{"en":{"untName":"Times"}}')
     ;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_Accounting_Saleable_before_insert` BEFORE INSERT ON `tbl_MHA_Accounting_Saleable` FOR EACH ROW BEGIN
 	IF NEW.slbCode IS NULL THEN
 		SET NEW.slbCode = UUID();
@@ -323,35 +323,35 @@ CREATE TRIGGER `trg_tbl_MHA_Accounting_Saleable_before_insert` BEFORE INSERT ON 
 		SET NEW.slbAvailableFromDate = NOW();
 	END IF;
 END
-SQLSTR
+SQL
     );
 
 		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Membership;");
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 RENAME TABLE `tbl_MHA_Membership` TO `DELETED_tbl_MHA_Membership`;
-SQLSTR
+SQL
     );
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_MemberMembership`
 	DROP FOREIGN KEY `FK_tbl_MHA_MemberMembership_tbl_MHA_Membership`,
 	DROP FOREIGN KEY `FK_tbl_MHA_MemberMembership_tbl_MHA_Member`,
 	DROP FOREIGN KEY `FK_tbl_MHA_MemberMembership_tbl_AAA_Voucher`;
-SQLSTR
+SQL
     );
 
     $this->execute("DROP TRIGGER IF EXISTS trg_tbl_MHA_MemberMembership_after_insert;");
     $this->execute("DROP TRIGGER IF EXISTS trg_tbl_MHA_MemberMembership_after_update;");
 		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_MemberMembership;");
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 RENAME TABLE `tbl_MHA_MemberMembership` TO `DELETED_tbl_MHA_MemberMembership`;
-SQLSTR
+SQL
     );
 
     $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_Unit;");
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Unit AFTER UPDATE ON tbl_MHA_Accounting_Unit FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -372,11 +372,11 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Unit AFTER UPDATE ON tbl_MHA_Acc
           , atlInfo   = JSON_OBJECT("untID", OLD.untID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
     $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_Coupon;");
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Coupon AFTER UPDATE ON tbl_MHA_Accounting_Coupon FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -411,11 +411,11 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Coupon AFTER UPDATE ON tbl_MHA_A
           , atlInfo   = JSON_OBJECT("cpnID", OLD.cpnID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
     $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_Product;");
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Product AFTER UPDATE ON tbl_MHA_Accounting_Product FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -454,11 +454,11 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Product AFTER UPDATE ON tbl_MHA_
           , atlInfo   = JSON_OBJECT("prdID", OLD.prdID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
     $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_Saleable;");
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Saleable AFTER UPDATE ON tbl_MHA_Accounting_Saleable FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -494,11 +494,11 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Saleable AFTER UPDATE ON tbl_MHA
           , atlInfo   = JSON_OBJECT("slbID", OLD.slbID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
     $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_SaleableFile;");
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_SaleableFile AFTER UPDATE ON tbl_MHA_Accounting_SaleableFile FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -525,11 +525,11 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_SaleableFile AFTER UPDATE ON tbl
           , atlInfo   = JSON_OBJECT("slfID", OLD.slfID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
     $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_UserAsset;");
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_UserAsset AFTER UPDATE ON tbl_MHA_Accounting_UserAsset FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -563,11 +563,11 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_UserAsset AFTER UPDATE ON tbl_MH
           , atlInfo   = JSON_OBJECT("uasID", OLD.uasID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
     $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_UserAsset_File;");
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_UserAsset_File AFTER UPDATE ON tbl_MHA_Accounting_UserAsset_File FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -588,13 +588,13 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_UserAsset_File AFTER UPDATE ON t
           , atlInfo   = JSON_OBJECT("uasuflID", OLD.uasuflID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
 //     tbl_MHA_Accounting_AssetUsage
 //     $this->execute("XXXXXXXXXXX");
-//     $this->execute(<<<SQLSTR
-// SQLSTR
+//     $this->execute(<<<SQL
+// SQL
 //     );
 
   }

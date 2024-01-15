@@ -318,7 +318,7 @@ class MigrateDataController extends Controller
       ->getTableSchema('tbl_convert');
 
     if ($tableSchema === null) {
-      $qry =<<<SQLSTR
+      $qry =<<<SQL
 CREATE TABLE `tbl_convert` (
 	`tableName` VARCHAR(256) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`lastID` BIGINT(20) UNSIGNED NOT NULL,
@@ -329,7 +329,7 @@ CREATE TABLE `tbl_convert` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR;
+SQL;
 
       $this->queryExecute($qry, __FUNCTION__, __LINE__);
       return [];

@@ -9,16 +9,16 @@ class m230816_100154_mha_add_comment_and_history_to_member_document extends Migr
 {
     public function safeUp()
     {
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member_Document`
     ADD COLUMN `mbrdocComment` TEXT NULL AFTER `mbrdocFileID`,
     ADD COLUMN `mbrdocHistory` JSON NULL AFTER `mbrdocComment`;
-SQLSTR
+SQL
         );
         $this->alterColumn('tbl_MHA_Member_Document', 'mbrdocHistory', $this->json());
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_Member_Document_before_insert`;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_Member_Document_before_insert` BEFORE INSERT ON `tbl_MHA_Member_Document` FOR EACH ROW BEGIN
     DECLARE Changes JSON;
 
@@ -33,11 +33,11 @@ CREATE TRIGGER `trg_tbl_MHA_Member_Document_before_insert` BEFORE INSERT ON `tbl
 
     SET NEW.mbrdocHistory = JSON_MERGE_PRESERVE(COALESCE(NEW.mbrdocHistory, '[]'), Changes);
 END
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_Member_Document_before_update`;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_Member_Document_before_update` BEFORE UPDATE ON `tbl_MHA_Member_Document` FOR EACH ROW BEGIN
     DECLARE Changes JSON;
 
@@ -57,11 +57,11 @@ CREATE TRIGGER `trg_tbl_MHA_Member_Document_before_update` BEFORE UPDATE ON `tbl
             Changes);
     END IF;
 END
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Member_Document;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Member_Document AFTER UPDATE ON tbl_MHA_Member_Document FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -87,7 +87,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Member_Document AFTER UPDATE ON tbl_MHA_Mem
           , atlInfo   = JSON_OBJECT("mbrdocID", OLD.mbrdocID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
         );
 
     }

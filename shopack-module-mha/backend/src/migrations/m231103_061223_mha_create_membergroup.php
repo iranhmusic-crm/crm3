@@ -9,7 +9,7 @@ class m231103_061223_mha_create_membergroup extends Migration
 {
 	public function safeUp()
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_MemberGroup` (
 	`mgpID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`mgpUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -34,11 +34,11 @@ CREATE TABLE `tbl_MHA_MemberGroup` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
     );
     $this->alterColumn('tbl_MHA_MemberGroup', 'mgpI18NData', $this->json());
 
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Member_MemberGroup` (
 	`mbrmgpID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`mbrmgpUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -62,11 +62,11 @@ CREATE TABLE `tbl_MHA_Member_MemberGroup` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
     );
 
     $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_MemberGroup;");
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_MemberGroup AFTER UPDATE ON tbl_MHA_MemberGroup FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -94,11 +94,11 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_MemberGroup AFTER UPDATE ON tbl_MHA_MemberG
           , atlInfo   = JSON_OBJECT("mgpID", OLD.mgpID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
     $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Member_MemberGroup;");
-    $this->execute(<<<SQLSTR
+    $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Member_MemberGroup AFTER UPDATE ON tbl_MHA_Member_MemberGroup FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -121,7 +121,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Member_MemberGroup AFTER UPDATE ON tbl_MHA_
           , atlInfo   = JSON_OBJECT("mbrmgpID", OLD.mbrmgpID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
 	}
