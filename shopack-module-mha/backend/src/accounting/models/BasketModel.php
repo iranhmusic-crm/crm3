@@ -15,6 +15,7 @@ class BasketModel extends BaseBasketModel
 	public $productModelClass = ProductModel::class;
 	public $saleableModelClass = SaleableModel::class;
 	public $discountModelClass = DiscountModel::class;
+	public $discountUsageModelClass = DiscountUsageModel::class;
 	public $userAssetModelClass = UserAssetModel::class;
 
 	//override:
