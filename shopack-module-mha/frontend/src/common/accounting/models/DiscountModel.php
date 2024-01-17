@@ -26,7 +26,6 @@ class DiscountModel extends RestClientActiveRecord
 			// 'dscUUID'
 			'dscName'                    => Yii::t('app', 'Name'),
 			'dscType'                    => Yii::t('aaa', 'Discount Type'),
-			'dscDiscountGroupID'         => Yii::t('aaa', 'Discount Group'),
 
 			'dscCodeString'              => Yii::t('aaa', 'Discount Code'),
 			'dscCodeHasSerial'           => Yii::t('aaa', 'Code Has Serial'),
@@ -66,12 +65,6 @@ class DiscountModel extends RestClientActiveRecord
 			'dscTargetMemberGroupIDs'    => Yii::t('mha', 'Member Groups'),
 			'dscTargetKanoonIDs'         => Yii::t('mha', 'Kanoons'),
 			'dscTargetProductMhaTypes'   => Yii::t('mha', 'Mha Product Type'),
-		];
-	}
-	public function attributeHints()
-	{
-		return [
-			'dscDiscountGroupID' => 'برای محاسبه تخفیف سیستمی، از تعاریف موجود در هر گروه تخفیف، فقط بیشترین آن در نظر گرفته خواهد شد. تخفیفات سیستمی بدون گروه شامل این موضوع نبوده و تمام آنها همزمان موثر خواهند بود.',
 		];
 	}
 

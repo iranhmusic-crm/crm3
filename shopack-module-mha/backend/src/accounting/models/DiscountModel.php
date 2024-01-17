@@ -55,7 +55,6 @@ class DiscountModel extends MhaActiveRecord
 'dscUUID',
 'dscName',
 'dscType',
-'dscDiscountGroupID',
 'dscCodeString',
 'dscCodeHasSerial',
 'dscCodeSerialCount',

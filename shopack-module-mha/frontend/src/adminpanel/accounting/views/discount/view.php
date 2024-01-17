@@ -100,18 +100,14 @@ $this->params['breadcrumbs'][] = $this->title;
               'dscName',
               [
                 'attribute' => 'dscType',
-                'value' => enuDiscountType::getLabel($model->dscType),
+                'format' => 'raw',
+                'value' => enuDiscountType::getIcon($model->dscType)
+                  . ' '
+                  . enuDiscountType::getLabel($model->dscType),
               ],
             ];
 
-            if ($model->dscType == enuDiscountType::System) {
-              $attributes = array_merge($attributes, [
-                [
-                  'attribute' => 'dscDiscountGroupID',
-                  'value' => $model->discountGroup->dscgrpName ?? null,
-                ],
-              ]);
-            } else if ($model->dscType == enuDiscountType::Coupon) {
+            if ($model->dscType == enuDiscountType::Coupon) {
               $attributes = array_merge($attributes, [
                 'dscCodeString',
                 'dscCodeHasSerial:boolean',
@@ -206,7 +202,11 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
               [
                 'attribute' => 'dscAmount',
-                'value' => Yii::$app->formatter->asDecimal($model->dscAmount)
+                'format' => 'raw',
+                'value' => "<span class='d-inline-block dir-ltr'>"
+                  . ($model->dscType == enuDiscountType::SystemIncrease ? '+' : '')
+                  . Yii::$app->formatter->asDecimal($model->dscAmount)
+                  . "</span>"
                   . ' '
                   . ($model->dscAmountType == enuAmountType::Percent ? 'درصد' : 'تومان')
               ],

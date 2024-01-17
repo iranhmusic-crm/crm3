@@ -9,41 +9,9 @@ class m240102_060725_mha_create_discount_sn_usage_referrer extends Migration
 {
 	public function safeUp()
 	{
-		//group
-		$this->execute(<<<SQL
-CREATE TABLE `tbl_MHA_Accounting_DiscountGroup` (
-	`dscgrpID` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-	`dscgrpUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
-	`dscgrpName` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_unicode_ci',
-	`dscgrpComputeType` CHAR(1) NOT NULL DEFAULT 'X' COMMENT 'S:Sum, N:Min, X:Max' COLLATE 'utf8mb4_unicode_ci',
-	`dscgrpMaxAmount` DOUBLE UNSIGNED NULL DEFAULT NULL,
-	`dscgrpMaxType` CHAR(1) NULL DEFAULT '%' COMMENT '%:Percent, $:Value' COLLATE 'utf8mb4_unicode_ci',
-	`dscgrpCreatedAt` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-	`dscgrpCreatedBy` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-	`dscgrpUpdatedAt` DATETIME NULL DEFAULT NULL,
-	`dscgrpUpdatedBy` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-	`dscgrpRemovedAt` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-	`dscgrpRemovedBy` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-	PRIMARY KEY (`dscgrpID`) USING BTREE,
-	UNIQUE INDEX `dscgrpUUID` (`dscgrpUUID`) USING BTREE,
-	UNIQUE INDEX `dscgrpName` (`dscgrpName`) USING BTREE,
-	INDEX `dscgrpCreatedAt` (`dscgrpCreatedAt`) USING BTREE
-)
-COLLATE='utf8mb4_unicode_ci'
-ENGINE=InnoDB
-;
-SQL
-		);
-
 		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
-  ADD COLUMN `dscDiscountGroupID` SMALLINT UNSIGNED NULL AFTER `dscType`;
-SQL
-		);
-
-		$this->execute(<<<SQL
-ALTER TABLE `tbl_MHA_Accounting_Discount`
-	ADD CONSTRAINT `FK_tbl_MHA_Accounting_Discount_tbl_MHA_Accounting_DiscountGroup` FOREIGN KEY (`dscDiscountGroupID`) REFERENCES `tbl_MHA_Accounting_DiscountGroup` (`dscgrpID`) ON UPDATE NO ACTION ON DELETE NO ACTION;
+	CHANGE COLUMN `dscType` `dscType` CHAR(1) NOT NULL DEFAULT 'C' COMMENT 'S:System, I:System Increase, C:Coupon' COLLATE 'utf8mb4_unicode_ci' AFTER `dscName`;
 SQL
 		);
 
@@ -126,7 +94,6 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Discount AFTER UPDATE ON tbl_MHA
   IF ISNULL(OLD.dscSaleableBasedMultiplier) != ISNULL(NEW.dscSaleableBasedMultiplier) OR OLD.dscSaleableBasedMultiplier != NEW.dscSaleableBasedMultiplier THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscSaleableBasedMultiplier", IF(ISNULL(OLD.dscSaleableBasedMultiplier), NULL, OLD.dscSaleableBasedMultiplier))); END IF;
   IF ISNULL(OLD.dscStatus) != ISNULL(NEW.dscStatus) OR OLD.dscStatus != NEW.dscStatus THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscStatus", IF(ISNULL(OLD.dscStatus), NULL, OLD.dscStatus))); END IF;
   IF ISNULL(OLD.dscTargetKanoonIDs) != ISNULL(NEW.dscTargetKanoonIDs) OR OLD.dscTargetKanoonIDs != NEW.dscTargetKanoonIDs THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscTargetKanoonIDs", IF(ISNULL(OLD.dscTargetKanoonIDs), NULL, OLD.dscTargetKanoonIDs))); END IF;
-  IF ISNULL(OLD.dscTargetMemberGroupIDs) != ISNULL(NEW.dscTargetMemberGroupIDs) OR OLD.dscTargetMemberGroupIDs != NEW.dscTargetMemberGroupIDs THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscTargetMemberGroupIDs", IF(ISNULL(OLD.dscTargetMemberGroupIDs), NULL, OLD.dscTargetMemberGroupIDs))); END IF;
   IF ISNULL(OLD.dscTargetProductIDs) != ISNULL(NEW.dscTargetProductIDs) OR OLD.dscTargetProductIDs != NEW.dscTargetProductIDs THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscTargetProductIDs", IF(ISNULL(OLD.dscTargetProductIDs), NULL, OLD.dscTargetProductIDs))); END IF;
   IF ISNULL(OLD.dscTargetProductMhaTypes) != ISNULL(NEW.dscTargetProductMhaTypes) OR OLD.dscTargetProductMhaTypes != NEW.dscTargetProductMhaTypes THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscTargetProductMhaTypes", IF(ISNULL(OLD.dscTargetProductMhaTypes), NULL, OLD.dscTargetProductMhaTypes))); END IF;
   IF ISNULL(OLD.dscTargetSaleableIDs) != ISNULL(NEW.dscTargetSaleableIDs) OR OLD.dscTargetSaleableIDs != NEW.dscTargetSaleableIDs THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscTargetSaleableIDs", IF(ISNULL(OLD.dscTargetSaleableIDs), NULL, OLD.dscTargetSaleableIDs))); END IF;

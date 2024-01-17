@@ -220,11 +220,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                   'url' => ['/mha/accounting/membership-card-product'],
                 ],
                 [
-                  'label' => Yii::t('aaa', 'Discount Groups'),
-                  'icon' => 'info-sign',
-                  'url' => ['/mha/accounting/discount-group'],
-                ],
-                [
                   'label' => Yii::t('aaa', 'Discounts'),
                   'icon' => 'info-sign',
                   'url' => ['/mha/accounting/discount'],

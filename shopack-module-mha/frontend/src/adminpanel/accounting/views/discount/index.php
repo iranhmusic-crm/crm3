@@ -53,24 +53,46 @@ $this->params['breadcrumbs'][] = $this->title;
           ],
           [
             'attribute' => 'dscType',
+            'format' => 'raw',
             'value' => function ($model, $key, $index, $widget) {
-              return enuDiscountType::getLabel($model->dscType);
-            },
-          ],
-          [
-            'attribute' => 'dscDiscountGroupID',
-            'value' => function ($model, $key, $index, $widget) {
-              return $model->discountGroup->dscgrpName ?? null;
+              return enuDiscountType::getIcon($model->dscType)
+                . ' '
+                . enuDiscountType::getLabel($model->dscType);
             },
           ],
           'dscCodeString',
           'dscCodeHasSerial:boolean',
           'dscCodeSerialCount:decimal',
-          'dscAmount:decimal',
           [
-            'attribute' => 'dscAmountType',
+            'attribute' => 'dscAmount',
+            'format' => 'raw',
             'value' => function ($model, $key, $index, $widget) {
-              return enuAmountType::getLabel($model->dscAmountType);
+              return "<span class='d-inline-block dir-ltr'>"
+                . ($model->dscType == enuDiscountType::SystemIncrease ? '+' : '')
+                . Yii::$app->formatter->asDecimal($model->dscAmount)
+                . "</span>"
+                . ' '
+                . ($model->dscAmountType == enuAmountType::Percent ? 'درصد' : 'تومان')
+              ;
+            },
+          ],
+          // [
+          //   'attribute' => 'dscAmountType',
+          //   'value' => function ($model, $key, $index, $widget) {
+          //     return enuAmountType::getLabel($model->dscAmountType);
+          //   },
+          // ],
+          [
+            'attribute' => 'dscMaxAmount',
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $widget) {
+              if (empty($model->dscMaxAmount))
+                return null;
+
+              return Yii::$app->formatter->asDecimal($model->dscMaxAmount)
+                . ' '
+                . ($model->dscAmountType == enuAmountType::Percent ? 'تومان' : 'درصد')
+              ;
             },
           ],
           [

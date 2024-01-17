@@ -21,7 +21,6 @@ use iranhmusic\shopack\mha\frontend\common\widgets\form\ProductChooseFormField;
 use iranhmusic\shopack\mha\frontend\common\widgets\form\SaleableChooseFormField;
 use iranhmusic\shopack\mha\frontend\common\widgets\form\KanoonChooseFormField;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
-use iranhmusic\shopack\mha\frontend\common\accounting\models\DiscountGroupModel;
 use shopack\base\common\helpers\ArrayHelper;
 
 // \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);
@@ -56,25 +55,6 @@ use shopack\base\common\helpers\ArrayHelper;
 				'type' => FormBuilder::FIELD_RADIOLIST,
 				'data' => enuDiscountType::listData(),
 				'widgetOptions' => ['inline' => true],
-			],
-			[
-				'dscDiscountGroupID',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => Select2::class,
-				'widgetOptions' => [
-					'data' => ArrayHelper::map(DiscountGroupModel::find()->noLimit()->asArray()->all(), 'dscgrpID', 'dscgrpName'),
-					'pluginOptions' => [
-						'allowClear' => true,
-					],
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-						'multiple' => false,
-					],
-				],
-				'visibleConditions' => [
-					'dscType' => enuDiscountType::System,
-				],
 			],
 			[
 				'dscCodeString',
