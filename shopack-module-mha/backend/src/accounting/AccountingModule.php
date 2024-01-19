@@ -11,6 +11,7 @@ use iranhmusic\shopack\mha\backend\accounting\models\SaleableModel;
 use iranhmusic\shopack\mha\backend\accounting\models\DiscountModel;
 use iranhmusic\shopack\mha\backend\accounting\models\DiscountUsageModel;
 use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
+use iranhmusic\shopack\mha\backend\accounting\models\BasketModel;
 
 class AccountingModule extends \shopack\base\backend\accounting\AccountingModule
 {
@@ -20,6 +21,7 @@ class AccountingModule extends \shopack\base\backend\accounting\AccountingModule
 	public $discountModelClass = DiscountModel::class;
 	public $discountUsageModelClass = DiscountUsageModel::class;
 	public $userAssetModelClass = UserAssetModel::class;
+	public $basketModelClass = BasketModel::class;
 
 	public function bootstrap($app)
 	{
