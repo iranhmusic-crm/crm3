@@ -11,13 +11,6 @@ use shopack\base\backend\accounting\models\BaseBasketModel;
 
 class BasketModel extends BaseBasketModel
 {
-	public $unitModelClass = UnitModel::class;
-	public $productModelClass = ProductModel::class;
-	public $saleableModelClass = SaleableModel::class;
-	public $discountModelClass = DiscountModel::class;
-	public $discountUsageModelClass = DiscountUsageModel::class;
-	public $userAssetModelClass = UserAssetModel::class;
-
 	//override:
 	protected function makeDesc($basketItem)
 	{

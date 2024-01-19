@@ -15,6 +15,18 @@ ALTER TABLE `tbl_MHA_Accounting_Discount`
 SQL
 		);
 
+		$this->execute(<<<SQL
+ALTER TABLE `tbl_MHA_Accounting_Discount`
+	DROP INDEX `dscType`;
+SQL
+		);
+
+		$this->execute(<<<SQL
+ALTER TABLE `tbl_MHA_Accounting_Discount`
+	ADD INDEX `dscType` (`dscType`);
+SQL
+		);
+
 		//serial
 		$this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Accounting_DiscountSerial` (

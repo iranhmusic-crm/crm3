@@ -41,6 +41,7 @@ class SaleableController extends BaseSaleableController
 		];
 	}
 
+/*
 	public function queryAugmentaters()
 	{
 		return [
@@ -64,5 +65,6 @@ class SaleableController extends BaseSaleableController
 			},
 		];
 	}
+*/
 
 }
