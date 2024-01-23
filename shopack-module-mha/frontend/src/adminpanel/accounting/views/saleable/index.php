@@ -55,10 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'discountsInfo',
             'format' => 'raw',
             'value' => function ($model, $key, $index, $widget) {
-              if (empty($model->discountsInfo))
-                return null;
-
-              $items = json_decode($model->discountsInfo, true);
+              $items = json_decode($model->discountsInfo ?? '', true);
               if (empty($items))
                 return null;
 
