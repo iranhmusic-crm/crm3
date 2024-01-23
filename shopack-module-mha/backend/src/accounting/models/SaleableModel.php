@@ -26,7 +26,7 @@ class SaleableModel extends MhaActiveRecord
   ) {
     $row = null;
 
-    if ((Yii::$app->user->isGuest == false) && Yii::$app->member->isMember) {
+    if (Yii::$app->user->isGuest == false) { // && Yii::$app->member->isMember) {
       $qry =<<<SQL
       SELECT  mbrUserID
            ,  GROUP_CONCAT(mbrmgpMemberGroupID) AS grps

@@ -43,15 +43,45 @@ $this->params['breadcrumbs'][] = $this->title;
           'slbID',
           [
             'attribute' => 'slbName',
-            'format' => 'raw',
-            'value' => function ($model, $key, $index, $widget) {
-              return Html::a($model->slbName, ['view', 'id' => $model->slbID]);
-            },
+            // 'format' => 'raw',
+            // 'value' => function ($model, $key, $index, $widget) {
+            //   return Html::a($model->slbName, ['view', 'id' => $model->slbID]);
+            // },
           ],
           'slbBasePrice:toman',
           'discountAmount:toman',
           'discountedBasePrice:toman',
-          'discountsInfo',
+          [
+            'attribute' => 'discountsInfo',
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $widget) {
+              if (empty($model->discountsInfo))
+                return null;
+
+              $items = json_decode($model->discountsInfo, true);
+              if (empty($items))
+                return null;
+
+              $result = [];
+              $result[] = '<tr><td>' . implode('</td><td>', [
+                '#',
+                'کد',
+                'نام',
+                'مبلغ',
+                'نوع',
+              ]) . '</td></tr>';
+              foreach ($items as $k => $item) {
+                $result[] = '<tr><td>' . implode('</td><td>', [
+                  $k + 1,
+                  $item['id'],
+                  $item['name'],
+                  Yii::$app->formatter->asDecimal($item['amount']),
+                  $item['type'],
+                ]) . '</td></tr>';
+              }
+              return '<table class="table table-bordered table-striped">' . implode('', $result) . '</table>';
+            },
+          ],
 
           [
             'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
