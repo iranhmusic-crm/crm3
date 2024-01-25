@@ -56,8 +56,9 @@ class MembershipController extends BaseRestController
 	public function actionAddToBasket()
 	{
 		$base64Basketdata = $_POST['basketdata'] ?? [];
+		$discountCode = $_POST['discountCode'] ?? null;
 
-		return MembershipForm::addToBasket($base64Basketdata);
+		return MembershipForm::addToBasket($base64Basketdata, null, $discountCode);
 	}
 
 }

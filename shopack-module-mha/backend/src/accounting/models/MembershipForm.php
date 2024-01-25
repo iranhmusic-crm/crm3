@@ -97,8 +97,11 @@ class MembershipForm extends Model
 		return [$startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableModel];
 	}
 
-	public static function addToBasket($basketdata, $saleableID = null)
-	{
+	public static function addToBasket(
+		$basketdata,
+		$saleableID = null,
+		$discountCode = null
+	) {
 		if (is_string($basketdata))
 			$basketdata = Json::decode(base64_decode($basketdata));
 
@@ -133,7 +136,7 @@ class MembershipForm extends Model
 			'endDate' => $endDate,
 		];
 		// $membershipBasketModel->orderAdditives = ;
-		// $membershipBasketModel->discountCode   = ;
+		$membershipBasketModel->discountCode   = $discountCode;
 		// $membershipBasketModel->referrer       = ;
 		// $membershipBasketModel->referrerParams = ;
 		// $membershipBasketModel->apiTokenID     = ;
@@ -146,7 +149,7 @@ class MembershipForm extends Model
 		$membershipCardBasketModel->qty            = 1;
 		// $membershipCardBasketModel->orderParams    = ;
 		// $membershipCardBasketModel->orderAdditives = ;
-		// $membershipCardBasketModel->discountCode   = ;
+		$membershipCardBasketModel->discountCode   = $discountCode;
 		// $membershipCardBasketModel->referrer       = ;
 		// $membershipCardBasketModel->referrerParams = ;
 		// $membershipCardBasketModel->apiTokenID     = ;

@@ -58,7 +58,7 @@ trait MemberGroupModelTrait
         enuColumnInfo::selectable => true,
       ],
       'mgpMembershipDiscountAmount' => [
-        enuColumnInfo::type       => ['integer', 'min' => 0],
+        enuColumnInfo::type       => ['double', 'min' => 0],
         enuColumnInfo::validator  => null,
         enuColumnInfo::default    => null,
         enuColumnInfo::required   => false,
@@ -73,7 +73,7 @@ trait MemberGroupModelTrait
         enuColumnInfo::search     => enuColumnSearchType::exact,
       ],
       'mgpMembershipCardDiscountAmount' => [
-        enuColumnInfo::type       => ['integer', 'min' => 0],
+        enuColumnInfo::type       => ['double', 'min' => 0],
         enuColumnInfo::validator  => null,
         enuColumnInfo::default    => null,
         enuColumnInfo::required   => false,
@@ -88,7 +88,7 @@ trait MemberGroupModelTrait
         enuColumnInfo::search     => enuColumnSearchType::exact,
       ],
       'mgpDeliveryDiscountAmount' => [
-        enuColumnInfo::type       => ['integer', 'min' => 0],
+        enuColumnInfo::type       => ['double', 'min' => 0],
         enuColumnInfo::validator  => null,
         enuColumnInfo::default    => null,
         enuColumnInfo::required   => false,

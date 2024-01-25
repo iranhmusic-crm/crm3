@@ -11,13 +11,13 @@ class m231219_151044_mha_convert_uasVoucherItemInfo extends Migration
   {
     $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_UserAsset`
-  CHANGE COLUMN `uasVoucherItemInfo` `OLD_uasVoucherItemInfo` JSON NULL DEFAULT NULL AFTER `uasVoucherID`;
+  CHANGE COLUMN `uasVoucherItemInfo` `uasVoucherItemInfo_OLD` JSON NULL DEFAULT NULL AFTER `uasVoucherID`;
 SQL
     );
 
     $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_UserAsset`
-  ADD COLUMN `uasVoucherItemInfo` JSON NULL DEFAULT NULL AFTER `OLD_uasVoucherItemInfo`;
+  ADD COLUMN `uasVoucherItemInfo` JSON NULL DEFAULT NULL AFTER `uasVoucherItemInfo_OLD`;
 SQL
     );
     $this->alterColumn('tbl_MHA_Accounting_UserAsset', 'uasVoucherItemInfo', $this->json());
@@ -39,7 +39,7 @@ UPDATE tbl_MHA_Accounting_UserAsset
              , "unitPrice",     tmp1.unitPrice
 --             , "maxQty",        tmp1.maxQty
 --             , "qtyStep",       tmp1.qtyStep
---             , "discount",      IFNULL(tmp1.discount, 0)
+             , "discount",      IFNULL(tmp1.discount, 0)
              , "subTotal",      tmp1.qty * tmp1.unitPrice
              , "afterDiscount", tmp1.qty * tmp1.unitPrice
              , "totalPrice",    tmp1.qty * tmp1.unitPrice
@@ -55,29 +55,29 @@ UPDATE tbl_MHA_Accounting_UserAsset
            , CASE WHEN tmp1.unitPrice IS NULL OR CONCAT(tmp1.unitPrice, '') IN ('', '0') THEN '$.unitPrice' ELSE '$.dummy' END
 --           , CASE WHEN tmp1.maxQty    IS NULL OR CONCAT(tmp1.maxQty   , '') IN ('', '0') THEN '$.maxQty'    ELSE '$.dummy' END
 --           , CASE WHEN tmp1.qtyStep   IS NULL OR CONCAT(tmp1.qtyStep  , '') IN ('', '0') THEN '$.qtyStep'   ELSE '$.dummy' END
---           , CASE WHEN tmp1.discount  IS NULL OR CONCAT(tmp1.discount , '') IN ('', '0') THEN '$.discount'  ELSE '$.dummy' END
+           , CASE WHEN tmp1.discount  IS NULL OR CONCAT(tmp1.discount , '') IN ('', '0') THEN '$.discount'  ELSE '$.dummy' END
              ) AS NEW_uasVoucherItemInfo
         FROM (
       SELECT uasID
-           ,              JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].service')    AS service
-           ,              JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].key')        AS `key`
-           , JSON_UNQUOTE(JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].slbid'))     AS slbID
-           ,              JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].desc')       AS `desc`
-           , JSON_UNQUOTE(JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].qty'))       AS qty
-           ,              JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].unit')       AS unit
-           ,              JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].prdtype')    AS prdType
-           ,              JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].slbinfo')    AS params
-           , JSON_UNQUOTE(JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].unitprice')) AS unitPrice
-           , JSON_UNQUOTE(JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].maxqty'))    AS maxQty
-           , JSON_UNQUOTE(JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].qtystep'))   AS qtyStep
-           , JSON_UNQUOTE(JSON_EXTRACT(OLD_uasVoucherItemInfo, '$[0].discount'))  AS discount
+           ,              JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].service')    AS service
+           ,              JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].key')        AS `key`
+           , JSON_UNQUOTE(JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].slbid'))     AS slbID
+           ,              JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].desc')       AS `desc`
+           , JSON_UNQUOTE(JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].qty'))       AS qty
+           ,              JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].unit')       AS unit
+           ,              JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].prdtype')    AS prdType
+           ,              JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].slbinfo')    AS params
+           , JSON_UNQUOTE(JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].unitprice')) AS unitPrice
+           , JSON_UNQUOTE(JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].maxqty'))    AS maxQty
+           , JSON_UNQUOTE(JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].qtystep'))   AS qtyStep
+           , JSON_UNQUOTE(JSON_EXTRACT(uasVoucherItemInfo_OLD, '$[0].discount'))  AS discount
         FROM tbl_MHA_Accounting_UserAsset
-       WHERE JSON_LENGTH(IFNULL(OLD_uasVoucherItemInfo, '[]')) > 0
+       WHERE JSON_LENGTH(IFNULL(uasVoucherItemInfo_OLD, '[]')) > 0
              ) AS tmp1
              ) AS tmpJson
           ON tmpJson.uasID = tbl_MHA_Accounting_UserAsset.uasID
          SET uasVoucherItemInfo = tmpJson.NEW_uasVoucherItemInfo
-           , uasDiscountAmount = CASE WHEN tmpJson.discount IS NULL OR CONCAT(tmpJson.discount, '') IN ('', '0') THEN NULL ELSE tmpJson.discount END
+--           , uasDiscountAmount = CASE WHEN tmpJson.discount IS NULL OR CONCAT(tmpJson.discount, '') IN ('', '0') THEN NULL ELSE tmpJson.discount END
 ;
 SQL
     );

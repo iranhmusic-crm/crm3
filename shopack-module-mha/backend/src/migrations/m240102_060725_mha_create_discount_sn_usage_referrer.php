@@ -9,6 +9,17 @@ class m240102_060725_mha_create_discount_sn_usage_referrer extends Migration
 {
 	public function safeUp()
 	{
+		//discount
+		$this->execute(<<<SQL
+ALTER TABLE `tbl_MHA_Accounting_Discount`
+	CHANGE COLUMN `dscTotalMaxPrice` `dscTotalMaxPrice` DOUBLE UNSIGNED NULL DEFAULT NULL AFTER `dscTotalMaxCount`,
+	CHANGE COLUMN `dscPerUserMaxPrice` `dscPerUserMaxPrice` DOUBLE UNSIGNED NULL DEFAULT NULL AFTER `dscPerUserMaxCount`,
+	CHANGE COLUMN `dscAmount` `dscAmount` DOUBLE UNSIGNED NOT NULL AFTER `dscSaleableBasedMultiplier`,
+	CHANGE COLUMN `dscTotalUsedCount` `dscTotalUsedCount` INT(10) UNSIGNED NOT NULL AFTER `dscMaxAmount`,
+	CHANGE COLUMN `dscTotalUsedPrice` `dscTotalUsedPrice` DOUBLE UNSIGNED NOT NULL AFTER `dscTotalUsedCount`;
+SQL
+		);
+
 		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscType` `dscType` CHAR(1) NOT NULL DEFAULT 'C' COMMENT 'S:System, I:System Increase, C:Coupon' COLLATE 'utf8mb4_unicode_ci' AFTER `dscName`;
@@ -140,6 +151,58 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Discount AFTER UPDATE ON tbl_MHA
 END
 SQL
 		);
+
+		//asset
+		$this->execute(<<<SQL
+ALTER TABLE `tbl_MHA_Accounting_UserAsset`
+	DROP FOREIGN KEY `FK_tbl_MHA_Accounting_UserAsset_tbl_MHA_Accounting_Discount`,
+	DROP INDEX `FK_tbl_MHA_Accounting_UserAsset_tbl_MHA_Accounting_Discount`,
+	DROP INDEX `uas_invID`,
+	ADD INDEX `uasVoucherID` (`uasVoucherID`) USING BTREE;
+SQL
+		);
+
+		$this->execute(<<<SQL
+ALTER TABLE `tbl_MHA_Accounting_UserAsset`
+	CHANGE COLUMN `uasDiscountID` `uasDiscountID_DEL` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `uasVoucherItemInfo`,
+	CHANGE COLUMN `uasDiscountAmount` `uasDiscountAmount_DEL` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `uasDiscountID_DEL`;
+SQL
+		);
+
+		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_UserAsset;");
+		$this->execute(<<<SQL
+CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_UserAsset AFTER UPDATE ON tbl_MHA_Accounting_UserAsset FOR EACH ROW BEGIN
+  DECLARE Changes JSON DEFAULT JSON_OBJECT();
+
+  IF ISNULL(OLD.uasActorID) != ISNULL(NEW.uasActorID) OR OLD.uasActorID != NEW.uasActorID THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasActorID", IF(ISNULL(OLD.uasActorID), NULL, OLD.uasActorID))); END IF;
+  IF ISNULL(OLD.uasBreakedAt) != ISNULL(NEW.uasBreakedAt) OR OLD.uasBreakedAt != NEW.uasBreakedAt THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasBreakedAt", IF(ISNULL(OLD.uasBreakedAt), NULL, OLD.uasBreakedAt))); END IF;
+  IF ISNULL(OLD.uasDurationMinutes) != ISNULL(NEW.uasDurationMinutes) OR OLD.uasDurationMinutes != NEW.uasDurationMinutes THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasDurationMinutes", IF(ISNULL(OLD.uasDurationMinutes), NULL, OLD.uasDurationMinutes))); END IF;
+  IF ISNULL(OLD.uasPrefered) != ISNULL(NEW.uasPrefered) OR OLD.uasPrefered != NEW.uasPrefered THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasPrefered", IF(ISNULL(OLD.uasPrefered), NULL, OLD.uasPrefered))); END IF;
+  IF ISNULL(OLD.uasQty) != ISNULL(NEW.uasQty) OR OLD.uasQty != NEW.uasQty THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasQty", IF(ISNULL(OLD.uasQty), NULL, OLD.uasQty))); END IF;
+  IF ISNULL(OLD.uasSaleableID) != ISNULL(NEW.uasSaleableID) OR OLD.uasSaleableID != NEW.uasSaleableID THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasSaleableID", IF(ISNULL(OLD.uasSaleableID), NULL, OLD.uasSaleableID))); END IF;
+  IF ISNULL(OLD.uasStatus) != ISNULL(NEW.uasStatus) OR OLD.uasStatus != NEW.uasStatus THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasStatus", IF(ISNULL(OLD.uasStatus), NULL, OLD.uasStatus))); END IF;
+  IF ISNULL(OLD.uasUUID) != ISNULL(NEW.uasUUID) OR OLD.uasUUID != NEW.uasUUID THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasUUID", IF(ISNULL(OLD.uasUUID), NULL, OLD.uasUUID))); END IF;
+  IF ISNULL(OLD.uasValidFromDate) != ISNULL(NEW.uasValidFromDate) OR OLD.uasValidFromDate != NEW.uasValidFromDate THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasValidFromDate", IF(ISNULL(OLD.uasValidFromDate), NULL, OLD.uasValidFromDate))); END IF;
+  IF ISNULL(OLD.uasValidFromHour) != ISNULL(NEW.uasValidFromHour) OR OLD.uasValidFromHour != NEW.uasValidFromHour THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasValidFromHour", IF(ISNULL(OLD.uasValidFromHour), NULL, OLD.uasValidFromHour))); END IF;
+  IF ISNULL(OLD.uasValidToDate) != ISNULL(NEW.uasValidToDate) OR OLD.uasValidToDate != NEW.uasValidToDate THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasValidToDate", IF(ISNULL(OLD.uasValidToDate), NULL, OLD.uasValidToDate))); END IF;
+  IF ISNULL(OLD.uasValidToHour) != ISNULL(NEW.uasValidToHour) OR OLD.uasValidToHour != NEW.uasValidToHour THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasValidToHour", IF(ISNULL(OLD.uasValidToHour), NULL, OLD.uasValidToHour))); END IF;
+  IF ISNULL(OLD.uasVoucherItemInfo) != ISNULL(NEW.uasVoucherItemInfo) OR OLD.uasVoucherItemInfo != NEW.uasVoucherItemInfo THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasVoucherItemInfo", IF(ISNULL(OLD.uasVoucherItemInfo), NULL, OLD.uasVoucherItemInfo))); END IF;
+
+  IF JSON_LENGTH(Changes) > 0 THEN
+--    IF ISNULL(NEW.uasUpdatedBy) THEN
+--      SIGNAL SQLSTATE "45401"
+--         SET MESSAGE_TEXT = "UpdatedBy is not set";
+--    END IF;
+
+    INSERT INTO tbl_SYS_ActionLogs
+        SET atlBy     = NEW.uasUpdatedBy
+          , atlAction = "UPDATE"
+          , atlTarget = "tbl_MHA_Accounting_UserAsset"
+          , atlInfo   = JSON_OBJECT("uasID", OLD.uasID, "old", Changes);
+  END IF;
+END
+SQL
+    );
 
 	}
 

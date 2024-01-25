@@ -127,7 +127,7 @@ SQL;
     $userAssetModel->uasQty             = $qty;
     $userAssetModel->uasVoucherID       = $voucherID;
     $userAssetModel->uasVoucherItemInfo = $voucherItemdata;
-    // $userAssetModel->uasDiscountID        =
+    // $userAssetModel->uasDiscountID      =
     // $userAssetModel->uasDiscountAmount  =
     // $userAssetModel->uasPrefered        =
     $userAssetModel->uasValidFromDate   = $startDate;

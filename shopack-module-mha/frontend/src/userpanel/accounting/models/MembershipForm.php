@@ -21,16 +21,26 @@ class MembershipForm extends Model
 	public $unitPrice;
 	public $totalPrice;
 	public $saleableID;
+	public $discountCode;
+
+	public function rules()
+	{
+		return [
+			['discountCode', 'string'],
+
+		];
+	}
 
 	public function attributeLabels()
 	{
 		return [
-			'startDate'		=> Yii::t('app', 'Start Date'),
-			'endDate'			=> Yii::t('app', 'End Date'),
-			'years'				=> Yii::t('app', 'Year'),
-			'unitPrice'		=> Yii::t('aaa', 'Unit Price'),
-			'totalPrice'	=> Yii::t('aaa', 'Total Price'),
-			'saleableID'	=> Yii::t('aaa', 'Saleable'),
+			'startDate'			=> Yii::t('app', 'Start Date'),
+			'endDate'				=> Yii::t('app', 'End Date'),
+			'years'					=> Yii::t('app', 'Year'),
+			'unitPrice'			=> Yii::t('aaa', 'Unit Price'),
+			'totalPrice'		=> Yii::t('aaa', 'Total Price'),
+			'saleableID'		=> Yii::t('aaa', 'Saleable'),
+			'discountCode'	=> Yii::t('aaa', 'Discount Code'),
 		];
 	}
 
@@ -82,6 +92,7 @@ class MembershipForm extends Model
 				[],
 				[
 					'basketdata' => $basketdata,
+					'discountCode' => $this->discountCode,
 				]
 			);
 

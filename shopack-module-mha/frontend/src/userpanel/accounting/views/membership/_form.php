@@ -53,6 +53,9 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 			// 	'saleableID',
 			// 	'type' => FormBuilder::FIELD_STATIC,
 			// ],
+			[
+				'discountCode',
+			],
 		]);
 
 		// $builder->fields([
