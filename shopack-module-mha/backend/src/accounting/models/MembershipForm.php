@@ -69,13 +69,21 @@ class MembershipForm extends Model
 
 		$endDate = clone $startDate;
 		$endDate->add(\DateInterval::createFromDateString('1 year'));
-		// $endDate->sub(\DateInterval::createFromDateString('1 day'));
+		// $endDate->sub(\DateInterval::createFromDateString('250 day'));
 
 		$years = 1;
-		while ($endDate < $now) {
+		$target = clone $now;
+		$target->add(\DateInterval::createFromDateString('6 month'));
+		while ($endDate < $target) {
 			$endDate->add(\DateInterval::createFromDateString('1 year'));
 			++$years;
 		}
+
+		// $diff = $endDate->diff($now)->days;
+		// if ($diff < (365 / 2)) {
+		// 	$endDate->add(\DateInterval::createFromDateString('1 year'));
+		// 	++$years;
+		// }
 
 		$startDate = $startDate->format('Y-m-d');
 		$endDate = $endDate->format('Y-m-d');
@@ -130,12 +138,14 @@ class MembershipForm extends Model
 		//1: add membership to basket:
 		$membershipBasketModel = new BasketModel;
 		$membershipBasketModel->saleableCode   = $saleableModel->slbCode;
-		$membershipBasketModel->qty            = $years;
 		$membershipBasketModel->orderParams    = [
-			'startDate' => $startDate,
-			'endDate' => $endDate,
+			'startDate'	=> $startDate,
+			'endDate'		=> $endDate,
 		];
 		// $membershipBasketModel->orderAdditives = ;
+		$membershipBasketModel->qty            = $years;
+		$membershipBasketModel->maxQty         = $years;
+		$membershipBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
 		$membershipBasketModel->discountCode   = $discountCode;
 		// $membershipBasketModel->referrer       = ;
 		// $membershipBasketModel->referrerParams = ;
@@ -146,9 +156,11 @@ class MembershipForm extends Model
 		//2: add membership CARD to basket:
 		$membershipCardBasketModel = new BasketModel;
 		$membershipCardBasketModel->saleableCode   = $cardPrintSaleableModel->slbCode;
-		$membershipCardBasketModel->qty            = 1;
 		// $membershipCardBasketModel->orderParams    = ;
 		// $membershipCardBasketModel->orderAdditives = ;
+		$membershipCardBasketModel->qty            = 1;
+		$membershipCardBasketModel->maxQty         = 1;
+		$membershipCardBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
 		$membershipCardBasketModel->discountCode   = $discountCode;
 		// $membershipCardBasketModel->referrer       = ;
 		// $membershipCardBasketModel->referrerParams = ;

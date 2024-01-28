@@ -33,7 +33,7 @@ class AccountingModule extends \shopack\base\backend\accounting\AccountingModule
 		if ($app instanceof \yii\web\Application) {
 			$rules = [
 				[
-					'class' => \yii\rest\UrlRule::class,
+					'class' => \shopack\base\common\rest\UrlRule::class,
 					// 'prefix' => 'v1',
 					'controller' => [$thisID . '/membership'],
 					'pluralize' => false,
@@ -44,7 +44,7 @@ class AccountingModule extends \shopack\base\backend\accounting\AccountingModule
 					],
 				],
 				[
-					'class' => \yii\rest\UrlRule::class,
+					'class' => \shopack\base\common\rest\UrlRule::class,
 					// 'prefix' => 'v1',
 					'controller' => [$thisID . '/membership-card'],
 					'pluralize' => false,
