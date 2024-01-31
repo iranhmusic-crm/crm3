@@ -11,6 +11,7 @@ use shopack\base\frontend\common\helpers\Html;
 use shopack\aaa\frontend\common\auth\BaseController;
 use iranhmusic\shopack\mha\frontend\userpanel\accounting\models\MembershipForm;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipUserAssetSearchModel;
+use shopack\base\common\accounting\enums\enuUserAssetStatus;
 
 class MembershipController extends BaseController
 {
@@ -20,6 +21,7 @@ class MembershipController extends BaseController
 		$dataProvider = $searchModel->search(array_replace_recursive(
 			Yii::$app->request->queryParams, [
 				'uasActorID' => Yii::$app->user->id,
+				'uasStatus' => enuUserAssetStatus::Active,
 			]));
 
     $viewParams = [

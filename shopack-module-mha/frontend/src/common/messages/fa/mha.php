@@ -260,7 +260,7 @@ return [
 	'My Profile' => 'پروفایل عضویت من',
 	'My Music House' => 'خانه موسیقی من',
 
-	'There are more than 30 days of current membership left' => 'زودتر از 30 روز از پایان دوره عضویت فعلی، امکان تمدید وجود ندارد.',
+	'There are more than 3 months of current membership left' => 'زودتر از 3 ماه از پایان دوره عضویت فعلی، امکان تمدید وجود ندارد.',
 
 	'The member does not have a register code' => 'کد عضویت خالی است',
 	'Membership start date is blank' => 'تاریخ شروع عضویت مشخص نشده است',
@@ -304,5 +304,8 @@ return [
 	'Membership Card Discount Type' => 'نوع تخفیف صدور کارت عضویت',
 	'Delivery Discount Amount' => 'تخفیف ارسال مرسوله',
 	'Delivery Discount Type' => 'نوع تخفیف ارسال مرسوله',
+
+	'Print Card' => 'چاپ کارت عضویت',
+	'Card Print Price' => 'هزینه چاپ کارت',
 
 ];

@@ -41,7 +41,7 @@ class MembershipController extends BaseRestController
 			throw new ForbiddenHttpException('access denied');
 		}
 
-		list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableModel) = MembershipForm::getRenewalInfo($memberID);
+		list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableModel, $printCardAmount) = MembershipForm::getRenewalInfo($memberID);
 
 		return [
 			'startDate'		=> $startDate,
@@ -50,15 +50,17 @@ class MembershipController extends BaseRestController
 			'unitPrice'		=> $unitPrice,
 			'totalPrice'	=> $totalPrice,
 			'saleableID'	=> $saleableModel->slbID,
+			'printCardAmount'	=> $printCardAmount,
 		];
 	}
 
 	public function actionAddToBasket()
 	{
 		$base64Basketdata = $_POST['basketdata'] ?? [];
+		$printCard = $_POST['printCard'] ?? null;
 		$discountCode = $_POST['discountCode'] ?? null;
 
-		return MembershipForm::addToBasket($base64Basketdata, null, $discountCode);
+		return MembershipForm::addToBasket($base64Basketdata, null, $printCard, $discountCode);
 	}
 
 }

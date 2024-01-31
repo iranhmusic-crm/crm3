@@ -26,7 +26,7 @@ use shopack\base\common\accounting\enums\enuAmountType;
 
 class MembershipForm extends Model
 {
-	//list ($startDate, $endDate, $years, $price, $saleableModel)
+	//list ($startDate, $endDate, $years, $price, $saleableModel, $printCardAmount)
 	public static function getRenewalInfo($memberID)
 	{
 		if (empty($memberID))
@@ -61,8 +61,8 @@ class MembershipForm extends Model
 
 			if ($startDate > $now) {
 				$remained = date_diff($now, $startDate);
-				if ($remained->days > 30) {
-					throw new UnprocessableEntityHttpException('There are more than 30 days of current membership left');
+				if ($remained->days > (31 * 3)) {
+					throw new UnprocessableEntityHttpException('There are more than 3 months of current membership left');
 				}
 			}
 		}
@@ -102,12 +102,37 @@ class MembershipForm extends Model
 		$unitPrice = $saleableModel->slbBasePrice;
 		$totalPrice = $years * $unitPrice;
 
-		return [$startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableModel];
+		//-----------------
+		$printCardAmount = 0;
+
+		$cardPrintSaleableModel = SaleableModel::find()
+			->joinWith('product', false, 'INNER JOIN')
+			->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard])
+			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+			->andWhere(['slbStatus' => enuSaleableStatus::Active])
+			->orderBy('slbAvailableFromDate DESC')
+			->one();
+
+		if ($cardPrintSaleableModel != null) {
+			$printCardAmount = $cardPrintSaleableModel->slbBasePrice;
+		}
+
+		//-----------------
+		return [
+			$startDate,
+			$endDate,
+			$years,
+			$unitPrice,
+			$totalPrice,
+			$saleableModel,
+			$printCardAmount
+		];
 	}
 
 	public static function addToBasket(
 		$basketdata,
 		$saleableID = null,
+		$printCard = true,
 		$discountCode = null
 	) {
 		if (is_string($basketdata))
@@ -138,36 +163,38 @@ class MembershipForm extends Model
 		//1: add membership to basket:
 		$membershipBasketModel = new BasketModel;
 		$membershipBasketModel->saleableCode   = $saleableModel->slbCode;
+		$membershipBasketModel->qty            = $years;
+		$membershipBasketModel->maxQty         = $years;
+		$membershipBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
 		$membershipBasketModel->orderParams    = [
 			'startDate'	=> $startDate,
 			'endDate'		=> $endDate,
 		];
 		// $membershipBasketModel->orderAdditives = ;
-		$membershipBasketModel->qty            = $years;
-		$membershipBasketModel->maxQty         = $years;
-		$membershipBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
 		$membershipBasketModel->discountCode   = $discountCode;
 		// $membershipBasketModel->referrer       = ;
 		// $membershipBasketModel->referrerParams = ;
 		// $membershipBasketModel->apiTokenID     = ;
-		// $membershipBasketModel->itemUUID       = ;
-		[$membershipItemUUID, $lastPreVoucher] = $membershipBasketModel->addToBasket();
+		// $membershipBasketModel->itemKey        = ;
+		[$membershipItemKey, $lastPreVoucher] = $membershipBasketModel->addToBasket();
 
 		//2: add membership CARD to basket:
-		$membershipCardBasketModel = new BasketModel;
-		$membershipCardBasketModel->saleableCode   = $cardPrintSaleableModel->slbCode;
-		// $membershipCardBasketModel->orderParams    = ;
-		// $membershipCardBasketModel->orderAdditives = ;
-		$membershipCardBasketModel->qty            = 1;
-		$membershipCardBasketModel->maxQty         = 1;
-		$membershipCardBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
-		$membershipCardBasketModel->discountCode   = $discountCode;
-		// $membershipCardBasketModel->referrer       = ;
-		// $membershipCardBasketModel->referrerParams = ;
-		// $membershipCardBasketModel->apiTokenID     = ;
-		// $membershipCardBasketModel->itemUUID       = ;
-		$membershipCardBasketModel->dependencies		= [$membershipItemUUID];
-		[$membershipCardItemUUID, $lastPreVoucher] = $membershipCardBasketModel->addToBasket();
+		if ($printCard) {
+			$membershipCardBasketModel = new BasketModel;
+			$membershipCardBasketModel->saleableCode   = $cardPrintSaleableModel->slbCode;
+			$membershipCardBasketModel->qty            = 1;
+			$membershipCardBasketModel->maxQty         = 1;
+			$membershipCardBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
+			// $membershipCardBasketModel->orderParams    = ;
+			// $membershipCardBasketModel->orderAdditives = ;
+			$membershipCardBasketModel->discountCode   = $discountCode;
+			// $membershipCardBasketModel->referrer       = ;
+			// $membershipCardBasketModel->referrerParams = ;
+			// $membershipCardBasketModel->apiTokenID     = ;
+			// $membershipCardBasketModel->itemKey        = ;
+			$membershipCardBasketModel->dependencies		= [$membershipItemKey];
+			[$membershipCardItemKey, $lastPreVoucher] = $membershipCardBasketModel->addToBasket();
+		}
 
 
 
