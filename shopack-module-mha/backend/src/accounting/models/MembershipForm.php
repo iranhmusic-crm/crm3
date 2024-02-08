@@ -232,7 +232,7 @@ class MembershipForm extends Model
 		if ($cardPrintSaleableModel == null)
 			throw new NotFoundHttpException('Definition of membership card at this date was not found.');
 
-		$parentModule = Yii::$app->controller->module->module;
+		$parentModule = Yii::$app->topModule;
 
 		$membershipKey = Uuid::uuid4()->toString();
 

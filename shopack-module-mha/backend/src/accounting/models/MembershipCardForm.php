@@ -75,7 +75,7 @@ class MembershipCardForm extends Model
 		//get saleable info
 		list ($membershipUserAssetID, $price, $saleableModel, $lastMembership) = self::getRenewalInfo(Yii::$app->user->id);
 
-		$parentModule = Yii::$app->controller->module->module;
+		$parentModule = Yii::$app->topModule;
 
 		$data = [
 			'userid' => Yii::$app->user->id,
