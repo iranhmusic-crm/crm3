@@ -113,7 +113,7 @@ class MembershipForm extends Model
 			if (YII_ENV_DEV)
 				throw $th;
 
-			$this->addError('', $th->getMessage());
+			$this->addError('', Yii::t('mha', $th->getMessage()));
 			return false;
 		}
 
