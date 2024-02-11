@@ -93,65 +93,36 @@ SQL;
 
   public static function ProcessVoucherItem($voucherID, $userid, $voucherItemdata)
   {
-    $slbid = $voucherItemdata['slbid'];
-    $saleableModel = SaleableModel::find()->andWhere(['slbid' => $slbid])
-      ->joinWith('product')
+    $orderID = $voucherItemdata['orderID'];
+    $key = $voucherItemdata['key'];
+
+    $userAssetModel = UserAssetModel::find()
+      ->innerJoinWith('saleable.product')
+      ->andWhere(['uasID' => $orderID])
+      ->andWhere(['uasUUID' => $key])
       ->one();
 
-    if ($saleableModel == null)
-      throw new UnprocessableEntityHttpException("Invalid saleable id ({$slbid})");
+    if ($userAssetModel == null)
+      throw new UnprocessableEntityHttpException("user asset not found");
 
-    //check existance
-    $key = $voucherItemdata['key'];
-    $userAssetModel = UserAssetModel::find()->andWhere(['uasUUID' => $key])->one();
-    if ($userAssetModel != null)
-      return true; //already exists
-
-    //1: save user asset
-    $service		= $voucherItemdata['service'];
-    // $slbkey			= $voucherItemdata['slbkey'];
-    $desc				= $voucherItemdata['desc'];
-    $qty				= $voucherItemdata['qty'];
-    $unitprice	= $voucherItemdata['unitprice'];
-    //additives
-    //discount
-    //tax
-    //totalprice
-    $startDate	= $voucherItemdata['slbinfo']['startDate'] ?? null;
-    $endDate		= $voucherItemdata['slbinfo']['endDate'] ?? null;
-
-    $userAssetModel = new UserAssetModel;
-    $userAssetModel->uasUUID						= $key;
-    $userAssetModel->uasActorID         = $userid;
-    $userAssetModel->uasSaleableID      = $slbid;
-    $userAssetModel->uasQty             = $qty;
-    $userAssetModel->uasVoucherID       = $voucherID;
-    $userAssetModel->uasVoucherItemInfo = $voucherItemdata;
-    // $userAssetModel->uasDiscountID      =
-    // $userAssetModel->uasDiscountAmount  =
-    // $userAssetModel->uasPrefered        =
-    $userAssetModel->uasValidFromDate   = $startDate;
-    $userAssetModel->uasValidToDate     = $endDate;
-    // $userAssetModel->uasValidFromHour   =
-    // $userAssetModel->uasValidToHour     =
-    // $userAssetModel->uasDurationMinutes =
-    // $userAssetModel->uasBreakedAt       =
-
-    if ($saleableModel->product->prdMhaType == enuMhaProductType::Membership) {
+    if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::Membership) {
       $userAssetModel->uasStatus = enuUserAssetStatus::Active;
-    } else if ($saleableModel->product->prdMhaType == enuMhaProductType::MembershipCard) {
+    } else if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::MembershipCard) {
       // $userAssetModel->uasStatus = wait for card print
     } else {
-      throw new UnprocessableEntityHttpException("Invalid mha product type ({$saleableModel->product->prdMhaType})");
+      throw new UnprocessableEntityHttpException("Invalid mha product type ({$userAssetModel->saleable->product->prdMhaType})");
     }
+
+    $userAssetModel->uasValidFromDate = $userAssetModel->uasVoucherItemInfo['params']['startDate'] ?? null;
+    $userAssetModel->uasValidToDate = $userAssetModel->uasVoucherItemInfo['params']['endDate'] ?? null;
 
     if ($userAssetModel->save() == false)
       throw new ServerErrorHttpException('It is not possible to create user asset');
 
     //2: ?
-    if ($saleableModel->product->prdMhaType == enuMhaProductType::Membership) {
+    if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::Membership) {
       self::ProcessVoucherItem_Membership($userAssetModel, $voucherItemdata);
-    } else if ($saleableModel->product->prdMhaType == enuMhaProductType::MembershipCard) {
+    } else if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::MembershipCard) {
       self::ProcessVoucherItem_MembershipCard($userAssetModel, $voucherItemdata);
     }
   }
