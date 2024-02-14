@@ -376,13 +376,15 @@ $this->params['breadcrumbs'][] = $this->title;
                       'target' => '_blank',
                     ]);
 
-                    $buttons[] = Html::a('ارسال پیامک', [
-                      '/aaa/user/send-message',
-                      'id' => $model->mbrUserID,
-                    ], [
-                      'class' => 'btn btn-sm btn-primary',
-                      'modal' => true,
-                    ]);
+                    if (empty($model->user->usrMobile) == false) {
+                      $buttons[] = Html::a('ارسال پیامک', [
+                        '/aaa/user/send-message',
+                        'id' => $model->mbrUserID,
+                      ], [
+                        'class' => 'btn btn-sm btn-primary',
+                        'modal' => true,
+                      ]);
+                    }
 
                     if (empty($buttons) == false)
                       echo implode(' ', $buttons);
