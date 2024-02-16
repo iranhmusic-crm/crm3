@@ -105,6 +105,9 @@ SQL;
     if ($userAssetModel == null)
       throw new UnprocessableEntityHttpException("user asset not found");
 
+    if ($userAssetModel->uasStatus != enuUserAssetStatus::Pending)
+      return;
+
     if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::Membership) {
       $userAssetModel->uasStatus = enuUserAssetStatus::Active;
     } else if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::MembershipCard) {
