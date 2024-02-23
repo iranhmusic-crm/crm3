@@ -91,6 +91,9 @@ SQL;
     return '{{%MHA_Accounting_Saleable}}';
   }
 
+  /**
+   * return: new status of item
+   */
   public static function ProcessVoucherItem($voucherID, $userid, $voucherItemdata)
   {
     $orderID = $voucherItemdata['orderID'];
@@ -105,28 +108,47 @@ SQL;
     if ($userAssetModel == null)
       throw new UnprocessableEntityHttpException("user asset not found");
 
+    if ($userAssetModel->uasStatus == enuUserAssetStatus::Active)
+      return true;
+
     if ($userAssetModel->uasStatus != enuUserAssetStatus::Pending)
-      return;
+      return false;
 
-    if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::Membership) {
-      $userAssetModel->uasStatus = enuUserAssetStatus::Active;
-    } else if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::MembershipCard) {
-      // $userAssetModel->uasStatus = wait for card print
-    } else {
-      throw new UnprocessableEntityHttpException("Invalid mha product type ({$userAssetModel->saleable->product->prdMhaType})");
-    }
+    //start transaction
+    $transaction = Yii::$app->db->beginTransaction();
 
-    $userAssetModel->uasValidFromDate = $userAssetModel->uasVoucherItemInfo['params']['startDate'] ?? null;
-    $userAssetModel->uasValidToDate = $userAssetModel->uasVoucherItemInfo['params']['endDate'] ?? null;
+    try {
+      if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::Membership) {
+        $userAssetModel->uasStatus = enuUserAssetStatus::Active;
+      } else if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::MembershipCard) {
+        // $userAssetModel->uasStatus = wait for card print
+      } else {
+        throw new UnprocessableEntityHttpException("Invalid mha product type ({$userAssetModel->saleable->product->prdMhaType})");
+      }
 
-    if ($userAssetModel->save() == false)
-      throw new ServerErrorHttpException('It is not possible to create user asset');
+      $userAssetModel->uasValidFromDate = $userAssetModel->uasVoucherItemInfo['params']['startDate'] ?? null;
+      $userAssetModel->uasValidToDate = $userAssetModel->uasVoucherItemInfo['params']['endDate'] ?? null;
 
-    //2: ?
-    if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::Membership) {
-      self::ProcessVoucherItem_Membership($userAssetModel, $voucherItemdata);
-    } else if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::MembershipCard) {
-      self::ProcessVoucherItem_MembershipCard($userAssetModel, $voucherItemdata);
+      if ($userAssetModel->save() == false)
+        throw new ServerErrorHttpException('It is not possible to create user asset');
+
+      //2: ?
+      if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::Membership) {
+        self::ProcessVoucherItem_Membership($userAssetModel, $voucherItemdata);
+      } else if ($userAssetModel->saleable->product->prdMhaType == enuMhaProductType::MembershipCard) {
+        self::ProcessVoucherItem_MembershipCard($userAssetModel, $voucherItemdata);
+      }
+
+			//commit
+			$transaction->commit();
+
+      return true; //enuVoucherItemStatus::Processed; //$userAssetModel->uasStatus;
+
+    } catch (\Throwable $th) {
+      //rollback
+      $transaction->rollBack();
+
+      throw $th;
     }
   }
 

@@ -10,12 +10,33 @@ use shopack\base\backend\accounting\controllers\BaseAccountingController;
 
 class DefaultController extends BaseAccountingController
 {
-	//override
+	/**
+	 * override
+	 *
+	 * return: status|error of every item
+	 */
 	protected function processVoucherItems($voucher, $items)
 	{
+		$result = [];
+
 		foreach ($items as $item) {
-			SaleableModel::ProcessVoucherItem(null, null, $item);
+			try {
+				$ret = SaleableModel::ProcessVoucherItem(null, null, $item);
+
+				if ($ret === true) {
+					$result[$item['key']] = [
+						'ok' => 1,
+					];
+				} //else : no new status. already processed
+
+			} catch (\Throwable $th) {
+				$result[$item['key']] = [
+					'error' => $th->getMessage(),
+				];
+			}
 		}
+
+		return $result;
 	}
 
 }
