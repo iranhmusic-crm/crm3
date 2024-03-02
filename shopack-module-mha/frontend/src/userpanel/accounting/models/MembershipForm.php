@@ -106,6 +106,8 @@ class MembershipForm extends Model
 			if ($resultStatus < 200 || $resultStatus >= 300)
 				throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
 
+			return $resultData;
+
 			// $newBase64Basketdata = $resultData['basketdata'];
 			// return $newBase64Basketdata;
 

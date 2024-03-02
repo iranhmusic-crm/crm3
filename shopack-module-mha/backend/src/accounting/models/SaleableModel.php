@@ -131,6 +131,48 @@ SQL;
       //   throw new UnprocessableEntityHttpException("Invalid mha product type ({$userAssetModel->saleable->product->prdMhaType})");
       // }
 
+      //discount usage
+      $systemDiscounts = $userAssetModel->uasVoucherItemInfo['systemDiscounts'] ?? null;
+      if (empty($systemDiscounts) == false) {
+        foreach ($systemDiscounts as $dk => $dv) {
+          $discountUsageModel = new DiscountUsageModel;
+
+          $discountUsageModel->dscusgUserID      = $userAssetModel->uasActorID;
+          $discountUsageModel->dscusgUserAssetID = $userAssetModel->uasID;
+          $discountUsageModel->dscusgDiscountID  = $dv['id'];
+          $discountUsageModel->dscusgAmount      = $dv['amount'];
+
+          if ($discountUsageModel->save() == false)
+            throw new ServerErrorHttpException('It is not possible to save system discount usage');
+        }
+      }
+
+      $couponDiscount = $userAssetModel->uasVoucherItemInfo['couponDiscount'] ?? null;
+      if (($couponDiscount != null) && (empty($couponDiscount['id'] == false))) {
+        $discountUsageModel = new DiscountUsageModel;
+
+        //1: find discount serial model
+        if (empty($couponDiscount['code']) == false) {
+          $discountSerialModel = DiscountSerialModel::find()
+            ->andWhere(['dscsnDiscountID' => $couponDiscount['id']])
+            ->andWhere(['dscsnSN' => $couponDiscount['code']])
+            ->one();
+
+          if ($discountSerialModel != null)
+            $discountUsageModel->dscusgDiscountSerialID = $discountSerialModel->dscsnID;
+        }
+
+        //2: save usage
+        $discountUsageModel->dscusgUserID       = $userAssetModel->uasActorID;
+        $discountUsageModel->dscusgUserAssetID  = $userAssetModel->uasID;
+        $discountUsageModel->dscusgDiscountID   = $couponDiscount['id'];
+        $discountUsageModel->dscusgAmount       = $couponDiscount['amount'];
+
+        if ($discountUsageModel->save() == false)
+          throw new ServerErrorHttpException('It is not possible to save coupon discount usage');
+      }
+
+      //user asset
       $userAssetModel->uasValidFromDate = $userAssetModel->uasVoucherItemInfo['params']['startDate'] ?? null;
       $userAssetModel->uasValidToDate = $userAssetModel->uasVoucherItemInfo['params']['endDate'] ?? null;
 

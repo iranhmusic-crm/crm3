@@ -17,7 +17,7 @@ class DiscountModel extends MhaActiveRecord
   public function initSoftDelete()
   {
     $this->softdelete_RemovedStatus  = enuDiscountStatus::Removed;
-    // $this->softdelete_StatusField    = 'dscType';
+    // $this->softdelete_StatusField    = 'dscStatus';
     $this->softdelete_RemovedAtField = 'dscRemovedAt';
     $this->softdelete_RemovedByField = 'dscRemovedBy';
 	}
@@ -38,50 +38,6 @@ class DiscountModel extends MhaActiveRecord
 				'updatedByAttribute' => 'dscUpdatedBy',
 			],
 		];
-	}
-
-	public static function findSystemDiscount($saleableID)
-	{
-		// $userGroups
-
-
-		// $models = self::find()
-		// 	->andWhere([])
-		// 	->asArray()
-		// 	->all();
-
-/*
-'dscID',
-'dscUUID',
-'dscName',
-'dscType',
-'dscCodeString',
-'dscCodeHasSerial',
-'dscCodeSerialCount',
-'dscCodeSerialLength',
-'dscValidFrom',
-'dscValidTo',
-'dscTotalMaxCount',
-'dscTotalMaxPrice',
-'dscPerUserMaxCount',
-'dscPerUserMaxPrice',
-'dscTargetUserIDs',
-'dscTargetProductIDs',
-'dscTargetSaleableIDs',
-'dscReferrers',
-'dscSaleableBasedMultiplier',
-'dscAmount',
-'dscAmountType',
-'dscMaxAmount',
-'dscTotalUsedCount',
-'dscTotalUsedPrice',
-'dscI18NData',
-'dscStatus',
-
-'dscTargetMemberGroupIDs',
-'dscTargetKanoonIDs',
-'dscTargetProductMhaTypes',
-*/
 	}
 
 }

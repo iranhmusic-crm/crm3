@@ -41,9 +41,9 @@ class DiscountUsageSearchModel extends DiscountUsageModel
 				'attributes' => [
 					'dscusgID',
 					'dscusgUserID',
+					'dscusgUserAssetID',
 					'dscusgDiscountID',
 					'dscusgDiscountSerialID',
-					'dscusgUserAssetID',
 					'dscusgAmount',
 					'dscusgCreatedAt',
 				],

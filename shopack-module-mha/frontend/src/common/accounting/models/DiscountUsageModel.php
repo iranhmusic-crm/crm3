@@ -23,9 +23,9 @@ class DiscountUsageModel extends RestClientActiveRecord
 		return [
 			'dscusgID'								=> Yii::t('app', 'ID'),
 			'dscusgUserID'						=> Yii::t('aaa', 'User'),
+			'dscusgUserAssetID'				=> Yii::t('aaa', 'User Asset'),
 			'dscusgDiscountID'				=> Yii::t('aaa', 'Discount'),
 			'dscusgDiscountSerialID'	=> Yii::t('aaa', 'Discount Serial'),
-			'dscusgUserAssetID'				=> Yii::t('aaa', 'User Asset'),
 			'dscusgAmount'						=> Yii::t('aaa', 'Amount'),
 			'dscusgCreatedAt'					=> Yii::t('aaa', 'Created At'),
 
