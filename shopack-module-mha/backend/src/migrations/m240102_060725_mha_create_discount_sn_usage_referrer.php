@@ -77,7 +77,7 @@ CREATE TABLE `tbl_MHA_Accounting_DiscountUsage` (
 	INDEX `FK_tbl_MHA_Accounting_DiscountUsage_tbl_MHA_Accounting_UserAsset` (`dscusgUserAssetID`) USING BTREE,
 	CONSTRAINT `FK_tbl_MHA_Accounting_DiscountUsage_Serial` FOREIGN KEY (`dscusgDiscountSerialID`) REFERENCES `tbl_MHA_Accounting_DiscountSerial` (`dscsnID`) ON UPDATE NO ACTION ON DELETE NO ACTION,
 	CONSTRAINT `FK_tbl_MHA_Accounting_DiscountUsage_tbl_MHA_Accounting_Discount` FOREIGN KEY (`dscusgDiscountID`) REFERENCES `tbl_MHA_Accounting_Discount` (`dscID`) ON UPDATE NO ACTION ON DELETE NO ACTION,
-	CONSTRAINT `FK_tbl_MHA_Accounting_DiscountUsage_tbl_MHA_Accounting_UserAsset` FOREIGN KEY (`dscusgUserAssetID`) REFERENCES `tbl_MHA_Accounting_UserAsset` (`uasID`) ON UPDATE NO ACTION ON DELETE NO ACTION
+	CONSTRAINT `FK_tbl_MHA_Accounting_DiscountUsage_tbl_MHA_Accounting_UserAsset` FOREIGN KEY (`dscusgUserAssetID`) REFERENCES `tbl_MHA_Accounting_UserAsset` (`uasID`) ON UPDATE NO ACTION ON DELETE CASCADE
 )
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
@@ -85,8 +85,45 @@ ENGINE=InnoDB
 SQL
 		);
 
+		$this->execute("DROP TRIGGER IF EXISTS trg_tbl_MHA_Accounting_DiscountUsage_before_insert;");
 		$this->execute(<<<SQL
+CREATE TRIGGER `trg_tbl_MHA_Accounting_DiscountUsage_before_insert` BEFORE INSERT ON `tbl_MHA_Accounting_DiscountUsage` FOR EACH ROW BEGIN
+	DECLARE pNewVoucherID BIGINT;
+	DECLARE pCount INT;
 
+	SELECT uasVoucherID
+	  INTO pNewVoucherID
+	  FROM tbl_MHA_Accounting_UserAsset
+	 WHERE uasID = NEW.dscusgUserAssetID;
+
+	SET pCount = IF(EXISTS(SELECT *
+		FROM tbl_MHA_Accounting_DiscountUsage
+		INNER JOIN tbl_MHA_Accounting_UserAsset
+		ON tbl_MHA_Accounting_UserAsset.uasID = tbl_MHA_Accounting_DiscountUsage.dscusgUserAssetID
+		WHERE uasVoucherID = pNewVoucherID
+		AND dscusgDiscountID = NEW.dscusgDiscountID
+		AND IFNULL(dscusgDiscountSerialID, 0) = IFNULL(NEW.dscusgDiscountSerialID, 0)
+	), 0, 1);
+
+	UPDATE tbl_MHA_Accounting_Discount
+	   SET dscTotalUsedCount = IFNULL(dscTotalUsedCount, 0) + pCount
+	     , dscTotalUsedPrice = IFNULL(dscTotalUsedPrice, 0) + NEW.dscusgAmount
+	 WHERE dscID = NEW.dscusgDiscountID;
+
+/*
+INSERT INTO tbl_SYS_ActionLogs
+   SET atlAction = "trg_tbl_MHA_Accounting_DiscountUsage_before_insert"
+     , atlTarget = "tbl_MHA_Accounting_DiscountUsage"
+     , atlInfo   = JSON_OBJECT(
+				'pCount', pCount,
+				'pNewVoucherID', pNewVoucherID,
+				'dscusgUserAssetID', NEW.dscusgUserAssetID,
+				'dscusgDiscountID', NEW.dscusgDiscountID,
+				'dscusgDiscountSerialID', NEW.dscusgDiscountSerialID,
+				'dscusgAmount', NEW.dscusgAmount
+		 );
+*/
+END
 SQL
 		);
 

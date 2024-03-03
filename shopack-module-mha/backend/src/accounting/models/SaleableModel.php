@@ -131,27 +131,37 @@ SQL;
       //   throw new UnprocessableEntityHttpException("Invalid mha product type ({$userAssetModel->saleable->product->prdMhaType})");
       // }
 
-      //discount usage
+      //discounts
+
+      //id, snid, amount
+      $discounts = [];
+
+      //id => sum(amount)
+      // $discountsAmounts = [];
+
       $systemDiscounts = $userAssetModel->uasVoucherItemInfo['systemDiscounts'] ?? null;
       if (empty($systemDiscounts) == false) {
         foreach ($systemDiscounts as $dk => $dv) {
-          $discountUsageModel = new DiscountUsageModel;
+          $discounts[] = implode(',', [
+            $userAssetModel->uasActorID,
+            $userAssetModel->uasID,
+            $dv['id'],
+            'NULL',
+            $dv['amount']
+          ]);
 
-          $discountUsageModel->dscusgUserID      = $userAssetModel->uasActorID;
-          $discountUsageModel->dscusgUserAssetID = $userAssetModel->uasID;
-          $discountUsageModel->dscusgDiscountID  = $dv['id'];
-          $discountUsageModel->dscusgAmount      = $dv['amount'];
-
-          if ($discountUsageModel->save() == false)
-            throw new ServerErrorHttpException('It is not possible to save system discount usage');
+          // if (array_key_exists('_' . $dv['id'], $discountsAmounts)) {
+          //   $discountsAmounts['_' . $dv['id']] += $dv['amount'];
+          // } else {
+          //   $discountsAmounts['_' . $dv['id']] = $dv['amount'];
+          // }
         }
       }
 
       $couponDiscount = $userAssetModel->uasVoucherItemInfo['couponDiscount'] ?? null;
-      if (($couponDiscount != null) && (empty($couponDiscount['id'] == false))) {
-        $discountUsageModel = new DiscountUsageModel;
+      if (empty($couponDiscount['id'] == false)) {
 
-        //1: find discount serial model
+        $discountSerialID = 'NULL';
         if (empty($couponDiscount['code']) == false) {
           $discountSerialModel = DiscountSerialModel::find()
             ->andWhere(['dscsnDiscountID' => $couponDiscount['id']])
@@ -159,17 +169,40 @@ SQL;
             ->one();
 
           if ($discountSerialModel != null)
-            $discountUsageModel->dscusgDiscountSerialID = $discountSerialModel->dscsnID;
+            $discountSerialID = $discountSerialModel->dscsnID;
         }
 
-        //2: save usage
-        $discountUsageModel->dscusgUserID       = $userAssetModel->uasActorID;
-        $discountUsageModel->dscusgUserAssetID  = $userAssetModel->uasID;
-        $discountUsageModel->dscusgDiscountID   = $couponDiscount['id'];
-        $discountUsageModel->dscusgAmount       = $couponDiscount['amount'];
+        $discounts[] = implode(',', [
+          $userAssetModel->uasActorID,
+          $userAssetModel->uasID,
+          $couponDiscount['id'],
+          $discountSerialID,
+          $couponDiscount['amount']
+        ]);
 
-        if ($discountUsageModel->save() == false)
-          throw new ServerErrorHttpException('It is not possible to save coupon discount usage');
+        // if (array_key_exists('_' . $couponDiscount['id'], $discountsAmounts)) {
+        //   $discountsAmounts['_' . $couponDiscount['id']] += $couponDiscount['amount'];
+        // } else {
+        //   $discountsAmounts['_' . $couponDiscount['id']] = $couponDiscount['amount'];
+        // }
+      }
+
+      if (empty($discounts) == false) {
+        $discountUsageTableName = DiscountUsageModel::tableName();
+        $discounts = '(' . implode('),(', $discounts) . ')';
+
+        $qry =<<<SQL
+INSERT INTO {$discountUsageTableName} (
+      dscusgUserID
+    , dscusgUserAssetID
+    , dscusgDiscountID
+    , dscusgDiscountSerialID
+    , dscusgAmount
+  ) VALUES {$discounts}
+SQL;
+        $rows = Yii::$app->db->createCommand($qry)->execute();
+
+        //update tbl_discount moved to trigger
       }
 
       //user asset
