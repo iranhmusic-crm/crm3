@@ -88,13 +88,16 @@ class MembershipForm extends Model
 		$startDate = $startDate->format('Y-m-d');
 		$endDate = $endDate->format('Y-m-d');
 
-		$saleableModel = SaleableModel::find()
+		$query = SaleableModel::find()
 			->joinWith('product', false, 'INNER JOIN')
 			->andWhere(['prdMhaType' => enuMhaProductType::Membership])
 			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
 			->andWhere(['slbStatus' => enuSaleableStatus::Active])
 			->orderBy('slbAvailableFromDate DESC')
-			->one();
+		;
+		$actorID = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
+		SaleableModel::appendDiscountQuery($query, $actorID);
+		$saleableModel = $query->one();
 
 		if ($saleableModel == null)
 			throw new NotFoundHttpException('Definition of membership at this date was not found.');
@@ -125,6 +128,7 @@ class MembershipForm extends Model
 			$endDate,
 			$years,
 			$unitPrice,
+			//$saleableModel->discountedBasePrice
 			$totalPrice,
 			$saleableModel,
 			$cardPrintSaleableModel,

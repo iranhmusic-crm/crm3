@@ -102,7 +102,7 @@ CREATE TRIGGER `trg_tbl_MHA_Accounting_DiscountUsage_before_insert` BEFORE INSER
 		ON tbl_MHA_Accounting_UserAsset.uasID = tbl_MHA_Accounting_DiscountUsage.dscusgUserAssetID
 		WHERE uasVoucherID = pNewVoucherID
 		AND dscusgDiscountID = NEW.dscusgDiscountID
-		AND IFNULL(dscusgDiscountSerialID, 0) = IFNULL(NEW.dscusgDiscountSerialID, 0)
+--		AND IFNULL(dscusgDiscountSerialID, 0) = IFNULL(NEW.dscusgDiscountSerialID, 0)
 	), 0, 1);
 
 	UPDATE tbl_MHA_Accounting_Discount
