@@ -89,7 +89,9 @@ class MembershipForm extends Model
 		$endDate = $endDate->format('Y-m-d');
 
 		$query = SaleableModel::find()
+			->select(SaleableModel::selectableColumns())
 			->joinWith('product', false, 'INNER JOIN')
+			->joinWith('product.unit')
 			->andWhere(['prdMhaType' => enuMhaProductType::Membership])
 			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
 			->andWhere(['slbStatus' => enuSaleableStatus::Active])
@@ -99,7 +101,7 @@ class MembershipForm extends Model
 		SaleableModel::appendDiscountQuery($query, $actorID);
 		$saleableModel = $query->one();
 
-		if ($saleableModel == null)
+		if (empty($saleableModel->slbID))
 			throw new NotFoundHttpException('Definition of membership at this date was not found.');
 
 		$unitPrice = $saleableModel->slbBasePrice;
