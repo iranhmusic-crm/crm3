@@ -109,20 +109,6 @@ CREATE TRIGGER `trg_tbl_MHA_Accounting_DiscountUsage_before_insert` BEFORE INSER
 	   SET dscTotalUsedCount = IFNULL(dscTotalUsedCount, 0) + pCount
 	     , dscTotalUsedPrice = IFNULL(dscTotalUsedPrice, 0) + NEW.dscusgAmount
 	 WHERE dscID = NEW.dscusgDiscountID;
-
-/*
-INSERT INTO tbl_SYS_ActionLogs
-   SET atlAction = "trg_tbl_MHA_Accounting_DiscountUsage_before_insert"
-     , atlTarget = "tbl_MHA_Accounting_DiscountUsage"
-     , atlInfo   = JSON_OBJECT(
-				'pCount', pCount,
-				'pNewVoucherID', pNewVoucherID,
-				'dscusgUserAssetID', NEW.dscusgUserAssetID,
-				'dscusgDiscountID', NEW.dscusgDiscountID,
-				'dscusgDiscountSerialID', NEW.dscusgDiscountSerialID,
-				'dscusgAmount', NEW.dscusgAmount
-		 );
-*/
 END
 SQL
 		);
@@ -253,7 +239,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_DiscountSerial AFTER UPDATE ON t
 --    END IF;
 
     INSERT INTO tbl_SYS_ActionLogs
-        SET atlBy     = NEW.dscsnUpdatedBy
+        SET atlBy     = NULL
           , atlAction = "UPDATE"
           , atlTarget = "tbl_MHA_Accounting_DiscountSerial"
           , atlInfo   = JSON_OBJECT("dscsnID", OLD.dscsnID, "old", Changes);
@@ -280,7 +266,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_DiscountUsage AFTER UPDATE ON tb
 --    END IF;
 
     INSERT INTO tbl_SYS_ActionLogs
-        SET atlBy     = NEW.dscusgUpdatedBy
+        SET atlBy     = NULL
           , atlAction = "UPDATE"
           , atlTarget = "tbl_MHA_Accounting_DiscountUsage"
           , atlInfo   = JSON_OBJECT("dscusgID", OLD.dscusgID, "old", Changes);

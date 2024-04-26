@@ -31,7 +31,7 @@ UPDATE tbl_MHA_Accounting_UserAsset
                "service",       tmp1.service
              , "key",           tmp1.`key`
 --             , "slbID",         tmp1.slbID
-              "desc",          tmp1.`desc`
+             , "desc",          tmp1.`desc`
 --             , "qty",           tmp1.qty
 --             , "unit",          tmp1.unit
 --             , "prdType",       tmp1.prdType
