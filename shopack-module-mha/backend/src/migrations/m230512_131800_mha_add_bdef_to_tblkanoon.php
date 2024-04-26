@@ -15,11 +15,11 @@ class m230512_131800_mha_add_bdef_to_tblkanoon extends Migration
 	 */
 	public function safeUp()
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Kanoon`
 	ADD COLUMN `knnDescFieldType` VARCHAR(64) NULL AFTER `knnName`,
 	ADD COLUMN `knnDescFieldLabel` VARCHAR(64) NULL DEFAULT NULL AFTER `knnDescFieldType`;
-SQLSTR
+SQL
 		);
 
 	}

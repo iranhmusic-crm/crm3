@@ -188,7 +188,7 @@ class MigrateDataController extends Controller
 
   public function queryExecute($qry, $function, $line) {
     try {
-      return Yii::$app->db->createCommand($qry )->execute();
+      return Yii::$app->db->createCommand($qry)->execute();
     } catch (\Throwable $th) {
       $this->trace('** EXCEPTION: ' . $th->getMessage());
       $this->trace($qry);
@@ -199,7 +199,7 @@ class MigrateDataController extends Controller
 
   public function queryAll($qry, $function, $line) {
     try {
-      return Yii::$app->db->createCommand($qry )->queryAll();
+      return Yii::$app->db->createCommand($qry)->queryAll();
     } catch (\Throwable $th) {
       $this->trace('** EXCEPTION: ' . $th->getMessage());
       $this->trace($qry);
@@ -210,7 +210,7 @@ class MigrateDataController extends Controller
 
   public function queryOne($qry, $function, $line) {
     try {
-      return Yii::$app->db->createCommand($qry )->queryOne();
+      return Yii::$app->db->createCommand($qry)->queryOne();
     } catch (\Throwable $th) {
       $this->trace('** EXCEPTION: ' . $th->getMessage());
       $this->trace($qry);
@@ -318,7 +318,7 @@ class MigrateDataController extends Controller
       ->getTableSchema('tbl_convert');
 
     if ($tableSchema === null) {
-      $qry =<<<SQLSTR
+      $qry =<<<SQL
 CREATE TABLE `tbl_convert` (
 	`tableName` VARCHAR(256) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`lastID` BIGINT(20) UNSIGNED NOT NULL,
@@ -329,7 +329,7 @@ CREATE TABLE `tbl_convert` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR;
+SQL;
 
       $this->queryExecute($qry, __FUNCTION__, __LINE__);
       return [];

@@ -9,7 +9,7 @@ class m230902_120826_mha_add_somefields_to_member extends Migration
 {
     public function safeUp()
     {
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member`
 	ADD COLUMN `mbrInstrumentID` INT UNSIGNED NULL DEFAULT NULL AFTER `mbrOwnOrgName`,
 	ADD COLUMN `mbrSingID` INT UNSIGNED NULL DEFAULT NULL AFTER `mbrInstrumentID`,
@@ -17,19 +17,19 @@ ALTER TABLE `tbl_MHA_Member`
 	ADD COLUMN `mbrJob` VARCHAR(512) NULL DEFAULT NULL AFTER `mbrResearchID`,
 	ADD COLUMN `mbrArtDegree` TINYINT UNSIGNED NULL DEFAULT NULL AFTER `mbrJob`,
 	ADD COLUMN `mbrHonarCreditCode` VARCHAR(64) NULL DEFAULT NULL AFTER `mbrArtDegree`;
-SQLSTR
+SQL
         );
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member`
 	ADD CONSTRAINT `FK_tbl_MHA_Member_tbl_MHA_BasicDefinition_I` FOREIGN KEY (`mbrInstrumentID`) REFERENCES `tbl_MHA_BasicDefinition` (`bdfID`) ON UPDATE NO ACTION ON DELETE NO ACTION,
 	ADD CONSTRAINT `FK_tbl_MHA_Member_tbl_MHA_BasicDefinition_S` FOREIGN KEY (`mbrSingID`) REFERENCES `tbl_MHA_BasicDefinition` (`bdfID`) ON UPDATE NO ACTION ON DELETE NO ACTION,
 	ADD CONSTRAINT `FK_tbl_MHA_Member_tbl_MHA_BasicDefinition_R` FOREIGN KEY (`mbrResearchID`) REFERENCES `tbl_MHA_BasicDefinition` (`bdfID`) ON UPDATE NO ACTION ON DELETE NO ACTION;
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Member;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Member AFTER UPDATE ON tbl_MHA_Member FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -63,7 +63,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Member AFTER UPDATE ON tbl_MHA_Member FOR E
           , atlInfo   = JSON_OBJECT("mbrUserID", OLD.mbrUserID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
         );
 
     }

@@ -9,7 +9,7 @@ class m230829_084503_mha_create_tblreport extends Migration
 {
     public function safeUp()
     {
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_Report` (
     `rptID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `rptUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci',
@@ -36,12 +36,12 @@ CREATE TABLE `tbl_MHA_Report` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Report;");
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Report AFTER UPDATE ON tbl_MHA_Report FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -65,7 +65,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Report AFTER UPDATE ON tbl_MHA_Report FOR E
           , atlInfo   = JSON_OBJECT("rptID", OLD.rptID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
         );
 
     }

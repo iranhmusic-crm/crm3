@@ -12,24 +12,24 @@ class m230529_130257_mha_add_guid_column_to_all extends Migration
 {
 	public function addUUIDTo($tableName, $prefix, $idFieldSuffix = 'ID')
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `{$tableName}`
 	ADD COLUMN `{$prefix}UUID` VARCHAR(38) NULL AFTER `{$prefix}{$idFieldSuffix}`;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 UPDATE `{$tableName}`
 	SET `{$prefix}UUID` = LOWER(UUID())
 	WHERE `{$prefix}UUID` IS NULL;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `{$tableName}`
 	CHANGE COLUMN `{$prefix}UUID` `{$prefix}UUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `{$prefix}{$idFieldSuffix}`,
 	ADD UNIQUE INDEX `{$prefix}UUID` (`{$prefix}UUID`);
-SQLSTR
+SQL
 		);
 	}
 

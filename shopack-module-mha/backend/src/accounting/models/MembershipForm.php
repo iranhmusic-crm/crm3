@@ -26,8 +26,8 @@ use shopack\base\common\accounting\enums\enuAmountType;
 
 class MembershipForm extends Model
 {
-	//list ($startDate, $endDate, $years, $price, $saleableModel)
-	public static function getRenewalInfo($memberID)
+	//list ($startDate, $endDate, $years, $price, $saleableModel, $cardPrintSaleableModel, $printCardAmount)
+	public static function getRenewalInfo($memberID, $printCard = true)
 	{
 		if (empty($memberID))
 			throw new UnprocessableEntityHttpException('The MemberID not provided');
@@ -61,44 +61,89 @@ class MembershipForm extends Model
 
 			if ($startDate > $now) {
 				$remained = date_diff($now, $startDate);
-				if ($remained->days > 30) {
-					throw new UnprocessableEntityHttpException('There are more than 30 days of current membership left');
+				if ($remained->days > (31 * 3)) {
+					throw new UnprocessableEntityHttpException('There are more than 3 months of current membership left');
 				}
 			}
 		}
 
 		$endDate = clone $startDate;
 		$endDate->add(\DateInterval::createFromDateString('1 year'));
-		// $endDate->sub(\DateInterval::createFromDateString('1 day'));
+		// $endDate->sub(\DateInterval::createFromDateString('250 day'));
 
 		$years = 1;
-		while ($endDate < $now) {
+		$target = clone $now;
+		$target->add(\DateInterval::createFromDateString('6 month'));
+		while ($endDate < $target) {
 			$endDate->add(\DateInterval::createFromDateString('1 year'));
 			++$years;
 		}
 
+		// $diff = $endDate->diff($now)->days;
+		// if ($diff < (365 / 2)) {
+		// 	$endDate->add(\DateInterval::createFromDateString('1 year'));
+		// 	++$years;
+		// }
+
 		$startDate = $startDate->format('Y-m-d');
 		$endDate = $endDate->format('Y-m-d');
 
-		$saleableModel = SaleableModel::find()
+		$query = SaleableModel::find()
+			->select(SaleableModel::selectableColumns())
 			->joinWith('product', false, 'INNER JOIN')
+			->joinWith('product.unit')
 			->andWhere(['prdMhaType' => enuMhaProductType::Membership])
 			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
 			->andWhere(['slbStatus' => enuSaleableStatus::Active])
 			->orderBy('slbAvailableFromDate DESC')
-			->one();
+		;
+		$actorID = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
+		SaleableModel::appendDiscountQuery($query, $actorID);
+		$saleableModel = $query->one();
 
-		if ($saleableModel == null)
+		if (empty($saleableModel->slbID))
 			throw new NotFoundHttpException('Definition of membership at this date was not found.');
 
 		$unitPrice = $saleableModel->slbBasePrice;
 		$totalPrice = $years * $unitPrice;
 
-		return [$startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableModel];
+		//-----------------
+		$cardPrintSaleableModel = null;
+		$printCardAmount = 0;
+
+		if ($printCard) {
+			$cardPrintSaleableModel = SaleableModel::find()
+				->joinWith('product', false, 'INNER JOIN')
+				->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard])
+				->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+				->andWhere(['slbStatus' => enuSaleableStatus::Active])
+				->orderBy('slbAvailableFromDate DESC')
+				->one();
+
+			if ($cardPrintSaleableModel != null)
+				$printCardAmount = $cardPrintSaleableModel->slbBasePrice;
+		}
+
+		//-----------------
+		return [
+			$startDate,
+			$endDate,
+			$years,
+			$unitPrice,
+			//$saleableModel->discountedBasePrice
+			$totalPrice,
+			$saleableModel,
+			$cardPrintSaleableModel,
+			$printCardAmount
+		];
 	}
 
-	public static function addToBasket($basketdata, $saleableID = null)
-	{
+	public static function addToBasket(
+		$basketdata,
+		$saleableID = null,
+		$printCard = true,
+		$discountCode = null
+	) {
 		if (is_string($basketdata))
 			$basketdata = Json::decode(base64_decode($basketdata));
 
@@ -106,143 +151,56 @@ class MembershipForm extends Model
 			$basketdata = [];
 
 		//get saleable info
-		list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableModel)
-			= self::getRenewalInfo(Yii::$app->user->id);
-
-		//todo: check user langauge from request header
-		$desc = implode(' ', [
-			$saleableModel->slbName,
-			'-',
-			'از',
-			Yii::$app->formatter->asJalali($startDate),
-			'تا',
-			Yii::$app->formatter->asJalali($endDate),
-			'به مدت',
+		list (
+			$startDate,
+			$endDate,
 			$years,
-			'سال'
-		]);
+			$unitPrice,
+			$totalPrice,
+			$saleableModel,
+			$cardPrintSaleableModel
+		) = self::getRenewalInfo(Yii::$app->user->id, $printCard);
 
-		//card print
-		$cardPrintSaleableModel = SaleableModel::find()
-			->joinWith('product', false, 'INNER JOIN')
-			->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard])
-			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
-			->andWhere(['slbStatus' => enuSaleableStatus::Active])
-			->orderBy('slbAvailableFromDate DESC')
-			->one();
-
-		if ($cardPrintSaleableModel == null)
+		if ($printCard && ($cardPrintSaleableModel == null))
 			throw new NotFoundHttpException('Definition of membership card at this date was not found.');
 
-		$parentModule = Yii::$app->controller->module->module;
+		//1: add membership to basket:
+		$membershipBasketModel = new BasketModel;
+		$membershipBasketModel->saleableCode   = $saleableModel->slbCode;
+		$membershipBasketModel->qty            = $years;
+		$membershipBasketModel->maxQty         = $years;
+		$membershipBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
+		$membershipBasketModel->orderParams    = [
+			'startDate'	=> $startDate,
+			'endDate'		=> $endDate,
+		];
+		// $membershipBasketModel->orderAdditives = ;
+		$membershipBasketModel->discountCode   = $discountCode;
+		// $membershipBasketModel->referrer       = ;
+		// $membershipBasketModel->referrerParams = ;
+		// $membershipBasketModel->apiTokenID     = ;
+		// $membershipBasketModel->itemKey        = ;
+		[$membershipItemKey, $lastPreVoucher] = $membershipBasketModel->addToBasket();
 
-		$membershipKey = Uuid::uuid4()->toString();
-
-		//member group
-		$memberMemberGroupModels = MemberMemberGroupModel::find()
-			->innerJoinWith('memberGroup')
-			->andWhere(['mbrmgpMemberID' => Yii::$app->user->id])
-			->andWhere(['OR',
-				'mbrmgpStartAt IS NULL',
-				['<=', 'mbrmgpStartAt', new Expression('NOW()')],
-			])
-			->andWhere(['OR',
-				'mbrmgpEndAt IS NULL',
-				['>=', 'mbrmgpEndAt', new Expression('NOW()')],
-			])
-			->all();
-
-		$membershipDiscountAmount = 0;
-		$membershipCardDiscountAmount = 0;
-
-		if (empty($memberMemberGroupModels) == false) {
-			foreach ($memberMemberGroupModels as $memberMemberGroup) {
-				if ((empty($memberMemberGroup->memberGroup->mgpMembershipDiscountAmount) == false)
-					&& (empty($memberMemberGroup->memberGroup->mgpMembershipDiscountType) == false)
-				) {
-					if ($memberMemberGroup->memberGroup->mgpMembershipDiscountType == enuAmountType::Percent) {
-						$amount = $memberMemberGroup->memberGroup->mgpMembershipDiscountAmount * $totalPrice / 100.0;
-					} else {
-						$amount = min($totalPrice, $memberMemberGroup->memberGroup->mgpMembershipDiscountAmount);
-					}
-
-					if ($amount > $membershipDiscountAmount)
-						$membershipDiscountAmount = $amount;
-				}
-
-				if ((empty($memberMemberGroup->memberGroup->mgpMembershipCardDiscountAmount) == false)
-					&& (empty($memberMemberGroup->memberGroup->mgpMembershipCardDiscountType) == false)
-				) {
-					if ($memberMemberGroup->memberGroup->mgpMembershipCardDiscountType == enuAmountType::Percent) {
-						$amount = $memberMemberGroup->memberGroup->mgpMembershipCardDiscountAmount * $cardPrintSaleableModel->slbBasePrice / 100.0;
-					} else {
-						$amount = min($cardPrintSaleableModel->slbBasePrice, $memberMemberGroup->memberGroup->mgpMembershipCardDiscountAmount);
-					}
-
-					if ($amount > $membershipCardDiscountAmount)
-						$membershipCardDiscountAmount = $amount;
-				}
-			}
-
+		//2: add membership CARD to basket:
+		if ($printCard) {
+			$membershipCardBasketModel = new BasketModel;
+			$membershipCardBasketModel->saleableCode   = $cardPrintSaleableModel->slbCode;
+			$membershipCardBasketModel->qty            = 1;
+			$membershipCardBasketModel->maxQty         = 1;
+			$membershipCardBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
+			// $membershipCardBasketModel->orderParams    = ;
+			// $membershipCardBasketModel->orderAdditives = ;
+			$membershipCardBasketModel->discountCode   = $discountCode;
+			// $membershipCardBasketModel->referrer       = ;
+			// $membershipCardBasketModel->referrerParams = ;
+			// $membershipCardBasketModel->apiTokenID     = ;
+			// $membershipCardBasketModel->itemKey        = ;
+			$membershipCardBasketModel->dependencies		= [$membershipItemKey];
+			[$membershipCardItemKey, $lastPreVoucher] = $membershipCardBasketModel->addToBasket();
 		}
 
-		//
-		$data = [
-			'userid' => Yii::$app->user->id,
-			'items' => [
-				[//1: membership
-					'key'				=> $membershipKey,
-					'service'		=> $parentModule->id,
-					// 'slbkey'		=> self::saleableKey(),
-					'slbid'			=> $saleableModel->slbID,
-					'desc' 			=> $desc,
-					'qty'				=> $years,
-					'unit'			=> $saleableModel->product->unit->untName,
-					'prdtype'		=> $saleableModel->product->prdType,
-					'unitprice' => $unitPrice,
-					'slbinfo'		=> [
-						'startDate' => $startDate,
-						'endDate' => $endDate,
-					],
-					'maxqty'		=> $years,
-					'qtystep'		=> 0, //0: do not allow to change qty in basket
-					'discount'	=> $membershipDiscountAmount,
-				],
-				[//2: card print
-					'service'		=> $parentModule->id,
-					'slbid'			=> $cardPrintSaleableModel->slbID,
-					'desc' 			=> $cardPrintSaleableModel->slbName,
-					'qty'				=> 1,
-					'unit'			=> $cardPrintSaleableModel->product->unit->untName,
-					'prdtype'		=> $cardPrintSaleableModel->product->prdType, //always is physical
-					'unitprice' => $cardPrintSaleableModel->slbBasePrice,
-					'maxqty'		=> 1,
-					'qtystep'		=> 0, //0: do not allow to change qty in basket
-					'discount'	=> $membershipCardDiscountAmount,
-					'dependencies' => [$membershipKey],
-				],
-			],
-		];
-		$data = Json::encode($data);
-
-		if (empty($parentModule->servicePrivateKey))
-			$data = base64_encode($data);
-		else
-			$data = RsaPrivate::model($parentModule->servicePrivateKey)->encrypt($data);
-
-		list ($resultStatus, $resultData) = HttpHelper::callApi('aaa/basket/item',
-			HttpHelper::METHOD_POST,
-			[],
-			[
-				'data' => $data,
-				'service'	=> $parentModule->id,
-			]
-		);
-
-		if ($resultStatus < 200 || $resultStatus >= 300)
-			throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
-
-		return $resultData;
+		return [$membershipItemKey, $lastPreVoucher];
 	}
 
 }

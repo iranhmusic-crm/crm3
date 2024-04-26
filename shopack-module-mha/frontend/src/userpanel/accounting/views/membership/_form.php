@@ -53,41 +53,31 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 			// 	'saleableID',
 			// 	'type' => FormBuilder::FIELD_STATIC,
 			// ],
+			'<hr>',
+			[
+				'printCard',
+				'type' => FormBuilder::FIELD_CHECKBOX,
+				'widgetOptions' => [[], true],
+			],
+			[
+				'printCardAmount',
+				'type' => FormBuilder::FIELD_STATIC,
+				'staticFormat' => 'toman', //['currency', 'IRT'],
+				'visibleConditions' => [
+					'printCard' => 1,
+				],
+			],
+			'<hr>',
+			[
+				'discountCode',
+			],
 		]);
-
-		// $builder->fields([
-			// [
-			// 	'mbrshpStartDate',
-			// 	'type' => FormBuilder::FIELD_WIDGET,
-			// 	'widget' => DatePicker::class,
-			// 	'fieldOptions' => [
-			// 		'addon' => [
-			// 			'append' => [
-			// 				'content' => '<i class="far fa-calendar-alt"></i>',
-			// 			],
-			// 		],
-			// 	],
-			// ],
-			// 'mbrshpEndDate',
-			// [
-			// 	'mbrshpStatus',
-			// 	'type' => FormBuilder::FIELD_WIDGET,
-			// 	'widget' => Select2::class,
-			// 	'widgetOptions' => [
-			// 		'data' => enuMemberMembershipStatus::getList(),
-			// 		'options' => [
-			// 			'placeholder' => Yii::t('app', '-- Choose --'),
-			// 			'dir' => 'rtl',
-			// 		],
-			// 	],
-			// ],
-		// ]);
 	?>
 
 	<?php $builder->beginFooter(); ?>
 		<div class="card-footer">
 			<div class="float-end">
-				<?= Html::activeSubmitButton($model) ?>
+				<?= Html::activeSubmitButton($model, Yii::t('aaa', 'Add To Basket')) ?>
 			</div>
 			<div>
 				<?= Html::formErrorSummary($model); ?>

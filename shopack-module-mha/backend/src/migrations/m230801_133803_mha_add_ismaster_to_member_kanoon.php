@@ -9,28 +9,28 @@ class m230801_133803_mha_add_ismaster_to_member_kanoon extends Migration
 {
     public function safeUp()
     {
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member_Kanoon`
 	ADD COLUMN `mbrknnIsMaster` BIT NULL AFTER `mbrknnParams`;
-SQLSTR
+SQL
         );
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 UPDATE `tbl_MHA_Member_Kanoon`
     SET `mbrknnIsMaster` = 1
     WHERE `mbrknnIsMaster` IS NULL;
-SQLSTR
+SQL
         );
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member_Kanoon`
 	CHANGE COLUMN `mbrknnIsMaster` `mbrknnIsMaster` BIT(1) NOT NULL AFTER `mbrknnParams`;
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Member_Kanoon;");
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Member_Kanoon AFTER UPDATE ON tbl_MHA_Member_Kanoon FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -57,7 +57,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Member_Kanoon AFTER UPDATE ON tbl_MHA_Membe
           , atlInfo   = JSON_OBJECT("mbrknnID", OLD.mbrknnID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
         );
 
     }

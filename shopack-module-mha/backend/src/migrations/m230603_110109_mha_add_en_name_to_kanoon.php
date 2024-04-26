@@ -12,10 +12,10 @@ class m230603_110109_mha_add_en_name_to_kanoon extends Migration
 {
 	public function safeUp()
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Kanoon`
 	ADD COLUMN `knnNameEn` VARCHAR(128) NULL AFTER `knnName`;
-SQLSTR
+SQL
 		);
 
 	}

@@ -9,10 +9,10 @@ class m230605_075911_mha_add_title_to_mbr_doc extends Migration
 {
 	public function safeUp()
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member_Document`
 	ADD COLUMN `mbrdocTitle` VARCHAR(256) NULL AFTER `mbrdocDocumentID`;
-SQLSTR
+SQL
 		);
 
 	}

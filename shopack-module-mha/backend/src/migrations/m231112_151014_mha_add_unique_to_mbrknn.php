@@ -9,10 +9,10 @@ class m231112_151014_mha_add_unique_to_mbrknn extends Migration
 {
 	public function safeUp()
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member_Kanoon`
 	ADD UNIQUE INDEX `mbrknnMemberID_mbrknnKanoonID_mbrknnStatus` (`mbrknnMemberID`, `mbrknnKanoonID`, `mbrknnStatus`);
-SQLSTR
+SQL
     );
 
 	}

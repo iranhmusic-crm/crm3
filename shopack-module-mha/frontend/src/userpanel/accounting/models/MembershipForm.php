@@ -21,16 +21,30 @@ class MembershipForm extends Model
 	public $unitPrice;
 	public $totalPrice;
 	public $saleableID;
+	public $discountCode;
+	public $printCard = true;
+	public $printCardAmount;
+
+	public function rules()
+	{
+		return [
+			['discountCode', 'string'],
+			['printCard', 'safe'],
+		];
+	}
 
 	public function attributeLabels()
 	{
 		return [
-			'startDate'		=> Yii::t('app', 'Start Date'),
-			'endDate'			=> Yii::t('app', 'End Date'),
-			'years'				=> Yii::t('app', 'Year'),
-			'unitPrice'		=> Yii::t('aaa', 'Unit Price'),
-			'totalPrice'	=> Yii::t('aaa', 'Total Price'),
-			'saleableID'	=> Yii::t('aaa', 'Saleable'),
+			'startDate'				=> Yii::t('app', 'Start Date'),
+			'endDate'					=> Yii::t('app', 'End Date'),
+			'years'						=> Yii::t('app', 'Year'),
+			'unitPrice'				=> Yii::t('aaa', 'Unit Price'),
+			'totalPrice'			=> Yii::t('aaa', 'Total Price'),
+			'saleableID'			=> Yii::t('aaa', 'Saleable'),
+			'discountCode'		=> Yii::t('aaa', 'Discount Code'),
+			'printCard'				=> Yii::t('mha', 'Print Card'),
+			'printCardAmount'	=> Yii::t('mha', 'Card Print Price'),
 		];
 	}
 
@@ -39,7 +53,7 @@ class MembershipForm extends Model
 		if (parent::load($data, $formName))
 			return true;
 
-		list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableID) =
+		list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableID, $printCardAmount) =
 			self::getRenewalInfo();
 
 		$this->startDate	= $startDate;
@@ -48,6 +62,7 @@ class MembershipForm extends Model
 		$this->unitPrice	= $unitPrice;
 		$this->totalPrice	= $totalPrice;
 		$this->saleableID	= $saleableID;
+		$this->printCardAmount	= $printCardAmount;
 
 		return false;
 	}
@@ -71,6 +86,7 @@ class MembershipForm extends Model
 			$resultData['unitPrice'],
 			$resultData['totalPrice'],
 			$resultData['saleableID'],
+			$resultData['printCardAmount'],
 		];
 	}
 
@@ -82,11 +98,15 @@ class MembershipForm extends Model
 				[],
 				[
 					'basketdata' => $basketdata,
+					'printCard' => $this->printCard,
+					'discountCode' => $this->discountCode,
 				]
 			);
 
 			if ($resultStatus < 200 || $resultStatus >= 300)
 				throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
+
+			return $resultData;
 
 			// $newBase64Basketdata = $resultData['basketdata'];
 			// return $newBase64Basketdata;
@@ -95,7 +115,7 @@ class MembershipForm extends Model
 			if (YII_ENV_DEV)
 				throw $th;
 
-			$this->addError('', $th->getMessage());
+			$this->addError('', Yii::t('mha', $th->getMessage()));
 			return false;
 		}
 

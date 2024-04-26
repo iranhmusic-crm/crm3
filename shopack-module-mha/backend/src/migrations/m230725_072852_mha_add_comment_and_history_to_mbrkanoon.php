@@ -9,18 +9,18 @@ class m230725_072852_mha_add_comment_and_history_to_mbrkanoon extends Migration
 {
     public function safeUp()
     {
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member_Kanoon`
     CHANGE COLUMN `mbrknnDesc` `mbrknnParams` JSON NULL DEFAULT NULL AFTER `mbrknnKanoonID`,
     ADD COLUMN `mbrknnComment` TEXT NULL AFTER `mbrknnMembershipDegree`,
     ADD COLUMN `mbrknnHistory` JSON NULL AFTER `mbrknnComment`;
-SQLSTR
+SQL
         );
         $this->alterColumn('tbl_MHA_Member_Kanoon', 'mbrknnDesc', $this->json());
         $this->alterColumn('tbl_MHA_Member_Kanoon', 'mbrknnHistory', $this->json());
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_Member_Kanoon_before_insert`;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_Member_Kanoon_before_insert` BEFORE INSERT ON `tbl_MHA_Member_Kanoon` FOR EACH ROW BEGIN
     DECLARE Changes JSON;
 
@@ -35,11 +35,11 @@ CREATE TRIGGER `trg_tbl_MHA_Member_Kanoon_before_insert` BEFORE INSERT ON `tbl_M
 
     SET NEW.mbrknnHistory = JSON_MERGE_PRESERVE(COALESCE(NEW.mbrknnHistory, '[]'), Changes);
 END
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_Member_Kanoon_before_update`;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_Member_Kanoon_before_update` BEFORE UPDATE ON `tbl_MHA_Member_Kanoon` FOR EACH ROW BEGIN
     DECLARE Changes JSON;
 
@@ -58,11 +58,11 @@ CREATE TRIGGER `trg_tbl_MHA_Member_Kanoon_before_update` BEFORE UPDATE ON `tbl_M
         SET NEW.mbrknnHistory = JSON_MERGE_PRESERVE(COALESCE(OLD.mbrknnHistory, '[]'), Changes);
     END IF;
 END
-SQLSTR
+SQL
         );
 
         $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Member_Kanoon;");
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Member_Kanoon AFTER UPDATE ON tbl_MHA_Member_Kanoon FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -88,7 +88,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Member_Kanoon AFTER UPDATE ON tbl_MHA_Membe
           , atlInfo   = JSON_OBJECT("mbrknnID", OLD.mbrknnID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
         );
 
     }

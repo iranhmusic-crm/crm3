@@ -12,7 +12,7 @@ class m230511_160255_mha_create_basic_defs extends Migration
 {
 	public function safeUp()
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TABLE `tbl_MHA_BasicDefinition` (
 	`bdfID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`bdfType` CHAR(1) NOT NULL COMMENT 'I:Instrument, S:Sing, R:Research' COLLATE 'utf8mb4_unicode_ci',
@@ -30,13 +30,13 @@ CREATE TABLE `tbl_MHA_BasicDefinition` (
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
 ;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member_Kanoon`
 	ADD COLUMN `mbrknnDesc` JSON NULL AFTER `mbrknnKanoonID`;
-SQLSTR
+SQL
 		);
 		$this->alterColumn('tbl_MHA_Member_Kanoon', 'mbrknnDesc', $this->json());
 

@@ -8,6 +8,9 @@
 use shopack\base\common\helpers\StringHelper;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\grid\GridView;
+use shopack\base\common\accounting\enums\enuAmountType;
+use shopack\base\common\accounting\enums\enuDiscountStatus;
+use shopack\base\common\accounting\enums\enuDiscountType;
 
 $modelClass = Yii::$app->controller->modelClass;
 
@@ -48,11 +51,55 @@ $this->params['breadcrumbs'][] = $this->title;
               return Html::a($model->dscName, ['view', 'id' => $model->dscID]);
             },
           ],
+          [
+            'attribute' => 'dscType',
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $widget) {
+              return enuDiscountType::getIcon($model->dscType)
+                . ' '
+                . enuDiscountType::getLabel($model->dscType);
+            },
+          ],
+          'dscCodeString',
+          'dscCodeHasSerial:boolean',
+          'dscCodeSerialCount:decimal',
+          [
+            'attribute' => 'dscAmount',
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $widget) {
+              return "<span class='d-inline-block dir-ltr'>"
+                . ($model->dscType == enuDiscountType::SystemIncrease ? '+' : '')
+                . Yii::$app->formatter->asDecimal($model->dscAmount)
+                . "</span>"
+                . ' '
+                . ($model->dscAmountType == enuAmountType::Percent ? 'درصد' : 'تومان')
+              ;
+            },
+          ],
           // [
-          //   'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
-          //   'enumClass' => enuDiscountStatus::class,
-          //   'attribute' => 'dscStatus',
+          //   'attribute' => 'dscAmountType',
+          //   'value' => function ($model, $key, $index, $widget) {
+          //     return enuAmountType::getLabel($model->dscAmountType);
+          //   },
           // ],
+          [
+            'attribute' => 'dscMaxAmount',
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $widget) {
+              if (empty($model->dscMaxAmount))
+                return null;
+
+              return Yii::$app->formatter->asDecimal($model->dscMaxAmount)
+                . ' '
+                . ($model->dscAmountType == enuAmountType::Percent ? 'تومان' : 'درصد')
+              ;
+            },
+          ],
+          [
+            'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
+            'enumClass' => enuDiscountStatus::class,
+            'attribute' => 'dscStatus',
+          ],
           [
             'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
             'header' => $modelClass::canCreate() ? Html::createButton(null, null, [

@@ -21,6 +21,8 @@ use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
 use iranhmusic\shopack\mha\backend\accounting\models\SaleableModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
+//todo: (vi) must be deprecated?
+
 class MembershipCardForm extends Model
 {
 	//list ($membershipUserAssetID, $price, $saleableModel, $lastMembership)
@@ -75,7 +77,7 @@ class MembershipCardForm extends Model
 		//get saleable info
 		list ($membershipUserAssetID, $price, $saleableModel, $lastMembership) = self::getRenewalInfo(Yii::$app->user->id);
 
-		$parentModule = Yii::$app->controller->module->module;
+		$parentModule = Yii::$app->topModule;
 
 		$data = [
 			'userid' => Yii::$app->user->id,

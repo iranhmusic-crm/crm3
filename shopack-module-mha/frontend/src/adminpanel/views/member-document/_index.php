@@ -48,8 +48,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
             ]) . '</td></tr>';
             if (empty($model->mbrdocHistory == false)) {
               $items = array_reverse($model->mbrdocHistory);
-              foreach ($items as $k => $item)
-              {
+              foreach ($items as $k => $item) {
                 $result[] = '<tr><td>' . implode('</td><td>', [
                   $k + 1,
                   empty($item['at']) ? '' : Yii::$app->formatter->asJalaliWithTime($item['at']),

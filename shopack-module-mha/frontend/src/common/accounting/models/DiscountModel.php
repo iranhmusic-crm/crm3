@@ -25,8 +25,8 @@ class DiscountModel extends RestClientActiveRecord
 			'dscID'                      => Yii::t('app', 'ID'),
 			// 'dscUUID'
 			'dscName'                    => Yii::t('app', 'Name'),
-
 			'dscType'                    => Yii::t('aaa', 'Discount Type'),
+
 			'dscCodeString'              => Yii::t('aaa', 'Discount Code'),
 			'dscCodeHasSerial'           => Yii::t('aaa', 'Code Has Serial'),
 			'dscCodeSerialCount'         => Yii::t('aaa', 'Code Serial Count'),
@@ -41,6 +41,7 @@ class DiscountModel extends RestClientActiveRecord
 			'dscTargetUserIDs'           => Yii::t('mha', 'Members'),
 			'dscTargetProductIDs'        => Yii::t('aaa', 'Products'),
 			'dscTargetSaleableIDs'       => Yii::t('aaa', 'Saleables'),
+			'dscReferrers'               => Yii::t('aaa', 'Referrers'),
 			'dscSaleableBasedMultiplier' => Yii::t('aaa', 'Saleable Based Multiplier'),
 			'dscAmount'               	 => Yii::t('aaa', 'Discount Amount'),
 			'dscAmountType'              => Yii::t('aaa', 'Amount Type'),

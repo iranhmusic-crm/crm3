@@ -9,33 +9,33 @@ class m231113_162951_mha_rename_coupon_to_discount extends Migration
 {
 	public function safeUp()
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_UserAsset`
 	DROP INDEX `FK_tbl_MHA_Accounting_UserAsset_tbl_Coupon`,
 	DROP FOREIGN KEY `FK_tbl_MHA_Accounting_UserAsset_tbl_Coupon`;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 RENAME TABLE `tbl_MHA_Accounting_Coupon` TO `tbl_MHA_Accounting_Discount`;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `cpnID` `dscID` INT(10) UNSIGNED NOT NULL FIRST,
 	DROP PRIMARY KEY;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscID` `dscID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
 	ADD PRIMARY KEY (`dscID`) USING BTREE;
-SQLSTR
+SQL
 		);
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	DROP INDEX `cpnUUID`,
 	DROP INDEX `cpnCode_cpnRemovedAt`,
@@ -46,10 +46,10 @@ ALTER TABLE `tbl_MHA_Accounting_Discount`
 	DROP INDEX `cpnStatus`,
 	DROP INDEX `cpnValidFrom`,
 	DROP INDEX `cpnType`;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `cpnUUID` `dscUUID` VARCHAR(38) NOT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `dscID`,
 	CHANGE COLUMN `cpnCode` `dscCode` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `dscUUID`,
@@ -83,51 +83,51 @@ ALTER TABLE `tbl_MHA_Accounting_Discount`
 	ADD INDEX `dscStatus` (`dscStatus`) USING BTREE,
 	ADD INDEX `dscValidFrom` (`dscValidFrom`) USING BTREE,
 	ADD INDEX `dscType` (`dscAmountType`) USING BTREE;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscName` `dscName` VARCHAR(64) NOT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `dscUUID`,
 	CHANGE COLUMN `dscCode` `dscCode` VARCHAR(32) NULL COLLATE 'utf8mb4_unicode_ci' AFTER `dscName`,
 	CHANGE COLUMN `dscPrimaryCount` `dscPrimaryCount` INT(10) UNSIGNED NULL AFTER `dscCode`,
 	CHANGE COLUMN `dscTotalMaxAmount` `dscTotalMaxAmount` INT(10) UNSIGNED NULL AFTER `dscPrimaryCount`;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_UserAsset`
 	CHANGE COLUMN `uasCouponID` `uasDiscountID` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `uasVoucherItemInfo`,
 	ADD CONSTRAINT `FK_tbl_MHA_Accounting_UserAsset_tbl_MHA_Accounting_Discount` FOREIGN KEY (`uasDiscountID`) REFERENCES `tbl_MHA_Accounting_Discount` (`dscID`) ON UPDATE NO ACTION ON DELETE NO ACTION;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscPrimaryCount` `dscTotalMaxCount` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `dscCode`;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscValidFrom` `dscValidFrom` DATETIME NULL DEFAULT NULL AFTER `dscCode`,
 	CHANGE COLUMN `dscValidTo` `dscValidTo` DATETIME NULL DEFAULT NULL AFTER `dscValidFrom`;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	ADD COLUMN `dscTargetUserIDs` JSON NULL AFTER `dscPerUserMaxAmount`,
 	ADD COLUMN `dscTargetMemberGroupIDs` JSON NULL AFTER `dscRemovedBy`,
 	ADD COLUMN `dscTargetKanoonIDs` JSON NULL AFTER `dscTargetMemberGroupIDs`;
-SQLSTR
+SQL
     );
 		///JSON
     $this->alterColumn('tbl_MHA_Accounting_Discount', 'dscTargetUserIDs', $this->json());
     $this->alterColumn('tbl_MHA_Accounting_Discount', 'dscTargetMemberGroupIDs', $this->json());
     $this->alterColumn('tbl_MHA_Accounting_Discount', 'dscTargetKanoonIDs', $this->json());
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	ADD COLUMN `dscTargetProductIDs` JSON NULL DEFAULT NULL AFTER `dscTargetUserIDs`,
 	ADD COLUMN `dscTargetSaleableIDs` JSON NULL DEFAULT NULL AFTER `dscTargetProductIDs`,
@@ -136,48 +136,48 @@ ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscAmountType` `dscAmountType` CHAR(1) NOT NULL DEFAULT '%' COMMENT '%:Percent, $:Amount' COLLATE 'utf8mb4_unicode_ci' AFTER `dscAmount`,
 	CHANGE COLUMN `dscMaxAmount` `dscMaxAmount` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `dscAmountType`,
 	ADD COLUMN `dscTargetProductMhaTypes` JSON NULL DEFAULT NULL AFTER `dscTargetKanoonIDs`;
-SQLSTR
+SQL
     );
 		///JSON
     $this->alterColumn('tbl_MHA_Accounting_Discount', 'dscTargetProductIDs', $this->json());
     $this->alterColumn('tbl_MHA_Accounting_Discount', 'dscTargetSaleableIDs', $this->json());
     $this->alterColumn('tbl_MHA_Accounting_Discount', 'dscTargetProductMhaTypes', $this->json());
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscTotalMaxAmount` `dscTotalMaxPrice` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `dscTotalMaxCount`,
 	CHANGE COLUMN `dscPerUserMaxAmount` `dscPerUserMaxPrice` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `dscPerUserMaxCount`,
 	CHANGE COLUMN `dscAmount` `dscAmount` DOUBLE UNSIGNED NOT NULL DEFAULT 0 AFTER `dscSaleableBasedMultiplier`,
 	CHANGE COLUMN `dscMaxAmount` `dscMaxAmount` DOUBLE UNSIGNED NULL DEFAULT NULL AFTER `dscAmountType`,
 	CHANGE COLUMN `dscTotalUsedAmount` `dscTotalUsedPrice` INT(10) UNSIGNED NOT NULL DEFAULT '0' AFTER `dscTotalUsedCount`;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	ADD COLUMN `dscType` CHAR(1) NOT NULL DEFAULT 'C' COMMENT 'S:System, C:Coupon' AFTER `dscName`;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	ADD COLUMN `dscCodeHasSerial` BIT NULL DEFAULT NULL AFTER `dscCode`,
 	ADD COLUMN `dscCodeSerialCount` MEDIUMINT NULL DEFAULT NULL AFTER `dscCodeHasSerial`,
 	ADD COLUMN `dscCodeSerialLength` TINYINT NULL DEFAULT NULL AFTER `dscCodeSerialCount`;
-SQLSTR
+SQL
     );
 
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscCode` `dscCodeString` VARCHAR(32) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci' AFTER `dscType`,
 	DROP INDEX `dscCode_dscRemovedAt`,
 	ADD UNIQUE INDEX `dscCodeString_dscRemovedAt` (`dscCodeString`, `dscRemovedAt`) USING BTREE;
-SQLSTR
+SQL
     );
 
 		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_Coupon;");
 		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_Discount;");
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Discount AFTER UPDATE ON tbl_MHA_Accounting_Discount FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -222,11 +222,11 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Discount AFTER UPDATE ON tbl_MHA
           , atlInfo   = JSON_OBJECT("dscID", OLD.dscID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
 		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_UserAsset;");
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_UserAsset AFTER UPDATE ON tbl_MHA_Accounting_UserAsset FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -260,7 +260,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_UserAsset AFTER UPDATE ON tbl_MH
           , atlInfo   = JSON_OBJECT("uasID", OLD.uasID, "old", Changes);
   END IF;
 END
-SQLSTR
+SQL
     );
 
 	}

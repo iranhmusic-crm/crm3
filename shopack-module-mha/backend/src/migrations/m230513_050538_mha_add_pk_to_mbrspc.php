@@ -15,12 +15,12 @@ class m230513_050538_mha_add_pk_to_mbrspc extends Migration
 	 */
 	public function safeUp()
 	{
-		$this->execute(<<<SQLSTR
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member_Specialty`
 	ADD COLUMN `mbrspcID` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT FIRST,
 	DROP PRIMARY KEY,
 	ADD PRIMARY KEY (`mbrspcID`) USING BTREE;
-SQLSTR
+SQL
 		);
 
 	}

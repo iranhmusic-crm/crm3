@@ -21,6 +21,7 @@ use iranhmusic\shopack\mha\frontend\common\widgets\form\ProductChooseFormField;
 use iranhmusic\shopack\mha\frontend\common\widgets\form\SaleableChooseFormField;
 use iranhmusic\shopack\mha\frontend\common\widgets\form\KanoonChooseFormField;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
+use shopack\base\common\helpers\ArrayHelper;
 
 // \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);
 ?>
@@ -147,6 +148,21 @@ use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 		$builder->fields(ProductChooseFormField::field($this, $model, 'dscTargetProductIDs', true, true));
 
 		$builder->fields(SaleableChooseFormField::field($this, $model, 'dscTargetSaleableIDs', true, true));
+
+		//json array
+		// $builder->fields([
+		// 	[
+		// 		'dscReferrers',
+		// 		'type' => FormBuilder::FIELD_WIDGET,
+		// 		'widget' => JsonTableWidget::class,
+		// 		'widgetOptions' => [
+		// 			'columns' => [
+		// 				'url',
+		// 				'params',
+		// 			],
+		// 		],
+		// 	],
+		// ]);
 
 		// $builder->fields([
 		// 	['dscSaleableBasedMultiplier'],

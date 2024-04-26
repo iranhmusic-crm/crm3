@@ -17,7 +17,7 @@ class DiscountModel extends MhaActiveRecord
   public function initSoftDelete()
   {
     $this->softdelete_RemovedStatus  = enuDiscountStatus::Removed;
-    // $this->softdelete_StatusField    = 'dscType';
+    // $this->softdelete_StatusField    = 'dscStatus';
     $this->softdelete_RemovedAtField = 'dscRemovedAt';
     $this->softdelete_RemovedByField = 'dscRemovedBy';
 	}

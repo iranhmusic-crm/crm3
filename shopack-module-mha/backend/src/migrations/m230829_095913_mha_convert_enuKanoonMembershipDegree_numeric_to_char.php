@@ -9,28 +9,28 @@ class m230829_095913_mha_convert_enuKanoonMembershipDegree_numeric_to_char exten
 {
     public function safeUp()
     {
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 UPDATE tbl_MHA_Member_Kanoon
 	SET mbrknnMembershipDegree = 'D'
 	WHERE mbrknnMembershipDegree = '1'
 ;
-SQLSTR
+SQL
         );
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 UPDATE tbl_MHA_Member_Kanoon
 	SET mbrknnMembershipDegree = 'E'
 	WHERE mbrknnMembershipDegree = '2'
 ;
-SQLSTR
+SQL
         );
 
-        $this->execute(<<<SQLSTR
+        $this->execute(<<<SQL
 UPDATE tbl_MHA_Member_Kanoon
 	SET mbrknnMembershipDegree = 'O'
 	WHERE mbrknnMembershipDegree = '5'
 ;
-SQLSTR
+SQL
         );
 
     }
