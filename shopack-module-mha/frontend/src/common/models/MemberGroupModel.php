@@ -21,12 +21,6 @@ class MemberGroupModel extends RestClientActiveRecord
 		return [
 			'mgpID'               						=> Yii::t('app', 'ID'),
 			'mgpName'             						=> Yii::t('app', 'Name'),
-			'mgpMembershipDiscountAmount'     => Yii::t('mha', 'Membership Discount Amount'),
-			'mgpMembershipDiscountType'       => Yii::t('mha', 'Membership Discount Type'),
-			'mgpMembershipCardDiscountAmount' => Yii::t('mha', 'Membership Card Discount Amount'),
-			'mgpMembershipCardDiscountType'   => Yii::t('mha', 'Membership Card Discount Type'),
-			'mgpDeliveryDiscountAmount'       => Yii::t('mha', 'Delivery Discount Amount'),
-			'mgpDeliveryDiscountType'         => Yii::t('mha', 'Delivery Discount Type'),
 			'mgpStatus'           						=> Yii::t('app', 'Status'),
 			'mgpCreatedAt'        						=> Yii::t('app', 'Created At'),
 			'mgpCreatedBy'        						=> Yii::t('app', 'Created By'),
@@ -39,24 +33,6 @@ class MemberGroupModel extends RestClientActiveRecord
 			'mgpRemovedBy_User'   						=> Yii::t('app', 'Removed By'),
 		];
 	}
-
-	// public function extraRules()
-	// {
-  //   $fnGetConst = function($value) { return $value; };
-	// 	$fnGetFieldId = function($field) { return Html::getInputId($this, $field); };
-
-	// 	return [
-	// 		['mgpMembershipDiscountAmount',
-	// 			'required',
-	// 			'when' => function ($model) {
-	// 				return (empty($model->mgpMembershipDiscountType) == false);
-	// 			},
-	// 			'whenClient' => "function (attribute, value) {
-	// 				return ($('#{$fnGetFieldId('mgpMembershipDiscountType')}').val() != '');
-	// 			}"
-	// 		],
-	// 	];
-	// }
 
 	public function isSoftDeleted()
   {

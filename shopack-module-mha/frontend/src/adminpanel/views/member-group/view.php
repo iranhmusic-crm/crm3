@@ -73,31 +73,6 @@ $this->params['breadcrumbs'][] = $this->title;
         $attributes = [
           'mgpID',
           'mgpName',
-          [
-            'attribute' => 'mgpMembershipDiscountAmount',
-            'value' => (empty($model->mgpMembershipDiscountAmount) ? null
-              : Yii::$app->formatter->asDecimal($model->mgpMembershipDiscountAmount) . ' '
-                . ($model->mgpMembershipDiscountType == enuAmountType::Percent
-                  ? yii::t('aaa', 'Percent') : yii::t('aaa', 'Toman'))
-            ),
-          ],
-          [
-            'attribute' => 'mgpMembershipCardDiscountAmount',
-            'value' => (empty($model->mgpMembershipCardDiscountAmount) ? null
-              : Yii::$app->formatter->asDecimal($model->mgpMembershipCardDiscountAmount) . ' '
-                . ($model->mgpMembershipCardDiscountType == enuAmountType::Percent
-                  ? yii::t('aaa', 'Percent') : yii::t('aaa', 'Toman'))
-            ),
-          ],
-          // [
-          //   'attribute' => 'mgpDeliveryDiscountAmount',
-          //   'value' => (empty($model->mgpDeliveryDiscountAmount) ? null
-          //     : Yii::$app->formatter->asDecimal($model->mgpDeliveryDiscountAmount) . ' '
-          //       . ($model->mgpDeliveryDiscountType == enuAmountType::Percent
-          //         ? yii::t('aaa', 'Percent') : yii::t('aaa', 'Toman'))
-          //   ),
-          // ],
-
           // [
           //   'attribute' => 'mgpStatus',
           //   'value' => enuMemberGroupStatus::getLabel($model->mgpStatus),

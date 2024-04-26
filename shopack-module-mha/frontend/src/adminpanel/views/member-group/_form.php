@@ -39,43 +39,6 @@ use shopack\base\common\accounting\enums\enuAmountType;
 			// 	],
 			// ],
 			['mgpName'],
-
-			['mgpMembershipDiscountAmount',
-				'widgetOptions' => [
-					'style' => 'direction:ltr',
-				],
-			],
-			['mgpMembershipDiscountType',
-				'type' => FormBuilder::FIELD_RADIOLIST,
-				'data' => enuAmountType::listData(),
-				'widgetOptions' => [
-					'inline' => true,
-				],
-			],
-			['mgpMembershipCardDiscountAmount',
-				'widgetOptions' => [
-					'style' => 'direction:ltr',
-				],
-			],
-			['mgpMembershipCardDiscountType',
-				'type' => FormBuilder::FIELD_RADIOLIST,
-				'data' => enuAmountType::listData(),
-				'widgetOptions' => [
-					'inline' => true,
-				],
-			],
-			// ['mgpDeliveryDiscountAmount',
-			// 	'widgetOptions' => [
-			// 		'style' => 'direction:ltr',
-			// 	],
-			// ],
-			// ['mgpDeliveryDiscountType',
-			// 	'type' => FormBuilder::FIELD_RADIOLIST,
-			// 	'data' => enuAmountType::listData(),
-			// 	'widgetOptions' => [
-			// 		'inline' => true,
-			// 	],
-			// ],
 		]);
 	?>
 
