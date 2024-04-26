@@ -127,12 +127,6 @@ END
 SQL
 		);
 
-
-
-
-
-
-
 		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	ADD COLUMN `dscReferrers` JSON NULL DEFAULT NULL AFTER `dscTargetSaleableIDs`;
@@ -160,6 +154,7 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Discount AFTER UPDATE ON tbl_MHA
   IF ISNULL(OLD.dscSaleableBasedMultiplier) != ISNULL(NEW.dscSaleableBasedMultiplier) OR OLD.dscSaleableBasedMultiplier != NEW.dscSaleableBasedMultiplier THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscSaleableBasedMultiplier", IF(ISNULL(OLD.dscSaleableBasedMultiplier), NULL, OLD.dscSaleableBasedMultiplier))); END IF;
   IF ISNULL(OLD.dscStatus) != ISNULL(NEW.dscStatus) OR OLD.dscStatus != NEW.dscStatus THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscStatus", IF(ISNULL(OLD.dscStatus), NULL, OLD.dscStatus))); END IF;
   IF ISNULL(OLD.dscTargetKanoonIDs) != ISNULL(NEW.dscTargetKanoonIDs) OR OLD.dscTargetKanoonIDs != NEW.dscTargetKanoonIDs THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscTargetKanoonIDs", IF(ISNULL(OLD.dscTargetKanoonIDs), NULL, OLD.dscTargetKanoonIDs))); END IF;
+  IF ISNULL(OLD.dscTargetMemberGroupIDs) != ISNULL(NEW.dscTargetMemberGroupIDs) OR OLD.dscTargetMemberGroupIDs != NEW.dscTargetMemberGroupIDs THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscTargetMemberGroupIDs", IF(ISNULL(OLD.dscTargetMemberGroupIDs), NULL, OLD.dscTargetMemberGroupIDs))); END IF;
   IF ISNULL(OLD.dscTargetProductIDs) != ISNULL(NEW.dscTargetProductIDs) OR OLD.dscTargetProductIDs != NEW.dscTargetProductIDs THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscTargetProductIDs", IF(ISNULL(OLD.dscTargetProductIDs), NULL, OLD.dscTargetProductIDs))); END IF;
   IF ISNULL(OLD.dscTargetProductMhaTypes) != ISNULL(NEW.dscTargetProductMhaTypes) OR OLD.dscTargetProductMhaTypes != NEW.dscTargetProductMhaTypes THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscTargetProductMhaTypes", IF(ISNULL(OLD.dscTargetProductMhaTypes), NULL, OLD.dscTargetProductMhaTypes))); END IF;
   IF ISNULL(OLD.dscTargetSaleableIDs) != ISNULL(NEW.dscTargetSaleableIDs) OR OLD.dscTargetSaleableIDs != NEW.dscTargetSaleableIDs THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscTargetSaleableIDs", IF(ISNULL(OLD.dscTargetSaleableIDs), NULL, OLD.dscTargetSaleableIDs))); END IF;
@@ -179,11 +174,11 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_Discount AFTER UPDATE ON tbl_MHA
 --         SET MESSAGE_TEXT = "UpdatedBy is not set";
 --    END IF;
 
-	INSERT INTO tbl_SYS_ActionLogs
-		SET atlBy     = NEW.dscUpdatedBy
-		  , atlAction = "UPDATE"
-		  , atlTarget = "tbl_MHA_Accounting_Discount"
-		  , atlInfo   = JSON_OBJECT("dscID", OLD.dscID, "old", Changes);
+    INSERT INTO tbl_SYS_ActionLogs
+        SET atlBy     = NEW.dscUpdatedBy
+          , atlAction = "UPDATE"
+          , atlTarget = "tbl_MHA_Accounting_Discount"
+          , atlInfo   = JSON_OBJECT("dscID", OLD.dscID, "old", Changes);
   END IF;
 END
 SQL
@@ -223,7 +218,9 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_UserAsset AFTER UPDATE ON tbl_MH
   IF ISNULL(OLD.uasValidFromHour) != ISNULL(NEW.uasValidFromHour) OR OLD.uasValidFromHour != NEW.uasValidFromHour THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasValidFromHour", IF(ISNULL(OLD.uasValidFromHour), NULL, OLD.uasValidFromHour))); END IF;
   IF ISNULL(OLD.uasValidToDate) != ISNULL(NEW.uasValidToDate) OR OLD.uasValidToDate != NEW.uasValidToDate THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasValidToDate", IF(ISNULL(OLD.uasValidToDate), NULL, OLD.uasValidToDate))); END IF;
   IF ISNULL(OLD.uasValidToHour) != ISNULL(NEW.uasValidToHour) OR OLD.uasValidToHour != NEW.uasValidToHour THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasValidToHour", IF(ISNULL(OLD.uasValidToHour), NULL, OLD.uasValidToHour))); END IF;
+  IF ISNULL(OLD.uasVoucherID) != ISNULL(NEW.uasVoucherID) OR OLD.uasVoucherID != NEW.uasVoucherID THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasVoucherID", IF(ISNULL(OLD.uasVoucherID), NULL, OLD.uasVoucherID))); END IF;
   IF ISNULL(OLD.uasVoucherItemInfo) != ISNULL(NEW.uasVoucherItemInfo) OR OLD.uasVoucherItemInfo != NEW.uasVoucherItemInfo THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasVoucherItemInfo", IF(ISNULL(OLD.uasVoucherItemInfo), NULL, OLD.uasVoucherItemInfo))); END IF;
+  IF ISNULL(OLD.uasVoucherItemInfo_OLD) != ISNULL(NEW.uasVoucherItemInfo_OLD) OR OLD.uasVoucherItemInfo_OLD != NEW.uasVoucherItemInfo_OLD THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("uasVoucherItemInfo_OLD", IF(ISNULL(OLD.uasVoucherItemInfo_OLD), NULL, OLD.uasVoucherItemInfo_OLD))); END IF;
 
   IF JSON_LENGTH(Changes) > 0 THEN
 --    IF ISNULL(NEW.uasUpdatedBy) THEN
@@ -236,6 +233,57 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_UserAsset AFTER UPDATE ON tbl_MH
           , atlAction = "UPDATE"
           , atlTarget = "tbl_MHA_Accounting_UserAsset"
           , atlInfo   = JSON_OBJECT("uasID", OLD.uasID, "old", Changes);
+  END IF;
+END
+SQL
+);
+
+		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_DiscountSerial;");
+		$this->execute(<<<SQL
+CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_DiscountSerial AFTER UPDATE ON tbl_MHA_Accounting_DiscountSerial FOR EACH ROW BEGIN
+  DECLARE Changes JSON DEFAULT JSON_OBJECT();
+
+  IF ISNULL(OLD.dscsnDiscountID) != ISNULL(NEW.dscsnDiscountID) OR OLD.dscsnDiscountID != NEW.dscsnDiscountID THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscsnDiscountID", IF(ISNULL(OLD.dscsnDiscountID), NULL, OLD.dscsnDiscountID))); END IF;
+  IF ISNULL(OLD.dscsnSN) != ISNULL(NEW.dscsnSN) OR OLD.dscsnSN != NEW.dscsnSN THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscsnSN", IF(ISNULL(OLD.dscsnSN), NULL, OLD.dscsnSN))); END IF;
+
+  IF JSON_LENGTH(Changes) > 0 THEN
+--    IF ISNULL(NEW.dscsnUpdatedBy) THEN
+--      SIGNAL SQLSTATE "45401"
+--         SET MESSAGE_TEXT = "UpdatedBy is not set";
+--    END IF;
+
+    INSERT INTO tbl_SYS_ActionLogs
+        SET atlBy     = NEW.dscsnUpdatedBy
+          , atlAction = "UPDATE"
+          , atlTarget = "tbl_MHA_Accounting_DiscountSerial"
+          , atlInfo   = JSON_OBJECT("dscsnID", OLD.dscsnID, "old", Changes);
+  END IF;
+END
+SQL
+		);
+
+		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Accounting_DiscountUsage;");
+		$this->execute(<<<SQL
+CREATE TRIGGER trg_updatelog_tbl_MHA_Accounting_DiscountUsage AFTER UPDATE ON tbl_MHA_Accounting_DiscountUsage FOR EACH ROW BEGIN
+  DECLARE Changes JSON DEFAULT JSON_OBJECT();
+
+  IF ISNULL(OLD.dscusgAmount) != ISNULL(NEW.dscusgAmount) OR OLD.dscusgAmount != NEW.dscusgAmount THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscusgAmount", IF(ISNULL(OLD.dscusgAmount), NULL, OLD.dscusgAmount))); END IF;
+  IF ISNULL(OLD.dscusgDiscountID) != ISNULL(NEW.dscusgDiscountID) OR OLD.dscusgDiscountID != NEW.dscusgDiscountID THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscusgDiscountID", IF(ISNULL(OLD.dscusgDiscountID), NULL, OLD.dscusgDiscountID))); END IF;
+  IF ISNULL(OLD.dscusgDiscountSerialID) != ISNULL(NEW.dscusgDiscountSerialID) OR OLD.dscusgDiscountSerialID != NEW.dscusgDiscountSerialID THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscusgDiscountSerialID", IF(ISNULL(OLD.dscusgDiscountSerialID), NULL, OLD.dscusgDiscountSerialID))); END IF;
+  IF ISNULL(OLD.dscusgUserAssetID) != ISNULL(NEW.dscusgUserAssetID) OR OLD.dscusgUserAssetID != NEW.dscusgUserAssetID THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscusgUserAssetID", IF(ISNULL(OLD.dscusgUserAssetID), NULL, OLD.dscusgUserAssetID))); END IF;
+  IF ISNULL(OLD.dscusgUserID) != ISNULL(NEW.dscusgUserID) OR OLD.dscusgUserID != NEW.dscusgUserID THEN SET Changes = JSON_MERGE_PRESERVE(Changes, JSON_OBJECT("dscusgUserID", IF(ISNULL(OLD.dscusgUserID), NULL, OLD.dscusgUserID))); END IF;
+
+  IF JSON_LENGTH(Changes) > 0 THEN
+--    IF ISNULL(NEW.dscusgUpdatedBy) THEN
+--      SIGNAL SQLSTATE "45401"
+--         SET MESSAGE_TEXT = "UpdatedBy is not set";
+--    END IF;
+
+    INSERT INTO tbl_SYS_ActionLogs
+        SET atlBy     = NEW.dscusgUpdatedBy
+          , atlAction = "UPDATE"
+          , atlTarget = "tbl_MHA_Accounting_DiscountUsage"
+          , atlInfo   = JSON_OBJECT("dscusgID", OLD.dscusgID, "old", Changes);
   END IF;
 END
 SQL

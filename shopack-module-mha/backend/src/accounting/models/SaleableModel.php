@@ -246,7 +246,8 @@ SQL;
 
   public static function ProcessVoucherItem_MembershipCard(&$userAssetModel, $voucherItemdata)
   {
-    // wait for card print. after print, status must be changed form Pending to Active
+    //wait for card print.
+    //todo: after print, status must be changed form Pending to Active
     $userAssetModel->uasStatus = enuUserAssetStatus::Pending;
   }
 

@@ -21,6 +21,8 @@ use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
 use iranhmusic\shopack\mha\backend\accounting\models\SaleableModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
+//todo: (vi) must be deprecated?
+
 class MembershipCardForm extends Model
 {
 	//list ($membershipUserAssetID, $price, $saleableModel, $lastMembership)
