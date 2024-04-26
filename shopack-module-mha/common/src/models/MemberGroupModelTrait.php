@@ -48,7 +48,7 @@ trait MemberGroupModelTrait
         enuColumnInfo::type       => ['string', 'max' => 64],
         enuColumnInfo::validator  => null,
         enuColumnInfo::default    => null,
-        enuColumnInfo::required   => false,
+        enuColumnInfo::required   => true,
         enuColumnInfo::selectable => true,
       ],
 
