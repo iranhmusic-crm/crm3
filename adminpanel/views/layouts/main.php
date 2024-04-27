@@ -298,7 +298,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
   <footer id="footer" class="footer mt-auto py-3 bg-light">
     <div class="container">
       <div class="row text-muted">
-        <div class="col text-end">اتوماسیون خانه موسیقی ایران - نسخه 3.0</div>
+        <div class="col text-end">اتوماسیون خانه موسیقی ایران - نسخه 3.1</div>
       </div>
     </div>
   </footer>
