@@ -3631,7 +3631,7 @@ SQL;
             , onpVoucherID        = {$voucherid}
             , onpAmount           = {$tbl_onlinebank_price}
             , onpWalletID         = {$walid}
-            , onpTrackNumber      = {$tbl_onlinebank_rrn}
+            , onpPaymentToken     = {$tbl_onlinebank_rrn}
             , onpRRN              = {$tbl_onlinebank_rrn}
             , onpComment          = {$tbl_onlinebank_comment}
             , onpStatus           = '{$onpStatus}'
