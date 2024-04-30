@@ -159,7 +159,7 @@ SQL;
       }
 
       $couponDiscount = $userAssetModel->uasVoucherItemInfo['couponDiscount'] ?? null;
-      if (empty($couponDiscount['id'] == false)) {
+      if (empty($couponDiscount['id']) == false) {
 
         $discountSerialID = 'NULL';
         if (empty($couponDiscount['code']) == false) {
@@ -226,6 +226,8 @@ SQL;
     } catch (\Throwable $th) {
       //rollback
       $transaction->rollBack();
+
+      Yii::error($th);
 
       throw $th;
     }

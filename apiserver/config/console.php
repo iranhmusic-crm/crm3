@@ -53,6 +53,9 @@ $config = [
 			],
 		],
 		'db' => $db,
+		'mutex' => [
+			'class' => \shopack\base\common\components\MysqlMutex::class,
+		],
 		'i18n' => [
 			'class' => \shopack\base\common\components\I18N::class,
 		],
