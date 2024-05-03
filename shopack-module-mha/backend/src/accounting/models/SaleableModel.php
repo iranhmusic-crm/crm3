@@ -226,9 +226,7 @@ SQL;
     } catch (\Throwable $th) {
       //rollback
       $transaction->rollBack();
-
-      Yii::error($th);
-
+      Yii::error($th, __METHOD__);
       throw $th;
     }
   }

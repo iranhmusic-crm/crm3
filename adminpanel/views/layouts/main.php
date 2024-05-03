@@ -38,8 +38,13 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
 
   <header id="header">
     <?php
+      $systemStates = [];
+      if (YII_DEBUG)    $systemStates[] = 'D';
+      if (YII_ENV_DEV)  $systemStates[] = 'V';
+      $systemStates = implode(', ', $systemStates);
+
       NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => Yii::$app->name . (empty($systemStates) ? '' : ' (' . $systemStates . ')'),
         'brandUrl' => Yii::$app->homeUrl,
         'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top'],
         'innerContainerOptions' => ['class' => ['container-fluid']],

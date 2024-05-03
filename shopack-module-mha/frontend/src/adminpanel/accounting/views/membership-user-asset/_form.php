@@ -36,12 +36,21 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 				[
 					'uasActorID',
 					'type' => FormBuilder::FIELD_STATIC,
-					'staticValue' => $model->member->displayName(),
+					'staticValue' => $model->actor->displayName(),
 				],
 			]);
 		}
 
 		$builder->fields([
+			'تاریخ شروع',
+			'تاریخ پایان',
+			'مدت',
+			'فی',
+			'کل',
+			'چاپ کارت: فی',
+			'ارسال: انتخاب',
+			'جمع',
+			'موجودی کیف پول',
 			// [
 			// 	'mbrshpMembershipID',
 			// 	'type' => FormBuilder::FIELD_WIDGET,
@@ -54,18 +63,18 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 			// 		],
 			// 	],
 			// ],
-			[
-				'mbrshpStartDate',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => DatePicker::class,
-				'fieldOptions' => [
-					'addon' => [
-						'append' => [
-							'content' => '<i class="far fa-calendar-alt"></i>',
-						],
-					],
-				],
-			],
+			// [
+			// 	'mbrshpStartDate',
+			// 	'type' => FormBuilder::FIELD_WIDGET,
+			// 	'widget' => DatePicker::class,
+			// 	'fieldOptions' => [
+			// 		'addon' => [
+			// 			'append' => [
+			// 				'content' => '<i class="far fa-calendar-alt"></i>',
+			// 			],
+			// 		],
+			// 	],
+			// ],
 			// 'mbrshpEndDate',
 			// [
 			// 	'mbrshpStatus',
@@ -79,7 +88,6 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 			// 		],
 			// 	],
 			// ],
-
 		]);
 	?>
 

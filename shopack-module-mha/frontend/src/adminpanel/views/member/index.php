@@ -52,14 +52,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => false,
             'format' => 'raw',
             'value' => function ($model, $key, $index, $widget) {
-              if ($model->user->usrImageFileID == null)
-                return null;
-              elseif (empty($model->user->imageFile->fullFileUrl))
-                return Yii::t('aaa', '...');
-              elseif ($model->user->imageFile->isImage())
-                return Html::img($model->user->imageFile->fullFileUrl, ['style' => ['width' => '50px']]);
-              else
-                return Html::a(Yii::t('app', 'Download'), $model->user->imageFile->fullFileUrl);
+              return Html::asUploadedImage($model->user->imageFile);
+              // if ($model->user->usrImageFileID == null)
+              //   return null;
+              // elseif (empty($model->user->imageFile->fullFileUrl))
+              //   return Yii::t('aaa', '...');
+              // elseif ($model->user->imageFile->isImage())
+              //   return Html::img($model->user->imageFile->fullFileUrl, ['style' => ['width' => '50px']]);
+              // else
+              //   return Html::a(Yii::t('app', 'Download'), $model->user->imageFile->fullFileUrl);
             },
           ],
           [
@@ -69,8 +70,6 @@ $this->params['breadcrumbs'][] = $this->title;
               return Html::a($model->mbrRegisterCode ?? '[ندارد]', ['view', 'id' => $model->mbrUserID]);
             },
           ],
-          // 'mbrAcceptedAt:jalaliWithTime',
-          // 'mbrExpireDate:jalali',
           [
             'attribute' => 'usrFirstName',
             'format' => 'raw',
@@ -85,15 +84,15 @@ $this->params['breadcrumbs'][] = $this->title;
               return $model->user->usrLastName;
             },
           ],
-          [
-            'attribute' => 'usrSSID',
-            'format' => 'raw',
-            'value' => function ($model, $key, $index, $widget) {
-              if (empty($model->user->usrSSID))
-                return null;
-              return $model->user->usrSSID;
-            },
-          ],
+          // [
+          //   'attribute' => 'usrSSID',
+          //   'format' => 'raw',
+          //   'value' => function ($model, $key, $index, $widget) {
+          //     if (empty($model->user->usrSSID))
+          //       return null;
+          //     return $model->user->usrSSID;
+          //   },
+          // ],
           [
             'attribute' => 'usrMobile',
             'format' => 'raw',
@@ -106,15 +105,17 @@ $this->params['breadcrumbs'][] = $this->title;
               return Yii::$app->formatter->asPhone($model->user->usrMobile);
             },
           ],
-          [
-            'attribute' => 'usrEmail',
-            'format' => 'raw',
-            'value' => function ($model, $key, $index, $widget) {
-              if (empty($model->user->usrEmail))
-                return null;
-              return $model->user->usrEmail;
-            },
-          ],
+          // [
+          //   'attribute' => 'usrEmail',
+          //   'format' => 'raw',
+          //   'value' => function ($model, $key, $index, $widget) {
+          //     if (empty($model->user->usrEmail))
+          //       return null;
+          //     return $model->user->usrEmail;
+          //   },
+          // ],
+          'mbrAcceptedAt:jalaliWithTime',
+          'mbrExpireDate:jalali',
           [
             'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
             'enumClass' => enuMemberStatus::class,

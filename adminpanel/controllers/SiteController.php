@@ -43,7 +43,7 @@ class SiteController extends BaseController
   {
     return [
       'error' => [
-        'class' => 'yii\web\ErrorAction',
+        'class' => '\shopack\base\common\web\ErrorAction',
       ],
       'captcha' => [
         'class' => 'yii\captcha\CaptchaAction',

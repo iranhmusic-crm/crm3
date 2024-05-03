@@ -32,6 +32,9 @@ $config = [
 		'cache' => [
 			'class' => 'yii\caching\FileCache',
 		],
+		'twoFAManager' => [
+			'class' => \shopack\aaa\backend\components\TwoFAManager::class,
+		],
 		'fileManager' => [
 			'class' => \shopack\aaa\backend\components\FileManager::class,
 		],

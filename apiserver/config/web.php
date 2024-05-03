@@ -56,6 +56,9 @@ $config = [
 		'errorHandler' => [
 			'errorAction' => 'site/error',
 		],
+		'twoFAManager' => [
+			'class' => \shopack\aaa\backend\components\TwoFAManager::class,
+		],
 		'fileManager' => [
 			'class' => \shopack\aaa\backend\components\FileManager::class,
 		],

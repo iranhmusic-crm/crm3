@@ -39,6 +39,15 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
       </div>
       <div class="col d-flex login-center min-vh-100">
         <div class='w-100 text-center'>
+          <?php
+            $systemStates = [];
+            if (YII_DEBUG)    $systemStates[] = 'D';
+            if (YII_ENV_DEV)  $systemStates[] = 'V';
+            if (empty($systemStates) == false) {
+              echo '<h2>(' . implode(', ', $systemStates) . ')</h2>';
+            }
+          ?>
+
           <p><?= Html::img('/images/logo_main_bw_h200.png') ?></p>
           <p>کاربر محترم</p>
           <p>این پنل مختص مدیران و اپراتورهای سیستم می‌باشد.</p>
