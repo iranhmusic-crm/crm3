@@ -465,7 +465,7 @@ ul.fancytree-container {
 }
 
 .card-footer {
-  display: flex;
+  /* display: flex; */
 }
 
 .login-sidebar {
