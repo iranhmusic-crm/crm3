@@ -11,7 +11,23 @@ use yii\console\Controller;
 use shopack\aaa\common\enums\enuUserStatus;
 
 /*
+
+-- MESSAGE:
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/message/process-queue 2>&1 >>logs/aaa_message_process-queue.log
+
+-- FILE:
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/file/process-queue 200 2>&1 >>logs/aaa_file_process-queue.log
+
+-- BIRTHDAY:
+0 15 30 45
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/message/send-birthday-greetings 2>&1 >>logs/aaa_message_send-birthday-greetings.log
+
+-- MIGRATE:
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii migrate/up --interactive 0 2>&1 >>logs/migrate.log
+
+-- HEARTBEAT:
 cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii mha/default/heartbeat 2>&1 >>logs/mha-heartbeat.log
+
 */
 
 class DefaultController extends Controller
