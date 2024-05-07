@@ -101,8 +101,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
       $userInfos = [];
 
       if ((empty(Yii::$app->user->identity->usrFirstName) == false)
-          || (empty(Yii::$app->user->identity->usrLastName) == false))
-      {
+        || (empty(Yii::$app->user->identity->usrLastName) == false)
+      ) {
         $s = [
           Yii::$app->user->identity->usrFirstName ?? '',
           Yii::$app->user->identity->usrLastName ?? '',

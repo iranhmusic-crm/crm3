@@ -7,26 +7,28 @@ use shopack\base\common\db\Migration;
 
 class m240430_110937_mha_add_mbrExpireDateLastAlertAtDayDiff_to_tblmember extends Migration
 {
-	public function safeUp()
-	{
-		$this->execute(<<<SQL
+  public function safeUp()
+  {
+    $this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Member`
-	ADD COLUMN `mbrExpireDateLastAlertAtDayDiff` SMALLINT NULL DEFAULT NULL AFTER `mbrExpireDate`;
+  ADD COLUMN `mbrExpireDateLastAlertAtDayDiff` SMALLINT NULL DEFAULT NULL AFTER `mbrExpireDate`;
 SQL
-		);
+    );
 
-		$this->execute("DROP TRIGGER IF EXISTS trg_tbl_MHA_Member_before_update;");
-		$this->execute(<<<SQL
+    $this->execute("DROP TRIGGER IF EXISTS trg_tbl_MHA_Member_before_update;");
+    $this->execute(<<<SQL
 CREATE TRIGGER `trg_tbl_MHA_Member_before_update` BEFORE UPDATE ON `tbl_MHA_Member` FOR EACH ROW BEGIN
-	IF (IFNULL(NEW.mbrExpireDate, '2000-1-1') <> IFNULL(OLD.mbrExpireDate, '2000-1-1')) THEN
-		SET NEW.mbrExpireDateLastAlertAtDayDiff = NULL;
-	END IF;
+  -- convert mbrExpireDateLastAlertAtDayDiff to null if mbrExpireDate changes
+
+  IF (IFNULL(NEW.mbrExpireDate, '2000-1-1') <> IFNULL(OLD.mbrExpireDate, '2000-1-1')) THEN
+    SET NEW.mbrExpireDateLastAlertAtDayDiff = NULL;
+  END IF;
 END
 SQL
-		);
+    );
 
-		$this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Member;");
-		$this->execute(<<<SQL
+    $this->execute("DROP TRIGGER IF EXISTS trg_updatelog_tbl_MHA_Member;");
+    $this->execute(<<<SQL
 CREATE TRIGGER trg_updatelog_tbl_MHA_Member AFTER UPDATE ON tbl_MHA_Member FOR EACH ROW BEGIN
   DECLARE Changes JSON DEFAULT JSON_OBJECT();
 
@@ -62,13 +64,13 @@ CREATE TRIGGER trg_updatelog_tbl_MHA_Member AFTER UPDATE ON tbl_MHA_Member FOR E
   END IF;
 END
 SQL
-		);
-	}
+    );
+  }
 
-	public function safeDown()
-	{
-		echo "m240430_110937_mha_add_mbrExpireDateLastAlertAtDayDiff_to_tblmember cannot be reverted.\n";
-		return false;
-	}
+  public function safeDown()
+  {
+    echo "m240430_110937_mha_add_mbrExpireDateLastAlertAtDayDiff_to_tblmember cannot be reverted.\n";
+    return false;
+  }
 
 }
