@@ -12,21 +12,11 @@ use shopack\aaa\common\enums\enuUserStatus;
 
 /*
 
--- MESSAGE:
-cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/message/process-queue 2>&1 >>logs/aaa_message_process-queue.log
-
--- FILE:
-cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/file/process-queue 200 2>&1 >>logs/aaa_file_process-queue.log
-
--- BIRTHDAY:
-0 15 30 45
-cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/message/send-birthday-greetings 2>&1 >>logs/aaa_message_send-birthday-greetings.log
-
--- MIGRATE:
-cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii migrate/up --interactive 0 2>&1 >>logs/migrate.log
-
 -- HEARTBEAT:
 cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii mha/default/heartbeat 2>&1 >>logs/mha-heartbeat.log
+
+-- check-accounts-expiration:
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii mha/default/check-accounts-expiration 2>&1 >>logs/mha-check-accounts-expiration.log
 
 */
 
@@ -66,7 +56,6 @@ class DefaultController extends Controller
 		$fnGetConstQouted = function($value) { return "'{$value}'"; };
 
 		try {
-/*
 			$qry =<<<SQL
       SELECT  tbl_AAA_User.*
            ,  tbl_MHA_Member.*
@@ -79,12 +68,13 @@ class DefaultController extends Controller
          AND  usrMobileApprovedAt IS NOT NULL
          AND  mbrExpireDate IS NOT NULL
 --         AND  mbrExpireDate < NOW()
-         AND  DATEDIFF(mbrExpireDate, NOW()) BETWEEN -1160 AND 1160
+         AND  DATEDIFF(mbrExpireDate, NOW()) BETWEEN -60 AND 60
 SQL;
 // AND  DATEDIFF(mbrExpireDate, NOW()) IN (-30,-7,-1,0,1,7,30)
 
 			$rows = Yii::$app->db->createCommand($qry)->queryAll();
-*/
+
+			/*
 			$rows = [
 				[ '_diff' => 14, 'mbrExpireDateLastAlertAtDayDiff' => null ],
 				[ '_diff' => 14, 'mbrExpireDateLastAlertAtDayDiff' => 14 ],
@@ -127,6 +117,7 @@ SQL;
 				[ '_diff' => -14, 'mbrExpireDateLastAlertAtDayDiff' => -10 ],
 				[ '_diff' => -14, 'mbrExpireDateLastAlertAtDayDiff' => null ],
 			];
+			*/
 
 			if (empty($rows))
 				return ExitCode::OK;
@@ -134,10 +125,9 @@ SQL;
 			// $this->log("rows count: (" . count($rows) . ")");
 
 			$messageSteps_Expired = [
-				-20 => 'msg_mha_alert_expired__20',
+				-30 => 'msg_mha_alert_expired__30',
 				-15 => 'msg_mha_alert_expired__15',
-				-10 => 'msg_mha_alert_expired__10',
-				 -5 => 'msg_mha_alert_expired__5',
+				 -7 => 'msg_mha_alert_expired__7',
 				 -1 => 'msg_mha_alert_expired__1',
 				// -1 => 'msg_mha_alert_expired__1',
 				// -5 => 'msg_mha_alert_expired__5',
@@ -147,10 +137,9 @@ SQL;
 			];
 			$messageSteps_ExpiresToday = 'msg_mha_alert_expires_today';
 			$messageSteps_ExpiresSoon = [
-				20 => 'msg_mha_alert_expires_soon_20',
+				30 => 'msg_mha_alert_expires_soon_30',
 				15 => 'msg_mha_alert_expires_soon_15',
-				10 => 'msg_mha_alert_expires_soon_10',
-				 5 => 'msg_mha_alert_expires_soon_5',
+				 7 => 'msg_mha_alert_expires_soon_7',
 				 1 => 'msg_mha_alert_expires_soon_1',
 			];
 
@@ -213,6 +202,9 @@ SQL;
 					continue;
 
 				//send alert and save _alertedAt
+
+
+				//todo: (vi) complete this
 			}
 
 		} catch (\Throwable $e) {
