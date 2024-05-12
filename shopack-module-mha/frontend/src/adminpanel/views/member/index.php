@@ -84,15 +84,15 @@ $this->params['breadcrumbs'][] = $this->title;
               return $model->user->usrLastName;
             },
           ],
-          // [
-          //   'attribute' => 'usrSSID',
-          //   'format' => 'raw',
-          //   'value' => function ($model, $key, $index, $widget) {
-          //     if (empty($model->user->usrSSID))
-          //       return null;
-          //     return $model->user->usrSSID;
-          //   },
-          // ],
+          [
+            'attribute' => 'usrSSID',
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $widget) {
+              if (empty($model->user->usrSSID))
+                return null;
+              return $model->user->usrSSID;
+            },
+          ],
           [
             'attribute' => 'usrMobile',
             'format' => 'raw',
