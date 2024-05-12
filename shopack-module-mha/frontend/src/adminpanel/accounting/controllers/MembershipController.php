@@ -15,11 +15,21 @@ use shopack\aaa\frontend\common\auth\BaseController;
 
 class MembershipController extends BaseController
 {
-	public function actionRenewByOfflinePayment($ofpid)
-	{
-		return $this->renderAjaxModal('_renew_form', [
-			// 'model' => $model,
-		]);
+	public function actionRenewByOfflinePayment(
+		$ofpid,
+		$isPartial = false,
+	) {
+		$params = [
+			'test' => 123,
+		];
+
+		if (Yii::$app->request->isAjax)
+			return $this->renderJson($this->renderAjax('_renew_form', $params));
+
+    if ($isPartial)
+      return $this->renderPartial('_renew_form', $params);
+
+		return $this->render('renew', ['params' => $params]);
 	}
 
 }
