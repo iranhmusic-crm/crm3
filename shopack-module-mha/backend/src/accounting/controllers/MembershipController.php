@@ -14,6 +14,7 @@ use shopack\base\common\helpers\ExceptionHelper;
 use shopack\base\backend\helpers\PrivHelper;
 use shopack\base\backend\controller\BaseRestController;
 use iranhmusic\shopack\mha\backend\accounting\models\MembershipForm;
+use iranhmusic\shopack\mha\backend\accounting\models\RenewByOfflinePaymentForm;
 
 class MembershipController extends BaseRestController
 {
@@ -65,6 +66,30 @@ class MembershipController extends BaseRestController
 		return [
 			'key' => $result[0],
 			'basket' => $result[1],
+		];
+	}
+
+	public function actionRenewByOfflinePayment()
+	{
+		//check permission
+
+		$model = new RenewByOfflinePaymentForm();
+
+		// $this->checkPermission($model);
+
+		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
+			throw new NotFoundHttpException("parameters not provided");
+
+		$model->process();
+
+		return [
+			// // 'result' => [
+			// 	// 'message' => 'updated',
+			// 	'docID' => $model->docID,
+			// 	'docStatus' => $model->docStatus,
+			// 	'docUpdatedAt' => $model->docUpdatedAt,
+			// 	'docUpdatedBy' => $model->docUpdatedBy,
+			// // ],
 		];
 
 	}

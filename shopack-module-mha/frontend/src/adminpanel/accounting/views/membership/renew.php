@@ -18,6 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
 			<div class='card-title'><?= Html::encode($this->title) ?></div>
 		</div>
 
-		<?= $this->render('_renew_form', $params) ?>
+		<?= $this->render('_renew_form', [
+			'model' => $model,
+		]) ?>
 	</div>
 </div>

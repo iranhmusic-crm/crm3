@@ -54,7 +54,7 @@ use shopack\base\common\accounting\enums\enuProductStatus;
 	?>
 
 	<?php $builder->beginFooter(); ?>
-		<div class="membership-card-footer">
+		<div class="card-footer">
 			<div class="float-end">
 				<?= Html::activeSubmitButton($model) ?>
 			</div>

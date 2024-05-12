@@ -14,7 +14,6 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 use iranhmusic\shopack\mha\common\enums\enuKanoonStatus;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
-
 ?>
 
 <div class='kanoon-form'>
