@@ -37,7 +37,7 @@ class MembershipController extends BaseController
           'message' => Yii::t('app', 'Success'),
           // 'id' => $id,
           // 'redirect' => $this->doneLink ? call_user_func($this->doneLink, $model) : null,
-          'modalDoneFragment' => $this->modalDoneFragment,
+          // 'modalDoneFragment' => $this->modalDoneFragment,
         ]);
       }
 
