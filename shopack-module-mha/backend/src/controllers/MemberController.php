@@ -35,7 +35,7 @@ class MemberController extends BaseRestController
 		if (($model = MemberModel::findOne($id)) !== null)
 			return $model;
 
-		throw new NotFoundHttpException('The requested item not exist.');
+		throw new NotFoundHttpException('The requested item does not exist.');
 	}
 
 	public function fillGlobalSearchFromRequest(\yii\db\ActiveQuery $query, $q)
@@ -104,7 +104,7 @@ class MemberController extends BaseRestController
 		if ($model !== null)
 			return $model;
 
-		throw new NotFoundHttpException('The requested item not exist.');
+		throw new NotFoundHttpException('The requested item does not exist.');
 
 		// return RESTfulHelper::modelToResponse($this->findModel($id));
 	}

@@ -40,7 +40,7 @@ class ReportController extends BaseRestController
 		if (($model = ReportModel::findOne($id)) !== null)
 			return $model;
 
-		throw new NotFoundHttpException('The requested item not exist.');
+		throw new NotFoundHttpException('The requested item does not exist.');
 	}
 
 	public function actionIndex()
@@ -82,7 +82,7 @@ class ReportController extends BaseRestController
 		if ($model !== null)
 			return $model;
 
-		throw new NotFoundHttpException('The requested item not exist.');
+		throw new NotFoundHttpException('The requested item does not exist.');
 
 		// return RESTfulHelper::modelToResponse($this->findModel($id));
 	}

@@ -19,7 +19,7 @@ class KanoonController extends BaseController
   protected function findModel($id)
 	{
 		if (($model = KanoonModel::findOne($id)) === null)
-      throw new NotFoundHttpException('The requested item not exist.');
+      throw new NotFoundHttpException('The requested item does not exist.');
 
     return $model;
 	}

@@ -33,7 +33,7 @@ class MembershipCardForm extends Model
 
 		$memberModel = MemberModel::find()->where(['mbrUserID' => $memberID])->one();
 		if ($memberModel == null)
-			throw new NotFoundHttpException('The requested item not exist.');
+			throw new NotFoundHttpException('The requested item does not exist.');
 
 		if (empty($memberModel->mbrRegisterCode))
 			throw new UnprocessableEntityHttpException('The member does not have a register code');

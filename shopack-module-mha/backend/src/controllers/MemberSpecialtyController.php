@@ -36,7 +36,7 @@ class MemberSpecialtyController extends BaseRestController
 	// 			])) !== null)
 	// 		return $model;
 
-	// 	throw new NotFoundHttpException('The requested item not exist.');
+	// 	throw new NotFoundHttpException('The requested item does not exist.');
 	// }
 
 	protected function findModel($id)
@@ -44,7 +44,7 @@ class MemberSpecialtyController extends BaseRestController
 		if (($model = MemberSpecialtyModel::findOne($id)) !== null)
 			return $model;
 
-		throw new NotFoundHttpException('The requested item not exist.');
+		throw new NotFoundHttpException('The requested item does not exist.');
 	}
 
 	public function actionIndex()
@@ -92,7 +92,7 @@ class MemberSpecialtyController extends BaseRestController
 			return $model;
 		}
 
-		throw new NotFoundHttpException('The requested item not exist.');
+		throw new NotFoundHttpException('The requested item does not exist.');
 
 		// return RESTfulHelper::modelToResponse($this->findModel($id));
 	}

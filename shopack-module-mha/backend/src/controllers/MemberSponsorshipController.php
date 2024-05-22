@@ -35,7 +35,7 @@ class MemberSponsorshipController extends BaseRestController
 				])) !== null)
 			return $model;
 
-		throw new NotFoundHttpException('The requested item not exist.');
+		throw new NotFoundHttpException('The requested item does not exist.');
 	}
 
 	public function actionIndex()
@@ -81,7 +81,7 @@ class MemberSponsorshipController extends BaseRestController
 			return $model;
 		}
 
-		throw new NotFoundHttpException('The requested item not exist.');
+		throw new NotFoundHttpException('The requested item does not exist.');
 
 		// return RESTfulHelper::modelToResponse($this->findModel($id));
 	}
