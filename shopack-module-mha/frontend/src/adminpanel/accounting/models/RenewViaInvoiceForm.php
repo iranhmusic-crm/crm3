@@ -22,14 +22,9 @@ class RenewViaInvoiceForm extends Model
 	public $ofpID;
 
 	public $startDate;
-	public $endDate;
 	public $years;
-	public $unitPrice;
-	public $totalPrice;
-	public $saleableID;
-	public $discountCode;
-	public $printCard = true;
-	public $printCardAmount;
+	public $maxYears;
+	public $saleableModel;
 
 	public function rules()
 	{
@@ -43,39 +38,33 @@ class RenewViaInvoiceForm extends Model
 		];
 	}
 
-	// public function attributeLabels()
-	// {
-	// 	return [
-	// 		'startDate'				=> Yii::t('app', 'Start Date'),
-	// 		'endDate'					=> Yii::t('app', 'End Date'),
-	// 		'years'						=> Yii::t('app', 'Year'),
-	// 		'unitPrice'				=> Yii::t('aaa', 'Unit Price'),
-	// 		'totalPrice'			=> Yii::t('aaa', 'Total Price'),
-	// 		'saleableID'			=> Yii::t('aaa', 'Saleable'),
-	// 		'discountCode'		=> Yii::t('aaa', 'Discount Code'),
-	// 		'printCard'				=> Yii::t('mha', 'Print Card'),
-	// 		'printCardAmount'	=> Yii::t('mha', 'Card Print Price'),
-	// 	];
-	// }
+	public function attributeLabels()
+	{
+		return [
+			'startDate'				=> Yii::t('app', 'Start Date'),
+			'years'						=> Yii::t('app', 'Year'),
+			'saleableID'			=> Yii::t('aaa', 'Saleable'),
+		];
+	}
 
 	public function load($data, $formName = null)
 	{
 		$loaded = parent::load($data, $formName);
-		if ($loaded)
-			return true;
 
-		list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableID, $printCardAmount) =
-			$this->getRenewalInfo();
+		list (
+			$startDate,
+			$maxYears,
+			$saleableModel
+		) = $this->getRenewalInfo();
 
-		$this->startDate	= $startDate;
-		$this->endDate		= $endDate;
-		$this->years			= $years;
-		$this->unitPrice	= $unitPrice;
-		$this->totalPrice	= $totalPrice;
-		$this->saleableID	= $saleableID;
-		$this->printCardAmount	= $printCardAmount;
+		$this->startDate			= $startDate;
+		$this->maxYears				= $maxYears;
+		$this->saleableModel	= $saleableModel;
 
-		return false;
+		if (empty($this->years))
+			$this->years = 1;
+
+		return $loaded;
 	}
 
 	public function getRenewalInfo()
@@ -93,12 +82,8 @@ class RenewViaInvoiceForm extends Model
 
 		return [
 			$resultData['startDate'],
-			$resultData['endDate'],
-			$resultData['years'],
-			$resultData['unitPrice'],
-			$resultData['totalPrice'],
-			$resultData['saleableID'],
-			$resultData['printCardAmount'],
+			$resultData['maxYears'],
+			$resultData['saleableModel'],
 		];
 	}
 

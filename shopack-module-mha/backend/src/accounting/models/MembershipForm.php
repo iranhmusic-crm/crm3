@@ -212,7 +212,7 @@ class MembershipForm extends Model
 		$printCard = true
 	) {
 		if (empty($memberID) && empty($ofpID))
-			throw new UnprocessableEntityHttpException('Both memberid and ofpID are empty');
+			throw new UnprocessableEntityHttpException('Both memberID and ofpID are empty');
 
 		if (empty($ofpID) == false) {
 			$offlinePaymentModel = OfflinePaymentModel::findOne($ofpID);
@@ -274,20 +274,26 @@ class MembershipForm extends Model
 			->joinWith('product.unit')
 			->andWhere(['prdMhaType' => enuMhaProductType::Membership])
 			->andWhere(['slbStatus' => enuSaleableStatus::Active])
-			->orderBy('slbAvailableFromDate ASC')
 		;
 
-		if (isset($offlinePaymentModel))
-			$query->andWhere(['>=', 'slbAvailableFromDate', $offlinePaymentModel->ofpPayDate->format('Y-m-d')]);
-		else
-			$query->andWhere(['>=', 'slbAvailableFromDate', new Expression('NOW()')]);
+		if (empty($offlinePaymentModel)) {
+			$query
+				->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+				->orderBy('slbAvailableFromDate DESC')
+			;
+		} else {
+			$query
+				->andWhere(['<=', 'slbAvailableFromDate', $offlinePaymentModel->ofpPayDate])
+				->orderBy('slbAvailableFromDate DESC')
+			;
+		}
 
 		SaleableModel::appendDiscountQuery($query, $memberID);
 
-		$saleableModels = $query->asArray()->all();
+		$saleableModel = $query->one();
 
-		if (empty($saleableModels))
-			throw new NotFoundHttpException('Membership saleables not found');
+		if (empty($saleableModel->slbID))
+			throw new NotFoundHttpException('Membership saleable not found');
 
 		// //-----------------
 		// $cardPrintSaleableModel = null;
@@ -310,7 +316,7 @@ class MembershipForm extends Model
 		return [
 			$startDate,
 			$maxYears,
-			$saleableModels,
+			$saleableModel,
 		];
 	}
 

@@ -15,9 +15,14 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 			'model' => $model,
 		]);
 
-		$form->registerActiveHiddenInput($model, 'ofpid');
+		$form->registerActiveHiddenInput($model, 'ofpID');
 
 		$builder = $form->getBuilder();
+
+		$yearsData = [];
+		for ($i=1; $i<=$model->maxYears; $i++) {
+			$yearsData[$i] = $i;
+		}
 
 		$builder->fields([
 			[
@@ -28,15 +33,18 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 			[
 				'years',
 				'type' => FormBuilder::FIELD_RADIOLIST,
-				'data' => [
-					1 => 1,
-					2 => 2,
-					3 => 3,
-				],
+				'data' => $yearsData,
 				'widgetOptions' => [
 					'inline' => true,
 				],
 			],
+
+
+
+			//saleable drop down
+
+
+
 		]);
 
 
