@@ -58,7 +58,7 @@ use shopack\base\common\accounting\enums\enuUserAssetStatus;
       'attribute' => 'uasVoucherID',
       'format' => 'raw',
       'value' => function ($model, $key, $index, $widget) {
-        return Html::a($model->uasVoucherID, ['/aaa/voucher/view', 'id' => $model->uasVoucherID]);
+        return Html::a($model->uasVoucherID, ['/aaa/order/view', 'id' => $model->uasVoucherID]);
       },
     ],
     [
