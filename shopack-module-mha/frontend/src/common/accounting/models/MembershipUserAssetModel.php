@@ -26,11 +26,12 @@ class MembershipUserAssetModel extends UserAssetModel
 		// $this->prdMhaType = enuMhaProductType::Membership;
 	}
 
-	// public function attributeLabels()
-	// {
-	// 	return ArrayHelper::merge(parent::attributeLabels(), [
-	// 	]);
-	// }
+	public function attributeLabels()
+	{
+		return ArrayHelper::merge(parent::attributeLabels(), [
+			'uasActorID'	=> Yii::t('mha', 'Member'),
+		]);
+	}
 
 	public function isSoftDeleted()
   {

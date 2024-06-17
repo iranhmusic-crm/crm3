@@ -14,16 +14,16 @@ use shopack\aaa\frontend\common\auth\BaseController;
 use shopack\aaa\frontend\common\models\OfflinePaymentModel;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipUserAssetModel;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipUserAssetSearchModel;
-use iranhmusic\shopack\mha\frontend\adminpanel\accounting\models\RenewByOfflinePaymentForm;
+use iranhmusic\shopack\mha\frontend\adminpanel\accounting\models\RenewViaInvoiceForm;
 use shopack\base\frontend\common\helpers\Html;
 
 class MembershipController extends BaseController
 {
-	public function actionRenewByOfflinePayment(
+	public function actionRenewViaInvoice(
 		$ofpid,
 		$isPartial = false,
 	) {
-		$model = new RenewByOfflinePaymentForm();
+		$model = new RenewViaInvoiceForm();
 		$model->ofpid = $ofpid;
 
 		$formPosted = $model->load(Yii::$app->request->post());

@@ -13,7 +13,7 @@ use shopack\base\common\helpers\HttpHelper;
 // use iranhmusic\shopack\mha\frontend\common\models\MemberMembershipModel;
 // use iranhmusic\shopack\mha\frontend\common\models\MembershipModel;
 
-class RenewByOfflinePaymentForm extends Model
+class RenewViaInvoiceForm extends Model
 {
 	public $ofpid;
 	// public $startDate;
@@ -96,7 +96,7 @@ class RenewByOfflinePaymentForm extends Model
 	public function process()
 	{
 		try {
-			list ($resultStatus, $resultData) = HttpHelper::callApi('mha/accounting/membership/renew-by-offline-payment',
+			list ($resultStatus, $resultData) = HttpHelper::callApi('mha/accounting/membership/renew-via-invoice',
 				HttpHelper::METHOD_POST,
 				[],
 				[

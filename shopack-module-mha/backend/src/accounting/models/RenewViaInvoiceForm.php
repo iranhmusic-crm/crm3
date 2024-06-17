@@ -26,7 +26,7 @@ use shopack\aaa\backend\models\OfflinePaymentModel;
 use shopack\base\common\accounting\enums\enuAmountType;
 use yii\web\ForbiddenHttpException;
 
-class RenewByOfflinePaymentForm extends Model
+class RenewViaInvoiceForm extends Model
 {
 	public $ofpid;
 

@@ -14,7 +14,7 @@ use shopack\base\common\helpers\ExceptionHelper;
 use shopack\base\backend\helpers\PrivHelper;
 use shopack\base\backend\controller\BaseRestController;
 use iranhmusic\shopack\mha\backend\accounting\models\MembershipForm;
-use iranhmusic\shopack\mha\backend\accounting\models\RenewByOfflinePaymentForm;
+use iranhmusic\shopack\mha\backend\accounting\models\RenewViaInvoiceForm;
 
 class MembershipController extends BaseRestController
 {
@@ -69,11 +69,11 @@ class MembershipController extends BaseRestController
 		];
 	}
 
-	public function actionRenewByOfflinePayment()
+	public function actionRenewViaInvoice()
 	{
 		//check permission
 
-		$model = new RenewByOfflinePaymentForm();
+		$model = new RenewViaInvoiceForm();
 
 		// $this->checkPermission($model);
 

@@ -41,7 +41,7 @@ class AccountingModule extends \shopack\base\backend\accounting\AccountingModule
 					'patterns' => [
 						'GET  renewal-info' => 'renewal-info',
 						'POST add-to-basket' => 'add-to-basket',
-						'POST renew-by-offline-payment' => 'renew-by-offline-payment',
+						'POST renew-via-invoice' => 'renew-via-invoice',
 					],
 				],
 				[
