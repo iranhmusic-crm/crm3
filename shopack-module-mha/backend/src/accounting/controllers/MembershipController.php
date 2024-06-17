@@ -71,7 +71,7 @@ class MembershipController extends BaseRestController
 
 	public function actionRenewViaInvoice()
 	{
-		//check permission
+		//todo: (vi) check permission
 
 		$model = new RenewViaInvoiceForm();
 

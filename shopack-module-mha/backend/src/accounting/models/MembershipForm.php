@@ -203,4 +203,15 @@ class MembershipForm extends Model
 		return [$membershipItemKey, $lastPreVoucher];
 	}
 
+	public static function addToInvoice(
+
+
+
+	) {
+
+
+
+
+	}
+
 }
