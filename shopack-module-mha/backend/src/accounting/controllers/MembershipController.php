@@ -14,7 +14,9 @@ use shopack\base\common\helpers\ExceptionHelper;
 use shopack\base\backend\helpers\PrivHelper;
 use shopack\base\backend\controller\BaseRestController;
 use iranhmusic\shopack\mha\backend\accounting\models\MembershipForm;
-use iranhmusic\shopack\mha\backend\accounting\models\RenewViaInvoiceForm;
+use shopack\aaa\backend\models\OfflinePaymentModel;
+
+// use iranhmusic\shopack\mha\backend\accounting\models\RenewViaInvoiceForm;
 
 class MembershipController extends BaseRestController
 {
@@ -33,6 +35,7 @@ class MembershipController extends BaseRestController
 		return 'options';
 	}
 
+	//called by owner
 	public function actionRenewalInfo($memberID = null)
 	{
 		if ($memberID == null)
@@ -69,29 +72,61 @@ class MembershipController extends BaseRestController
 		];
 	}
 
-	public function actionRenewViaInvoice()
-	{
-		//todo: (vi) check permission
+	//called by operator
+	public function actionRenewalInfoForInvoice(
+		$memberID = null,
+		$ofpID = null
+	) {
+		PrivHelper::checkPriv('mha/member-membership/crud', '0100');
 
-		$model = new RenewViaInvoiceForm();
-
-		// $this->checkPermission($model);
-
-		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
-			throw new NotFoundHttpException("parameters not provided");
-
-		$model->process();
+		list (
+			$startDate,
+			$endDate,
+			$years,
+			$unitPrice,
+			$totalPrice,
+			$saleableModel,
+			$cardPrintSaleableModel,
+			$printCardAmount
+		) = MembershipForm::getRenewalInfoForInvoice($memberID, $ofpID);
 
 		return [
-			// // 'result' => [
-			// 	// 'message' => 'updated',
-			// 	'docID' => $model->docID,
-			// 	'docStatus' => $model->docStatus,
-			// 	'docUpdatedAt' => $model->docUpdatedAt,
-			// 	'docUpdatedBy' => $model->docUpdatedBy,
-			// // ],
+			'startDate'		=> $startDate,
+			'endDate'			=> $endDate,
+			'years'				=> $years,
+			'unitPrice'		=> $unitPrice,
+			'totalPrice'	=> $totalPrice,
+			'saleableID'	=> $saleableModel->slbID,
+			'printCardAmount'	=> $printCardAmount,
 		];
+	}
 
+	public function actionRenewViaInvoice()
+	{
+		PrivHelper::checkPriv('mha/member-membership/crud', '1000');
+
+		$ownerUserID			= $_POST['ownerUserID'];
+		$saleableID				= $_POST['saleableID'];
+		$years						= $_POST['years'];
+		$printCard				= $_POST['printCard'] ?? true;
+		$discountCode			= $_POST['discountCode'] ?? null;
+		$offlinePaymentID	= $_POST['offlinePaymentID'] ?? null;
+		$invoiceID				= $_POST['invoiceID'] ?? null;
+
+		$result = MembershipForm::addToInvoice(
+			$ownerUserID,
+			$saleableID,
+			$years,
+			$printCard,
+			$discountCode,
+			$offlinePaymentID,
+			$invoiceID
+		);
+
+		return [
+			'key' => $result[0],
+			'invoice' => $result[1],
+		];
 	}
 
 }

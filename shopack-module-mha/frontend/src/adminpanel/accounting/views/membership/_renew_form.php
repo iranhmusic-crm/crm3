@@ -5,6 +5,8 @@
 
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\ActiveForm;
+use shopack\base\frontend\common\widgets\FormBuilder;
+
 ?>
 
 <div class='membership-renew-form'>
@@ -16,6 +18,26 @@ use shopack\base\frontend\common\widgets\ActiveForm;
 		$form->registerActiveHiddenInput($model, 'ofpid');
 
 		$builder = $form->getBuilder();
+
+		$builder->fields([
+			[
+				'startDate',
+				'type' => FormBuilder::FIELD_STATIC,
+				'staticFormat' => 'jalali',
+			],
+			[
+				'years',
+				'type' => FormBuilder::FIELD_RADIOLIST,
+				'data' => [
+					1 => 1,
+					2 => 2,
+					3 => 3,
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
+			],
+		]);
 
 
 

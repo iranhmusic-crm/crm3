@@ -6,8 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\adminpanel\accounting\controllers;
 
 use Yii;
-use yii\web\NotFoundHttpException;
-use yii\web\UnprocessableEntityHttpException;
+use yii\web\BadRequestHttpException;
 use shopack\base\common\helpers\Url;
 use shopack\base\common\helpers\StringHelper;
 use shopack\aaa\frontend\common\auth\BaseController;
@@ -20,11 +19,13 @@ use shopack\base\frontend\common\helpers\Html;
 class MembershipController extends BaseController
 {
 	public function actionRenewViaInvoice(
-		$ofpid,
+    $memberID = null,
+		$ofpID = null,
 		$isPartial = false,
 	) {
 		$model = new RenewViaInvoiceForm();
-		$model->ofpid = $ofpid;
+    $model->memberID = $memberID;
+		$model->ofpID = $ofpID;
 
 		$formPosted = $model->load(Yii::$app->request->post());
 		$done = false;

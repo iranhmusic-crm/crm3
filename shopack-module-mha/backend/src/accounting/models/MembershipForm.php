@@ -22,6 +22,7 @@ use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
 use iranhmusic\shopack\mha\backend\accounting\models\SaleableModel;
 use iranhmusic\shopack\mha\backend\models\MemberMemberGroupModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
+use shopack\aaa\backend\models\OfflinePaymentModel;
 use shopack\base\common\accounting\enums\enuAmountType;
 
 class MembershipForm extends Model
@@ -138,6 +139,7 @@ class MembershipForm extends Model
 		];
 	}
 
+	//called by owner
 	public static function addToBasket(
 		$basketdata,
 		$saleableID = null,
@@ -203,10 +205,123 @@ class MembershipForm extends Model
 		return [$membershipItemKey, $lastPreVoucher];
 	}
 
+	//called by operator
+	public static function getRenewalInfoForInvoice(
+		$memberID,
+		$ofpID,
+		$printCard = true
+	) {
+		if (empty($memberID) && empty($ofpID))
+			throw new UnprocessableEntityHttpException('Both memberid and ofpID are empty');
+
+		if (empty($ofpID) == false) {
+			$offlinePaymentModel = OfflinePaymentModel::findOne($ofpID);
+
+			if (empty($offlinePaymentModel))
+				throw new NotFoundHttpException('Offline Payment not found');
+
+			if ((empty($memberID) == false)
+					&& ($memberID != $offlinePaymentModel->ofpOwnerUserID))
+				throw new UnprocessableEntityHttpException('member ids are not matched');
+
+			$memberID = $offlinePaymentModel->ofpOwnerUserID;
+		}
+
+		$memberModel = MemberModel::find()->where(['mbrUserID' => $memberID])->one();
+		if ($memberModel == null)
+			throw new NotFoundHttpException('The requested item does not exist.');
+
+		if (empty($memberModel->mbrRegisterCode))
+			throw new UnprocessableEntityHttpException('The member does not have a register code');
+
+		if (empty($memberModel->mbrAcceptedAt))
+			throw new UnprocessableEntityHttpException('Membership start date is blank');
+
+		$lastMembership = UserAssetModel::find()
+			->joinWith('saleable', false, 'INNER JOIN')
+			->joinWith('saleable.product', false, 'INNER JOIN')
+			->andWhere(['uasActorID' => $memberID])
+			->orderBy('uasValidToDate DESC')
+			->one();
+
+		$now = new \DateTime('now');
+
+		if (empty($lastMembership->uasValidToDate)) {
+			$startDate = new \DateTime($memberModel->mbrAcceptedAt);
+			$startDate->setTime(0, 0);
+		} else {
+			$startDate = new \DateTime($lastMembership->uasValidToDate);
+			$startDate->setTime(0, 0);
+
+			//omit 3 months checking for operators
+			// if ($startDate > $now) {
+			// 	$remained = date_diff($now, $startDate);
+			// 	if ($remained->days > (31 * 3)) {
+			// 		throw new UnprocessableEntityHttpException('There are more than 3 months of current membership left');
+			// 	}
+			// }
+		}
+
+		//todo: compute maxYears by remaining years from member-kanoon
+		$maxYears = 3;
+
+		$startDate = $startDate->format('Y-m-d');
+
+		//-----------------
+		$query = SaleableModel::find()
+			->select(SaleableModel::selectableColumns())
+			->joinWith('product', false, 'INNER JOIN')
+			->joinWith('product.unit')
+			->andWhere(['prdMhaType' => enuMhaProductType::Membership])
+			->andWhere(['slbStatus' => enuSaleableStatus::Active])
+			->orderBy('slbAvailableFromDate ASC')
+		;
+
+		if (isset($offlinePaymentModel))
+			$query->andWhere(['>=', 'slbAvailableFromDate', $offlinePaymentModel->ofpPayDate->format('Y-m-d')]);
+		else
+			$query->andWhere(['>=', 'slbAvailableFromDate', new Expression('NOW()')]);
+
+		SaleableModel::appendDiscountQuery($query, $memberID);
+
+		$saleableModels = $query->asArray()->all();
+
+		if (empty($saleableModels))
+			throw new NotFoundHttpException('Membership saleables not found');
+
+		// //-----------------
+		// $cardPrintSaleableModel = null;
+		// $printCardAmount = 0;
+
+		// if ($printCard) {
+		// 	$cardPrintSaleableModel = SaleableModel::find()
+		// 		->joinWith('product', false, 'INNER JOIN')
+		// 		->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard])
+		// 		->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+		// 		->andWhere(['slbStatus' => enuSaleableStatus::Active])
+		// 		->orderBy('slbAvailableFromDate DESC')
+		// 		->one();
+
+		// 	if ($cardPrintSaleableModel != null)
+		// 		$printCardAmount = $cardPrintSaleableModel->slbBasePrice;
+		// }
+
+		//-----------------
+		return [
+			$startDate,
+			$maxYears,
+			$saleableModels,
+		];
+	}
+
 	public static function addToInvoice(
-
-
-
+		$ownerUserID,
+		$saleableID,
+		$years,
+		$printCard = true,
+		$discountCode = null,
+		$offlinePaymentID = null,
+		$invoiceID = null
 	) {
 
 

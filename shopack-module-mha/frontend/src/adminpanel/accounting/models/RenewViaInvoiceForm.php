@@ -7,7 +7,10 @@ namespace iranhmusic\shopack\mha\frontend\adminpanel\accounting\models;
 
 use Yii;
 use yii\base\Model;
+use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use shopack\base\common\helpers\HttpHelper;
+
 // use shopack\base\frontend\common\rest\RestClientActiveRecord;
 // use iranhmusic\shopack\mha\common\enums\enuMembershipStatus;
 // use iranhmusic\shopack\mha\frontend\common\models\MemberMembershipModel;
@@ -15,21 +18,25 @@ use shopack\base\common\helpers\HttpHelper;
 
 class RenewViaInvoiceForm extends Model
 {
-	public $ofpid;
-	// public $startDate;
-	// public $endDate;
-	// public $years;
-	// public $unitPrice;
-	// public $totalPrice;
-	// public $saleableID;
-	// public $discountCode;
-	// public $printCard = true;
-	// public $printCardAmount;
+	public $memberID;
+	public $ofpID;
+
+	public $startDate;
+	public $endDate;
+	public $years;
+	public $unitPrice;
+	public $totalPrice;
+	public $saleableID;
+	public $discountCode;
+	public $printCard = true;
+	public $printCardAmount;
 
 	public function rules()
 	{
 		return [
-			['ofpid', 'required'],
+			['ofpID', 'integer'],
+			// ['startDate', 'safe'],
+			['years', 'required'],
 
 			// ['discountCode', 'string'],
 			// ['printCard', 'safe'],
@@ -51,47 +58,49 @@ class RenewViaInvoiceForm extends Model
 	// 	];
 	// }
 
-	// public function load($data, $formName = null)
-	// {
-	// 	if (parent::load($data, $formName))
-	// 		return true;
+	public function load($data, $formName = null)
+	{
+		$loaded = parent::load($data, $formName);
+		if ($loaded)
+			return true;
 
-	// 	list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableID, $printCardAmount) =
-	// 		self::getRenewalInfo();
+		list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableID, $printCardAmount) =
+			$this->getRenewalInfo();
 
-	// 	$this->startDate	= $startDate;
-	// 	$this->endDate		= $endDate;
-	// 	$this->years			= $years;
-	// 	$this->unitPrice	= $unitPrice;
-	// 	$this->totalPrice	= $totalPrice;
-	// 	$this->saleableID	= $saleableID;
-	// 	$this->printCardAmount	= $printCardAmount;
+		$this->startDate	= $startDate;
+		$this->endDate		= $endDate;
+		$this->years			= $years;
+		$this->unitPrice	= $unitPrice;
+		$this->totalPrice	= $totalPrice;
+		$this->saleableID	= $saleableID;
+		$this->printCardAmount	= $printCardAmount;
 
-	// 	return false;
-	// }
+		return false;
+	}
 
-	// public static function getRenewalInfo()
-	// {
-	// 	list ($resultStatus, $resultData) = HttpHelper::callApi('mha/accounting/membership/renewal-info',
-	// 		HttpHelper::METHOD_GET,
-	// 		// [
-	// 		// 	'memberID' => Yii::$app->user->id,
-	// 		// ]
-	// 	);
+	public function getRenewalInfo()
+	{
+		list ($resultStatus, $resultData) = HttpHelper::callApi('mha/accounting/membership/renewal-info-for-invoice',
+			HttpHelper::METHOD_GET,
+			[
+				'memberID' => $this->memberID,
+				'ofpID' => $this->ofpID,
+			]
+		);
 
-	// 	if ($resultStatus < 200 || $resultStatus >= 300)
-	// 		throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
+		if ($resultStatus < 200 || $resultStatus >= 300)
+			throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
 
-	// 	return [
-	// 		$resultData['startDate'],
-	// 		$resultData['endDate'],
-	// 		$resultData['years'],
-	// 		$resultData['unitPrice'],
-	// 		$resultData['totalPrice'],
-	// 		$resultData['saleableID'],
-	// 		$resultData['printCardAmount'],
-	// 	];
-	// }
+		return [
+			$resultData['startDate'],
+			$resultData['endDate'],
+			$resultData['years'],
+			$resultData['unitPrice'],
+			$resultData['totalPrice'],
+			$resultData['saleableID'],
+			$resultData['printCardAmount'],
+		];
+	}
 
 	public function process()
 	{
@@ -100,7 +109,7 @@ class RenewViaInvoiceForm extends Model
 				HttpHelper::METHOD_POST,
 				[],
 				[
-					'ofpid' => $this->ofpid,
+					'ofpID' => $this->ofpID,
 				]
 			);
 
