@@ -23,7 +23,9 @@ use iranhmusic\shopack\mha\backend\accounting\models\SaleableModel;
 use iranhmusic\shopack\mha\backend\models\MemberMemberGroupModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 use shopack\aaa\backend\models\OfflinePaymentModel;
+use shopack\aaa\backend\models\UserModel;
 use shopack\base\common\accounting\enums\enuAmountType;
+use yii\db\Query;
 
 class MembershipForm extends Model
 {
@@ -227,14 +229,21 @@ class MembershipForm extends Model
 			$memberID = $offlinePaymentModel->ofpOwnerUserID;
 		}
 
-		$memberModel = MemberModel::find()->where(['mbrUserID' => $memberID])->one();
+		$memberModel = MemberModel::find()
+			->select(MemberModel::selectableColumns())
+			->addSelect(UserModel::selectableColumns())
+			->innerJoinWith('user')
+			->where(['mbrUserID' => $memberID])
+			->asArray()
+			->one();
+
 		if ($memberModel == null)
 			throw new NotFoundHttpException('The requested item does not exist.');
 
-		if (empty($memberModel->mbrRegisterCode))
+		if (empty($memberModel['mbrRegisterCode']))
 			throw new UnprocessableEntityHttpException('The member does not have a register code');
 
-		if (empty($memberModel->mbrAcceptedAt))
+		if (empty($memberModel['mbrAcceptedAt']))
 			throw new UnprocessableEntityHttpException('Membership start date is blank');
 
 		$lastMembership = UserAssetModel::find()
@@ -247,13 +256,13 @@ class MembershipForm extends Model
 		$now = new \DateTime('now');
 
 		if (empty($lastMembership->uasValidToDate)) {
-			$startDate = new \DateTime($memberModel->mbrAcceptedAt);
+			$startDate = new \DateTime($memberModel['mbrAcceptedAt']);
 			$startDate->setTime(0, 0);
 		} else {
 			$startDate = new \DateTime($lastMembership->uasValidToDate);
 			$startDate->setTime(0, 0);
 
-			//omit 3 months checking for operators
+			//preventing 3 month checking for operators
 			// if ($startDate > $now) {
 			// 	$remained = date_diff($now, $startDate);
 			// 	if ($remained->days > (31 * 3)) {
@@ -274,26 +283,40 @@ class MembershipForm extends Model
 			->joinWith('product.unit')
 			->andWhere(['prdMhaType' => enuMhaProductType::Membership])
 			->andWhere(['slbStatus' => enuSaleableStatus::Active])
+			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+			->orderBy('slbAvailableFromDate DESC')
 		;
+		SaleableModel::appendDiscountQuery($query, $memberID);
+		$saleableModel = $query->asArray()->one();
 
-		if (empty($offlinePaymentModel)) {
-			$query
-				->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
-				->orderBy('slbAvailableFromDate DESC')
-			;
-		} else {
-			$query
+		if (empty($saleableModel['slbID']))
+			$saleableModels = [];
+		else
+			$saleableModels = [$saleableModel];
+
+		if (empty($offlinePaymentModel) == false) {
+			$query2 = SaleableModel::find()
+				->select(SaleableModel::selectableColumns())
+				->joinWith('product', false, 'INNER JOIN')
+				->joinWith('product.unit')
+				->andWhere(['prdMhaType' => enuMhaProductType::Membership])
+				->andWhere(['slbStatus' => enuSaleableStatus::Active])
 				->andWhere(['<=', 'slbAvailableFromDate', $offlinePaymentModel->ofpPayDate])
 				->orderBy('slbAvailableFromDate DESC')
 			;
+			SaleableModel::appendDiscountQuery($query2, $memberID);
+			$saleableModel2 = $query2->asArray()->one();
+
+			if (empty($saleableModel2['slbID']) == false) {
+				if (empty($saleableModels))
+					$saleableModels = [$saleableModel2];
+				else
+					$saleableModels = [$saleableModel2, $saleableModel];
+			}
 		}
 
-		SaleableModel::appendDiscountQuery($query, $memberID);
-
-		$saleableModel = $query->one();
-
-		if (empty($saleableModel->slbID))
-			throw new NotFoundHttpException('Membership saleable not found');
+		if (empty($saleableModels))
+			throw new NotFoundHttpException('Membership saleables not found');
 
 		// //-----------------
 		// $cardPrintSaleableModel = null;
@@ -316,7 +339,8 @@ class MembershipForm extends Model
 		return [
 			$startDate,
 			$maxYears,
-			$saleableModel,
+			$saleableModels,
+			$memberModel,
 		];
 	}
 

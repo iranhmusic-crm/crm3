@@ -82,13 +82,15 @@ class MembershipController extends BaseRestController
 		list (
 			$startDate,
 			$maxYears,
-			$saleableModel
+			$saleableModels,
+			$memberModel
 		) = MembershipForm::getRenewalInfoForInvoice($memberID, $ofpID);
 
 		return [
-			'startDate'			=> $startDate,
-			'maxYears'			=> $maxYears,
-			'saleableModel'	=> $saleableModel,
+			'startDate'				=> $startDate,
+			'maxYears'				=> $maxYears,
+			'saleableModels'	=> $saleableModels,
+			'memberModel'			=> $memberModel,
 		];
 	}
 

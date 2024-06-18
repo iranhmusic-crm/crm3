@@ -19,6 +19,22 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 
 		$builder = $form->getBuilder();
 
+		$memberDisplayName = array_filter([
+			'[عضویت: ' . ($this->mbrRegisterCode ?? 'ندارد') . ']',
+			$model->memberModel['usrFirstName'],
+			$model->memberModel['usrLastName'],
+			empty($model->memberModel['usrEmail']) ? null : "<span class='d-inline-block dir-ltr'>" . $model->memberModel['usrEmail'] . "</span>",
+			empty($model->memberModel['usrMobile']) ? null : Yii::$app->formatter->asPhone($model->memberModel['usrMobile']),
+		]);
+
+		$builder->fields([
+			[
+				'memberID',
+				'type' => FormBuilder::FIELD_STATIC,
+				'staticValue' => implode(' ' , $memberDisplayName),
+			],
+		]);
+
 		$yearsData = [];
 		for ($i=1; $i<=$model->maxYears; $i++) {
 			$yearsData[$i] = $i;
@@ -38,25 +54,29 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 					'inline' => true,
 				],
 			],
-
-
-
-			//saleable drop down
-
-
-
 		]);
 
+		//saleable drop down
+		$saleablesData = [];
+		foreach ($model->saleableModels as $saleableModel) {
+			$saleablesData += [
+				$saleableModel['slbID'] => $saleableModel['slbName']
+					. ' (' . Yii::$app->formatter->asToman($saleableModel['discountedBasePrice']) . ')'
+					. ' - قابل فروش از: '
+					. Yii::$app->formatter->asJalali($saleableModel['slbAvailableFromDate'])
+			];
+		}
 
-
-
-
-
-
-
-
-
-
+		$builder->fields([
+			[
+				'saleableID',
+				'type' => FormBuilder::FIELD_RADIOLIST,
+				'data' => $saleablesData,
+				'widgetOptions' => [
+					'inline' => true,
+				],
+			]
+		]);
 	?>
 
 	<?php $builder->beginFooter(); ?>

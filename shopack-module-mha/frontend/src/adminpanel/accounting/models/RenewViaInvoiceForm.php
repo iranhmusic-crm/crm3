@@ -20,11 +20,12 @@ class RenewViaInvoiceForm extends Model
 {
 	public $memberID;
 	public $ofpID;
-
 	public $startDate;
 	public $years;
 	public $maxYears;
-	public $saleableModel;
+	public $saleableModels;
+	public $saleableID;
+	public $memberModel;
 
 	public function rules()
 	{
@@ -32,6 +33,7 @@ class RenewViaInvoiceForm extends Model
 			['ofpID', 'integer'],
 			// ['startDate', 'safe'],
 			['years', 'required'],
+			['saleableID', 'required'],
 
 			// ['discountCode', 'string'],
 			// ['printCard', 'safe'],
@@ -41,6 +43,7 @@ class RenewViaInvoiceForm extends Model
 	public function attributeLabels()
 	{
 		return [
+			'memberID'				=> Yii::t('mha', 'Member'),
 			'startDate'				=> Yii::t('app', 'Start Date'),
 			'years'						=> Yii::t('app', 'Year'),
 			'saleableID'			=> Yii::t('aaa', 'Saleable'),
@@ -54,12 +57,14 @@ class RenewViaInvoiceForm extends Model
 		list (
 			$startDate,
 			$maxYears,
-			$saleableModel
+			$saleableModels,
+			$memberModel
 		) = $this->getRenewalInfo();
 
 		$this->startDate			= $startDate;
 		$this->maxYears				= $maxYears;
-		$this->saleableModel	= $saleableModel;
+		$this->saleableModels	= $saleableModels;
+		$this->memberModel		= $memberModel;
 
 		if (empty($this->years))
 			$this->years = 1;
@@ -83,7 +88,8 @@ class RenewViaInvoiceForm extends Model
 		return [
 			$resultData['startDate'],
 			$resultData['maxYears'],
-			$resultData['saleableModel'],
+			$resultData['saleableModels'],
+			$resultData['memberModel'],
 		];
 	}
 
