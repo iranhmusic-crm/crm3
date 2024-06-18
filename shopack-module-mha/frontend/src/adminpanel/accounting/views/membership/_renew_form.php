@@ -6,13 +6,15 @@
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
-
 ?>
 
 <div class='membership-renew-form'>
 	<?php
 		$form = ActiveForm::begin([
 			'model' => $model,
+			'formConfig' => [
+				'labelSpan' => 3,
+			],
 		]);
 
 		$form->registerActiveHiddenInput($model, 'ofpID');
@@ -35,17 +37,20 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 			],
 		]);
 
-		$yearsData = [];
-		for ($i=1; $i<=$model->maxYears; $i++) {
-			$yearsData[$i] = $i;
-		}
-
 		$builder->fields([
 			[
 				'startDate',
 				'type' => FormBuilder::FIELD_STATIC,
 				'staticFormat' => 'jalali',
 			],
+		]);
+
+		$yearsData = [];
+		for ($i=1; $i<=$model->maxYears; $i++) {
+			$yearsData[$i] = $i;
+		}
+
+		$builder->fields([
 			[
 				'years',
 				'type' => FormBuilder::FIELD_RADIOLIST,
@@ -56,7 +61,7 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 			],
 		]);
 
-		//saleable drop down
+		//saleables data
 		$saleablesData = [];
 		foreach ($model->saleableModels as $saleableModel) {
 			$saleablesData += [

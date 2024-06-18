@@ -69,8 +69,8 @@ use shopack\base\common\accounting\enums\enuUserAssetStatus;
     [
       'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
       'header' => MembershipUserAssetModel::canCreate() ? Html::createButton('تمدید عضویت', [
-        'create',
-        'uasActorID' => $uasActorID ?? $_GET['uasActorID'] ?? null,
+        '/mha/accounting/membership/renew-via-invoice',
+        'memberID' => $uasActorID ?? $_GET['uasActorID'] ?? null,
       ]) : Yii::t('app', 'Actions'),
       'template' => '',
     ],
