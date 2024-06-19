@@ -152,12 +152,11 @@ class RenewViaInvoiceForm extends Model
 				HttpHelper::METHOD_POST,
 				[],
 				[
-
-					'ofpID' => $this->ofpID,
-
-
-
-
+					'memberID'									=> $this->memberID,
+					'ofpID'											=> $this->ofpID,
+					'years'											=> $this->years,
+					'membershipSaleableID'			=> $this->membershipSaleableID,
+					'membershipCardSaleableID'	=> $this->membershipCardSaleableID,
 				]
 			);
 

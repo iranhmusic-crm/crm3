@@ -102,27 +102,26 @@ class MembershipController extends BaseRestController
 	{
 		PrivHelper::checkPriv('mha/member-membership/crud', '1000');
 
-		$ownerUserID			= $_POST['ownerUserID'];
-		$saleableID				= $_POST['saleableID'];
-		$years						= $_POST['years'];
-		$printCard				= $_POST['printCard'] ?? true;
-		$discountCode			= $_POST['discountCode'] ?? null;
-		$offlinePaymentID	= $_POST['offlinePaymentID'] ?? null;
+		$memberID										= $_POST['memberID'] ?? null;
+		// $ofpID											= $_POST['ofpID'] ?? null;
+		$years											= $_POST['years'];
+		$membershipSaleableID				= $_POST['membershipSaleableID'] ?? null;
+		$membershipCardSaleableID		= $_POST['membershipCardSaleableID'] ?? null;
 		$invoiceID				= $_POST['invoiceID'] ?? null;
 
 		$result = MembershipForm::addToInvoice(
-			$ownerUserID,
-			$saleableID,
+			$memberID,
+			// $ofpID,
 			$years,
-			$printCard,
-			$discountCode,
-			$offlinePaymentID,
+			$membershipSaleableID,
+			$membershipCardSaleableID,
 			$invoiceID
 		);
 
 		return [
-			'key' => $result[0],
-			'invoice' => $result[1],
+			'membershipItemKey'			=> $result['membershipItemKey'],
+			'membershipCardItemKey'	=> $result['membershipCardItemKey'],
+			'invoiceID'							=> $result['invoiceID'],
 		];
 	}
 

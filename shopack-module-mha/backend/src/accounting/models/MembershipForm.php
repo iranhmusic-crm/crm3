@@ -8,6 +8,7 @@ namespace iranhmusic\shopack\mha\backend\accounting\models;
 use Yii;
 use yii\base\Model;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\web\NotFoundHttpException;
 use yii\web\UnprocessableEntityHttpException;
 use Ramsey\Uuid\Uuid;
@@ -25,7 +26,6 @@ use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 use shopack\aaa\backend\models\OfflinePaymentModel;
 use shopack\aaa\backend\models\UserModel;
 use shopack\base\common\accounting\enums\enuAmountType;
-use yii\db\Query;
 
 class MembershipForm extends Model
 {
@@ -375,18 +375,84 @@ class MembershipForm extends Model
 	}
 
 	public static function addToInvoice(
-		$ownerUserID,
-		$saleableID,
+		$memberID,
+		// $ofpID,
 		$years,
-		$printCard = true,
-		$discountCode = null,
-		$offlinePaymentID = null,
+		$membershipSaleableID,
+		$membershipCardSaleableID,
 		$invoiceID = null
 	) {
+		//find startDate and endDate
+		if (empty($memberID))
+			throw new UnprocessableEntityHttpException('The MemberID not provided');
 
+		$memberModel = MemberModel::find()->where(['mbrUserID' => $memberID])->one();
+		if ($memberModel == null)
+			throw new NotFoundHttpException('The requested item does not exist.');
 
+		if (empty($memberModel->mbrRegisterCode))
+			throw new UnprocessableEntityHttpException('The member does not have a register code');
 
+		if (empty($memberModel->mbrAcceptedAt))
+			throw new UnprocessableEntityHttpException('Membership start date is blank');
 
+		$lastMembership = UserAssetModel::find()
+			->joinWith('saleable', false, 'INNER JOIN')
+			->joinWith('saleable.product', false, 'INNER JOIN')
+			->andWhere(['uasActorID' => $memberID])
+			->orderBy('uasValidToDate DESC')
+			->one();
+
+		if (empty($lastMembership->uasValidToDate)) {
+			$startDate = new \DateTime($memberModel->mbrAcceptedAt);
+		} else {
+			$startDate = new \DateTime($lastMembership->uasValidToDate);
+		}
+		$startDate->setTime(0, 0);
+
+		$endDate = clone $startDate;
+		$endDate->add(\DateInterval::createFromDateString("{$years} year"));
+
+		//add membership to basket:
+		if (empty($membershipSaleableID) == false) {
+			$membershipBasketModel = new BasketModel;
+			$membershipBasketModel->saleableCode   = $membershipSaleableID;
+			$membershipBasketModel->qty            = $years;
+			$membershipBasketModel->maxQty         = $years;
+			$membershipBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
+			$membershipBasketModel->orderParams    = [
+				'startDate'	=> $startDate,
+				'endDate'		=> $endDate,
+			];
+			// $membershipBasketModel->orderAdditives = ;
+			// $membershipBasketModel->discountCode   = $discountCode;
+			// $membershipBasketModel->referrer       = ;
+			// $membershipBasketModel->referrerParams = ;
+			// $membershipBasketModel->apiTokenID     = ;
+			// $membershipBasketModel->itemKey        = ;
+			[$membershipItemKey, $invoiceID] = $membershipBasketModel->addToInvoice($memberID, $invoiceID);
+		}
+
+		//add membership CARD to basket:
+		if (empty($membershipCardSaleableID) == false) {
+			$membershipCardBasketModel = new BasketModel;
+			$membershipCardBasketModel->saleableCode   = $membershipCardSaleableID;
+			$membershipCardBasketModel->qty            = 1;
+			$membershipCardBasketModel->maxQty         = 1;
+			$membershipCardBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
+			// $membershipCardBasketModel->orderParams    = ;
+			// $membershipCardBasketModel->orderAdditives = ;
+			// $membershipCardBasketModel->discountCode   = $discountCode;
+			// $membershipCardBasketModel->referrer       = ;
+			// $membershipCardBasketModel->referrerParams = ;
+			// $membershipCardBasketModel->apiTokenID     = ;
+			// $membershipCardBasketModel->itemKey        = ;
+			if (empty($membershipItemKey) == false)
+				$membershipCardBasketModel->dependencies		= [$membershipItemKey];
+			[$membershipCardItemKey, $invoiceID] = $membershipCardBasketModel->addToInvoice($memberID, $invoiceID);
+		}
+
+		return [$membershipItemKey ?? null, $membershipCardItemKey ?? null, $invoiceID];
 	}
 
 }
