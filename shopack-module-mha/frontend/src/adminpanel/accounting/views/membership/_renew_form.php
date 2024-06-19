@@ -37,6 +37,43 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 			],
 		]);
 
+		if (empty($model->offlinePaymentModel) == false) {
+			$builder->fields([
+				[
+					'ofpID',
+					'label' => 'پرداخت آفلاین',
+					'type' => FormBuilder::FIELD_STATIC,
+					'staticValue' => 'تاریخ پرداخت: ' . Yii::$app->formatter->asJalali($model->offlinePaymentModel['ofpPayDate'])
+					 	. ' - مبلغ: ' . Yii::$app->formatter->asToman($model->offlinePaymentModel['ofpAmount']),
+				],
+			]);
+		}
+
+		$builder->fields(['<hr>']);
+
+		//saleables data
+		$saleablesData = [];
+		foreach ($model->saleableModels as $saleableModel) {
+			$saleablesData += [
+				$saleableModel['slbID'] => $saleableModel['slbName']
+					. ' (' . Yii::$app->formatter->asToman($saleableModel['discountedBasePrice']) . ')'
+					. ' - قابل ارائه از: '
+					. Yii::$app->formatter->asJalali($saleableModel['slbAvailableFromDate'])
+			];
+		}
+
+		$builder->fields([
+			[
+				'saleableID',
+				'label' => 'حق عضویت',
+				'type' => FormBuilder::FIELD_RADIOLIST,
+				'data' => $saleablesData,
+				'widgetOptions' => [
+					'inline' => true,
+				],
+			]
+		]);
+
 		$builder->fields([
 			[
 				'startDate',
@@ -47,40 +84,19 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 
 		$yearsData = [];
 		for ($i=1; $i<=$model->maxYears; $i++) {
-			$yearsData[$i] = $i;
+			$yearsData[$i] = $i . ' سال';
 		}
 
 		$builder->fields([
 			[
 				'years',
+				'label' => 'طول دوره',
 				'type' => FormBuilder::FIELD_RADIOLIST,
 				'data' => $yearsData,
 				'widgetOptions' => [
 					'inline' => true,
 				],
 			],
-		]);
-
-		//saleables data
-		$saleablesData = [];
-		foreach ($model->saleableModels as $saleableModel) {
-			$saleablesData += [
-				$saleableModel['slbID'] => $saleableModel['slbName']
-					. ' (' . Yii::$app->formatter->asToman($saleableModel['discountedBasePrice']) . ')'
-					. ' - قابل فروش از: '
-					. Yii::$app->formatter->asJalali($saleableModel['slbAvailableFromDate'])
-			];
-		}
-
-		$builder->fields([
-			[
-				'saleableID',
-				'type' => FormBuilder::FIELD_RADIOLIST,
-				'data' => $saleablesData,
-				'widgetOptions' => [
-					'inline' => true,
-				],
-			]
 		]);
 	?>
 

@@ -341,6 +341,7 @@ class MembershipForm extends Model
 			$maxYears,
 			$saleableModels,
 			$memberModel,
+			$offlinePaymentModel ?? null
 		];
 	}
 

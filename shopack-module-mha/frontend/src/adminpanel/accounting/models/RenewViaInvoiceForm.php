@@ -20,12 +20,15 @@ class RenewViaInvoiceForm extends Model
 {
 	public $memberID;
 	public $ofpID;
+
+	public $memberModel;
+	public $offlinePaymentModel;
+
 	public $startDate;
 	public $years;
 	public $maxYears;
 	public $saleableModels;
 	public $saleableID;
-	public $memberModel;
 
 	public function rules()
 	{
@@ -58,16 +61,21 @@ class RenewViaInvoiceForm extends Model
 			$startDate,
 			$maxYears,
 			$saleableModels,
-			$memberModel
+			$memberModel,
+			$offlinePaymentModel
 		) = $this->getRenewalInfo();
 
-		$this->startDate			= $startDate;
-		$this->maxYears				= $maxYears;
-		$this->saleableModels	= $saleableModels;
-		$this->memberModel		= $memberModel;
+		$this->startDate						= $startDate;
+		$this->maxYears							= $maxYears;
+		$this->saleableModels				= $saleableModels;
+		$this->memberModel					= $memberModel;
+		$this->offlinePaymentModel	= $offlinePaymentModel;
 
 		if (empty($this->years))
 			$this->years = 1;
+
+		if ((count($this->saleableModels) >= 1) && empty($this->saleableID))
+			$this->saleableID = $this->saleableModels[0]['slbID'];
 
 		return $loaded;
 	}
@@ -90,6 +98,7 @@ class RenewViaInvoiceForm extends Model
 			$resultData['maxYears'],
 			$resultData['saleableModels'],
 			$resultData['memberModel'],
+			$resultData['offlinePaymentModel'],
 		];
 	}
 
