@@ -216,6 +216,7 @@ class MembershipForm extends Model
 		if (empty($memberID) && empty($ofpID))
 			throw new UnprocessableEntityHttpException('Both memberID and ofpID are empty');
 
+		$offlinePaymentModel = null;
 		if (empty($ofpID) == false) {
 			$offlinePaymentModel = OfflinePaymentModel::findOne($ofpID);
 
@@ -276,72 +277,63 @@ class MembershipForm extends Model
 
 		$startDate = $startDate->format('Y-m-d');
 
-		//-----------------
-		$query = SaleableModel::find()
-			->select(SaleableModel::selectableColumns())
-			->joinWith('product', false, 'INNER JOIN')
-			->joinWith('product.unit')
-			->andWhere(['prdMhaType' => enuMhaProductType::Membership])
-			->andWhere(['slbStatus' => enuSaleableStatus::Active])
-			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
-			->orderBy('slbAvailableFromDate DESC')
-		;
-		SaleableModel::appendDiscountQuery($query, $memberID);
-		$saleableModel = $query->asArray()->one();
-
-		if (empty($saleableModel['slbID']))
-			$saleableModels = [];
-		else
-			$saleableModels = [$saleableModel];
-
-		if (empty($offlinePaymentModel) == false) {
-			$query2 = SaleableModel::find()
+		$fnGetSaleable = function($saleableType) use ($memberID, $offlinePaymentModel) {
+			//-----------------
+			$query = SaleableModel::find()
 				->select(SaleableModel::selectableColumns())
 				->joinWith('product', false, 'INNER JOIN')
 				->joinWith('product.unit')
-				->andWhere(['prdMhaType' => enuMhaProductType::Membership])
+				->andWhere(['prdMhaType' => $saleableType])
 				->andWhere(['slbStatus' => enuSaleableStatus::Active])
-				->andWhere(['<=', 'slbAvailableFromDate', $offlinePaymentModel->ofpPayDate])
+				->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
 				->orderBy('slbAvailableFromDate DESC')
 			;
-			SaleableModel::appendDiscountQuery($query2, $memberID);
-			$saleableModel2 = $query2->asArray()->one();
+			SaleableModel::appendDiscountQuery($query, $memberID);
+			$saleableModel = $query->asArray()->one();
 
-			if (empty($saleableModel2['slbID']) == false) {
-				if (empty($saleableModels))
-					$saleableModels = [$saleableModel2];
-				else
-					$saleableModels = [$saleableModel2, $saleableModel];
+			if (empty($saleableModel['slbID']))
+				$saleableModels = [];
+			else
+				$saleableModels = [$saleableModel];
+
+			if ($offlinePaymentModel != null) {
+				$query2 = SaleableModel::find()
+					->select(SaleableModel::selectableColumns())
+					->joinWith('product', false, 'INNER JOIN')
+					->joinWith('product.unit')
+					->andWhere(['prdMhaType' => $saleableType])
+					->andWhere(['slbStatus' => enuSaleableStatus::Active])
+					->andWhere(['<=', 'slbAvailableFromDate', $offlinePaymentModel->ofpPayDate])
+					->orderBy('slbAvailableFromDate DESC')
+				;
+				SaleableModel::appendDiscountQuery($query2, $memberID);
+				$saleableModel2 = $query2->asArray()->one();
+
+				if (empty($saleableModel2['slbID']) == false) {
+					if (empty($saleableModels))
+						$saleableModels = [$saleableModel2];
+					else
+						$saleableModels = [$saleableModel2, $saleableModel];
+				}
 			}
-		}
 
-		if (empty($saleableModels))
-			throw new NotFoundHttpException('Membership saleables not found');
+			if (empty($saleableModels))
+				throw new NotFoundHttpException('Membership saleables not found');
 
-		// //-----------------
-		// $cardPrintSaleableModel = null;
-		// $printCardAmount = 0;
+			return $saleableModels;
+		};
 
-		// if ($printCard) {
-		// 	$cardPrintSaleableModel = SaleableModel::find()
-		// 		->joinWith('product', false, 'INNER JOIN')
-		// 		->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard])
-		// 		->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
-		// 		->andWhere(['slbStatus' => enuSaleableStatus::Active])
-		// 		->orderBy('slbAvailableFromDate DESC')
-		// 		->one();
-
-		// 	if ($cardPrintSaleableModel != null)
-		// 		$printCardAmount = $cardPrintSaleableModel->slbBasePrice;
-		// }
+		$membershipSaleableModels			= $fnGetSaleable(enuMhaProductType::Membership);
+		$membershipCardSaleableModels	= $fnGetSaleable(enuMhaProductType::MembershipCard);
 
 		//-----------------
 		return [
 			$startDate,
 			$maxYears,
-			$saleableModels,
 			$memberModel,
-			$offlinePaymentModel ?? null
+			$offlinePaymentModel,
+			$membershipSaleableModels,
+			$membershipCardSaleableModels
 		];
 	}
 

@@ -13,7 +13,7 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 		$form = ActiveForm::begin([
 			'model' => $model,
 			'formConfig' => [
-				'labelSpan' => 3,
+				'labelSpan' => 4,
 			],
 		]);
 
@@ -23,8 +23,10 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 
 		$memberDisplayName = array_filter([
 			'[عضویت: ' . ($this->mbrRegisterCode ?? 'ندارد') . ']',
-			$model->memberModel['usrFirstName'],
-			$model->memberModel['usrLastName'],
+			trim(($model->memberModel['usrFirstName'] ?? '')
+				. ' '
+				. ($model->memberModel['usrLastName'] ?? '')
+			),
 			empty($model->memberModel['usrEmail']) ? null : "<span class='d-inline-block dir-ltr'>" . $model->memberModel['usrEmail'] . "</span>",
 			empty($model->memberModel['usrMobile']) ? null : Yii::$app->formatter->asPhone($model->memberModel['usrMobile']),
 		]);
@@ -33,7 +35,7 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 			[
 				'memberID',
 				'type' => FormBuilder::FIELD_STATIC,
-				'staticValue' => implode(' ' , $memberDisplayName),
+				'staticValue' => implode(' - ' , $memberDisplayName),
 			],
 		]);
 
@@ -41,7 +43,6 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 			$builder->fields([
 				[
 					'ofpID',
-					'label' => 'پرداخت آفلاین',
 					'type' => FormBuilder::FIELD_STATIC,
 					'staticValue' => 'تاریخ پرداخت: ' . Yii::$app->formatter->asJalali($model->offlinePaymentModel['ofpPayDate'])
 					 	. ' - مبلغ: ' . Yii::$app->formatter->asToman($model->offlinePaymentModel['ofpAmount']),
@@ -51,25 +52,39 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 
 		$builder->fields(['<hr>']);
 
-		//saleables data
-		$saleablesData = [];
-		foreach ($model->saleableModels as $saleableModel) {
+		$fnFormatSaleable = function($saleableModel) {
+			$text = $saleableModel['slbName']
+				. ' (';
+
+			if ($saleableModel['discountAmount'] > 0)
+				$text .= "<span class='text-decoration-line-through'>"
+					. Yii::$app->formatter->asToman($saleableModel['slbBasePrice'])
+					. "</span> ";
+
+			$text .= Yii::$app->formatter->asToman($saleableModel['discountedBasePrice']) . ')'
+				. ' - قابل ارائه از: '
+				. Yii::$app->formatter->asJalali($saleableModel['slbAvailableFromDate']);
+
+			return $text;
+		};
+
+		//membership saleables
+		$saleablesData = [
+			0 => 'بدون تمدید عضویت',
+		];
+		foreach ($model->membershipSaleableModels as $saleableModel) {
 			$saleablesData += [
-				$saleableModel['slbID'] => $saleableModel['slbName']
-					. ' (' . Yii::$app->formatter->asToman($saleableModel['discountedBasePrice']) . ')'
-					. ' - قابل ارائه از: '
-					. Yii::$app->formatter->asJalali($saleableModel['slbAvailableFromDate'])
+				$saleableModel['slbID'] => $fnFormatSaleable($saleableModel)
 			];
 		}
 
 		$builder->fields([
 			[
-				'saleableID',
-				'label' => 'حق عضویت',
+				'membershipSaleableID',
 				'type' => FormBuilder::FIELD_RADIOLIST,
 				'data' => $saleablesData,
 				'widgetOptions' => [
-					'inline' => true,
+					'inline' => false,
 				],
 			]
 		]);
@@ -79,6 +94,9 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 				'startDate',
 				'type' => FormBuilder::FIELD_STATIC,
 				'staticFormat' => 'jalali',
+				'visibleConditions' => [
+					'membershipSaleableID' => ['!=', 0],
+				],
 			],
 		]);
 
@@ -90,20 +108,45 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 		$builder->fields([
 			[
 				'years',
-				'label' => 'طول دوره',
 				'type' => FormBuilder::FIELD_RADIOLIST,
 				'data' => $yearsData,
 				'widgetOptions' => [
 					'inline' => true,
 				],
+				'visibleConditions' => [
+					'membershipSaleableID' => ['!=', 0],
+				],
 			],
+		]);
+
+		$builder->fields(['<hr>']);
+
+		//membership card saleables
+		$saleablesData = [
+			0 => 'بدون چاپ کارت',
+		];
+		foreach ($model->membershipCardSaleableModels as $saleableModel) {
+			$saleablesData += [
+				$saleableModel['slbID'] => $fnFormatSaleable($saleableModel)
+			];
+		}
+
+		$builder->fields([
+			[
+				'membershipCardSaleableID',
+				'type' => FormBuilder::FIELD_RADIOLIST,
+				'data' => $saleablesData,
+				'widgetOptions' => [
+					'inline' => false,
+				],
+			]
 		]);
 	?>
 
 	<?php $builder->beginFooter(); ?>
 		<div class="card-footer">
 			<div class="float-end">
-				<?= Html::activeSubmitButton($model) ?>
+				<?= Html::activeSubmitButton($model, 'ایجاد صورتحساب تمدید عضویت') ?>
 			</div>
 			<div>
 				<?= Html::formErrorSummary($model); ?>

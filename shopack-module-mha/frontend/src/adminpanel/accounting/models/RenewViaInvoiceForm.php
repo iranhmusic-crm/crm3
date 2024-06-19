@@ -23,12 +23,14 @@ class RenewViaInvoiceForm extends Model
 
 	public $memberModel;
 	public $offlinePaymentModel;
+	public $membershipSaleableModels;
+	public $membershipCardSaleableModels;
 
 	public $startDate;
 	public $years;
 	public $maxYears;
-	public $saleableModels;
-	public $saleableID;
+	public $membershipSaleableID;
+	public $membershipCardSaleableID;
 
 	public function rules()
 	{
@@ -36,7 +38,8 @@ class RenewViaInvoiceForm extends Model
 			['ofpID', 'integer'],
 			// ['startDate', 'safe'],
 			['years', 'required'],
-			['saleableID', 'required'],
+			['membershipSaleableID', 'required'],
+			['membershipCardSaleableID', 'required'],
 
 			// ['discountCode', 'string'],
 			// ['printCard', 'safe'],
@@ -46,10 +49,12 @@ class RenewViaInvoiceForm extends Model
 	public function attributeLabels()
 	{
 		return [
-			'memberID'				=> Yii::t('mha', 'Member'),
-			'startDate'				=> Yii::t('app', 'Start Date'),
-			'years'						=> Yii::t('app', 'Year'),
-			'saleableID'			=> Yii::t('aaa', 'Saleable'),
+			'memberID'									=> Yii::t('mha', 'Member'),
+			'ofpID'											=> 'پرداخت آفلاین',
+			'startDate'									=> 'تاریخ شروع دوره عضویت',
+			'years'											=> 'طول دوره',
+			'membershipSaleableID'			=> 'دوره عضویت',
+			'membershipCardSaleableID'	=> 'چاپ کارت',
 		];
 	}
 
@@ -60,22 +65,24 @@ class RenewViaInvoiceForm extends Model
 		list (
 			$startDate,
 			$maxYears,
-			$saleableModels,
 			$memberModel,
-			$offlinePaymentModel
+			$offlinePaymentModel,
+			$membershipSaleableModels,
+			$membershipCardSaleableModels
 		) = $this->getRenewalInfo();
 
-		$this->startDate						= $startDate;
-		$this->maxYears							= $maxYears;
-		$this->saleableModels				= $saleableModels;
-		$this->memberModel					= $memberModel;
-		$this->offlinePaymentModel	= $offlinePaymentModel;
+		$this->startDate										= $startDate;
+		$this->maxYears											= $maxYears;
+		$this->memberModel									= $memberModel;
+		$this->offlinePaymentModel					= $offlinePaymentModel;
+		$this->membershipSaleableModels			=	$membershipSaleableModels;
+		$this->membershipCardSaleableModels	= $membershipCardSaleableModels;
 
 		if (empty($this->years))
 			$this->years = 1;
 
-		if ((count($this->saleableModels) >= 1) && empty($this->saleableID))
-			$this->saleableID = $this->saleableModels[0]['slbID'];
+		if (empty($this->membershipSaleableID))
+			$this->membershipSaleableID = $this->membershipSaleableModels[0]['slbID'];
 
 		return $loaded;
 	}
@@ -96,9 +103,10 @@ class RenewViaInvoiceForm extends Model
 		return [
 			$resultData['startDate'],
 			$resultData['maxYears'],
-			$resultData['saleableModels'],
 			$resultData['memberModel'],
 			$resultData['offlinePaymentModel'],
+			$resultData['membershipSaleableModels'],
+			$resultData['membershipCardSaleableModels'],
 		];
 	}
 
