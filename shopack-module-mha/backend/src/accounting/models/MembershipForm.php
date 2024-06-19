@@ -277,7 +277,7 @@ class MembershipForm extends Model
 
 		$startDate = $startDate->format('Y-m-d');
 
-		$fnGetSaleable = function($saleableType) use ($memberID, $offlinePaymentModel) {
+		$fnGetSaleables = function($saleableType) use ($memberID, $offlinePaymentModel) {
 			//-----------------
 			$query = SaleableModel::find()
 				->select(SaleableModel::selectableColumns())
@@ -323,8 +323,45 @@ class MembershipForm extends Model
 			return $saleableModels;
 		};
 
-		$membershipSaleableModels			= $fnGetSaleable(enuMhaProductType::Membership);
-		$membershipCardSaleableModels	= $fnGetSaleable(enuMhaProductType::MembershipCard);
+		$fnGetOneSaleable = function($saleableType) use ($memberID, $offlinePaymentModel) {
+			//-----------------
+			$query = SaleableModel::find()
+				->select(SaleableModel::selectableColumns())
+				->joinWith('product', false, 'INNER JOIN')
+				->joinWith('product.unit')
+				->andWhere(['prdMhaType' => $saleableType])
+				->andWhere(['slbStatus' => enuSaleableStatus::Active])
+				->andWhere(['<=', 'slbAvailableFromDate', ($offlinePaymentModel == null)
+					? (new Expression('NOW()'))
+					: $offlinePaymentModel->ofpPayDate
+				])
+				->orderBy('slbAvailableFromDate DESC')
+			;
+			SaleableModel::appendDiscountQuery($query, $memberID);
+			$saleableModel = $query->asArray()->one();
+
+			if ((empty($offlinePaymentModel) == false) && empty($saleableModel['slbID'])) {
+				$query = SaleableModel::find()
+					->select(SaleableModel::selectableColumns())
+					->joinWith('product', false, 'INNER JOIN')
+					->joinWith('product.unit')
+					->andWhere(['prdMhaType' => $saleableType])
+					->andWhere(['slbStatus' => enuSaleableStatus::Active])
+					->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+					->orderBy('slbAvailableFromDate DESC')
+				;
+				SaleableModel::appendDiscountQuery($query, $memberID);
+				$saleableModel = $query->asArray()->one();
+			}
+
+			if (empty($saleableModel['slbID']))
+				throw new NotFoundHttpException('Membership saleable not found');
+
+			return [$saleableModel];
+		};
+
+		$membershipSaleableModels			= $fnGetOneSaleable(enuMhaProductType::Membership);
+		$membershipCardSaleableModels	= $fnGetOneSaleable(enuMhaProductType::MembershipCard);
 
 		//-----------------
 		return [

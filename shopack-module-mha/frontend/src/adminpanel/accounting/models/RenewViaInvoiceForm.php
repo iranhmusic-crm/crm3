@@ -10,6 +10,7 @@ use yii\base\Model;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use shopack\base\common\helpers\HttpHelper;
+use shopack\base\common\validators\GroupRequiredValidator;
 
 // use shopack\base\frontend\common\rest\RestClientActiveRecord;
 // use iranhmusic\shopack\mha\common\enums\enuMembershipStatus;
@@ -38,8 +39,22 @@ class RenewViaInvoiceForm extends Model
 			['ofpID', 'integer'],
 			// ['startDate', 'safe'],
 			['years', 'required'],
-			['membershipSaleableID', 'required'],
-			['membershipCardSaleableID', 'required'],
+			['membershipSaleableID', 'safe'],
+			['membershipCardSaleableID', 'safe'],
+			// ['membershipSaleableID', 'required'],
+			// ['membershipCardSaleableID', 'required'],
+
+      // [[
+      //   'membershipSaleableID',
+      //   'membershipCardSaleableID',
+      // ], GroupRequiredValidator::class,
+      //   'min' => 1,
+      //   'in' => [
+      //     'membershipSaleableID',
+      //     'membershipCardSaleableID',
+      //   ],
+        // 'message' => 'one of email or mobile or ssid is required',
+      // ],
 
 			// ['discountCode', 'string'],
 			// ['printCard', 'safe'],
@@ -81,7 +96,7 @@ class RenewViaInvoiceForm extends Model
 		if (empty($this->years))
 			$this->years = 1;
 
-		if (empty($this->membershipSaleableID))
+		if ($this->membershipSaleableID == null)
 			$this->membershipSaleableID = $this->membershipSaleableModels[0]['slbID'];
 
 		return $loaded;
@@ -110,14 +125,39 @@ class RenewViaInvoiceForm extends Model
 		];
 	}
 
+	public function validate($attributeNames = null, $clearErrors = true)
+	{
+		if (parent::validate($attributeNames, $clearErrors) == false)
+			return false;
+
+		if (empty($this->membershipSaleableID) && empty($this->membershipCardSaleableID)) {
+			$this->addErrors([
+        'membershipSaleableID' => 'یکی از انواع دوره عضویت یا چاپ کارت را انتخاب کنید',
+        'membershipCardSaleableID' => 'یکی از انواع دوره عضویت یا چاپ کارت را انتخاب کنید',
+			]);
+
+			return false;
+		}
+
+		return true;
+	}
+
 	public function process()
 	{
+		if ($this->validate() == false)
+			return false;
+
 		try {
 			list ($resultStatus, $resultData) = HttpHelper::callApi('mha/accounting/membership/renew-via-invoice',
 				HttpHelper::METHOD_POST,
 				[],
 				[
+
 					'ofpID' => $this->ofpID,
+
+
+
+
 				]
 			);
 

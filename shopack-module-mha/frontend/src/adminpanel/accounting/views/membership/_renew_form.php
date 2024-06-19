@@ -44,7 +44,7 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 				[
 					'ofpID',
 					'type' => FormBuilder::FIELD_STATIC,
-					'staticValue' => 'تاریخ پرداخت: ' . Yii::$app->formatter->asJalali($model->offlinePaymentModel['ofpPayDate'])
+					'staticValue' => $model->offlinePaymentModel['ofpID'] . ' - تاریخ پرداخت: ' . Yii::$app->formatter->asJalali($model->offlinePaymentModel['ofpPayDate'])
 					 	. ' - مبلغ: ' . Yii::$app->formatter->asToman($model->offlinePaymentModel['ofpAmount']),
 				],
 			]);
@@ -54,15 +54,20 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 
 		$fnFormatSaleable = function($saleableModel) {
 			$text = $saleableModel['slbName']
-				. ' (';
+				. ' ('
+				. Yii::$app->formatter->asToman($saleableModel['discountedBasePrice']);
 
-			if ($saleableModel['discountAmount'] > 0)
-				$text .= "<span class='text-decoration-line-through'>"
-					. Yii::$app->formatter->asToman($saleableModel['slbBasePrice'])
-					. "</span> ";
+			if ($saleableModel['discountAmount'] > 0) {
+				$text .= " - تخفیف: " . Yii::$app->formatter->asToman($saleableModel['discountAmount']);
 
-			$text .= Yii::$app->formatter->asToman($saleableModel['discountedBasePrice']) . ')'
-				. ' - قابل ارائه از: '
+				// $text .= "<span class='text-decoration-line-through'>"
+				// 	. Yii::$app->formatter->asToman($saleableModel['slbBasePrice'])
+				// 	. "</span> ";
+			}
+
+			$text .= ')';
+
+			$text .= ' - قابل ارائه از: '
 				. Yii::$app->formatter->asJalali($saleableModel['slbAvailableFromDate']);
 
 			return $text;
