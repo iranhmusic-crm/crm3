@@ -20,7 +20,7 @@ return [
 
 			'offlinePaymentAfterAcceptUrl' => [
 				'url' => '/mha/accounting/membership/renew-via-invoice',
-				'idField' => 'ofpid',
+				'idField' => 'ofpID',
 			],
 		],
 		'mha' => [
