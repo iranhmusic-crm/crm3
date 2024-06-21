@@ -26,6 +26,7 @@ use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 use shopack\aaa\backend\models\OfflinePaymentModel;
 use shopack\aaa\backend\models\UserModel;
 use shopack\base\common\accounting\enums\enuAmountType;
+use yii\web\ServerErrorHttpException;
 
 class MembershipForm extends Model
 {
@@ -416,7 +417,7 @@ class MembershipForm extends Model
 		//add membership to basket:
 		if (empty($membershipSaleableID) == false) {
 			$membershipBasketModel = new BasketModel;
-			$membershipBasketModel->saleableCode   = $membershipSaleableID;
+			$membershipBasketModel->saleableCode   = 'ID:' . $membershipSaleableID;
 			$membershipBasketModel->qty            = $years;
 			$membershipBasketModel->maxQty         = $years;
 			$membershipBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
@@ -430,13 +431,19 @@ class MembershipForm extends Model
 			// $membershipBasketModel->referrerParams = ;
 			// $membershipBasketModel->apiTokenID     = ;
 			// $membershipBasketModel->itemKey        = ;
-			[$membershipItemKey, $invoiceID] = $membershipBasketModel->addToInvoice($memberID, $invoiceID);
+			[$membershipItemKey, $invoiceVoucher] = $membershipBasketModel->addToInvoice($memberID, $invoiceID);
+
+			if (empty($invoiceID))
+				$invoiceID = $invoiceVoucher['vchID'];
+
+			if ($membershipItemKey == false)
+				return [null, null, $invoiceID];
 		}
 
 		//add membership CARD to basket:
 		if (empty($membershipCardSaleableID) == false) {
 			$membershipCardBasketModel = new BasketModel;
-			$membershipCardBasketModel->saleableCode   = $membershipCardSaleableID;
+			$membershipCardBasketModel->saleableCode   = 'ID:' . $membershipCardSaleableID;
 			$membershipCardBasketModel->qty            = 1;
 			$membershipCardBasketModel->maxQty         = 1;
 			$membershipCardBasketModel->qtyStep        = 0; //0: do not allow to change qty in basket
@@ -449,10 +456,49 @@ class MembershipForm extends Model
 			// $membershipCardBasketModel->itemKey        = ;
 			if (empty($membershipItemKey) == false)
 				$membershipCardBasketModel->dependencies		= [$membershipItemKey];
-			[$membershipCardItemKey, $invoiceID] = $membershipCardBasketModel->addToInvoice($memberID, $invoiceID);
+			[$membershipCardItemKey, $invoiceVoucher] = $membershipCardBasketModel->addToInvoice($memberID, $invoiceID);
+
+			if (empty($invoiceID))
+				$invoiceID = $invoiceVoucher['vchID'];
+
+			if ($membershipCardItemKey == false)
+				return [$membershipItemKey ?? null, null, $invoiceID];
 		}
 
+		//set vchStatus to WaitForPayment
+		self::setVchStatusToWaitForPayment($invoiceID);
+
+		//-------------------------
 		return [$membershipItemKey ?? null, $membershipCardItemKey ?? null, $invoiceID];
+	}
+
+	private static function setVchStatusToWaitForPayment($voucherID)
+	{
+		$parentModule = Yii::$app->topModule;
+		$serviceName = $parentModule->id;
+
+		if (empty($parentModule->servicePrivateKey))
+			throw new ServerErrorHttpException('INVALID.SERVICE.PRIVATE.KEY');
+
+		$data = Json::encode([
+			'service' => $serviceName,
+			'voucherID' => $voucherID,
+		]);
+		$data = RsaPrivate::model($parentModule->servicePrivateKey)->encrypt($data);
+
+		list ($resultStatus, $resultData) = HttpHelper::callApi('aaa/voucher/set-invoice-as-wait-for-payment',
+			HttpHelper::METHOD_POST,
+			[],
+			[
+				'service' => $serviceName,
+				'data' => $data,
+			]
+		);
+
+		if ($resultStatus < 200 || $resultStatus >= 300)
+			throw new \yii\web\HttpException($resultStatus, Yii::t('aaa', $resultData['message'], $resultData));
+
+		return $resultData;
 	}
 
 }

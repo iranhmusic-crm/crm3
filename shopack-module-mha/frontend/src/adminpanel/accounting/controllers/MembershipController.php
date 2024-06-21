@@ -36,7 +36,7 @@ class MembershipController extends BaseController
       if ($done) {
         return $this->renderJson([
           'message' => Yii::t('app', 'Success'),
-          // 'id' => $id,
+          'id' => $model->invoiceID,
           // 'redirect' => $this->doneLink ? call_user_func($this->doneLink, $model) : null,
           // 'modalDoneFragment' => $this->modalDoneFragment,
         ]);
@@ -59,7 +59,7 @@ class MembershipController extends BaseController
     } //if (isAjax)
 
     if ($done)
-      return $this->redirect(['view', 'id' => $model->primaryKeyValue()]);
+      return $this->redirect(['/aaa/invoice/view', 'id' => $model->invoiceID]);
 
     if ($isPartial)
       return $this->renderPartial('_renew_form', [

@@ -33,6 +33,10 @@ class RenewViaInvoiceForm extends Model
 	public $membershipSaleableID;
 	public $membershipCardSaleableID;
 
+	public $membershipItemKey;
+	public $membershipCardItemKey;
+	public $invoiceID;
+
 	public function rules()
 	{
 		return [
@@ -43,6 +47,8 @@ class RenewViaInvoiceForm extends Model
 			['membershipCardSaleableID', 'safe'],
 			// ['membershipSaleableID', 'required'],
 			// ['membershipCardSaleableID', 'required'],
+
+			['invoiceID', 'safe'],
 
       // [[
       //   'membershipSaleableID',
@@ -92,6 +98,9 @@ class RenewViaInvoiceForm extends Model
 		$this->offlinePaymentModel					= $offlinePaymentModel;
 		$this->membershipSaleableModels			=	$membershipSaleableModels;
 		$this->membershipCardSaleableModels	= $membershipCardSaleableModels;
+
+		if (empty($this->memberID))
+			$this->memberID = $this->memberModel['mbrUserID'];
 
 		if (empty($this->years))
 			$this->years = 1;
@@ -154,6 +163,7 @@ class RenewViaInvoiceForm extends Model
 				[
 					'memberID'									=> $this->memberID,
 					'ofpID'											=> $this->ofpID,
+					'invoiceID'									=> $this->invoiceID,
 					'years'											=> $this->years,
 					'membershipSaleableID'			=> $this->membershipSaleableID,
 					'membershipCardSaleableID'	=> $this->membershipCardSaleableID,
@@ -163,13 +173,19 @@ class RenewViaInvoiceForm extends Model
 			if ($resultStatus < 200 || $resultStatus >= 300)
 				throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
 
-			return true; //$resultData;
+			$this->membershipItemKey			= $resultData['membershipItemKey'];
+			$this->membershipCardItemKey	= $resultData['membershipCardItemKey'];
+			$this->invoiceID							= $resultData['invoiceID'];
+
+			return ((empty($this->membershipItemKey) == false)
+				|| (empty($this->membershipCardItemKey) == false));
 
 		} catch (\Throwable $th) {
 			if (YII_ENV_DEV)
 				throw $th;
 
 			$this->addError('', Yii::t('mha', $th->getMessage()));
+
 			return false;
 		}
 

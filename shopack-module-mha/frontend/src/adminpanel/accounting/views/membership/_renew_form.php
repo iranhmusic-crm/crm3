@@ -18,6 +18,7 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 		]);
 
 		$form->registerActiveHiddenInput($model, 'ofpID');
+		$form->registerActiveHiddenInput($model, 'invoiceID');
 
 		$builder = $form->getBuilder();
 

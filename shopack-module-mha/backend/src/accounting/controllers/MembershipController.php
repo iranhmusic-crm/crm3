@@ -67,8 +67,8 @@ class MembershipController extends BaseRestController
 		$result = MembershipForm::addToBasket($base64Basketdata, null, $printCard, $discountCode);
 
 		return [
-			'key' => $result[0],
-			'basket' => $result[1],
+			'key'			=> $result[0],
+			'basket'	=> $result[1],
 		];
 	}
 
@@ -107,7 +107,7 @@ class MembershipController extends BaseRestController
 		$years											= $_POST['years'];
 		$membershipSaleableID				= $_POST['membershipSaleableID'] ?? null;
 		$membershipCardSaleableID		= $_POST['membershipCardSaleableID'] ?? null;
-		$invoiceID				= $_POST['invoiceID'] ?? null;
+		$invoiceID									= $_POST['invoiceID'] ?? null;
 
 		$result = MembershipForm::addToInvoice(
 			$memberID,
@@ -119,9 +119,9 @@ class MembershipController extends BaseRestController
 		);
 
 		return [
-			'membershipItemKey'			=> $result['membershipItemKey'],
-			'membershipCardItemKey'	=> $result['membershipCardItemKey'],
-			'invoiceID'							=> $result['invoiceID'],
+			'membershipItemKey'			=> $result[0],
+			'membershipCardItemKey'	=> $result[1],
+			'invoiceID'							=> $result[2],
 		];
 	}
 
