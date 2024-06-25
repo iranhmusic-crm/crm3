@@ -59,7 +59,7 @@ class MembershipController extends BaseController
     } //if (isAjax)
 
     if ($done)
-      return $this->redirect(['/aaa/invoice/view', 'id' => $model->invoiceID]);
+      return $this->redirect(['/aaa/order/view', 'id' => $model->invoiceID]);
 
     if ($isPartial)
       return $this->renderPartial('_renew_form', [

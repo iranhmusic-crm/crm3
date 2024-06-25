@@ -21,7 +21,7 @@ abstract class UserAssetModel extends RestClientActiveRecord
 			'uasActorID'             => Yii::t('aaa', 'Actor'),
 			'uasSaleableID'          => Yii::t('aaa', 'Saleable'),
 			'uasQty'                 => Yii::t('aaa', 'Qty'),
-			'uasVoucherID'           => Yii::t('aaa', 'Voucher'),
+			'uasVoucherID'           => Yii::t('aaa', 'Order'),
 			'uasVoucherItemInfo'     => Yii::t('aaa', 'Voucher Item Info'),
 			// 'uasDiscountID'          => Yii::t('aaa', 'Discount'),
 			// 'uasDiscountAmount'      => Yii::t('aaa', 'Discount Amount'),

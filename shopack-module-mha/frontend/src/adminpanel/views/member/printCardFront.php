@@ -36,6 +36,7 @@ body, html {
   display:table;
   height:100%;
   width:100%;
+  font-family: "Nassim";
 }
 .container {
   display:table-cell;
@@ -43,15 +44,17 @@ body, html {
 }
 .cardbox {
   width: 8.5cm;
+  max-width: 8.5cm;
   height: 5cm;
-/*            border: 1px solid #000;*/
+  max-height: 5cm;
+  overflow: hidden;
+  /*border: 1px solid #000;*/
   position: relative;
-  font-family: "Nassim";
   /*padding-right: 0.5cm;
   padding-left: 0.5cm;
   padding-top: 60px;*/
   margin: 0 auto;
-/*            transform: scale(2,2);*/
+  /*transform: scale(2,2);*/
 }
 .info {
   right: 7px;
