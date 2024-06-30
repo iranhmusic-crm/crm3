@@ -414,6 +414,9 @@ class MembershipForm extends Model
 		$endDate = clone $startDate;
 		$endDate->add(\DateInterval::createFromDateString("{$years} year"));
 
+		$startDate = $startDate->format('Y-m-d');
+		$endDate = $endDate->format('Y-m-d');
+
 		//add membership to basket:
 		if (empty($membershipSaleableID) == false) {
 			$membershipBasketModel = new BasketModel;
