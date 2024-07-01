@@ -108,11 +108,12 @@ SQL;
     if ($userAssetModel == null)
       throw new UnprocessableEntityHttpException("user asset not found");
 
-    if ($userAssetModel->uasStatus == enuUserAssetStatus::Active)
+    if (in_array($userAssetModel->uasStatus, [
+          enuUserAssetStatus::Active, enuUserAssetStatus::Pending
+        ]))
       return true;
 
     if ($userAssetModel->uasStatus != enuUserAssetStatus::Draft)
-        // && ($userAssetModel->uasStatus != enuUserAssetStatus::Pending))
       return false;
 
     //start transaction
