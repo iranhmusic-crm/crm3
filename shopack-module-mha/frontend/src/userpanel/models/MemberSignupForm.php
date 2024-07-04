@@ -22,6 +22,8 @@ class MemberSignupForm extends Model
 	public $usrFirstName_en;
 	public $usrLastName;
 	public $usrLastName_en;
+	public $usrFatherName;
+	public $usrFatherName_en;
 	public $usrEmail;
 	public $usrMobile;
 	public $usrSSID;
@@ -60,6 +62,8 @@ class MemberSignupForm extends Model
 				'usrFirstName_en',
 				'usrLastName',
 				'usrLastName_en',
+				'usrFatherName',
+				'usrFatherName_en',
 				'usrEmail',
 				'usrMobile',
 				'usrSSID',
@@ -100,6 +104,18 @@ class MemberSignupForm extends Model
 				'required',
 				'when' => function ($model) {
 					return (empty($model->user->usrLastName_en));
+				},
+			],
+			['usrFatherName',
+				'required',
+				'when' => function ($model) {
+					return (empty($model->user->usrFatherName));
+				},
+			],
+			['usrFatherName_en',
+				'required',
+				'when' => function ($model) {
+					return (empty($model->user->usrFatherName_en));
 				},
 			],
 			['usrEmail',
@@ -192,6 +208,8 @@ class MemberSignupForm extends Model
       'usrFirstName_en'      => Yii::t('aaa', 'First Name (en)'),
       'usrLastName'          => Yii::t('aaa', 'Last Name'),
       'usrLastName_en'       => Yii::t('aaa', 'Last Name (en)'),
+      'usrFatherName'        => Yii::t('aaa', 'Father Name'),
+      'usrFatherName_en'     => Yii::t('aaa', 'Father Name (en)'),
       'usrEmail'             => Yii::t('aaa', 'Email'),
       'usrEmailApprovedAt'   => Yii::t('aaa', 'Email Approved At'),
       'usrMobile'            => Yii::t('aaa', 'Mobile'),
@@ -247,22 +265,24 @@ class MemberSignupForm extends Model
 
   public function load($data, $formName = null)
   {
-		$this->usrGender = $this->user->usrGender;
-		$this->usrFirstName = $this->user->usrFirstName;
-		$this->usrFirstName_en = $this->user->usrFirstName_en;
-		$this->usrLastName = $this->user->usrLastName;
-		$this->usrLastName_en = $this->user->usrLastName_en;
-		$this->usrEmail = $this->user->usrEmail;
-		$this->usrMobile = $this->user->usrMobile;
-		$this->usrSSID = $this->user->usrSSID;
-		$this->usrBirthDate = $this->user->usrBirthDate;
-		$this->usrCountryID = $this->user->usrCountryID;
-		$this->usrStateID = $this->user->usrStateID;
-		$this->usrCityOrVillageID = $this->user->usrCityOrVillageID;
-		// $this->usrTownID = $this->user->usrTownID;
-		$this->usrHomeAddress = $this->user->usrHomeAddress;
-		$this->usrZipCode = $this->user->usrZipCode;
-		// $this->usrImageFileID = $this->user->usrImageFileID;
+		$this->usrGender					= $this->user->usrGender;
+		$this->usrFirstName				= $this->user->usrFirstName;
+		$this->usrFirstName_en		= $this->user->usrFirstName_en;
+		$this->usrLastName				= $this->user->usrLastName;
+		$this->usrLastName_en			= $this->user->usrLastName_en;
+		$this->usrFatherName			= $this->user->usrFatherName;
+		$this->usrFatherName_en		= $this->user->usrFatherName_en;
+		$this->usrEmail						= $this->user->usrEmail;
+		$this->usrMobile					= $this->user->usrMobile;
+		$this->usrSSID						= $this->user->usrSSID;
+		$this->usrBirthDate				= $this->user->usrBirthDate;
+		$this->usrCountryID				= $this->user->usrCountryID;
+		$this->usrStateID					= $this->user->usrStateID;
+		$this->usrCityOrVillageID	= $this->user->usrCityOrVillageID;
+		// $this->usrTownID					= $this->user->usrTownID;
+		$this->usrHomeAddress			= $this->user->usrHomeAddress;
+		$this->usrZipCode					= $this->user->usrZipCode;
+		// $this->usrImageFileID			= $this->user->usrImageFileID;
 
 		$this->_oldAttributes = $this->attributes;
 
@@ -278,6 +298,8 @@ class MemberSignupForm extends Model
 			|| empty($this->user->usrFirstName_en)
 			|| empty($this->user->usrLastName)
 			|| empty($this->user->usrLastName_en)
+			|| empty($this->user->usrFatherName)
+			|| empty($this->user->usrFatherName_en)
 			|| empty($this->user->usrEmail)
 			|| empty($this->user->usrMobile)
 			|| empty($this->user->usrSSID)

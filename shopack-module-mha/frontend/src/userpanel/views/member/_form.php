@@ -144,6 +144,19 @@ JS;
 						'class' => 'latin-text',
 					],
 				],
+				['usrFatherName',
+					'visibleConditions' => [
+						'mbrCreateNewUser' => 1,
+					],
+				],
+				['usrFatherName_en',
+					'visibleConditions' => [
+						'mbrCreateNewUser' => 1,
+					],
+					'widgetOptions' => [
+						'class' => 'latin-text',
+					],
+				],
 				['@reset-cols'],
 				['usrSSID',
 					'visibleConditions' => [

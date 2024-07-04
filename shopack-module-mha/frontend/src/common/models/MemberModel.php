@@ -25,6 +25,8 @@ class MemberModel extends RestClientActiveRecord
 	public $usrFirstName_en;
 	public $usrLastName;
 	public $usrLastName_en;
+	public $usrFatherName;
+	public $usrFatherName_en;
 	public $usrEmail;
 	public $usrMobile;
 	public $usrSSID;
@@ -51,6 +53,8 @@ class MemberModel extends RestClientActiveRecord
 				'usrFirstName_en',
 				'usrLastName',
         'usrLastName_en',
+				'usrFatherName',
+				'usrFatherName_en',
 			], 'string'],
 
       // [[
@@ -74,10 +78,13 @@ class MemberModel extends RestClientActiveRecord
 			[[
         'usrMobile',
         'usrSSID',
+				'usrGender',
 				'usrFirstName',
 				'usrFirstName_en',
         'usrLastName',
         'usrLastName_en',
+				'usrFatherName',
+				'usrFatherName_en',
       ], 'required',
 				'when' => function ($model) {
 					return ($model->mbrCreateNewUser);
@@ -224,6 +231,8 @@ class MemberModel extends RestClientActiveRecord
 				$userModel->usrFirstName_en  = $this->usrFirstName_en;
 				$userModel->usrLastName      = $this->usrLastName;
 				$userModel->usrLastName_en   = $this->usrLastName_en;
+				$userModel->usrFatherName    = $this->usrFatherName;
+				$userModel->usrFatherName_en = $this->usrFatherName_en;
 				$userModel->usrSSID          = $this->usrSSID;
 				$userModel->usrMobile        = $this->usrMobile;
 				$userModel->usrEmail         = $this->usrEmail;
@@ -241,6 +250,8 @@ class MemberModel extends RestClientActiveRecord
 				$this->usrFirstName_en  = null;
 				$this->usrLastName      = null;
 				$this->usrLastName_en   = null;
+				$this->usrFatherName    = null;
+				$this->usrFatherName_en = null;
 				$this->usrSSID          = null;
 				$this->usrMobile        = null;
 				$this->usrEmail         = null;

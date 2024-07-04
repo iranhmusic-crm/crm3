@@ -98,6 +98,20 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 					]
 				]);
 			}
+			if (empty($model->user->usrFatherName)) {
+				$builder->fields([
+					['usrFatherName']
+				]);
+			}
+			if (empty($model->user->usrFatherName_en)) {
+				$builder->fields([
+					['usrFatherName_en',
+						'widgetOptions' => [
+							'class' => ['dir-ltr'],
+						],
+					]
+				]);
+			}
 			if (empty($model->user->usrEmail)) {
 				$builder->fields([
 					['usrEmail',
