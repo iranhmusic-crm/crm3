@@ -52,7 +52,11 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 			[
 				'mbrdocFileID',
 				'type' => FormBuilder::FIELD_FILE,
+				'widgetOptions' => [
+					'accept' => 'image/png, image/gif, image/jpeg',
+				],
 			],
+			'توجه: فقط فرمت jpeg با حداکثر حجم 2 مگابایت پذیرفته خواهد بود.',
 
 		]);
 	?>

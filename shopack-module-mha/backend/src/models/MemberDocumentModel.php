@@ -46,7 +46,14 @@ class MemberDocumentModel extends MhaActiveRecord
 	public function save($runValidation = true, $attributeNames = null)
 	{
 		if (empty($_FILES) == false) {
-			$uploadResult = Yii::$app->fileManager->saveUploadedFiles($this->mbrdocMemberID, 'document');
+			$uploadResult = Yii::$app->fileManager->saveUploadedFiles(
+				/* userID             */ $this->mbrdocMemberID,
+				/* targetPath         */ 'document',
+				/* allowedFileTypes   */ null,
+				/* allowedMimeTypes   */ ['image/png', 'image/gif', 'image/jpeg'],
+				/* allowedMinFileSize */ 0,
+				/* allowedMaxFileSize */ 2 * 1024 * 1024
+			);
 
 			if (empty($uploadResult))
 				return false;

@@ -50,8 +50,7 @@ class MembershipCardForm extends Model
 			// ]
 		);
 
-		if ($resultStatus < 200 || $resultStatus >= 300)
-			throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
+		HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
 
 		return [
 			$resultData['membershipUserAssetID'],
@@ -71,8 +70,7 @@ class MembershipCardForm extends Model
 				]
 			);
 
-			if ($resultStatus < 200 || $resultStatus >= 300)
-				throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
+			HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
 
 			// $newBase64Basketdata = $resultData['basketdata'];
 			// return $newBase64Basketdata;

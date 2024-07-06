@@ -115,8 +115,7 @@ class MemberKanoonModel extends RestClientActiveRecord
       ]
     );
 
-    if ($resultStatus < 200 || $resultStatus >= 300)
-      throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
+		HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
 
     return true; //[$resultStatus, $resultData['result']];
 	}
@@ -133,8 +132,7 @@ class MemberKanoonModel extends RestClientActiveRecord
       ]
     );
 
-    if ($resultStatus < 200 || $resultStatus >= 300)
-      throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
+		HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
 
     return true; //[$resultStatus, $resultData['result']];
 	}

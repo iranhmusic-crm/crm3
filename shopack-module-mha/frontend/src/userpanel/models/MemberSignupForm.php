@@ -373,9 +373,11 @@ class MemberSignupForm extends Model
 		);
 
 		if ($resultStatus < 200 || $resultStatus >= 300) {
-			$this->addError(null, Yii::t('mha', $resultData['message'], $resultData));
-			return false;
-			// throw new \yii\web\HttpException($resultStatus, Yii::t('mha', $resultData['message'], $resultData));
+			$msg = HttpHelper::formatResultIfFailed('mha', $resultStatus, $resultData);
+			if (empty($message) == false) {
+				$this->addError(null, Yii::t('mha', $resultData['message'], $resultData));
+				return false;
+			}
 		}
 
 		return true;
