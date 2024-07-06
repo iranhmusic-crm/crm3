@@ -5,9 +5,9 @@
 
 namespace iranhmusic\shopack\mha\backend\controllers;
 
-use shopack\base\backend\controller\BaseRestController;
+use shopack\base\backend\controller\BaseCrudController;
 
-class MasterInsurerTypeController extends BaseRestController
+class MasterInsurerTypeController extends BaseCrudController
 {
 	public function behaviors()
 	{

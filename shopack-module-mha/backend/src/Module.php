@@ -111,13 +111,13 @@ class Module
 				[
 					'class' => \shopack\base\common\rest\UrlRule::class,
 					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/master-insurer'],
+					'controller' => [$this->id . '/master-insurer-type'],
 					'pluralize' => false,
 				],
 				[
 					'class' => \shopack\base\common\rest\UrlRule::class,
 					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/master-insurer-type'],
+					'controller' => [$this->id . '/master-insurer'],
 					'pluralize' => false,
 				],
 				[
