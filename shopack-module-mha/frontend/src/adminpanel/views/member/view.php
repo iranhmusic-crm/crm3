@@ -325,7 +325,7 @@ $this->params['breadcrumbs'][] = $this->title;
                       $buttons[] = Html::a(Yii::t('mha', 'Update User'), [
                         '/aaa/user/update',
                         'id' => $model->mbrUserID,
-                        'ref' => Url::to(['view', 'id' => $model->mbrUserID], true)
+                        'ref' => Url::to(['view', 'id' => $model->mbrUserID], true),
                       ], [
                         'modal' => true,
                         'class' => 'btn btn-sm btn-primary',
@@ -428,8 +428,13 @@ $this->params['breadcrumbs'][] = $this->title;
               <div class='card border-default mt-3'>
                 <div class='card-header'>
                   <div class="float-end">
+                    <?= Html::updateButton(Yii::t('aaa', 'Update Image'), [
+                      '/aaa/user/update-image',
+                      'id' => $model->mbrUserID,
+                      'ref' => Url::to(['view', 'id' => $model->mbrUserID], true),
+                    ]) ?>
                   </div>
-                  <div class='card-title'><?= Yii::t('aaa', 'Image') ?></div>
+                  <div class='card-title'><?= Yii::t('aaa', 'Official Personal Photo') ?></div>
                   <div class="clearfix"></div>
                 </div>
                 <div class='card-body text-center'>
