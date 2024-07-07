@@ -14,6 +14,7 @@ use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\backend\models\MemberModel;
 use iranhmusic\shopack\mha\backend\models\MemberKanoonModel;
+use yii\db\Expression;
 
 class ReportModel extends MhaActiveRecord
 {
@@ -55,7 +56,7 @@ class ReportModel extends MhaActiveRecord
 			case enuReportType::Members:
 				return $this->runMembers();
 
-			case enuReportType::Members:
+			case enuReportType::Fiancial:
 				return $this->runFinancial();
 		}
 
@@ -115,9 +116,14 @@ class ReportModel extends MhaActiveRecord
 					if (empty($value['City']) == false)
 						$query->andWhere(['birthcity.ctvID' => $value['City']]);
 				},
-				'noneCallback' => function($query, $key, $value) {
-					$query->andWhere(['birthstate.sttID' => null]);
-					$query->andWhere(['birthcity.ctvID' => null]);
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0) {
+						$query->andWhere(['birthstate.sttID' => null]);
+						$query->andWhere(['birthcity.ctvID' => null]);
+					} else {
+						$query->andWhere(['IS', 'birthstate.sttID', new Expression('NOT NULL')]);
+						$query->andWhere(['IS', 'birthcity.ctvID', new Expression('NOT NULL')]);
+					}
 				},
 				'join' => [
 					'user',
@@ -129,8 +135,11 @@ class ReportModel extends MhaActiveRecord
 				'filterCallback' => function($query, $key, $value) use ($fnAddBetweenCondition) {
 					$fnAddBetweenCondition($key, $value);
 				},
-				'noneCallback' => function($query, $key, $value) {
-					$query->andWhere([$key => null]);
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
 				},
 				'join' => [
 					'user',
@@ -141,8 +150,11 @@ class ReportModel extends MhaActiveRecord
 				'filterCallback' => function($query, $key, $value) {
 					$query->andWhere([$key => $value]);
 				},
-				'noneCallback' => function($query, $key, $value) {
-					$query->andWhere([$key => null]);
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
 				},
 				'join' => [
 					'user',
@@ -154,8 +166,11 @@ class ReportModel extends MhaActiveRecord
 				'filterCallback' => function($query, $key, $value) {
 					$query->andWhere([$key => $value]);
 				},
-				'noneCallback' => function($query, $key, $value) {
-					$query->andWhere([$key => null]);
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
 				},
 				'join' => [
 					'user',
@@ -167,8 +182,11 @@ class ReportModel extends MhaActiveRecord
 				'filterCallback' => function($query, $key, $value) use ($fnAddBetweenCondition) {
 					$fnAddBetweenCondition($key, $value);
 				},
-				'noneCallback' => function($query, $key, $value) {
-					$query->andWhere([$key => null]);
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
 				},
 			],
 
@@ -176,8 +194,11 @@ class ReportModel extends MhaActiveRecord
 				'filterCallback' => function($query, $key, $value) use ($fnAddBetweenCondition) {
 					$fnAddBetweenCondition($key, $value);
 				},
-				'noneCallback' => function($query, $key, $value) {
-					$query->andWhere([$key => null]);
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
 				},
 			],
 
@@ -185,8 +206,11 @@ class ReportModel extends MhaActiveRecord
 				'filterCallback' => function($query, $key, $value) {
 					$query->andWhere(['IN', $key, $value]);
 				},
-				'noneCallback' => function($query, $key, $value) {
-					$query->andWhere([$key => null]);
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
 				},
 				'join' => [
 					'kanoon',
@@ -205,8 +229,11 @@ class ReportModel extends MhaActiveRecord
 				'filterCallback' => function($query, $key, $value) use ($fnApplyLikeSearchCondition) {
 					$fnApplyLikeSearchCondition($key, $value);
 				},
-				'noneCallback' => function($query, $key, $value) {
-					$query->andWhere([$key => null]);
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
 				},
 			],
 
@@ -214,14 +241,17 @@ class ReportModel extends MhaActiveRecord
 				'filterCallback' => function($query, $key, $value) use ($fnApplyLikeSearchCondition) {
 					$fnApplyLikeSearchCondition($key, $value);
 				},
-				'noneCallback' => function($query, $key, $value) {
-					$query->andWhere([$key => null]);
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
 				},
 			],
 
 		];
 
-		$fnApplyFilter = function($key, $value, $applyNone)
+		$fnApplyFilter = function($key, $value, $applyHas)
 			use ($inputFieldsSchema, &$query, &$joins)
 		{
 			if (isset($inputFieldsSchema[$key])) {
@@ -231,14 +261,17 @@ class ReportModel extends MhaActiveRecord
 					'filterCallback' => function($query, $key, $value) {
 						$query->andWhere(['IN', $key, $value]);
 					},
-					'noneCallback' => function($query, $key, $value) {
-						$query->andWhere([$key => null]);
+					'hasCallback' => function($query, $key, $value) {
+						if ($value == 0)
+							$query->andWhere([$key => null]);
+						else
+							$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
 					},
 				];
 			}
 
-			$callback = ($applyNone
-				? ($schema['noneCallback'] ?? null)
+			$callback = ($applyHas
+				? ($schema['hasCallback'] ?? null)
 				: $schema['filterCallback']
 			);
 
@@ -254,99 +287,18 @@ class ReportModel extends MhaActiveRecord
 		};
 
 		foreach ($this->rptInputFields as $k => $v) {
-			if (str_ends_with($k, '_None')) {
-				if ($v == 1) {
-					$kk = substr($k, 0, -5); //strip _None fron end
+			if (str_ends_with($k, '_Has')) {
+				// if ($v == 1) {
+					$kk = substr($k, 0, -4); //strip _Has fron end
 					// if (isset($inputFieldsSchema[$kk]))
-						$fnApplyFilter($kk, $v, true);
-				}
+						$fnApplyFilter($kk, $v[0] ?? $v, true);
+				// }
 			} else { //if (isset($inputFieldsSchema[$k])) {
-				if (($this->rptInputFields[$k . '_None'] ?? 0) == 0)
+				if (array_key_exists($k . '_Has', $this->rptInputFields) == false)
 					$fnApplyFilter($k, $v, false);
 			}
 		}
 
-
-
-
-
-
-
-/*
-		foreach ($this->rptInputFields as $k => $v) {
-			if (str_starts_with($k, 'usr')) {
-				$joinToUser = true;
-			} else if (str_starts_with($k, 'mbrknn') || str_starts_with($k, 'knn')) {
-				$joinToKanoon = true;
-			}
-
-			switch ($k) {
-				case 'usrBirthLocation': // [State], [City]
-				case 'usrBirthLocation_None':
-					$joinToUser = true;
-					$joinToUserBirthLocation = true;
-
-					if ((str_ends_with($k, '_None') && ($v == 1))
-						|| (isset($this->rptInputFields[$k . '_None'])
-							&& ($this->rptInputFields[$k . '_None'] == 1)
-						)
-					) {
-						$query->andWhere(['birthstate.sttID' => null]);
-						$query->andWhere(['birthcity.ctvID' => null]);
-					} else {
-						if (empty($v['State']) == false)
-							$query->andWhere(['birthstate.sttID' => $v['State']]);
-
-						if (empty($v['City']) == false)
-							$query->andWhere(['birthcity.ctvID' => $v['City']]);
-					}
-
-					break;
-
-				case 'usrStateID':
-					$joinToUser = true;
-					$joinToUserHomeLocation = true;
-					$query->andWhere(['usrStateID' => $v]);
-					break;
-
-				case 'usrCityOrVillageID':
-					$joinToUser = true;
-					$joinToUserHomeLocation = true;
-					$query->andWhere(['usrCityOrVillageID' => $v]);
-					break;
-
-				case 'usrBirthDate':         // [From], [To]
-					$joinToUser = true;
-					$fnAddBetweenCondition('usrBirthDate', $v);
-					break;
-
-				case 'mbrAcceptedAt':        // [From], [To]
-					$fnAddBetweenCondition('mbrAcceptedAt', $v);
-					break;
-
-				case 'mbrExpireDate':        // [From], [To]
-					$fnAddBetweenCondition('mbrExpireDate', $v);
-					break;
-
-				case 'mbrknnMembershipDegree':
-					$joinToKanoon = true;
-					$query->andWhere(['mbrknnMembershipDegree' => $v]);
-					break;
-
-				// case 'mbrknnParams':         // [I], [S], [R]
-				// 	$joinToKanoon = true;
-				// 	$vals = implode(',', $v);
-				// 	$query->andWhere(new \yii\db\Expression(
-				// 		"JSON_UNQUOTE(JSON_EXTRACT(mbrknnParams, '$.desc')) IN ({$vals})"
-				// 	));
-				// 	break;
-
-				default:
-					$query->andWhere([$k => $v]);
-					break;
-			}
-		}
-*/
 		//-- rptOutputFields ---------------------------------
 		$rptOutputFields = array_keys($this->rptOutputFields);
 		foreach ($rptOutputFields as $k => &$v) {

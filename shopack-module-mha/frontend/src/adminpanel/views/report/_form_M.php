@@ -3,30 +3,20 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-use yii\web\JsExpression;
-use borales\extensions\phoneInput\PhoneInput;
-use shopack\base\common\helpers\Url;
 use shopack\base\common\helpers\ArrayHelper;
-use shopack\base\frontend\common\widgets\Select2;
-use shopack\base\frontend\common\widgets\DepDrop;
 use shopack\base\frontend\common\helpers\Html;
-use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
+use shopack\base\frontend\common\widgets\Select2;
 use shopack\base\frontend\common\widgets\datetime\DatePicker;
-use shopack\aaa\frontend\common\models\UserModel;
 use shopack\aaa\common\enums\enuGender;
-use shopack\aaa\frontend\common\models\GeoStateModel;
-use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
-use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
-use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
-use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
-use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
-use iranhmusic\shopack\mha\frontend\common\widgets\form\KanoonChooseFormField;
 use shopack\aaa\frontend\common\widgets\form\GeoCityOrVillageChooseFormField;
 use shopack\aaa\frontend\common\widgets\form\GeoStateChooseFormField;
 use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
-
+use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
+use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
+use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
+use iranhmusic\shopack\mha\frontend\common\widgets\form\KanoonChooseFormField;
 ?>
 
 <div class='members-report-form'>
@@ -38,6 +28,48 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 		$formName = $model->formName();
     $formNameLower = strtolower($formName);
 
+		$js =<<<JS
+var _lock_nullableRadioCheckChanged = false;
+function nullableRadioCheckChanged(e)
+{
+  if (_lock_nullableRadioCheckChanged)
+    return;
+
+  _lock_nullableRadioCheckChanged = true;
+
+  var sender = null;
+  if (e != null) {
+    if (e.target !== undefined)
+      sender = e.target;
+    else if (e.input !== undefined) {
+      if (e.input.length !== undefined)
+        sender = e.input[0];
+      else
+        sender = e.input;
+    }
+  }
+
+	prefix = sender.id.substring(0, sender.id.length - 1);
+
+  $('input:checkbox[id^="' + prefix + '"]').each(function() {
+    var el = $(this);
+    if ((el.attr('id') != sender.id) && el.is(':checked')) {
+      el.prop('checked', false);
+    }
+  });
+
+  _lock_nullableRadioCheckChanged = false;
+}
+JS;
+		$this->registerJs($js, \yii\web\View::POS_END);
+
+		$js =<<<JS
+$('[id*="-has--"]').each(function() { $(this).on('change', function(e) {
+	nullableRadioCheckChanged(e);
+}); });
+JS;
+		$this->registerJs($js, \yii\web\View::POS_READY);
+
 		$builder = $form->getBuilder();
 
 		$builder->fields([
@@ -46,29 +78,53 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 			['@cols' => 2, 'vertical' => true],
 		]);
 
+		$fnGetValue = function($value, $qouted = false) {
+			return ($qouted ? "'" : "") . "{$value}" . ($qouted ? "'" : "");
+		};
+
 		$builder->fields([
 			['@section', 'label' => 'فیلترهای ورودی'],
 
-			['rptInputFields[mbrRegisterCode]',
+			[
+				'rptInputFields[mbrRegisterCode_Has]',
 				'label' => 'کد عضویت',
-				'fieldOptions' => [
-					'addon' => [
-						'prepend' => [
-							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrRegisterCode_None]'),
-								($model->rptInputFields['mbrRegisterCode_None'] ?? 0) == 1,
-								[
-									'id' => Html::getInputId($model, 'rptInputFields[mbrRegisterCode_None]'),
-									'label' => 'ندارد',
-								]),
-						],
-					],
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
+			],
+			[
+				'rptInputFields[mbrRegisterCode]',
+				'label' => '',
+				'visibleConditions' => [
+					'rptInputFields[mbrRegisterCode_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 			],
 
 			['@col-break'],
 
-			['rptInputFields[usrGender]',
+			[
+				'rptInputFields[usrGender_Has]',
 				'label' => 'جنسیت',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
+			],
+			[
+				'rptInputFields[usrGender]',
+				'label' => '',
+				'visibleConditions' => [
+					'rptInputFields[usrGender_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
@@ -86,14 +142,24 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 			['@col-break'],
 			'<hr>',
 
-			['rptInputFields[mbrAcceptedAt_None]',
-				// 'label' => 'تاریخ تایید عضویت',
-				'label' => 'ندارد',
-				'type' => FormBuilder::FIELD_CHECKBOX,
-				'widgetOptions' => [[], true],
+			[
+				'rptInputFields[mbrAcceptedAt_Has]',
+				'label' => 'تاریخ تایید عضویت',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
 			],
-			['rptInputFields[mbrAcceptedAt][From]',
-				'label' => 'تاریخ تایید عضویت (از)',
+			[
+				'rptInputFields[mbrAcceptedAt][From]',
+				'label' => 'از',
+				'visibleConditions' => [
+					'rptInputFields[mbrAcceptedAt_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
 				'fieldOptions' => [
@@ -108,7 +174,10 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 				],
 			],
 			['rptInputFields[mbrAcceptedAt][To]',
-				'label' => 'تاریخ تایید عضویت (تا)',
+				'label' => 'تا',
+				'visibleConditions' => [
+					'rptInputFields[mbrAcceptedAt_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
 				'fieldOptions' => [
@@ -125,14 +194,24 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 
 			['@col-break'],
 
-			['rptInputFields[mbrExpireDate_None]',
-				// 'label' => 'تاریخ انقضای عضویت',
-				'label' => 'ندارد',
-				'type' => FormBuilder::FIELD_CHECKBOX,
-				'widgetOptions' => [[], true],
+			[
+				'rptInputFields[mbrExpireDate_Has]',
+				'label' => 'تاریخ انقضای عضویت',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
 			],
-			['rptInputFields[mbrExpireDate][From]',
-				'label' => 'تاریخ انقضای عضویت (از)',
+			[
+				'rptInputFields[mbrExpireDate][From]',
+				'label' => 'از',
+				'visibleConditions' => [
+					'rptInputFields[mbrExpireDate_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
 				'fieldOptions' => [
@@ -146,8 +225,12 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 					'allowClear' => true,
 				],
 			],
-			['rptInputFields[mbrExpireDate][To]',
-				'label' => 'تاریخ انقضای عضویت (تا)',
+			[
+				'rptInputFields[mbrExpireDate][To]',
+				'label' => 'تا',
+				'visibleConditions' => [
+					'rptInputFields[mbrExpireDate_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
 				'fieldOptions' => [
@@ -165,35 +248,57 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 			['@col-break'],
 			'<hr>',
 
-			['rptInputFields[usrBirthLocation_None]',
-				// 'label' => 'محل تولد',
-				'label' => 'ندارد',
-				'type' => FormBuilder::FIELD_CHECKBOX,
-				'widgetOptions' => [[], true],
+			[
+				'rptInputFields[usrBirthLocation_Has]',
+				'label' => 'محل تولد',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
 			],
-
 			GeoStateChooseFormField::field($this, $model, 'rptInputFields[usrBirthLocation][State]', true, false, null, [
-				'label' => 'استان محل تولد',
+				'label' => 'استان',
+				'visibleConditions' => [
+					'rptInputFields[usrBirthLocation_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 			]),
-
 			GeoCityOrVillageChooseFormField::field($this, $model, 'rptInputFields[usrBirthLocation][City]', true, false, 'rptInputFields[usrBirthLocation][State]', [
 				'label' => 'شهر',
+				'visibleConditions' => [
+					'rptInputFields[usrBirthLocation_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 			]),
-
 			GeoTownChooseFormField::field($this, $model, 'rptInputFields[usrBirthLocation][Town]', true, false, 'rptInputFields[usrBirthLocation][City]', [
 				'label' => 'منطقه',
+				'visibleConditions' => [
+					'rptInputFields[usrBirthLocation_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 			]),
 
 			['@col-break'],
 
-			['rptInputFields[usrBirthDate_None]',
-				// 'label' => 'تاریخ تولد',
-				'label' => 'ندارد',
-				'type' => FormBuilder::FIELD_CHECKBOX,
-				'widgetOptions' => [[], true],
+			[
+				'rptInputFields[usrBirthDate_Has]',
+				'label' => 'تاریخ تولد',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
 			],
-			['rptInputFields[usrBirthDate][From]',
-				'label' => 'تاریخ تولد (از)',
+			[
+				'rptInputFields[usrBirthDate][From]',
+				'label' => 'از',
+				'visibleConditions' => [
+					'rptInputFields[usrBirthDate_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
 				'fieldOptions' => [
@@ -207,8 +312,12 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 					'allowClear' => true,
 				],
 			],
-			['rptInputFields[usrBirthDate][To]',
-				'label' => 'تاریخ تولد (تا)',
+			[
+				'rptInputFields[usrBirthDate][To]',
+				'label' => 'تا',
+				'visibleConditions' => [
+					'rptInputFields[usrBirthDate_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
 				'fieldOptions' => [
@@ -226,74 +335,75 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 			['@col-break'],
 			'<hr>',
 
-			['rptInputFields[Location_None]',
-				// 'label' => 'محل سکونت',
-				'label' => 'ندارد',
-				'type' => FormBuilder::FIELD_CHECKBOX,
-				'widgetOptions' => [[], true],
+			[
+				'rptInputFields[Location_Has]',
+				'label' => 'محل سکونت',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
 			],
-
 			GeoStateChooseFormField::field($this, $model, 'rptInputFields[usrStateID]', true, false, null, [
-				'label' => 'استان محل سکونت',
+				'label' => 'استان',
+				'visibleConditions' => [
+					'rptInputFields[Location_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 			]),
-
 			GeoCityOrVillageChooseFormField::field($this, $model, 'rptInputFields[usrCityOrVillageID]', true, false, 'rptInputFields[usrStateID]', [
 				'label' => 'شهر',
+				'visibleConditions' => [
+					'rptInputFields[Location_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 			]),
 
 			['@col-break'],
 			'<hr>',
 		]);
 
-		$builder->fields(KanoonChooseFormField::field($this, $model, 'rptInputFields[mbrknnKanoonID]', true, true, [
-			'label' => 'کانون',
-			'fieldOptions' => [
-				'addon' => [
-					'prepend' => [
-						'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrknnKanoonID_None]'),
-							($model->rptInputFields['mbrknnKanoonID_None'] ?? 0) == 1,
-							[
-								'id' => Html::getInputId($model, 'rptInputFields[mbrknnKanoonID_None]'),
-								'label' => 'ندارد',
-							]),
-					],
+		$builder->fields([
+			[
+				'rptInputFields[mbrknnKanoonID_Has]',
+				'label' => 'کانون',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
 				],
 			],
-		]));
-
-		// $builder->fields([
-		// 	['rptInputFields[mbrknnKanoonID]',
-		// 		'label' => 'کانون',
-		// 		'type' => FormBuilder::FIELD_WIDGET,
-		// 		'widget' => Select2::class,
-		// 		'widgetOptions' => [
-		// 			'data' => ArrayHelper::map(KanoonModel::find()->asArray()->noLimit()->all(), 'knnID', 'knnName'),
-		// 			'options' => [
-		// 				'placeholder' => Yii::t('app', '-- Choose --'),
-		// 				'dir' => 'rtl',
-		// 			],
-		// 			'pluginOptions' => [
-		// 				'allowClear' => true,
-		// 			],
-		// 		],
-		// 		'fieldOptions' => [
-		// 			'addon' => [
-		// 				'prepend' => [
-		// 					'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrknnKanoonID_None]'),
-		// 						($model->rptInputFields['mbrknnKanoonID_None'] ?? 0) == 1,
-		// 						[
-		// 							'id' => Html::getInputId($model, 'rptInputFields[mbrknnKanoonID_None]'),
-		// 							'label' => 'ندارد',
-		// 						]),
-		// 				],
-		// 			],
-		// 		],
-		// 	],
-		// ]);
+			KanoonChooseFormField::field($this, $model, 'rptInputFields[mbrknnKanoonID]', true, true, [
+				'label' => '',
+				'visibleConditions' => [
+					'rptInputFields[mbrknnKanoonID_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
+			]),
+		]);
 
 		$builder->fields([
-			['rptInputFields[mbrknnMembershipDegree]',
+			[
+				'rptInputFields[mbrknnMembershipDegree_Has]',
 				'label' => 'رده عضویت',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
+			],
+			[
+				'rptInputFields[mbrknnMembershipDegree]',
+				'label' => '',
+				'visibleConditions' => [
+					'rptInputFields[mbrknnMembershipDegree_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
@@ -307,24 +417,28 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 						'allowClear' => true,
 					],
 				],
-				'fieldOptions' => [
-					'addon' => [
-						'prepend' => [
-							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrknnMembershipDegree_None]'),
-								($model->rptInputFields['mbrknnMembershipDegree_None'] ?? 0) == 1,
-								[
-									'id' => Html::getInputId($model, 'rptInputFields[mbrknnMembershipDegree_None]'),
-									'label' => 'ندارد',
-								]),
-						],
-					],
-				],
 			],
 
 			['@col-break'],
 
-			['rptInputFields[mbrInstrumentID]',
+			[
+				'rptInputFields[mbrInstrumentID_Has]',
 				'label' => 'ساز',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
+			],
+			[
+				'rptInputFields[mbrInstrumentID]',
+				'label' => '',
+				'visibleConditions' => [
+					'rptInputFields[mbrInstrumentID_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
@@ -338,21 +452,26 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 						'allowClear' => true,
 					],
 				],
-				'fieldOptions' => [
-					'addon' => [
-						'prepend' => [
-							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrInstrumentID_None]'),
-								($model->rptInputFields['mbrInstrumentID_None'] ?? 0) == 1,
-								[
-									'id' => Html::getInputId($model, 'rptInputFields[mbrInstrumentID_None]'),
-									'label' => 'ندارد',
-								]),
-						],
-					],
+			],
+
+			[
+				'rptInputFields[mbrSingID_Has]',
+				'label' => 'آواز',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
 				],
 			],
-			['rptInputFields[mbrSingID]',
-				'label' => 'آواز',
+			[
+				'rptInputFields[mbrSingID]',
+				'label' => '',
+				'visibleConditions' => [
+					'rptInputFields[mbrSingID_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
@@ -366,21 +485,26 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 						'allowClear' => true,
 					],
 				],
-				'fieldOptions' => [
-					'addon' => [
-						'prepend' => [
-							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrSingID_None]'),
-								($model->rptInputFields['mbrSingID_None'] ?? 0) == 1,
-								[
-									'id' => Html::getInputId($model, 'rptInputFields[mbrSingID_None]'),
-									'label' => 'ندارد',
-								]),
-						],
-					],
+			],
+
+			[
+				'rptInputFields[mbrResearchID_Has]',
+				'label' => 'پژوهش',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
 				],
 			],
-			['rptInputFields[mbrResearchID]',
-				'label' => 'پژوهش',
+			[
+				'rptInputFields[mbrResearchID]',
+				'label' => '',
+				'visibleConditions' => [
+					'rptInputFields[mbrResearchID_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
@@ -394,24 +518,28 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 						'allowClear' => true,
 					],
 				],
-				'fieldOptions' => [
-					'addon' => [
-						'prepend' => [
-							'content' => Html::checkbox(Html::getInputName($model, 'rptInputFields[mbrResearchID_None]'),
-								($model->rptInputFields['mbrResearchID_None'] ?? 0) == 1,
-								[
-									'id' => Html::getInputId($model, 'rptInputFields[mbrResearchID_None]'),
-									'label' => 'ندارد',
-								]),
-						],
-					],
-				],
 			],
 
 			'<hr>',
 
-			['rptInputFields[mbrJob]',
+			[
+				'rptInputFields[mbrJob_Has]',
 				'label' => 'شغل',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => [
+					0 => 'ندارد',
+					1 => 'دارد',
+				],
+				'widgetOptions' => [
+					'inline' => true,
+				],
+			],
+			[
+				'rptInputFields[mbrJob]',
+				'label' => '',
+				'visibleConditions' => [
+					'rptInputFields[mbrJob_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+				],
 				'type' => FormBuilder::FIELD_TEXT,
 			],
 		]);
