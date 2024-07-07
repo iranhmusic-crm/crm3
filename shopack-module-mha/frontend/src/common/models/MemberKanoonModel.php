@@ -19,26 +19,6 @@ class MemberKanoonModel extends RestClientActiveRecord
 
 	public static $resourceName = 'mha/member-kanoon';
 
-	public function attributeLabels()
-	{
-		return [
-			'mbrknnMemberID'         => Yii::t('mha', 'Member'),
-			'mbrknnKanoonID'         => Yii::t('mha', 'Kanoon'),
-			'mbrknnParams'           => Yii::t('app', 'Parameters'),
-			'mbrknnIsMaster'				 => Yii::t('mha', 'Is Master'),
-			'mbrknnMembershipDegree' => Yii::t('mha', 'Membership Degree'),
-			'mbrknnComment'          => Yii::t('app', 'Comment'),
-			'mbrknnHistory'          => Yii::t('app', 'History'),
-			'mbrknnStatus'           => Yii::t('app', 'Status'),
-			'mbrknnCreatedAt'        => Yii::t('app', 'Created At'),
-			'mbrknnCreatedBy'        => Yii::t('app', 'Created By'),
-			'mbrknnCreatedBy_User'   => Yii::t('app', 'Created By'),
-			'mbrknnUpdatedAt'        => Yii::t('app', 'Updated At'),
-			'mbrknnUpdatedBy'        => Yii::t('app', 'Updated By'),
-			'mbrknnUpdatedBy_User'   => Yii::t('app', 'Updated By'),
-		];
-	}
-
 	public function extraRules() {
 		$formName = strtolower($this->formName());
 
@@ -52,6 +32,34 @@ class MemberKanoonModel extends RestClientActiveRecord
 					return ($('#{$formName}-mbrknnstatus').val() == '" . enuMemberKanoonStatus::Accepted . "');
 				}"
 			],
+		];
+	}
+
+	public function attributeLabels()
+	{
+		return [
+			'mbrknnMemberID'         => Yii::t('mha', 'Member'),
+			'mbrknnKanoonID'         => Yii::t('mha', 'Kanoon'),
+			'mbrknnParams'           => Yii::t('app', 'Parameters'),
+			'mbrknnIsMaster'				 => Yii::t('mha', 'Is Master'),
+			'mbrknnMembershipDegree' => Yii::t('mha', 'Membership Degree'),
+			'mbrknnComment'          => Yii::t('app', 'Comment'),
+			'mbrknnHistory'          => Yii::t('app', 'History'),
+			'mbrknnAcceptedAt'       => Yii::t('app', 'Accepted At'),
+			'mbrknnStatus'           => Yii::t('app', 'Status'),
+			'mbrknnCreatedAt'        => Yii::t('app', 'Created At'),
+			'mbrknnCreatedBy'        => Yii::t('app', 'Created By'),
+			'mbrknnCreatedBy_User'   => Yii::t('app', 'Created By'),
+			'mbrknnUpdatedAt'        => Yii::t('app', 'Updated At'),
+			'mbrknnUpdatedBy'        => Yii::t('app', 'Updated By'),
+			'mbrknnUpdatedBy_User'   => Yii::t('app', 'Updated By'),
+		];
+	}
+
+	public function attributeHints()
+	{
+		return [
+			'mbrknnAcceptedAt' => 'در صورتی که تاریخ شروع عضویت عضو تعیین نشده باشد، از این تاریخ استفاده خواهد شد.',
 		];
 	}
 

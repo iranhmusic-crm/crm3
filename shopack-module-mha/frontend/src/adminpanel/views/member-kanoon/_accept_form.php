@@ -11,6 +11,8 @@ use shopack\base\frontend\common\widgets\FormBuilder;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
+use shopack\base\frontend\common\widgets\datetime\DatePicker;
+
 ?>
 
 <div class='member-kanoon-accept-form'>
@@ -57,6 +59,18 @@ use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 			],
 			[
 				'mbrknnComment',
+			],
+			[
+				'mbrknnAcceptedAt',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => DatePicker::class,
+				'fieldOptions' => [
+					'addon' => [
+						'append' => [
+							'content' => '<i class="far fa-calendar-alt"></i>',
+						],
+					],
+				],
 			],
 
 			//TODO: make mbrRegisterCode unique in DB

@@ -45,17 +45,22 @@ class MemberModel extends MhaActiveRecord
 		return $this->hasOne(UserModel::class, ['usrID' => 'mbrUserID']);
 	}
 
-	public static function AssignRegistrationCode($id, $regcode=null)
+	public static function AssignRegistrationCode($id, $regcode=null, $mbrAcceptedAt=null)
 	{
 		$code = (empty($regcode)
 			? "COALESCE((SELECT tmp._max FROM (SELECT MAX(mbrRegisterCode) AS _max FROM tbl_MHA_Member) AS tmp), 0) + 1"
 			: $regcode
 		);
 
+		if (empty($mbrAcceptedAt))
+			$mbrAcceptedAt = 'NOW()';
+		else
+			$mbrAcceptedAt = "'{$mbrAcceptedAt}'";
+
 		$qry =<<<SQL
   UPDATE tbl_MHA_Member
      SET mbrRegisterCode = {$code}
-       , mbrAcceptedAt = NOW()
+       , mbrAcceptedAt = {$mbrAcceptedAt}
    WHERE mbrUserID = {$id}
 	   AND mbrRegisterCode IS NULL
 SQL;

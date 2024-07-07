@@ -5,14 +5,12 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\frontend\common\widgets\grid\GridView;
-use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
-use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
-use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
+use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\widgets\grid\GridView;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
-use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
-use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
+use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
+use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 ?>
 
 <?php
@@ -77,6 +75,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
   }
 
   $columns = array_merge($columns, [
+    'mbrknnIsMaster:boolean',
     [
       'class' => \iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonDataColumn::class,
       'attribute' => 'mbrknnKanoonID',
@@ -123,12 +122,6 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
     //     return $desc;
     //   },
     // ],
-    'mbrknnIsMaster:boolean',
-    [
-      'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
-      'enumClass' => enuMemberKanoonStatus::class,
-      'attribute' => 'mbrknnStatus',
-    ],
     [
       'attribute' => 'mbrknnMembershipDegree',
       'value' => function ($model, $key, $index, $widget) {
@@ -147,6 +140,12 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
       ),
     ],
     'mbrknnComment',
+    'mbrknnAcceptedAt:jalaliWithTime',
+    [
+      'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
+      'enumClass' => enuMemberKanoonStatus::class,
+      'attribute' => 'mbrknnStatus',
+    ],
     [
       'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
       'header' => MemberModel::canCreate() ? Html::createButton(null, [

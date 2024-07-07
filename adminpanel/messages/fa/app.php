@@ -26,6 +26,8 @@ return [
 	'Removed At' => 'حذف در',
 	'Removed By' => 'حذف توسط',
 
+	'Accepted At' => 'تاریخ تایید',
+
 	'Are you sure you want to delete this {item}?' => 'آیا از حذف این {item} اطمینان دارید؟',
 	'Are you sure you want to un-delete this {item}?' => 'آیا از بازگردانی این {item} اطمینان دارید؟',
 

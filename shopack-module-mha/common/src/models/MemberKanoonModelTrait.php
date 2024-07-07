@@ -22,6 +22,7 @@ use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 'mbrknnMembershipDegree',
 'mbrknnComment',
 'mbrknnHistory',
+'mbrknnAcceptedAt',
 'mbrknnStatus',
 'mbrknnCreatedAt',
 'mbrknnCreatedBy',
@@ -112,6 +113,14 @@ trait MemberKanoonModelTrait
 			],
 			'mbrknnHistory' => [
 				enuColumnInfo::type       => JsonValidator::class,
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+        // enuColumnInfo::search     => null,
+			],
+			'mbrknnAcceptedAt' => [
+				enuColumnInfo::type       => 'safe', //datetime
 				enuColumnInfo::validator  => null,
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,

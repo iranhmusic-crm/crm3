@@ -36,6 +36,9 @@ class MemberKanoonSearchModel extends MemberKanoonModel
 					'mbrknnMembershipDegree',
 					// 'mbrknnComment',
 					// 'mbrknnHistory',
+					'mbrknnAcceptedAt' => [
+						'default' => SORT_DESC,
+					],
 					'mbrknnStatus',
 
 					'mbrknnCreatedAt' => [

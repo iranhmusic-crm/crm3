@@ -53,8 +53,12 @@ class MemberKanoonModel extends MhaActiveRecord
 			}
 		}
 
-		if ($accepted)
+		if ($accepted) {
+			if (empty($this->mbrknnAcceptedAt))
+				throw new UnprocessableEntityHttpException('تاریخ تایید عضویت تعیین نشده است.');
+
 			$transaction = Yii::$app->db->beginTransaction();
+		}
 
     try {
 			//moved to trigger
@@ -73,7 +77,7 @@ class MemberKanoonModel extends MhaActiveRecord
 				throw new UnprocessableEntityHttpException(implode("\n", $this->getFirstErrors()));
 
 			if ($accepted) {
-				if (MemberModel::AssignRegistrationCode($this->mbrknnMemberID, $this->mbrRegisterCode)
+				if (MemberModel::AssignRegistrationCode($this->mbrknnMemberID, $this->mbrRegisterCode, $this->mbrknnAcceptedAt)
 					&& empty($this->mbrRegisterCode)
 				) {
 					//fetch saved mbrRegisterCode

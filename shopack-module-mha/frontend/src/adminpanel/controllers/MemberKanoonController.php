@@ -62,6 +62,9 @@ class MemberKanoonController extends BaseCrudController
 		$model = $this->findModel($id);
 		$model->mbrknnStatus = enuMemberKanoonStatus::Accepted;
 
+    $now = new \DateTime('now');
+    $model->mbrknnAcceptedAt = $now->format('Y-m-d');
+
 		$formPosted = $model->load(Yii::$app->request->post());
 		$done = false;
 		if ($formPosted)
