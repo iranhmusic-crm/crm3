@@ -34,7 +34,8 @@ class MemberDocumentModel extends RestClientActiveRecord
 		];
 	}
 
-	public function load($data, $formName = null) {
+	public function load($data, $formName = null)
+	{
 		$ret = parent::load($data, $formName);
 
 		//load relations
