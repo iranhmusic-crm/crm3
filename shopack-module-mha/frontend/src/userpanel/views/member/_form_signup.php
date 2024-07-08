@@ -145,7 +145,18 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 			}
 			if (empty($model->user->usrBirthDate)) {
 				$builder->fields([
-					['usrBirthDate']
+					[
+						'usrBirthDate',
+						'type' => FormBuilder::FIELD_WIDGET,
+						'widget' => DatePicker::class,
+						'fieldOptions' => [
+							'addon' => [
+								'append' => [
+									'content' => '<i class="far fa-calendar-alt"></i>',
+								],
+							],
+						],
+					]
 				]);
 			}
 
@@ -231,7 +242,8 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 	<?php
 		$builder->fields([
 			'<hr>',
-			['@col' => 1],
+			// ['@col' => 1],
+			['@cols' => 2, 'vertical' => false],
 			['mbrMusicExperiences'],
 			['mbrMusicExperienceStartAt',
 				'type' => FormBuilder::FIELD_WIDGET,
