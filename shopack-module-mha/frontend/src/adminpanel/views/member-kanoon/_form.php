@@ -14,6 +14,8 @@ use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
+use shopack\base\frontend\common\widgets\datetime\DatePicker;
+
 ?>
 
 <div class='member-kanoon-form'>
@@ -99,6 +101,21 @@ use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',
+					],
+				],
+				'visibleConditions' => [
+					'mbrknnStatus' => enuMemberKanoonStatus::Accepted,
+				],
+			],
+			[
+				'mbrknnAcceptedAt',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => DatePicker::class,
+				'fieldOptions' => [
+					'addon' => [
+						'append' => [
+							'content' => '<i class="far fa-calendar-alt"></i>',
+						],
 					],
 				],
 				'visibleConditions' => [

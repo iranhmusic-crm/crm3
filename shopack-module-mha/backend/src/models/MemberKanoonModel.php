@@ -40,22 +40,33 @@ class MemberKanoonModel extends MhaActiveRecord
 		//check status changed to Accepted
 		$accepted = false;
 
-		if (empty($this->member->mbrRegisterCode)) {
-			$values = $this->getDirtyAttributes(['mbrknnStatus']);
-			if (empty($values) == false) {
-				if ($this->mbrknnStatus == enuMemberKanoonStatus::Accepted) {
-					$oldValue = $this->oldAttributes['mbrknnStatus'];
-					if ($oldValue !== enuMemberKanoonStatus::Accepted) {
-						$accepted = true;
-						// throw new UnprocessableEntityHttpException('To confirm the membership, just use the Accept command');
-					}
-				}
+		$values = $this->getDirtyAttributes(['mbrknnStatus']);
+		if (empty($values) == false) {
+			$oldStatus = $this->oldAttributes['mbrknnStatus'] ?? null;
+			if (($oldStatus != $this->mbrknnStatus)
+				&& ($this->mbrknnStatus == enuMemberKanoonStatus::Accepted)
+			) {
+				$accepted = true;
 			}
 		}
 
+		// if (empty($this->member->mbrRegisterCode)) {
+		// 	$values = $this->getDirtyAttributes(['mbrknnStatus']);
+		// 	if (empty($values) == false) {
+		// 		if ($this->mbrknnStatus == enuMemberKanoonStatus::Accepted) {
+		// 			$oldStatus = $this->oldAttributes['mbrknnStatus'];
+		// 			if ($oldStatus !== enuMemberKanoonStatus::Accepted) {
+		// 				$accepted = true;
+		// 				// throw new UnprocessableEntityHttpException('To confirm the membership, just use the Accept command');
+		// 			}
+		// 		}
+		// 	}
+		// }
+
 		if ($accepted) {
 			if (empty($this->mbrknnAcceptedAt))
-				throw new UnprocessableEntityHttpException('تاریخ تایید عضویت تعیین نشده است.');
+				$this->mbrknnAcceptedAt = (new \DateTime())->format('Y-m-d');
+				// throw new UnprocessableEntityHttpException('تاریخ تایید عضویت تعیین نشده است.');
 
 			$transaction = Yii::$app->db->beginTransaction();
 		}
@@ -77,7 +88,8 @@ class MemberKanoonModel extends MhaActiveRecord
 				throw new UnprocessableEntityHttpException(implode("\n", $this->getFirstErrors()));
 
 			if ($accepted) {
-				if (MemberModel::AssignRegistrationCode($this->mbrknnMemberID, $this->mbrRegisterCode, $this->mbrknnAcceptedAt)
+				if (MemberModel::AssignRegistrationCode(
+						$this->mbrknnMemberID, $this->mbrRegisterCode, $this->mbrknnAcceptedAt)
 					&& empty($this->mbrRegisterCode)
 				) {
 					//fetch saved mbrRegisterCode
@@ -105,13 +117,4 @@ SQL;
     }
 	}
 
-/*
-	public function doAccept()
-	{
-	}
-
-	public function doReject()
-	{
-	}
-*/
 }

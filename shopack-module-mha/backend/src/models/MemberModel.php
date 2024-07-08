@@ -54,16 +54,24 @@ class MemberModel extends MhaActiveRecord
 
 		if (empty($mbrAcceptedAt))
 			$mbrAcceptedAt = 'NOW()';
-		else
-			$mbrAcceptedAt = "'{$mbrAcceptedAt}'";
+		else {
+			if (strpos($mbrAcceptedAt, '-') === false)
+				$format = '%Y/%m/%d';
+			else
+				$format = '%Y-%m-%d';
+
+			$mbrAcceptedAt = "STR_TO_DATE('{$mbrAcceptedAt}', '{$format}')";
+		}
 
 		$qry =<<<SQL
-  UPDATE tbl_MHA_Member
-     SET mbrRegisterCode = {$code}
-       , mbrAcceptedAt = {$mbrAcceptedAt}
-   WHERE mbrUserID = {$id}
-	   AND mbrRegisterCode IS NULL
+	UPDATE	tbl_MHA_Member
+		 SET	mbrRegisterCode = IFNULL(mbrRegisterCode, {$code})
+			 ,	mbrAcceptedAt = LEAST(IFNULL(mbrAcceptedAt, {$mbrAcceptedAt}), {$mbrAcceptedAt})
+	 WHERE	mbrUserID = {$id}
 SQL;
+		//  AND	(mbrRegisterCode IS NULL
+		// 	OR	mbrAcceptedAt IS NULL)
+
 		$rowsCount = Yii::$app->db->createCommand($qry)->execute();
 
 		return $rowsCount == 1;
