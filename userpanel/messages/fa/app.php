@@ -102,4 +102,7 @@ return [
 	'Limitations' => 'محدودیت‌ها',
 	'Usage' => 'مصرف',
 
+	'Reason' => 'دلیل',
+	'Reasons' => 'دلایل',
+
 ];

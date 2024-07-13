@@ -21,7 +21,7 @@ class BasicDefinitionModel extends RestClientActiveRecord
 		return [
 			'bdfID'                    => Yii::t('app', 'ID'),
 			'bdfType'                  => Yii::t('app', 'Type'),
-			'bdfName'                  => Yii::t('app', 'Name'),
+			'bdfName'                  => Yii::t('app', 'Title'),
 			'bdfStatus'                => Yii::t('app', 'Status'),
 			'bdfCreatedAt'             => Yii::t('app', 'Created At'),
 			'bdfCreatedBy'             => Yii::t('app', 'Created By'),

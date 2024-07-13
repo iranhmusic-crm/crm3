@@ -51,8 +51,8 @@ trait MemberGroupModelTrait
         enuColumnInfo::required   => true,
         enuColumnInfo::selectable => true,
       ],
-
 			'mgpI18NData' => ModelColumnHelper::I18NData(['mgpName']),
+
       'mgpStatus' => [
         enuColumnInfo::isStatus   => true,
         enuColumnInfo::type       => ['string', 'max' => 1],
