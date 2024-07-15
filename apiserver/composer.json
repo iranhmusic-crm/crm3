@@ -25,6 +25,8 @@
         "giggsey/libphonenumber-for-php": "^8.13",
         "shopack/yii2-base-common": "@dev",
         "shopack/yii2-base-backend": "@dev",
+        "shopack/yii2-module-common-common": "@dev",
+        "shopack/yii2-module-common-backend": "@dev",
         "shopack/yii2-module-aaa-common": "@dev",
         "shopack/yii2-module-aaa-backend": "@dev",
         "iranhmusic/shopack-module-mha-common": "@dev",

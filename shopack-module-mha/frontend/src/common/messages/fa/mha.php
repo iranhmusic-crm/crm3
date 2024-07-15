@@ -124,12 +124,6 @@ return [
 	'Create Supplementary Insurer' => 'ایجاد بیمه‌گر تکمیلی',
 	'Update Supplementary Insurer' => 'ویرایش بیمه‌گر تکمیلی',
 
-	'Basic Definitions' => 'تعاریف پایه',
-	'Basic Definition' => 'تعریف پایه',
-	'Basic Definition Info' => 'مشخصات تعریف پایه',
-	'Create Basic Definition' => 'ایجاد تعریف پایه',
-	'Update Basic Definition' => 'ویرایش تعریف پایه',
-
 	'Specialties' => 'تخصص‌ها',
 	'Specialty' => 'تخصص',
 	'Specialty Info' => 'مشخصات تخصص',

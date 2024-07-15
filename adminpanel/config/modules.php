@@ -3,6 +3,7 @@
 return [
 	'bootstrap' => [
 		'aaa',
+		'cmn',
 		'mha',
 	],
 	'modules' => [
@@ -22,6 +23,9 @@ return [
 				'url' => '/mha/accounting/membership/renew-via-invoice',
 				'idField' => 'ofpID',
 			],
+		],
+		'cmn' => [
+			'class' => \shopack\cmn\frontend\adminpanel\Module::class,
 		],
 		'mha' => [
 			'class' => \iranhmusic\shopack\mha\frontend\adminpanel\Module::class,

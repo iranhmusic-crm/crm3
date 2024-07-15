@@ -5,9 +5,9 @@
 
 use shopack\base\frontend\common\helpers\Html;
 
-$this->title = Yii::t('mha', 'Update Basic Definition');
+$this->title = Yii::t('app', 'Update Basic Definition');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Basic Definitions'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Basic Definitions'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->bdfName, 'url' => ['view', 'id' => $model->bdfID]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

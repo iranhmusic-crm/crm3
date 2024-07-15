@@ -17,6 +17,7 @@
         "php": ">=7.4.0",
         "yiisoft/yii2": "~2.0.45",
         "bizley/jwt": "^3.0",
+        "ramsey/uuid": "^4.7",
         "guzzlehttp/guzzle": "^7.5",
         "shopack/yii2-base-common": "@dev",
         "shopack/yii2-module-aaa-common": "@dev"

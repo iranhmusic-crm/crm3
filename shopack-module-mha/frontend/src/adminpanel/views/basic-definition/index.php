@@ -12,7 +12,7 @@ use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionStatus;
 use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 
-$this->title = Yii::t('mha', 'Basic Definitions');
+$this->title = Yii::t('app', 'Basic Definitions');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = $this->title;
 ?>

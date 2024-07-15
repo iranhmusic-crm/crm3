@@ -149,10 +149,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
             [
               'label' => Yii::t('app', 'Settings'),
               'items' => [
+                ['label' => Yii::t('cmn', 'Languages'), 'icon' => 'info-sign', 'url' => ['/cmn/language']],
                 ['label' => Yii::t('aaa', 'Roles'), 'icon' => 'info-sign', 'url' => ['/aaa/role']],
                 ['label' => Yii::t('aaa', 'Access Groups'), 'icon' => 'info-sign', 'url' => ['/aaa/access-group']],
                 ['label' => Yii::t('aaa', 'Geo Divisions'), 'icon' => 'info-sign', 'url' => ['/aaa/geo-country']],
-                ['label' => Yii::t('aaa', 'Basic Definitions'), 'icon' => 'info-sign', 'url' => ['/aaa/basic-definition']],
+                ['label' => Yii::t('app', 'Basic Definitions'), 'icon' => 'info-sign', 'url' => ['/aaa/basic-definition']],
               ],
             ],
             ['label' => Yii::t('aaa', 'Users'), 'icon' => 'info-sign', 'url' => ['/aaa/user']],
@@ -240,7 +241,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                 ['label' => Yii::t('mha', 'Supplementary Insurers'), 'icon' => 'info-sign', 'url' => ['/mha/supplementary-insurer']],
                 ['label' => Yii::t('mha', 'Specialties'), 'icon' => 'info-sign', 'url' => ['/mha/specialty']],
                 ['label' => Yii::t('mha', 'Documents'), 'icon' => 'info-sign', 'url' => ['/mha/document']],
-                ['label' => Yii::t('mha', 'Basic Definitions'), 'icon' => 'info-sign', 'url' => ['/mha/basic-definition']],
+                ['label' => Yii::t('app', 'Basic Definitions'), 'icon' => 'info-sign', 'url' => ['/mha/basic-definition']],
               ],
             ],
           ],

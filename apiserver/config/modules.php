@@ -3,11 +3,15 @@
 return [
 	'bootstrap' => [
 		'aaa',
+		'cmn',
 		'mha',
 	],
 	'modules' => [
 		'aaa' => [
 			'class' => \shopack\aaa\backend\Module::class,
+		],
+		'cmn' => [
+			'class' => \shopack\cmn\backend\Module::class,
 		],
 		'mha' => [
 			'class' => \iranhmusic\shopack\mha\backend\Module::class,

@@ -72,12 +72,16 @@ $config = [
 		// 	'yii\queue\db\migrations',
 		// ],
 		'migrate' => [
-			'class' => 'yii\console\controllers\MigrateController',
+			// 'class' => 'yii\console\controllers\MigrateController',
+			'class' => \shopack\base\common\console\controllers\MigrateController::class,
 			'migrationPath' => [
 				// '@yii/rbac/migrations',
 				// '@yii/web/migrations',
 				// '@app/migrations',
 				// '@core/migrations',
+				// '@shopack/migrations/accounting' => [
+				// 	'targetModules' => ['mha'],
+				// ],
 				'@aaa/migrations',
 				'@mha/migrations',
 				// '@app/modules/mha/migrations',
@@ -89,11 +93,13 @@ $config = [
 		// 	'migrationPath' => '@core/migrations',
 		// ],
 		'migrate-aaa' => [
-			'class' => 'yii\console\controllers\MigrateController',
+			// 'class' => 'yii\console\controllers\MigrateController',
+			'class' => \shopack\base\common\console\controllers\MigrateController::class,
 			'migrationPath' => '@aaa/migrations',
 		],
 		'migrate-mha' => [
-			'class' => 'yii\console\controllers\MigrateController',
+			// 'class' => 'yii\console\controllers\MigrateController',
+			'class' => \shopack\base\common\console\controllers\MigrateController::class,
 			'migrationPath' => '@mha/migrations',
 		],
 

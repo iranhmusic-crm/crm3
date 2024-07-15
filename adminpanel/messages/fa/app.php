@@ -105,4 +105,10 @@ return [
 	'Reason' => 'دلیل',
 	'Reasons' => 'دلایل',
 
+	'Basic Definitions' => 'تعاریف پایه',
+	'Basic Definition' => 'تعریف پایه',
+	'Basic Definition Info' => 'مشخصات تعریف پایه',
+	'Create Basic Definition' => 'ایجاد تعریف پایه',
+	'Update Basic Definition' => 'ویرایش تعریف پایه',
+
 ];
