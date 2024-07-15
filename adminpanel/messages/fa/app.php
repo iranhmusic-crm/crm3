@@ -57,6 +57,7 @@ return [
 	'Path' => 'مسیر',
 	'Key' => 'کلید',
 	'Title' => 'عنوان',
+	'Is Preferred' => 'پیش فرض',
 
 	'Save' => 'ذخیره',
 	'Save Changes' => 'ذخیره تغییرات',
