@@ -19,6 +19,7 @@ $config = [
 	'isJustForMe' => false,
 	'id' => 'adminpanel',
 	'name' => 'پنل مدیریت',
+	// 'language' => 'en',
 	'language' => 'fa_IR',
 	'basePath' => dirname(__DIR__),
 	'homeUrl' => $baseUrl,
