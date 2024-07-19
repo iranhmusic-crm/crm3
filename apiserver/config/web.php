@@ -21,6 +21,7 @@ $baseUrl = rtrim($baseUrl, '/') . '/';
 $config = [
 	'isJustForMe' => false,
 	'id' => 'apiserver',
+	'language' => 'fa_IR',
 	'basePath' => dirname(__DIR__),
 	'homeUrl' => $baseUrl,
 	'aliases' => [

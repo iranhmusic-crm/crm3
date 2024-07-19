@@ -35,7 +35,7 @@ trait MemberGroupModelTrait
 
   public function columnsInfo()
   {
-    return [
+    return array_merge([
       'mgpID' => [
         enuColumnInfo::type       => 'integer',
         enuColumnInfo::validator  => null,
@@ -51,8 +51,9 @@ trait MemberGroupModelTrait
         enuColumnInfo::required   => true,
         enuColumnInfo::selectable => true,
       ],
-			'mgpI18NData' => ModelColumnHelper::I18NData(['mgpName']),
-
+    ],
+		ModelColumnHelper::I18NData($this, 'mgpI18NData', ['mgpName']),
+    [
       'mgpStatus' => [
         enuColumnInfo::isStatus   => true,
         enuColumnInfo::type       => ['string', 'max' => 1],
@@ -69,7 +70,7 @@ trait MemberGroupModelTrait
       'mgpUpdatedBy' => ModelColumnHelper::UpdatedBy(),
       'mgpRemovedAt' => ModelColumnHelper::RemovedAt(),
       'mgpRemovedBy' => ModelColumnHelper::RemovedBy(),
-    ];
+    ]);
   }
 
   public function getCreatedByUser() {
