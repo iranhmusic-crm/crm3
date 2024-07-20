@@ -58,6 +58,7 @@ return [
 	'Key' => 'کلید',
 	'Title' => 'عنوان',
 	'Is Preferred' => 'پیش فرض',
+	'Is RTL' => 'راست به چپ',
 
 	'Save' => 'ذخیره',
 	'Save Changes' => 'ذخیره تغییرات',
