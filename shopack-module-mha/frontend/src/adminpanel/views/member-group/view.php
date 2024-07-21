@@ -5,12 +5,11 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\common\helpers\Json;
 use shopack\base\frontend\common\widgets\PopoverX;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\DetailView;
 use iranhmusic\shopack\mha\frontend\common\models\MemberGroupModel;
-use shopack\base\common\accounting\enums\enuAmountType;
+use shopack\cmn\frontend\common\helpers\I18NHelper;
 
 $this->title = Yii::t('mha', 'Member Group') . ': ' . $model->mgpID . ' - ' . $model->mgpName;
 $this->params['breadcrumbs'][] = Yii::t('aaa', 'System');
@@ -73,11 +72,14 @@ $this->params['breadcrumbs'][] = $this->title;
         $attributes = [
           'mgpID',
           'mgpName',
-          // [
-          //   'attribute' => 'mgpStatus',
-          //   'value' => enuMemberGroupStatus::getLabel($model->mgpStatus),
-          // ],
         ];
+
+        $attributes = array_merge($attributes, I18NHelper::getMultiLanguageAttributs($model, 'mgpName', 'mgpI18NData'));
+
+        // [
+        //   'attribute' => 'mgpStatus',
+        //   'value' => enuMemberGroupStatus::getLabel($model->mgpStatus),
+        // ],
 
         echo DetailView::widget([
           'model' => $model,

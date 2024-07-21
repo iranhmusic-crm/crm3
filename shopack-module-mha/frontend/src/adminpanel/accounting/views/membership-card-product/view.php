@@ -10,7 +10,7 @@ use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\PopoverX;
 use shopack\base\frontend\common\widgets\DetailView;
 use shopack\base\common\accounting\enums\enuProductStatus;
-use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipCardSaleableModel;
+use shopack\cmn\frontend\common\helpers\I18NHelper;
 
 $modelClass = Yii::$app->controller->modelClass;
 
@@ -74,38 +74,42 @@ $this->params['breadcrumbs'][] = $this->title;
 		</div>
     <div class='card-body'>
       <?php
+        $attributes = [
+          'prdID',
+          [
+            'attribute' => 'prdStatus',
+            'value' => enuProductStatus::getLabel($model->prdStatus),
+          ],
+          'prdName',
+          // 'prdCode',
+          // 'prdDesc',
+          // 'prdValidFromDate',
+          // 'prdValidToDate',
+          // 'prdValidFromHour',
+          // 'prdValidToHour',
+          // 'prdDurationMinutes',
+          // 'prdStartAtFirstUse',
+          // 'prdPrivs',
+          // 'prdVAT',
+          [
+            'attribute' => 'prdUnitID',
+            'value' => $model->unit->untName,
+          ],
+          // 'prdQtyIsDecimal',
+          // 'prdInStockQty',
+          // 'prdOrderedQty',
+          // 'prdReturnedQty',
+          // 'prdI18NData',
+        ];
+
+        $attributes = array_merge($attributes, I18NHelper::getMultiLanguageAttributs($model, 'prdName', 'prdI18NData'));
+
         echo DetailView::widget([
           'model' => $model,
           'enableEditMode' => false,
           'cols' => 2,
           'isVertical' => false,
-          'attributes' => [
-            'prdID',
-            [
-              'attribute' => 'prdStatus',
-              'value' => enuProductStatus::getLabel($model->prdStatus),
-            ],
-            'prdName',
-            // 'prdCode',
-            // 'prdDesc',
-            // 'prdValidFromDate',
-            // 'prdValidToDate',
-            // 'prdValidFromHour',
-            // 'prdValidToHour',
-            // 'prdDurationMinutes',
-            // 'prdStartAtFirstUse',
-            // 'prdPrivs',
-            // 'prdVAT',
-            [
-              'attribute' => 'prdUnitID',
-              'value' => $model->unit->untName,
-            ],
-            // 'prdQtyIsDecimal',
-            // 'prdInStockQty',
-            // 'prdOrderedQty',
-            // 'prdReturnedQty',
-            // 'prdI18NData',
-          ],
+          'attributes' => $attributes,
         ]);
       ?>
     </div>

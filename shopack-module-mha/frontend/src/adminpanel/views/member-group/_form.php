@@ -3,19 +3,9 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-use yii\web\JsExpression;
-use shopack\base\common\helpers\Json;
-use shopack\base\common\helpers\Url;
-use shopack\base\frontend\common\widgets\Select2;
-use shopack\base\frontend\common\widgets\DepDrop;
 use shopack\base\frontend\common\helpers\Html;
-use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
-use shopack\base\common\accounting\enums\enuAmountType;
-// use iranhmusic\shopack\mha\common\enums\enuMemberGroupStatus;
-
-// \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);
 ?>
 
 <div class='member-group-form'>
@@ -39,6 +29,14 @@ use shopack\base\common\accounting\enums\enuAmountType;
 			// 	],
 			// ],
 			['mgpName'],
+			[
+				'mgpName',
+				'type' => FormBuilder::FIELD_TEXT_MULTILANGUAGE,
+				'fieldOptions' => [
+					'I18NDataFieldName' => 'mgpI18NData',
+					// 'generateNoLanguageField' => true,
+				],
+			],
 		]);
 	?>
 

@@ -3,18 +3,11 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-use yii\web\JsExpression;
-use shopack\base\common\helpers\Url;
 use shopack\base\frontend\common\widgets\datetime\DatePicker;
-use shopack\base\frontend\common\widgets\Select2;
-use shopack\base\frontend\common\widgets\DepDrop;
 use shopack\base\frontend\common\helpers\Html;
-use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
 use shopack\base\common\accounting\enums\enuSaleableStatus;
-
-// \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);
 ?>
 
 <div class='membership-saleable-form'>
@@ -41,6 +34,14 @@ use shopack\base\common\accounting\enums\enuSaleableStatus;
 				],
 			],
 			['slbName'],
+			[
+				'slbName',
+				'type' => FormBuilder::FIELD_TEXT_MULTILANGUAGE,
+				'fieldOptions' => [
+					'I18NDataFieldName' => 'slbI18NData',
+					// 'generateNoLanguageField' => true,
+				],
+			],
 			// ['slbCode'],
 			// ['slbDesc'],
 			['slbBasePrice',

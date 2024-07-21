@@ -47,6 +47,14 @@ use shopack\base\common\helpers\ArrayHelper;
 				],
 			],
 			['dscName'],
+			[
+				'dscName',
+				'type' => FormBuilder::FIELD_TEXT_MULTILANGUAGE,
+				'fieldOptions' => [
+					'I18NDataFieldName' => 'dscI18NData',
+					// 'generateNoLanguageField' => true,
+				],
+			],
 		]);
 
 		$builder->fields([

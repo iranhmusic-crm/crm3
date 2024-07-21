@@ -20,6 +20,9 @@ use shopack\base\common\accounting\enums\enuProductStatus;
 	<?php
 		$form = ActiveForm::begin([
 			'model' => $model,
+			'formConfig' => [
+				'labelSpan' => 4,
+			],
 		]);
 
 		$builder = $form->getBuilder();
@@ -34,6 +37,14 @@ use shopack\base\common\accounting\enums\enuProductStatus;
 				],
 			],
 			['prdName'],
+			[
+				'prdName',
+				'type' => FormBuilder::FIELD_TEXT_MULTILANGUAGE,
+				'fieldOptions' => [
+					'I18NDataFieldName' => 'prdI18NData',
+					// 'generateNoLanguageField' => true,
+				],
+			],
 			// ['prdCode'],
 			// ['prdDesc'],
 			// ['prdValidFromDate'],

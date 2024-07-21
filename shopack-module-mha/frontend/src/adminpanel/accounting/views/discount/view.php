@@ -5,7 +5,6 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\common\accounting\enums\enuAmountType;
 use shopack\base\common\accounting\enums\enuDiscountStatus;
 use shopack\base\common\accounting\enums\enuDiscountType;
@@ -19,6 +18,7 @@ use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberGroupModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
+use shopack\cmn\frontend\common\helpers\I18NHelper;
 
 $modelClass = Yii::$app->controller->modelClass;
 
@@ -98,6 +98,11 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
               'dscID',
               'dscName',
+            ];
+
+            $attributes = array_merge($attributes, I18NHelper::getMultiLanguageAttributs($model, 'dscName', 'dscI18NData'));
+
+            $attributes = array_merge($attributes, [
               [
                 'attribute' => 'dscType',
                 'format' => 'raw',
@@ -105,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   . ' '
                   . enuDiscountType::getLabel($model->dscType),
               ],
-            ];
+            ]);
 
             if ($model->dscType == enuDiscountType::Coupon) {
               $attributes = array_merge($attributes, [
