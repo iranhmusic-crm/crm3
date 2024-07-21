@@ -260,6 +260,7 @@ return [
 	'Membership start date is blank' => 'تاریخ شروع عضویت مشخص نشده است',
 	'Active Membership not found' => 'شما دوره عضویت فعالی ندارید',
 
+	'Print Membership Form' => 'چاپ فرم عضویت',
 	'Print Card (Front)' => 'چاپ روی کارت',
 	'Print Card (Back)' => 'چاپ پشت کارت',
 
