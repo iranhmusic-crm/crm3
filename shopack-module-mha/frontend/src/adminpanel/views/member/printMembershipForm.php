@@ -10,6 +10,9 @@ use shopack\aaa\common\enums\enuGender;
 use iranhmusic\shopack\mha\frontend\common\models\MemberKanoonModel;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 use iranhmusic\shopack\mha\common\enums\enuKanoonMembershipDegree;
+use shopack\aaa\common\enums\enuUserEducationLevel;
+use shopack\aaa\common\enums\enuUserMaritalStatus;
+use shopack\aaa\common\enums\enuUserMilitaryStatus;
 
 $this->title = 'چاپ فرم عضویت';
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
@@ -37,9 +40,6 @@ body {
   padding: 0px;
   margin: 0px;
   font-family: "Nassim";
-}
-
-body {
   display: table;
   width: 100%;
   /* height: 100%; */
@@ -49,42 +49,24 @@ body {
   display: table-cell;
 }
 
-.print {
-  margin: auto;
-  padding-left: 1cm;
-  padding-right: 1cm;
-  padding-top: 5.3cm;
-}
-
 .a4 {
   width: 19cm;
+  height: 27.7cm;
   max-height: 27.7cm;
+  margin: auto;
+  padding: 5mm;
+  border-width: 2mm;
+  border-color: black;
+  border-style: double;
 }
 
-.a5 {
-  width: 14.8cm;
-  max-height: 19cm;
-}
-
-h1 {
-  float: right;
-  font-size: 12px;
-  font-weight: normal;
-  margin: 0;
-  padding: 0;
-  padding-left: 2px;
-}
-
-h2 {
+.title {
   font-size: 20px;
   font-weight: 800;
   margin: 0;
   padding: 0;
-}
-
-h3 {
-  font-size: 18px;
-  font-weight: 700;
+  text-align: center;
+  padding-bottom: 5mm;
 }
 
 p {
@@ -109,6 +91,40 @@ strong {
 .dir-ltr {
   direction: ltr;
 }
+
+.center {
+  text-align: center;
+}
+
+.left {
+  text-align: left;
+}
+
+.box1 {
+  width: 4.5cm;
+  height: 3cm;
+  border: .4mm solid black;
+  border-radius: 5mm;
+  padding: 3mm;
+}
+.box1 div {
+  height: 8mm;
+}
+
+.logo_type img {
+  height: 3cm;
+}
+.logo_title img {
+  height: 7mm;
+}
+
+.photobox {
+  width: 3cm;
+  height: 4cm;
+  border: .4mm solid black;
+  border-radius: 5mm;
+}
+
 CSS;
 
 $this->registerCss($css);
@@ -122,15 +138,36 @@ $mbrkanoons = $searchModel->find()
   ->all();
 
 $kanoonNames = [];
+$kanoonDates = [];
 foreach ($mbrkanoons as $mbrkanoon) {
   $kanoonNames[] = $mbrkanoon->kanoon->knnName;
+  $kanoonDates[] = Yii::$app->formatter->asPersianNum(Yii::$app->formatter->asJalali($mbrkanoon->mbrknnAcceptedAt));
 }
 $kanoonNames = implode(' - ' , $kanoonNames);
+$kanoonDates = implode(' - ' , $kanoonDates);
 ?>
 
-<div class="print a4" id="dcapture">
-  <h2>پرسش نامه عضویت</h2>
-  <p>&nbsp;</p>
+<div class="a4">
+
+  <div class='row'>
+    <div class='col'>
+      <div class='box1'>
+        <div><span class='fieldLabel'>کد عضویت:</span><span class='fieldValue'><?= Yii::$app->formatter->asPersianNum($model->mbrRegisterCode) ?></span></div>
+        <div><span class='fieldLabel'>نام کانون:</span><span class='fieldValue'><?= $kanoonNames ?></span></div>
+        <div><span class='fieldLabel'>تاریخ:</span><span class='fieldValue'></span><?= $kanoonDates ?></div>
+      </div>
+    </div>
+    <div class='col center'>
+      <div class="logo_type"><img src="/images/logo_type.jpg"></div>
+      <div class="logo_title"><img src="/images/logo_iran.jpg"></div>
+    </div>
+    <div class='col left'>
+      <div class='photobox' style='display: inline-block;'>
+      </div>
+    </div>
+  </div>
+
+  <div class='title'>پرسش نامه عضویت</div>
 
   <div class='row'>
     <div class='col'>
@@ -174,6 +211,36 @@ $kanoonNames = implode(' - ' , $kanoonNames);
     </div>
     <div class='col'>
       <span class='fieldLabel'>محل تولد لاتین:</span><span class='fieldValue dir-ltr'></span>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col'>
+      <span class='fieldLabel'>آخرین مدرک تحصیلی:</span><span class='fieldValue'><?= enuUserEducationLevel::getLabel($model->user->usrEducationLevel) ?></span>
+    </div>
+    <div class='col'>
+      <span class='fieldLabel'>رشته تحصیلی:</span><span class='fieldValue'><?= $model->user->usrFieldOfStudy ?></span>
+    </div>
+    <div class='col'>
+      <span class='fieldLabel'>دانشگاه:</span><span class='fieldValue'><?= $model->user->usrEducationPlace ?></span>
+    </div>
+    <div class='col'>
+      <span class='fieldLabel'>شغل اصلی:</span><span class='fieldValue'></span>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col'>
+      <span class='fieldLabel'>درجه هنری:</span><span class='fieldValue'></span>
+    </div>
+    <div class='col'>
+      <span class='fieldLabel'>عضویت صندوق هنر:</span><span class='fieldValue'></span>
+    </div>
+    <div class='col'>
+      <span class='fieldLabel'>وضعیت نظام وظیفه:</span><span class='fieldValue'><?= enuUserMilitaryStatus::getLabel($model->user->usrMilitaryStatus) ?></span>
+    </div>
+    <div class='col'>
+      <span class='fieldLabel'>وضعیت تاهل:</span><span class='fieldValue'><?= enuUserMaritalStatus::getLabel($model->user->usrMaritalStatus) ?></span>
     </div>
   </div>
 
