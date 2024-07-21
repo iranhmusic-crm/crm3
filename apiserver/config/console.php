@@ -82,6 +82,7 @@ $config = [
 				// '@shopack/migrations/accounting' => [
 				// 	'targetModules' => ['mha'],
 				// ],
+				'@cmn/migrations',
 				'@aaa/migrations',
 				'@mha/migrations',
 				// '@app/modules/mha/migrations',
@@ -92,6 +93,11 @@ $config = [
 		// 	'class' => 'yii\console\controllers\MigrateController',
 		// 	'migrationPath' => '@core/migrations',
 		// ],
+		'migrate-cmn' => [
+			// 'class' => 'yii\console\controllers\MigrateController',
+			'class' => \shopack\base\common\console\controllers\MigrateController::class,
+			'migrationPath' => '@cmn/migrations',
+		],
 		'migrate-aaa' => [
 			// 'class' => 'yii\console\controllers\MigrateController',
 			'class' => \shopack\base\common\console\controllers\MigrateController::class,

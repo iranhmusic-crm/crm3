@@ -8,16 +8,12 @@
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\DetailView;
 use shopack\aaa\common\enums\enuGender;
-use shopack\aaa\common\enums\enuUserStatus;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
-use iranhmusic\shopack\mha\frontend\common\models\DocumentSearchModel;
-use iranhmusic\shopack\mha\frontend\common\models\MemberSpecialtyModel;
 
 $this->title = Yii::t('mha', 'My Profile');
 $this->params['breadcrumbs'][] = $this->title;
 
 $defects = $model->getDefects();
-
 ?>
 
 <div class="profile-view w-100">
@@ -168,7 +164,6 @@ $defects = $model->getDefects();
 
 										'mbrArtHistory:paragraphs',
                     'mbrMusicEducationHistory:paragraphs',
-
 									],
 								]);
 							?>
