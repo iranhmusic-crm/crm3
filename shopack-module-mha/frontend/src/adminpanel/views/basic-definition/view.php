@@ -11,6 +11,7 @@ use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionStatus;
+use shopack\cmn\frontend\common\helpers\I18NHelper;
 
 $this->title = Yii::t('app', 'Basic Definition') . ': ' . $model->bdfID . ' - ' . $model->bdfName;
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
@@ -71,21 +72,25 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class='card-body'>
       <?php
+        $attributes = [
+          'bdfID',
+          [
+            'attribute' => 'bdfStatus',
+            'value' => enuBasicDefinitionStatus::getLabel($model->bdfStatus),
+          ],
+          [
+            'attribute' => 'bdfType',
+            'value' => enuBasicDefinitionType::getLabel($model->bdfType),
+          ],
+          'bdfName',
+        ];
+
+        $attributes = array_merge($attributes, I18NHelper::getMultiLanguageAttributs($model, 'bdfName', 'bdfI18NData'));
+
         echo DetailView::widget([
           'model' => $model,
           'enableEditMode' => false,
-          'attributes' => [
-            'bdfID',
-            [
-              'attribute' => 'bdfStatus',
-              'value' => enuBasicDefinitionStatus::getLabel($model->bdfStatus),
-            ],
-            'bdfName',
-            [
-              'attribute' => 'bdfType',
-              'value' => enuBasicDefinitionType::getLabel($model->bdfType),
-            ],
-          ],
+          'attributes' => $attributes,
         ]);
       ?>
     </div>
