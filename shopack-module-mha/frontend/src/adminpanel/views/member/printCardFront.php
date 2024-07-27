@@ -38,9 +38,13 @@ body, html {
   width:100%;
   font-family: "Nassim";
 }
-.container {
-  display:table-cell;
-  vertical-align:middle;
+.print-container {
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
 .cardbox {
   width: 8.5cm;

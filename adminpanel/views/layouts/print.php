@@ -34,7 +34,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
   <?php $this->beginBody() ?>
   <?php $this->beginMainFrame() ?>
 
-  <div class="container">
+  <div class="print-container">
     <?= $content ?>
   </div>
 

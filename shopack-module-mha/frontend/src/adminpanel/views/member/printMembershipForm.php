@@ -45,8 +45,12 @@ body {
   /* height: 100%; */
 }
 
-.container {
+.print-container {
   display: table-cell;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .a4 {

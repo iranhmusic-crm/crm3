@@ -45,8 +45,13 @@ body {
   /* height: 100%; */
 }
 
-.container {
+.print-container {
   display: table-cell;
+  /* vertical-align: middle; */
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .print {
@@ -63,6 +68,7 @@ body {
 
 .a5 {
   width: 14.8cm;
+  height: 19cm;
   max-height: 19cm;
 }
 
@@ -122,7 +128,7 @@ $kanoonNames = implode(' - ' , $kanoonNames);
   </h2>
   <p>&nbsp;</p>
   <p>
-    <span style="padding-right: 1cm"></span>احتراما با استناد به آیین نامه عضویت صندوق اعتباری هنر،
+    <span style="padding-right:1cm"></span>احتراما با استناد به آیین نامه عضویت صندوق اعتباری هنر،
     <strong>
       <?php echo (empty($model->user->usrGender) ? 'هنرمند'
         : ($model->user->usrGender == enuGender::Male ? 'آقای' : 'خانم')); ?>
@@ -139,7 +145,7 @@ $kanoonNames = implode(' - ' , $kanoonNames);
     (قابل تمدید در صورت استمرار فعالیت و ارائه اثر جدید در مدت عضویت) دارا می‌باشند؛ به حضور معرفی می‌دارد.%
   </p>
   <p>&nbsp;</p>
-  <h3 style="text-align: center;padding-right: 8cm;">
+  <h3 style="text-align:center; padding-right:8cm;">
     حمیدرضا نوربخش<br>
     مدیرعامل
   </h3>

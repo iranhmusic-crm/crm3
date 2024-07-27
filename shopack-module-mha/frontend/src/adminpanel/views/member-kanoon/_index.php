@@ -79,8 +79,9 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
     [
       'class' => \iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonDataColumn::class,
       'attribute' => 'mbrknnKanoonID',
+      'format' => 'raw',
       'value' => function ($model, $key, $index, $widget) {
-        return $model->kanoon->knnName;
+        return Html::a($model->kanoon->knnName, ['/mha/kanoon/view', 'id' => $model->mbrknnKanoonID]);
       },
     ],
     // [
