@@ -52,6 +52,19 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'docType',
           ],
           [
+            'attribute' => 'docExtraParamsSchema',
+            'value' => function($model) {
+              if (empty($model->docExtraParamsSchema))
+                return null;
+
+              if (is_array($model->docExtraParamsSchema) == false)
+                $model->docExtraParamsSchema = json_decode($model->docExtraParamsSchema, true);
+
+              //test:
+              return json_encode($model->docExtraParamsSchema);
+            },
+          ],
+          [
             'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
             'enumClass' => enuDocumentStatus::class,
             'attribute' => 'docStatus',

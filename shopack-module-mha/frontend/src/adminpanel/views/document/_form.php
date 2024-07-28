@@ -6,13 +6,15 @@
 use yii\web\JsExpression;
 use shopack\base\common\helpers\Url;
 use shopack\base\frontend\common\widgets\Select2;
-use shopack\base\frontend\common\widgets\DepDrop;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
 use iranhmusic\shopack\mha\common\enums\enuDocumentType;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
+use shopack\base\common\helpers\JsonSchema;
+use shopack\base\frontend\common\widgets\JsonTableGrid;
+
 ?>
 
 <div class='document-form'>
@@ -47,10 +49,63 @@ use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 					],
 				]
 			],
+			['docName'],
+		]);
+
+		$builder->fields([
 			[
-				'docName',
+				'docExtraParamsSchema',
+				'type' => FormBuilder::FIELD_WIDGET,
+				'widget' => JsonTableGrid::class,
+				// 'widgetOptions' => [
+				// 	'jsonSchema' => $columnsInfo['docExtraParamsSchema']['jsonSchema']['fields'],
+				// ],
 			],
 		]);
+
+		// if (empty($docExtraParamsSchema_jsonSchema_fields) == false) {
+		// 	$builder->fields([
+		// 		['@cols' => count($docExtraParamsSchema_jsonSchema_fields)],
+		// 	]);
+
+		// 	foreach ($docExtraParamsSchema_jsonSchema_fields as $field) {
+		// 		$f = [
+		// 			"docExtraParamsSchema[values][{$field[0]}]",
+		// 		];
+
+		// 		if (isset($field['label'])) {
+		// 			if (is_array($field['label'])) {
+		// 				$cat = array_shift($field['label']);
+		// 				$msg = array_shift($field['label']);
+		// 				$f['label'] = Yii::t($cat, $msg, $field['label']);
+		// 			} else
+		// 				$f['label'] = Yii::t('mha', $field['label']);
+		// 		} else
+		// 			$f['label'] = $field[0];
+
+		// 		if (isset($field['type'])) {
+		// 			switch ($field['type']) {
+		// 				case JsonSchema::TYPE_int:
+		// 				case jsonSchema::TYPE_string:
+		// 					break;
+
+		// 				case jsonSchema::TYPE_boolean:
+		// 					$f += [
+		// 						'type' => FormBuilder::FIELD_CHECKBOX,
+		// 						'widgetOptions' => [[], true],
+		// 					];
+		// 					break;
+		// 			}
+		// 		}
+
+		// 		$builder->fields($f);
+		// 	}
+
+		// 	$builder->fields([
+		// 		['@reset-cols'],
+		// 	]);
+
+		// }
 	?>
 
 	<?php $builder->beginField(); ?>

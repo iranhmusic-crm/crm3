@@ -19,19 +19,20 @@ class DocumentModel extends RestClientActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'docID'                    => Yii::t('app', 'ID'),
-			'docName'                  => Yii::t('app', 'Name'),
-			'docType'                  => Yii::t('app', 'Type'),
-			'docStatus'                => Yii::t('app', 'Status'),
-			'docCreatedAt'             => Yii::t('app', 'Created At'),
-			'docCreatedBy'             => Yii::t('app', 'Created By'),
-			'docCreatedBy_User'        => Yii::t('app', 'Created By'),
-			'docUpdatedAt'             => Yii::t('app', 'Updated At'),
-			'docUpdatedBy'             => Yii::t('app', 'Updated By'),
-			'docUpdatedBy_User'        => Yii::t('app', 'Updated By'),
-			'docRemovedAt'             => Yii::t('app', 'Removed At'),
-			'docRemovedBy'             => Yii::t('app', 'Removed By'),
-			'docRemovedBy_User'        => Yii::t('app', 'Removed By'),
+			'docID'									=> Yii::t('app', 'ID'),
+			'docName'								=> Yii::t('app', 'Name'),
+			'docType'								=> Yii::t('app', 'Type'),
+			'docExtraParamsSchema'	=> Yii::t('app', 'Parameters'),
+			'docStatus'							=> Yii::t('app', 'Status'),
+			'docCreatedAt'					=> Yii::t('app', 'Created At'),
+			'docCreatedBy'					=> Yii::t('app', 'Created By'),
+			'docCreatedBy_User'			=> Yii::t('app', 'Created By'),
+			'docUpdatedAt'					=> Yii::t('app', 'Updated At'),
+			'docUpdatedBy'					=> Yii::t('app', 'Updated By'),
+			'docUpdatedBy_User'			=> Yii::t('app', 'Updated By'),
+			'docRemovedAt'					=> Yii::t('app', 'Removed At'),
+			'docRemovedBy'					=> Yii::t('app', 'Removed By'),
+			'docRemovedBy_User'			=> Yii::t('app', 'Removed By'),
 		];
 	}
 

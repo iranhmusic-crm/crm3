@@ -10,6 +10,7 @@ use shopack\base\common\rest\enuColumnInfo;
 use shopack\base\common\rest\enuColumnSearchType;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 use shopack\base\common\validators\JsonValidator;
+use shopack\base\common\helpers\JsonSchema;
 
 /*
 'docID',
@@ -27,6 +28,11 @@ use shopack\base\common\validators\JsonValidator;
 */
 trait DocumentModelTrait
 {
+	public static $EXPARAM_id					= 'id';
+	public static $EXPARAM_name				= 'name';
+	public static $EXPARAM_type				= 'type';
+	public static $EXPARAM_mandatory	= 'mandatory';
+
   public static $primaryKey = ['docID'];
 
 	public function primaryKeyValue() {
@@ -67,6 +73,52 @@ trait DocumentModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
+				'jsonSchema' => [
+					'fields' => [
+						[
+							self::$EXPARAM_id,
+							// 'label' => '',
+							'type' => jsonSchema::TYPE_int,
+							'pk' => true,
+							// 'default' => 'auto-increment;start=1;step=1',
+						],
+						[
+							self::$EXPARAM_name,
+							'label' => ['app', 'Name'],
+							'type' => jsonSchema::TYPE_string,
+						],
+						[
+							self::$EXPARAM_type,
+							'label' => ['app', 'Type'],
+							'type' => jsonSchema::TYPE_string,
+						],
+						[
+							self::$EXPARAM_mandatory,
+							'label' => ['app', 'Is Mandatory'],
+							'type' => jsonSchema::TYPE_boolean,
+							'default' => false,
+						],
+					],
+				],
+				// 'jsonSchema' => jsonSchema::create()
+				// 	->field(self::$EXPARAM_id)
+				// 		->type(jsonSchema::TYPE_int)
+				// 		->pk()
+
+				// 	->field(self::$EXPARAM_name)
+				// 		->type(jsonSchema::TYPE_string)
+				// 		->label('Name')
+
+				// 	->field(self::$EXPARAM_type)
+				// 		->type(jsonSchema::TYPE_string)
+				// 		->label('Type')
+
+				// 	->field(self::$EXPARAM_mandatory)
+				// 		->type(jsonSchema::TYPE_boolean)
+				// 		->label('Is Mandatory')
+				// 		->default(false)
+
+				// 	->done()
 			],
 			'docStatus' => [
 				enuColumnInfo::isStatus   => true,

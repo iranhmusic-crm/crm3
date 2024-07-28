@@ -59,7 +59,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
       } else {
         $userMenuItems = [
           'label' => Yii::t('app', 'Menu'),
-          'options' => ['class' => 'me-0 ms-auto'],
           'dropdownOptions' => ['class' => 'dropdown-items-reverse'],
           'items' => [
             // '<li class="nav-item">' . Html::a(
@@ -85,14 +84,13 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
         ];
       }
 
-      $userMenuItems = [
-        'label' => Yii::$app->formatter->asJalali(new \DateTime()),
-      ];
-
       echo Nav::widget([
         'options' => ['class' => 'navbar-nav w-100'],
         'items' => [
-          // ['label' => 'Home', 'url' => ['/site']],
+          [
+            'label' => Yii::$app->formatter->asJalali(new \DateTime()),
+            'options' => ['class' => 'me-0 ms-auto'],
+          ],
           $userMenuItems,
         ]
       ]);
