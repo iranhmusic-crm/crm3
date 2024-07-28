@@ -8,7 +8,6 @@ namespace iranhmusic\shopack\mha\common\models;
 use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
 use shopack\base\common\rest\enuColumnSearchType;
-use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionStatus;
 
 /*

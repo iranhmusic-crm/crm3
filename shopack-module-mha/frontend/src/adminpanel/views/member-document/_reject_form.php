@@ -3,14 +3,15 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
+use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use shopack\base\frontend\common\widgets\Select2;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
-use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
-use iranhmusic\shopack\mha\common\enums\enuDocumentMembershipDegree;
 use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
+use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
+
 ?>
 
 <div class='member-document-form'>
@@ -35,17 +36,33 @@ use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
 				'type' => FormBuilder::FIELD_STATIC,
 				'staticValue' => $model->document->docName,
 			],
-			[
-				'mbrdocStatus',
-				'type' => FormBuilder::FIELD_STATIC,
-				'staticValue' => enuMemberDocumentStatus::getLabel($model->mbrdocStatus),
-			],
+			// [
+			// 	'mbrdocStatus',
+			// 	'type' => FormBuilder::FIELD_STATIC,
+			// 	'staticValue' => enuMemberDocumentStatus::getLabel($model->mbrdocStatus),
+			// ],
 		]);
 
+		$reasons = ArrayHelper::map(BasicDefinitionModel::find()
+			->where(['bdfType' => enuBasicDefinitionType::MemberDocumentyRejectReason])
+			->noLimit()
+			->asArray()
+			->all(),
+			'bdfID',
+			'bdfName'
+		);
+
 		$builder->fields([
+			'<hr>',
 			[
-				'mbrdocComment',
+				'mbrdocRejectReasonIDs',
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => $reasons,
+				'widgetOptions' => [
+					'inline' => false,
+				],
 			],
+			['mbrdocComment'],
 		]);
 	?>
 

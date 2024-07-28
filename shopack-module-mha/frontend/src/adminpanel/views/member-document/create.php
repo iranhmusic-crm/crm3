@@ -5,7 +5,7 @@
 
 use shopack\base\frontend\common\helpers\Html;
 
-$this->title = Yii::t('mha', 'Create Document');
+$this->title = Yii::t('mha', 'Create Member Document');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = $this->title;
 ?>

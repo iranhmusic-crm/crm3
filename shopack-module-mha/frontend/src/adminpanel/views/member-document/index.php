@@ -8,7 +8,7 @@
 use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
 
-$this->title = Yii::t('mha', 'Documents');
+$this->title = Yii::t('mha', 'Members Documents');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = $this->title;
 ?>

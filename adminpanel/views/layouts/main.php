@@ -85,6 +85,10 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
         ];
       }
 
+      $userMenuItems = [
+        'label' => Yii::$app->formatter->asJalali(new \DateTime()),
+      ];
+
       echo Nav::widget([
         'options' => ['class' => 'navbar-nav w-100'],
         'items' => [
@@ -146,18 +150,19 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
           'label' => Yii::t('aaa', 'System'),
           // 'icon' => 'question-sign',
           'items' => [
+            ['label' => Yii::t('aaa', 'Users'), 'icon' => 'info-sign', 'url' => ['/aaa/user']],
+            ['label' => Yii::t('aaa', 'Online Users'), 'icon' => 'info-sign', 'url' => ['/aaa/session/online-list']],
             [
-              'label' => Yii::t('app', 'Settings'),
+              'label' => Yii::t('aaa', 'Accounting'),
+              // 'icon' => 'question-sign',
               'items' => [
-                ['label' => Yii::t('cmn', 'Languages'), 'icon' => 'info-sign', 'url' => ['/cmn/language']],
-                ['label' => Yii::t('app', 'Basic Definitions'), 'icon' => 'info-sign', 'url' => ['/aaa/basic-definition']],
-                ['label' => Yii::t('aaa', 'Roles'), 'icon' => 'info-sign', 'url' => ['/aaa/role']],
-                ['label' => Yii::t('aaa', 'Access Groups'), 'icon' => 'info-sign', 'url' => ['/aaa/access-group']],
-                ['label' => Yii::t('aaa', 'Geo Divisions'), 'icon' => 'info-sign', 'url' => ['/aaa/geo-country']],
+                [
+                  'label' => Yii::t('aaa', 'Delivery Methods'),
+                  'icon' => 'info-sign',
+                  'url' => ['/aaa/delivery-method'],
+                ],
               ],
             ],
-            ['label' => Yii::t('aaa', 'Users'), 'icon' => 'info-sign', 'url' => ['/aaa/user']],
-            ['label' => Yii::t('aaa', 'Gateways'), 'icon' => 'info-sign', 'url' => ['/aaa/gateway']],
             [
               'label' => Yii::t('aaa', 'Files'),
               'items' => [
@@ -173,9 +178,15 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
               ],
             ],
             [
-              'label' => Yii::t('aaa', 'Delivery Methods'),
-              'icon' => 'info-sign',
-              'url' => ['/aaa/delivery-method'],
+              'label' => Yii::t('app', 'Settings'),
+              'items' => [
+                ['label' => Yii::t('cmn', 'Languages'), 'icon' => 'info-sign', 'url' => ['/cmn/language']],
+                ['label' => Yii::t('app', 'Basic Definitions'), 'icon' => 'info-sign', 'url' => ['/aaa/basic-definition']],
+                ['label' => Yii::t('aaa', 'Roles'), 'icon' => 'info-sign', 'url' => ['/aaa/role']],
+                ['label' => Yii::t('aaa', 'Access Groups'), 'icon' => 'info-sign', 'url' => ['/aaa/access-group']],
+                ['label' => Yii::t('aaa', 'Geo Divisions'), 'icon' => 'info-sign', 'url' => ['/aaa/geo-country']],
+                ['label' => Yii::t('aaa', 'Gateways'), 'icon' => 'info-sign', 'url' => ['/aaa/gateway']],
+              ],
             ],
           ],
         ],
@@ -184,7 +195,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
           // 'icon' => 'music',
           'items' => [
             ['label' => Yii::t('mha', 'Members'), 'icon' => 'info-sign', 'url' => ['/mha/member']],
-            ['label' => Yii::t('mha', 'Documents'), 'icon' => 'info-sign', 'url' => ['/mha/member-document']],
+            ['label' => Yii::t('mha', 'Members Documents'), 'icon' => 'info-sign', 'url' => ['/mha/member-document']],
             [
               'label' => Yii::t('mha', 'Members Memberships'),
               'icon' => 'info-sign',

@@ -233,18 +233,18 @@ return [
 	'Documents Types' => 'انواع مدارک',
 	'Required Documents' => 'مدارک مورد نیاز',
 
-
 	// 'Document Definitions' => 'تعریف مدارک',
 	// 'Document Definition' => 'تعریف مدرک',
 	// 'Document Definition Info' => 'مشخصات تعریف مدرک',
 	// 'Create Document Definition' => 'ایجاد تعریف مدرک',
 	// 'Update Document Definition' => 'ویرایش تعریف مدرک',
 
-	// 'Member Documents' => 'مدارک اعضا',
-	// 'Member Document' => 'مدرک عضو',
-	// 'Member Document Info' => 'مشخصات مدرک عضو',
-	// 'Create Member Document' => 'ایجاد مدرک عضو',
-	// 'Update Member Document' => 'ویرایش مدرک عضو',
+	'Member Documents' => 'مدارک عضو',
+	'Members Documents' => 'مدارک اعضا',
+	'Member Document' => 'مدرک عضو',
+	'Member Document Info' => 'مشخصات مدرک عضو',
+	'Create Member Document' => 'ایجاد مدرک عضو',
+	'Update Member Document' => 'ویرایش مدرک عضو',
 
 	'Wait For Approve' => 'منتظر تایید',
 	'Approved' => 'تایید شده',
@@ -305,4 +305,5 @@ return [
 
 	'Max Qty Reached' => 'حداکثر تعداد مجاز در سبد خرید وجود دارد',
 
+	'Member Document Reject Reason' => 'دلیل رد مدرک عضو',
 ];

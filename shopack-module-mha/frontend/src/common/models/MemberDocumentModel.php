@@ -22,6 +22,7 @@ class MemberDocumentModel extends RestClientActiveRecord
 			'mbrdocDocumentID'       => Yii::t('mha', 'Document'),
 			'mbrdocTitle'            => Yii::t('app', 'Title'),
 			'mbrdocFileID'           => Yii::t('app', 'File'),
+			'mbrdocRejectReasonIDs'  => Yii::t('app', 'Reasons'),
 			'mbrdocComment'          => Yii::t('app', 'Comment'),
 			'mbrdocHistory'          => Yii::t('app', 'History'),
 			'mbrdocStatus'           => Yii::t('app', 'Status'),

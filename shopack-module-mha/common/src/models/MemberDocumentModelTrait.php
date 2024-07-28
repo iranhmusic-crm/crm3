@@ -18,7 +18,9 @@ use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
 'mbrdocDocumentID',
 'mbrdocTitle',
 'mbrdocFileID',
+'mbrdocExtraParams',
 'mbrdocComment',
+'mbrdocRejectReasonIDs',
 'mbrdocHistory',
 'mbrdocStatus',
 'mbrdocCreatedAt',
@@ -72,6 +74,14 @@ trait MemberDocumentModelTrait
 				enuColumnInfo::selectable => true,
 				enuColumnInfo::search     => enuColumnSearchType::like,
 			],
+			// 'mbrdocIssuedAt' => [
+			// 	enuColumnInfo::type       => 'safe',
+			// 	enuColumnInfo::validator  => null,
+			// 	enuColumnInfo::default    => null,
+			// 	enuColumnInfo::required   => false, //true,
+			// 	enuColumnInfo::selectable => true,
+      //   // enuColumnInfo::search     => enuColumnSearchType::like,
+			// ],
 			'mbrdocFileID' => [
 				enuColumnInfo::type       => 'safe', //'integer',
 				enuColumnInfo::validator  => null,
@@ -80,6 +90,13 @@ trait MemberDocumentModelTrait
 				enuColumnInfo::selectable => true,
         enuColumnInfo::search     => false, //true
 			],
+			'mbrdocExtraParams' => [
+				enuColumnInfo::type       => JsonValidator::class,
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
+			],
 			'mbrdocComment' => [
 				enuColumnInfo::type       => ['string', 'max' => 65500],
 				enuColumnInfo::validator  => null,
@@ -87,6 +104,13 @@ trait MemberDocumentModelTrait
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
         enuColumnInfo::search     => enuColumnSearchType::exact,
+			],
+			'mbrdocRejectReasonIDs' => [
+				enuColumnInfo::type       => JsonValidator::class,
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
 			],
 			'mbrdocHistory' => [
 				enuColumnInfo::type       => JsonValidator::class,

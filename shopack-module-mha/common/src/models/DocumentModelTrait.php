@@ -9,12 +9,14 @@ use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
 use shopack\base\common\rest\enuColumnSearchType;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
+use shopack\base\common\validators\JsonValidator;
 
 /*
 'docID',
 'docUUID',
 'docName',
 'docType',
+'docExtraParamsSchema',
 'docStatus',
 'docCreatedAt',
 'docCreatedBy',
@@ -58,6 +60,13 @@ trait DocumentModelTrait
 				enuColumnInfo::required   => true,
 				enuColumnInfo::selectable => true,
         enuColumnInfo::search     => enuColumnSearchType::exact,
+			],
+			'docExtraParamsSchema' => [
+				enuColumnInfo::type       => JsonValidator::class,
+				enuColumnInfo::validator  => null,
+				enuColumnInfo::default    => null,
+				enuColumnInfo::required   => false,
+				enuColumnInfo::selectable => true,
 			],
 			'docStatus' => [
 				enuColumnInfo::isStatus   => true,

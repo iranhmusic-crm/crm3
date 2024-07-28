@@ -5,12 +5,16 @@
 
 /** @var yii\web\View $this */
 
+use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use shopack\base\frontend\common\widgets\grid\GridView;
 use shopack\base\common\helpers\StringHelper;
 use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
+use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 use iranhmusic\shopack\mha\frontend\common\models\DocumentSearchModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
+use shopack\base\common\helpers\ArrayHelper;
+
 ?>
 
 <?php
@@ -25,6 +29,15 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
       // if (isset($statusReport))
       // 	echo (is_array($statusReport) ? Html::icon($statusReport[0], ['plugin' => 'glyph']) . ' ' . $statusReport[1] : $statusReport);
 
+      $rejectReasons = ArrayHelper::map(BasicDefinitionModel::find()
+        ->where(['bdfType' => enuBasicDefinitionType::MemberDocumentyRejectReason])
+        ->noLimit()
+        ->asArray()
+        ->all(),
+        'bdfID',
+        'bdfName'
+      );
+
       $columns = [
         [
           'class' => 'kartik\grid\SerialColumn',
@@ -38,7 +51,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
           },
           'expandOneOnly' => true,
           'detailAnimationDuration' => 150,
-          'detail' => function ($model) {
+          'detail' => function ($model) use($rejectReasons) {
             $result = [];
             $result[] = '<tr><td>' . implode('</td><td>', [
               '#',
@@ -49,10 +62,25 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
             if (empty($model->mbrdocHistory == false)) {
               $items = array_reverse($model->mbrdocHistory);
               foreach ($items as $k => $item) {
+                $status = empty($item['status']) ? '' : enuMemberDocumentStatus::getLabel($item['status']);
+
+                if ($item['status'] == enuMemberDocumentStatus::Rejected) {
+                  $reasons = [];
+
+                  foreach ($model->mbrdocRejectReasonIDs as $r) {
+                    if (isset($rejectReasons[$r]))
+                      $reasons[] = $rejectReasons[$r];
+                  }
+
+                  if (empty($reasons) == false) {
+                    $status .= ' (' . implode(' - ', $reasons) . ')';
+                  }
+                }
+
                 $result[] = '<tr><td>' . implode('</td><td>', [
                   $k + 1,
                   empty($item['at']) ? '' : Yii::$app->formatter->asJalaliWithTime($item['at']),
-                  empty($item['status']) ? '' : enuMemberDocumentStatus::getLabel($item['status']),
+                  $status,
                   $item['comment'] ?? '',
                 ]) . '</td></tr>';
               }
