@@ -85,7 +85,7 @@ use shopack\base\frontend\common\widgets\JsonTableGrid;
 
 		// 		if (isset($field['type'])) {
 		// 			switch ($field['type']) {
-		// 				case JsonSchema::TYPE_int:
+		// 				case JsonSchema::TYPE_number:
 		// 				case jsonSchema::TYPE_string:
 		// 					break;
 

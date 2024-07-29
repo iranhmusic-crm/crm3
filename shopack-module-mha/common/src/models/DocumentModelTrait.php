@@ -78,7 +78,7 @@ trait DocumentModelTrait
 						[
 							self::$EXPARAM_id,
 							'label' => ['app', 'ID'],
-							'type' => jsonSchema::TYPE_int,
+							'type' => jsonSchema::TYPE_number,
 							'pk' => true,
 							// 'default' => 'auto-increment;start=1;step=1',
 						],
@@ -113,7 +113,7 @@ trait DocumentModelTrait
 				],
 				// enuColumnInfo::jsonSchema => jsonSchema::create()
 				// 	->field(self::$EXPARAM_id)
-				// 		->type(jsonSchema::TYPE_int)
+				// 		->type(jsonSchema::TYPE_number)
 				// 		->pk()
 
 				// 	->field(self::$EXPARAM_name)

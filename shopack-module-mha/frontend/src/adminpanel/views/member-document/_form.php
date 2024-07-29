@@ -3,19 +3,15 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-use yii\web\JsExpression;
-use shopack\base\frontend\common\widgets\Select2;
-use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\common\helpers\Url;
+use shopack\base\common\helpers\Json;
+use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\widgets\Select2;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
-use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
-use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
-use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
-use shopack\base\frontend\common\widgets\datetime\DatePicker;
-
+use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
 ?>
 
 <div class='member-document-form'>
@@ -26,6 +22,9 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 				'labelSpan' => 4,
 			],
 		]);
+
+		$formName = $model->formName();
+    $formNameLower = strtolower($formName);
 
 		$builder = $form->getBuilder();
 
@@ -42,6 +41,13 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 			]);
 		}
 
+		$loadingText = "<div class='text-center'>" . Yii::t('app', 'Loading...') . "</div>";
+
+		$getParamsSchemaUrl = Url::to(['document/params-schema', 'field' => 'docExtraParamsSchema']) . '&id=';
+		$extraParamsData = '{}';
+		if ($model->mbrdocExtraParams !== null)
+			$extraParamsData = Json::encode($model->mbrdocExtraParams);
+
 		$builder->fields([
 			[
 				'mbrdocDocumentID',
@@ -52,6 +58,12 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',
+					],
+					'pluginEvents' => [
+						'select2:select' => "function(e) {
+							createDynamicParamsFormUI($(this).val(), \"{$loadingText}\", '{$getParamsSchemaUrl}', '{$formNameLower}', 'mbrdocExtraParams', '{$formName}', 'mbrdocExtraParams', {$extraParamsData}, 'params-container', 3);
+							return true;
+						}",
 					],
 				],
 			],
@@ -65,6 +77,8 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 			],
 			'توجه: فقط فرمت jpeg با حداکثر حجم 2 مگابایت پذیرفته خواهد بود.',
 		]);
+
+		//todo: JsonTableGrid::asDynamicParamsForm ----> params-container
 	?>
 
 	<?php $builder->beginField(); ?>
