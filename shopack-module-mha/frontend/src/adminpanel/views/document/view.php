@@ -11,6 +11,7 @@ use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
 use iranhmusic\shopack\mha\common\enums\enuDocumentType;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
+use shopack\base\frontend\common\widgets\JsonTableGrid;
 
 $this->title = Yii::t('mha', 'Document') . ': ' . $model->docID . ' - ' . $model->docName;
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
@@ -84,6 +85,11 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'docType',
               'value' => enuDocumentType::getLabel($model->docType),
+            ],
+            [
+              'attribute' => 'docExtraParamsSchema',
+              'format' => 'raw',
+              'value' => JsonTableGrid::asHtml($model, 'docExtraParamsSchema'),
             ],
           ],
         ]);

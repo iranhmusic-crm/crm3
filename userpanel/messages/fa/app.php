@@ -113,4 +113,7 @@ return [
 	'Create Basic Definition' => 'ایجاد تعریف پایه',
 	'Update Basic Definition' => 'ویرایش تعریف پایه',
 
+	'Text' => 'متن',
+	'Date' => 'تاریخ',
+	'Time' => 'زمان',
 ];
