@@ -58,7 +58,7 @@ use shopack\base\frontend\common\widgets\JsonTableGrid;
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => JsonTableGrid::class,
 				// 'widgetOptions' => [
-				// 	'jsonSchema' => $columnsInfo['docExtraParamsSchema']['jsonSchema']['fields'],
+				// 	'jsonSchema' => $columnsInfo['docExtraParamsSchema'][enuColumnInfo::jsonSchema]['fields'],
 				// ],
 			],
 		]);

@@ -20,4 +20,23 @@ class DocumentController extends BaseCrudController
 		$model->docStatus = enuDocumentStatus::Active;
   }
 
+	public function actionUpdate_afterLoadModel(&$model, $formPosted)
+  {
+		if ($formPosted) {
+			$dirtyValues = $model->getDirtyAttributes(['docExtraParamsSchema']);
+
+			if (empty($dirtyValues) == false) {
+				$docExtraParamsSchema = [];
+
+				foreach ($model->docExtraParamsSchema as $k => $v) {
+					if (empty($v[DocumentModel::$EXPARAM_name]) == false) {
+						$docExtraParamsSchema[] = $v;
+					}
+				}
+
+				$model->docExtraParamsSchema = $docExtraParamsSchema;
+			}
+		}
+  }
+
 }

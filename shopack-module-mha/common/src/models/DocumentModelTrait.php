@@ -73,11 +73,11 @@ trait DocumentModelTrait
 				enuColumnInfo::default    => null,
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
-				'jsonSchema' => [
+				enuColumnInfo::jsonSchema => [
 					'fields' => [
 						[
 							self::$EXPARAM_id,
-							// 'label' => '',
+							'label' => ['app', 'ID'],
 							'type' => jsonSchema::TYPE_int,
 							'pk' => true,
 							// 'default' => 'auto-increment;start=1;step=1',
@@ -86,21 +86,32 @@ trait DocumentModelTrait
 							self::$EXPARAM_name,
 							'label' => ['app', 'Name'],
 							'type' => jsonSchema::TYPE_string,
+							'allow-null' => false,
 						],
 						[
 							self::$EXPARAM_type,
 							'label' => ['app', 'Type'],
-							'type' => jsonSchema::TYPE_string,
+							'type' => jsonSchema::TYPE_select,
+							'allow-null' => false,
+							'data' => [
+								'text' => ['app', 'Text'],
+								'date' => ['app', 'Date'],
+								'time' => ['app', 'Time'],
+								'mha:bdef:I' => ['mha', 'Instrument'],
+								'mha:bdef:S' => ['mha', 'Sing'],
+								'mha:bdef:R' => ['mha', 'Research'],
+								'mha:kanoon' => ['mha', 'Kanoon'],
+							],
 						],
 						[
 							self::$EXPARAM_mandatory,
-							'label' => ['app', 'Is Mandatory'],
+							'label' => ['aaa', 'Mandatory'],
 							'type' => jsonSchema::TYPE_boolean,
 							'default' => false,
 						],
 					],
 				],
-				// 'jsonSchema' => jsonSchema::create()
+				// enuColumnInfo::jsonSchema => jsonSchema::create()
 				// 	->field(self::$EXPARAM_id)
 				// 		->type(jsonSchema::TYPE_int)
 				// 		->pk()
