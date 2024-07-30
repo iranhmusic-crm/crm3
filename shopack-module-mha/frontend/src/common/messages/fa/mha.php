@@ -224,11 +224,17 @@ return [
 	'Mother' => 'مادر',
 	'Spouse' => 'همسر',
 
+	'Document Type' => 'نوع مدرک',
+	'Document Types' => 'انواع مدارک',
+	'Document Type Info' => 'مشخصات نوع مدرک',
+	'Create Document Type' => 'ایجاد نوع مدرک',
+	'Update Document Type' => 'ویرایش نوع مدرک',
+
+	// 'Document' => 'مدرک',
 	'Documents' => 'مدارک',
-	'Document' => 'مدرک',
-	'Document Info' => 'مشخصات مدرک',
-	'Create Document' => 'ایجاد مدرک',
-	'Update Document' => 'ویرایش مدرک',
+	// 'Document Info' => 'مشخصات مدرک',
+	// 'Create Document' => 'ایجاد مدرک',
+	// 'Update Document' => 'ویرایش مدرک',
 
 	'Documents Types' => 'انواع مدارک',
 	'Required Documents' => 'مدارک مورد نیاز',

@@ -61,7 +61,7 @@ use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
 					],
 					'pluginEvents' => [
 						'select2:select' => "function(e) {
-							createDynamicParamsFormUI($(this).val(), \"{$loadingText}\", '{$getParamsSchemaUrl}', '{$formNameLower}', 'mbrdocExtraParams', '{$formName}', 'mbrdocExtraParams', {$extraParamsData}, 'params-container', 3);
+							createDynamicParamsFormUI($(this).val(), \"{$loadingText}\", '{$getParamsSchemaUrl}', '{$formNameLower}', 'mbrdocExtraParams', '{$formName}', 'mbrdocExtraParams', {$extraParamsData}, 'params-container', 4);
 							return true;
 						}",
 					],
@@ -75,14 +75,13 @@ use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
 					'accept' => 'image/png, image/gif, image/jpg, image/jpeg',
 				],
 			],
-			'توجه: فقط فرمت jpeg با حداکثر حجم 2 مگابایت پذیرفته خواهد بود.',
 		]);
 
 		//todo: JsonTableGrid::asDynamicParamsForm ----> params-container
 	?>
 
 	<?php $builder->beginField(); ?>
-		<div id='params-container' class='row offset-md-2'></div>
+		<div id='params-container' class='row'></div>
 	<?php $builder->endField(); ?>
 
 	<?php $builder->beginFooter(); ?>

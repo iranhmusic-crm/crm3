@@ -21,7 +21,7 @@ class DocumentModel extends RestClientActiveRecord
 		return [
 			'docID'									=> Yii::t('app', 'ID'),
 			'docName'								=> Yii::t('app', 'Name'),
-			'docType'								=> Yii::t('app', 'Type'),
+			'docType'								=> Yii::t('app', 'Category'),
 			'docExtraParamsSchema'	=> Yii::t('app', 'Parameters'),
 			'docStatus'							=> Yii::t('app', 'Status'),
 			'docCreatedAt'					=> Yii::t('app', 'Created At'),

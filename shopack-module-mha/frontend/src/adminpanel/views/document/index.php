@@ -12,7 +12,7 @@ use iranhmusic\shopack\mha\common\enums\enuDocumentType;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
 
-$this->title = Yii::t('mha', 'Documents');
+$this->title = Yii::t('mha', 'Document Types');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
 $this->params['breadcrumbs'][] = $this->title;
 ?>

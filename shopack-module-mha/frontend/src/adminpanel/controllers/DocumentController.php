@@ -5,15 +5,16 @@
 
 namespace iranhmusic\shopack\mha\frontend\adminpanel\controllers;
 
-use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
-use shopack\aaa\frontend\common\auth\BaseCrudController;
-use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
-use iranhmusic\shopack\mha\frontend\common\models\DocumentSearchModel;
-use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
-use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
-use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\widgets\JsonTableGrid;
+use shopack\aaa\frontend\common\auth\BaseCrudController;
+use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
+use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
+use iranhmusic\shopack\mha\common\enums\enuKanoonStatus;
+use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
+use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
+use iranhmusic\shopack\mha\frontend\common\models\DocumentSearchModel;
+use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 
 class DocumentController extends BaseCrudController
 {
@@ -48,8 +49,7 @@ class DocumentController extends BaseCrudController
   {
 		$model = $this->findModel($id);
 		return $this->renderJson(JsonTableGrid::asDynamicParamsForm($model, $field, function($orgType) {
-			switch ($orgType)
-			{
+			switch ($orgType) {
 				case 'text':
 				case 'date':
 				case 'time':
@@ -65,7 +65,7 @@ class DocumentController extends BaseCrudController
 					return ['select', ArrayHelper::map(BasicDefinitionModel::find()->where(['bdfType' => enuBasicDefinitionType::Research])->asArray()->noLimit()->all(), 'bdfID', 'bdfName')];
 
 				case 'mha:kanoon':
-					return ['select', ArrayHelper::map(KanoonModel::find()->asArray()->noLimit()->all(), 'knnID', 'knnName')];
+					return ['select', ArrayHelper::map(KanoonModel::find()->where(['knnStatus' => enuKanoonStatus::Active])->asArray()->noLimit()->all(), 'knnID', 'knnName')];
 
 				default:
 					return [$orgType, null];

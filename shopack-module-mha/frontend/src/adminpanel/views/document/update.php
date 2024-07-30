@@ -5,9 +5,9 @@
 
 use shopack\base\frontend\common\helpers\Html;
 
-$this->title = Yii::t('mha', 'Update Document');
+$this->title = Yii::t('mha', 'Update Document Type');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Documents'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Document Types'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->docName, 'url' => ['view', 'id' => $model->docID]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

@@ -69,6 +69,7 @@ return [
 
 	'Menu' => 'منو',
 
+	'Category' => 'دسته بندی',
 	'Parameters' => 'پارامترها',
 	'Description' => 'توضیحات',
 

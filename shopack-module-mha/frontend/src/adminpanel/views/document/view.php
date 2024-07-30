@@ -13,9 +13,9 @@ use iranhmusic\shopack\mha\common\enums\enuDocumentType;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 use shopack\base\frontend\common\widgets\JsonTableGrid;
 
-$this->title = Yii::t('mha', 'Document') . ': ' . $model->docID . ' - ' . $model->docName;
+$this->title = Yii::t('mha', 'Document Type') . ': ' . $model->docID . ' - ' . $model->docName;
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Documents'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('mha', 'Document Types'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

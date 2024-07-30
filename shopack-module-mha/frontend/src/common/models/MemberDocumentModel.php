@@ -19,7 +19,7 @@ class MemberDocumentModel extends RestClientActiveRecord
 	{
 		return [
 			'mbrdocMemberID'         => Yii::t('mha', 'Member'),
-			'mbrdocDocumentID'       => Yii::t('mha', 'Document'),
+			'mbrdocDocumentID'       => Yii::t('mha', 'Document Type'),
 			'mbrdocTitle'            => Yii::t('app', 'Title'),
 			'mbrdocFileID'           => Yii::t('app', 'File'),
 			'mbrdocRejectReasonIDs'  => Yii::t('app', 'Reasons'),
@@ -32,6 +32,13 @@ class MemberDocumentModel extends RestClientActiveRecord
 			'mbrdocUpdatedAt'        => Yii::t('app', 'Updated At'),
 			'mbrdocUpdatedBy'        => Yii::t('app', 'Updated By'),
 			'mbrdocUpdatedBy_User'   => Yii::t('app', 'Updated By'),
+		];
+	}
+
+	public function attributeHints()
+	{
+		return [
+			'mbrdocFileID' => 'توجه: فقط فرمت jpeg با حداکثر حجم 2 مگابایت پذیرفته خواهد بود.',
 		];
 	}
 
