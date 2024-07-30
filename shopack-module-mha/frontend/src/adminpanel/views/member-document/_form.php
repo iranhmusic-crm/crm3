@@ -77,7 +77,10 @@ use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
 			],
 		]);
 
-		//todo: JsonTableGrid::asDynamicParamsForm ----> params-container
+		if ($model->mbrdocDocumentID) {
+			$js = "createDynamicParamsFormUI('{$model->mbrdocDocumentID}', \"{$loadingText}\", '{$getParamsSchemaUrl}', '{$formNameLower}', 'mbrdocExtraParams', '{$formName}', 'mbrdocExtraParams', {$extraParamsData}, 'params-container', 4);";
+			$this->registerJs($js, \yii\web\View::POS_READY);
+		}
 	?>
 
 	<?php $builder->beginField(); ?>

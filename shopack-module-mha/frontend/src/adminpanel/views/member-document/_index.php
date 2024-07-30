@@ -14,6 +14,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 use iranhmusic\shopack\mha\frontend\common\models\DocumentSearchModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
 use shopack\base\common\helpers\ArrayHelper;
+use shopack\base\frontend\common\widgets\JsonTableGrid;
 
 ?>
 
@@ -85,7 +86,10 @@ use shopack\base\common\helpers\ArrayHelper;
                 ]) . '</td></tr>';
               }
             }
-            return '<table class="table table-bordered table-striped">' . implode('', $result) . '</table>';
+
+            $paramsTable = JsonTableGrid::asDataTable($model->mbrdocExtraParams, $model->document->docExtraParamsSchema);
+
+            return '<table class="table table-bordered table-striped">' . implode('', $result) . '</table>' . $paramsTable;
           },
         ],
       ];
