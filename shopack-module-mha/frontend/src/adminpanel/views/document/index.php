@@ -11,6 +11,7 @@ use shopack\base\common\helpers\StringHelper;
 use iranhmusic\shopack\mha\common\enums\enuDocumentType;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
+use shopack\base\frontend\common\widgets\JsonTableGrid;
 
 $this->title = Yii::t('mha', 'Document Types');
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
@@ -38,6 +39,20 @@ $this->params['breadcrumbs'][] = $this->title;
           [
             'class' => 'kartik\grid\SerialColumn',
           ],
+          [
+            'class' => 'kartik\grid\ExpandRowColumn',
+            'value' => function ($model, $key, $index, $column) {
+              return GridView::ROW_COLLAPSED;
+              // this bahaviour moved to gridview::run for covering initialize error
+              // return ($selected_adngrpID == $model->adngrpID ? GridView::ROW_EXPANDED : GridView::ROW_COLLAPSED);
+            },
+            'expandOneOnly' => true,
+            'detailAnimationDuration' => 150,
+            'detail' => function ($model) {
+              return Html::div($model->getAttributeLabel('docExtraParamsSchema') . ':')
+                . JsonTableGrid::formatParamsSchemaAsTable($model, 'docExtraParamsSchema');
+            },
+          ],
           'docID',
           [
             'attribute' => 'docName',
@@ -50,19 +65,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
             'enumClass' => enuDocumentType::class,
             'attribute' => 'docType',
-          ],
-          [
-            'attribute' => 'docExtraParamsSchema',
-            'value' => function($model) {
-              if (empty($model->docExtraParamsSchema))
-                return null;
-
-              if (is_array($model->docExtraParamsSchema) == false)
-                $model->docExtraParamsSchema = json_decode($model->docExtraParamsSchema, true);
-
-              //test:
-              return json_encode($model->docExtraParamsSchema);
-            },
           ],
           [
             'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,

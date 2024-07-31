@@ -32,6 +32,7 @@ use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 					'inline' => true,
 				],
 			],
+			['docName'],
 			[
 				'docType',
 				'type' => FormBuilder::FIELD_WIDGET,
@@ -44,7 +45,6 @@ use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 					],
 				]
 			],
-			['docName'],
 		]);
 
 		$builder->fields([

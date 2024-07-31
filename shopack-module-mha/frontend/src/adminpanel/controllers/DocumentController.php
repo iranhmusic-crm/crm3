@@ -48,7 +48,7 @@ class DocumentController extends BaseCrudController
 	public function actionParamsSchema($id, $field)
   {
 		$model = $this->findModel($id);
-		return $this->renderJson(JsonTableGrid::asDynamicParamsForm($model, $field, function($orgType) {
+		return $this->renderJson(JsonTableGrid::generateDynamicParamsForm($model, $field, function($orgType) {
 			switch ($orgType) {
 				case 'text':
 				case 'date':

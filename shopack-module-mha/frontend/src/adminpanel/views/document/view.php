@@ -89,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'docExtraParamsSchema',
               'format' => 'raw',
-              'value' => JsonTableGrid::asHtml($model, 'docExtraParamsSchema'),
+              'value' => JsonTableGrid::formatParamsSchemaAsTable($model, 'docExtraParamsSchema'),
             ],
           ],
         ]);

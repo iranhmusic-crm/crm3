@@ -18,20 +18,23 @@ class MemberDocumentModel extends RestClientActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'mbrdocMemberID'         => Yii::t('mha', 'Member'),
-			'mbrdocDocumentID'       => Yii::t('mha', 'Document Type'),
-			'mbrdocTitle'            => Yii::t('app', 'Title'),
-			'mbrdocFileID'           => Yii::t('app', 'File'),
-			'mbrdocRejectReasonIDs'  => Yii::t('app', 'Reasons'),
-			'mbrdocComment'          => Yii::t('app', 'Comment'),
-			'mbrdocHistory'          => Yii::t('app', 'History'),
-			'mbrdocStatus'           => Yii::t('app', 'Status'),
-			'mbrdocCreatedAt'        => Yii::t('app', 'Created At'),
-			'mbrdocCreatedBy'        => Yii::t('app', 'Created By'),
-			'mbrdocCreatedBy_User'   => Yii::t('app', 'Created By'),
-			'mbrdocUpdatedAt'        => Yii::t('app', 'Updated At'),
-			'mbrdocUpdatedBy'        => Yii::t('app', 'Updated By'),
-			'mbrdocUpdatedBy_User'   => Yii::t('app', 'Updated By'),
+			'mbrdocID'							=> Yii::t('app', 'ID'),
+			'mbrdocUUID'						=> Yii::t('app', 'UUID'),
+			'mbrdocMemberID'				=> Yii::t('mha', 'Member'),
+			'mbrdocDocumentID'			=> Yii::t('mha', 'Document Type'),
+			'mbrdocTitle'						=> Yii::t('app', 'Title'),
+			'mbrdocFileID'					=> Yii::t('app', 'File'),
+			'mbrdocExtraParams'			=> Yii::t('app', 'Parameters'),
+			'mbrdocComment'					=> Yii::t('app', 'Comment'),
+			'mbrdocRejectReasonIDs'	=> Yii::t('app', 'Reasons'),
+			'mbrdocHistory'					=> Yii::t('app', 'History'),
+			'mbrdocStatus'					=> Yii::t('app', 'Status'),
+			'mbrdocCreatedAt'				=> Yii::t('app', 'Created At'),
+			'mbrdocCreatedBy'				=> Yii::t('app', 'Created By'),
+			'mbrdocCreatedBy_User'	=> Yii::t('app', 'Created By'),
+			'mbrdocUpdatedAt'				=> Yii::t('app', 'Updated At'),
+			'mbrdocUpdatedBy'				=> Yii::t('app', 'Updated By'),
+			'mbrdocUpdatedBy_User'	=> Yii::t('app', 'Updated By'),
 		];
 	}
 

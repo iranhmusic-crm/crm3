@@ -12,6 +12,7 @@ use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
 use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 use iranhmusic\shopack\mha\frontend\common\models\DocumentSearchModel;
+use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
 use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\widgets\JsonTableGrid;
@@ -87,9 +88,44 @@ use shopack\base\frontend\common\widgets\JsonTableGrid;
               }
             }
 
-            $paramsTable = JsonTableGrid::asDataTable($model->mbrdocExtraParams, $model->document->docExtraParamsSchema);
+            $result = implode('', $result);
 
-            return '<table class="table table-bordered table-striped">' . implode('', $result) . '</table>' . $paramsTable;
+            $paramsTable = JsonTableGrid::formatParamsDataAsTable($model->mbrdocExtraParams, $model->document->docExtraParamsSchema, function($value, $schema) {
+              if (str_starts_with($schema['type'], 'mha:bdef:')) {
+                $model = BasicDefinitionModel::findOne($value);
+                return $model->bdfName;
+              }
+
+              if ($schema['type'] == 'mha:kanoon') {
+                $model = KanoonModel::findOne($value);
+                return $model->knnName;
+              }
+
+              return null;
+            });
+
+            return "<div class='row'>"
+
+              . "<div class='col'>"
+              . Html::div($model->getAttributeLabel('mbrdocHistory') . ':')
+              . '<table class="table table-bordered table-striped">'
+              . $result
+              . '</table>'
+              . "</div>"
+
+              . "<div class='col'>"
+              . Html::div($model->getAttributeLabel('mbrdocExtraParams') . ':')
+              . $paramsTable
+              . "</div>"
+
+              . "</div>";
+
+            // return Html::div($model->getAttributeLabel('mbrdocHistory') . ':')
+            //   . '<table class="table table-bordered table-striped">'
+            //   . $result
+            //   . '</table>'
+            //   . Html::div($model->getAttributeLabel('mbrdocExtraParams') . ':')
+            //   . $paramsTable;
           },
         ],
       ];
