@@ -88,7 +88,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
         'options' => ['class' => 'navbar-nav w-100'],
         'items' => [
           [
-            'label' => Yii::$app->formatter->asJalali(new \DateTime()),
+            'label' => Yii::$app->formatter->asJalali(new \DateTime(), 'w Y/m/d'),
             'options' => ['class' => 'me-0 ms-auto'],
           ],
           $userMenuItems,
