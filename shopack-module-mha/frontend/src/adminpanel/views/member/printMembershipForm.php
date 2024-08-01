@@ -174,15 +174,15 @@ strong {
 }
 
 .user_img {
-  position: absolute;
-  top: 8px;
-  left: 5px;
-  width: 75px;
-  height: 95px;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 3cm;
+  height: 4cm;
 }
 
-.h-5cm {
-  height: 5cm;
+.h-2cm {
+  min-height: 2cm;
 }
 
 hr.dotted {
@@ -303,11 +303,11 @@ if (empty($model->user->usrBirthCityID) == false) {
       </table>
 
       <div class='row'>
-        <div class='col-12 bordered h-5cm'>
+        <div class='col-12 bordered h-2cm'>
           <div><span class='fieldLabel'>سوابق آموزشی</span><span class='fieldValue'>(با ذکر نام اساتید و مدت دوره آموزش):</span></div>
           <div><?= Yii::$app->formatter->asSoftParagraphs(Yii::$app->formatter->asPersianNum($model->mbrMusicEducationHistory)) ?></div>
         </div>
-        <div class='col-12 bordered h-5cm'>
+        <div class='col-12 bordered h-2cm'>
           <div><span class='fieldLabel'>سوابق فعالیت‌های هنری</span><span class='fieldValue'>(با ذکر نام آثار مکتوب، صوتی و تصویری):</span></div>
           <div><?= Yii::$app->formatter->asSoftParagraphs(Yii::$app->formatter->asPersianNum($model->mbrArtHistory)) ?></div>
         </div>
