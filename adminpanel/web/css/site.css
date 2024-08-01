@@ -551,3 +551,17 @@ select {
   -webkit-appearance: listbox !important;
   appearance: listbox !important;
 }
+
+.table-default {
+  --bs-table-color: #000;
+  --bs-table-bg: #fff;
+  --bs-table-border-color: #dee2e6;
+  --bs-table-striped-bg: #fff;
+  --bs-table-striped-color: #000;
+  --bs-table-active-bg: #fff;
+  --bs-table-active-color: #000;
+  --bs-table-hover-bg: #fff;
+  --bs-table-hover-color: #000;
+  color: var(--bs-table-color);
+  border-color: var(--bs-table-border-color);
+}

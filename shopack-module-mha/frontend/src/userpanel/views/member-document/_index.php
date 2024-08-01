@@ -5,12 +5,18 @@
 
 /** @var yii\web\View $this */
 
+use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 use shopack\base\frontend\common\widgets\grid\GridView;
 use shopack\base\common\helpers\StringHelper;
 use shopack\base\frontend\common\helpers\Html;
 use iranhmusic\shopack\mha\common\enums\enuMemberDocumentStatus;
+use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 use iranhmusic\shopack\mha\frontend\common\models\DocumentSearchModel;
+use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
+use shopack\base\common\helpers\ArrayHelper;
+use shopack\base\frontend\common\widgets\JsonTableGrid;
+
 ?>
 
 <div class='row'>
@@ -21,6 +27,15 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
       // if (isset($statusReport))
       // 	echo (is_array($statusReport) ? Html::icon($statusReport[0], ['plugin' => 'glyph']) . ' ' . $statusReport[1] : $statusReport);
 
+      $rejectReasons = ArrayHelper::map(BasicDefinitionModel::find()
+        ->where(['bdfType' => enuBasicDefinitionType::MemberDocumentyRejectReason])
+        ->noLimit()
+        ->asArray()
+        ->all(),
+        'bdfID',
+        'bdfName'
+      );
+
       echo GridView::widget([
         'id' => StringHelper::generateRandomId(),
         'dataProvider' => $dataProvider,
@@ -29,6 +44,88 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberDocumentModel;
         'columns' => [
           [
             'class' => 'kartik\grid\SerialColumn',
+          ],
+          [
+            'class' => 'shopack\base\frontend\common\widgets\grid\ExpandRowColumn',
+            'value' => function ($model, $key, $index, $column) {
+              return GridView::ROW_COLLAPSED;
+              // this bahaviour moved to gridview::run for covering initialize error
+              // return ($selected_adngrpID == $model->adngrpID ? GridView::ROW_EXPANDED : GridView::ROW_COLLAPSED);
+            },
+            'detail' => function ($model) use($rejectReasons) {
+              $result = [];
+              $result[] = '<tr><td>' . implode('</td><td>', [
+                '#',
+                'تاریخ',
+                'وضعیت',
+                'توضیح',
+              ]) . '</td></tr>';
+              if (empty($model->mbrdocHistory == false)) {
+                $items = array_reverse($model->mbrdocHistory);
+                foreach ($items as $k => $item) {
+                  $status = empty($item['status']) ? '' : enuMemberDocumentStatus::getLabel($item['status']);
+
+                  if ($item['status'] == enuMemberDocumentStatus::Rejected) {
+                    $reasons = [];
+
+                    foreach ($model->mbrdocRejectReasonIDs as $r) {
+                      if (isset($rejectReasons[$r]))
+                        $reasons[] = $rejectReasons[$r];
+                    }
+
+                    if (empty($reasons) == false) {
+                      $status .= ' (' . implode(' - ', $reasons) . ')';
+                    }
+                  }
+
+                  $result[] = '<tr><td>' . implode('</td><td>', [
+                    $k + 1,
+                    empty($item['at']) ? '' : Yii::$app->formatter->asJalaliWithTime($item['at']),
+                    $status,
+                    $item['comment'] ?? '',
+                  ]) . '</td></tr>';
+                }
+              }
+
+              $result = implode('', $result);
+
+              $paramsTable = JsonTableGrid::formatParamsDataAsTable($model->mbrdocExtraParams, $model->document->docExtraParamsSchema, function($value, $schema) {
+                if (str_starts_with($schema['type'], 'mha:bdef:')) {
+                  $model = BasicDefinitionModel::findOne($value);
+                  return $model->bdfName;
+                }
+
+                if ($schema['type'] == 'mha:kanoon') {
+                  $model = KanoonModel::findOne($value);
+                  return $model->knnName;
+                }
+
+                return null;
+              });
+
+              return "<div class='row'>"
+
+                . "<div class='col'>"
+                . Html::div($model->getAttributeLabel('mbrdocHistory') . ':')
+                . '<table class="table table-bordered table-striped">'
+                . $result
+                . '</table>'
+                . "</div>"
+
+                . "<div class='col'>"
+                . Html::div($model->getAttributeLabel('mbrdocExtraParams') . ':')
+                . $paramsTable
+                . "</div>"
+
+                . "</div>";
+
+              // return Html::div($model->getAttributeLabel('mbrdocHistory') . ':')
+              //   . '<table class="table table-bordered table-striped">'
+              //   . $result
+              //   . '</table>'
+              //   . Html::div($model->getAttributeLabel('mbrdocExtraParams') . ':')
+              //   . $paramsTable;
+            },
           ],
           [
             'attribute' => 'mbrdocFileID',

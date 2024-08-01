@@ -45,14 +45,12 @@ use shopack\base\frontend\common\widgets\JsonTableGrid;
           'class' => 'kartik\grid\SerialColumn',
         ],
         [
-          'class' => 'kartik\grid\ExpandRowColumn',
+          'class' => 'shopack\base\frontend\common\widgets\grid\ExpandRowColumn',
           'value' => function ($model, $key, $index, $column) {
             return GridView::ROW_COLLAPSED;
             // this bahaviour moved to gridview::run for covering initialize error
             // return ($selected_adngrpID == $model->adngrpID ? GridView::ROW_EXPANDED : GridView::ROW_COLLAPSED);
           },
-          'expandOneOnly' => true,
-          'detailAnimationDuration' => 150,
           'detail' => function ($model) use($rejectReasons) {
             $result = [];
             $result[] = '<tr><td>' . implode('</td><td>', [
