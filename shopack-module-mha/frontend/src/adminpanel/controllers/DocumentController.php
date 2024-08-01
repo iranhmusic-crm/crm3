@@ -49,27 +49,20 @@ class DocumentController extends BaseCrudController
   {
 		$model = $this->findModel($id);
 		return $this->renderJson(JsonTableGrid::generateDynamicParamsForm($model, $field, function($orgType) {
-			switch ($orgType) {
-				case 'text':
-				case 'date':
-				case 'time':
-					return [$orgType, null];
 
-				case 'mha:bdef:I':
-					return ['select', ArrayHelper::map(BasicDefinitionModel::find()->where(['bdfType' => enuBasicDefinitionType::Instrument])->asArray()->noLimit()->all(), 'bdfID', 'bdfName')];
+			if (str_starts_with($orgType, 'mha:bdef:')) {
+				$bdefType = substr($orgType, 9);
+				return ['select', ArrayHelper::map(BasicDefinitionModel::find()
+					->where(['bdfType' => $bdefType])
+					->asArray()->noLimit()->all(), 'bdfID', 'bdfName')];
 
-				case 'mha:bdef:S':
-					return ['select', ArrayHelper::map(BasicDefinitionModel::find()->where(['bdfType' => enuBasicDefinitionType::Sing])->asArray()->noLimit()->all(), 'bdfID', 'bdfName')];
+			} else if ($orgType == 'mha:kanoon') {
+				return ['select', ArrayHelper::map(KanoonModel::find()
+					->where(['knnStatus' => enuKanoonStatus::Active])
+					->asArray()->noLimit()->all(), 'knnID', 'knnName')];
 
-				case 'mha:bdef:R':
-					return ['select', ArrayHelper::map(BasicDefinitionModel::find()->where(['bdfType' => enuBasicDefinitionType::Research])->asArray()->noLimit()->all(), 'bdfID', 'bdfName')];
-
-				case 'mha:kanoon':
-					return ['select', ArrayHelper::map(KanoonModel::find()->where(['knnStatus' => enuKanoonStatus::Active])->asArray()->noLimit()->all(), 'knnID', 'knnName')];
-
-				default:
-					return [$orgType, null];
-			}
+			} else
+				return [$orgType, null];
 		}));
   }
 

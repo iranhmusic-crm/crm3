@@ -9,11 +9,6 @@ class m240727_152240_mha_some_changes_to_document extends Migration
 {
 	public function safeUp()
 	{
-
-
-
-
-
 		throw new \Exception('not completed yet!');
 
 

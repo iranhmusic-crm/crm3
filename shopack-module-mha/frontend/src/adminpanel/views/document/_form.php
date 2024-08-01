@@ -16,9 +16,9 @@ use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 	<?php
 		$form = ActiveForm::begin([
 			'model' => $model,
-			'formConfig' => [
-				'labelSpan' => 4,
-			],
+			// 'formConfig' => [
+			// 	'labelSpan' => 4,
+			// ],
 		]);
 
 		$builder = $form->getBuilder();

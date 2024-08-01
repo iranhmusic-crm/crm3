@@ -11,6 +11,7 @@ use shopack\base\common\rest\enuColumnSearchType;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 use shopack\base\common\validators\JsonValidator;
 use shopack\base\common\helpers\JsonSchema;
+use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 
 /*
 'docID',
@@ -78,9 +79,8 @@ trait DocumentModelTrait
 						[
 							self::$EXPARAM_id,
 							'label' => ['app', 'ID'],
-							'type' => jsonSchema::TYPE_number,
+							'type' => jsonSchema::TYPE_uuid,
 							'pk' => true,
-							// 'default' => 'auto-increment;start=1;step=1',
 						],
 						[
 							self::$EXPARAM_name,
@@ -97,9 +97,9 @@ trait DocumentModelTrait
 								'text' => ['app', 'Text'],
 								'date' => ['app', 'Date'],
 								'time' => ['app', 'Time'],
-								'mha:bdef:I' => ['mha', 'Instrument'],
-								'mha:bdef:S' => ['mha', 'Sing'],
-								'mha:bdef:R' => ['mha', 'Research'],
+								'mha:bdef:' . enuBasicDefinitionType::Instrument	=> ['mha', 'Instrument'],
+								'mha:bdef:' . enuBasicDefinitionType::Sing				=> ['mha', 'Sing'],
+								'mha:bdef:' . enuBasicDefinitionType::Research		=> ['mha', 'Research'],
 								'mha:kanoon' => ['mha', 'Kanoon'],
 							],
 						],

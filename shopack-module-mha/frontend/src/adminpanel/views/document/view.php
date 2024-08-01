@@ -23,8 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
   <div class='card'>
 		<div class='card-header'>
 			<div class="float-end">
-				<?= DocumentModel::canCreate() ? Html::createButton() : '' ?>
-        <?= $model->canUpdate()   ? Html::updateButton(null,   ['id' => $model->docID]) : '' ?>
+				<?= DocumentModel::canCreate() ? Html::createButton(null, null, ['data' => ['popup-size' => 'lg']]) : '' ?>
+        <?= $model->canUpdate()   ? Html::updateButton(null,   ['id' => $model->docID], ['data' => ['popup-size' => 'lg']]) : '' ?>
         <?= $model->canDelete()   ? Html::deleteButton(null,   ['id' => $model->docID]) : '' ?>
         <?= $model->canUndelete() ? Html::undeleteButton(null, ['id' => $model->docID]) : '' ?>
         <?php
