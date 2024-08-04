@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\adminpanel\controllers;
 
 use Yii;
-use yii\web\Response;
+use yii\web\UnprocessableEntityHttpException;
 use yii\web\BadRequestHttpException;
 use shopack\base\common\helpers\Url;
 use shopack\base\common\helpers\StringHelper;
@@ -45,7 +45,7 @@ class MemberDocumentController extends BaseCrudController
 	public function actionApprove($id)
 	{
     if (empty($_POST['confirmed']))
-      throw new BadRequestHttpException('این عملیات باید تایید شده باشد');
+      throw new UnprocessableEntityHttpException('این عملیات باید تایید شده باشد');
 
 		if (Yii::$app->request->isAjax == false)
 			throw new BadRequestHttpException('It is not possible to execute this command in a mode other than Ajax');

@@ -5,18 +5,14 @@
 
 namespace iranhmusic\shopack\mha\backend\models;
 
-use Yii;
 use yii\db\Expression;
 use yii\base\Model;
-use yii\web\UnauthorizedHttpException;
 use yii\web\UnprocessableEntityHttpException;
-use yii\web\NotFoundHttpException;
-use shopack\base\common\helpers\HttpHelper;
 use shopack\aaa\backend\models\MessageModel;
-use iranhmusic\shopack\mha\backend\models\KanoonModel;
-use iranhmusic\shopack\mha\backend\models\MemberKanoonModel;
 use shopack\aaa\common\enums\enuGender;
 use shopack\aaa\common\enums\enuUserStatus;
+use iranhmusic\shopack\mha\backend\models\KanoonModel;
+use iranhmusic\shopack\mha\backend\models\MemberKanoonModel;
 
 class KanoonSendMessageForm extends Model
 {
@@ -37,7 +33,7 @@ class KanoonSendMessageForm extends Model
   public function process()
   {
     if ($this->validate() == false)
-      throw new UnauthorizedHttpException(implode("\n", $this->getFirstErrors()));
+      throw new UnprocessableEntityHttpException(implode("\n", $this->getFirstErrors()));
 
     $targetUsers = [];
 
@@ -107,7 +103,7 @@ class KanoonSendMessageForm extends Model
     }
 
     if (empty($targetUsers))
-      throw new UnauthorizedHttpException('Target list is empty');
+      throw new UnprocessableEntityHttpException('Target list is empty');
 
     $sentCount = 0;
     foreach ($targetUsers as $user) {

@@ -7,9 +7,8 @@ namespace iranhmusic\shopack\mha\frontend\adminpanel\controllers;
 
 use Yii;
 use yii\web\Response;
-use yii\base\InvalidConfigException;
 use yii\web\NotFoundHttpException;
-use yii\web\BadRequestHttpException;
+use yii\web\UnprocessableEntityHttpException;
 use shopack\base\common\helpers\Url;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\common\helpers\ArrayHelper;
@@ -146,7 +145,7 @@ class SpecialtyController extends BaseController
   public function actionDelete($id)
   {
     if (empty($_POST['confirmed']))
-      throw new BadRequestHttpException('دستور حذف باید تایید شده باشد');
+      throw new UnprocessableEntityHttpException('دستور حذف باید تایید شده باشد');
 
 		$model = $this->findModel($id);
 
@@ -159,7 +158,7 @@ class SpecialtyController extends BaseController
   public function actionUndelete($id)
   {
     if (empty($_POST['confirmed']))
-      throw new BadRequestHttpException('دستور بازگردانی باید تایید شده باشد');
+      throw new UnprocessableEntityHttpException('دستور بازگردانی باید تایید شده باشد');
 
 		$model = $this->findModel($id);
 

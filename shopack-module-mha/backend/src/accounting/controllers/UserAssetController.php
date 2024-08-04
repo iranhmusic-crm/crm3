@@ -7,12 +7,7 @@ namespace iranhmusic\shopack\mha\backend\accounting\controllers;
 
 use Yii;
 use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
-use yii\web\UnprocessableEntityHttpException;
-use yii\data\ActiveDataProvider;
-use shopack\base\common\helpers\ExceptionHelper;
 use shopack\base\backend\accounting\controllers\BaseUserAssetController;
-use shopack\base\backend\helpers\PrivHelper;
 
 class UserAssetController extends BaseUserAssetController
 {
@@ -41,7 +36,7 @@ class UserAssetController extends BaseUserAssetController
 										'mha/accounting/user-asset/crud' => '0100',
 										'filter' => function($query) {
 											if (Yii::$app->user->isGuest)
-												throw new \yii\web\ForbiddenHttpException("not allowed for guest");
+												throw new ForbiddenHttpException("not allowed for guest");
 											$query->andWhere(['uasActorID' => Yii::$app->user->id]);
 										},
 									],

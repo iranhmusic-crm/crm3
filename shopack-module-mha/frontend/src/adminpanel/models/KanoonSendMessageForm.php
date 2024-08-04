@@ -7,10 +7,7 @@ namespace iranhmusic\shopack\mha\frontend\adminpanel\models;
 
 use Yii;
 use yii\base\Model;
-use yii\web\HttpException;
-use yii\web\UnauthorizedHttpException;
 use yii\web\UnprocessableEntityHttpException;
-use yii\web\NotFoundHttpException;
 use shopack\base\common\helpers\HttpHelper;
 
 class KanoonSendMessageForm extends Model
@@ -42,7 +39,7 @@ class KanoonSendMessageForm extends Model
   public function process()
   {
     if ($this->validate() == false)
-      throw new UnauthorizedHttpException(implode("\n", $this->getFirstErrors()));
+      throw new UnprocessableEntityHttpException(implode("\n", $this->getFirstErrors()));
 
     list ($resultStatus, $resultData) = HttpHelper::callApi('mha/kanoon/send-message',
       HttpHelper::METHOD_POST,

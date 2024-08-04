@@ -8,7 +8,6 @@ namespace iranhmusic\shopack\mha\frontend\userpanel\controllers;
 use Yii;
 use yii\web\UnprocessableEntityHttpException;
 use yii\web\NotFoundHttpException;
-use yii\web\BadRequestHttpException;
 use shopack\aaa\frontend\common\auth\BaseController;
 use shopack\aaa\frontend\common\models\UserModel;
 use shopack\base\frontend\common\helpers\Html;
@@ -53,7 +52,7 @@ class MemberController extends BaseController
 
 		$userModel = $this->findUserModel();
     if ($userModel->isSoftDeleted())
-      throw new BadRequestHttpException('این آیتم حذف شده است و قابل ویرایش نمی‌باشد.');
+      throw new UnprocessableEntityHttpException('این آیتم حذف شده است و قابل ویرایش نمی‌باشد.');
 
     // if (empty($userModel->usrEmail)) {
     // }
