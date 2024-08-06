@@ -182,6 +182,7 @@ class MemberSignupForm extends Model
 			['mbrMusicExperienceStartAt', 'safe'],
 			['mbrArtHistory', 'string'],
 			['mbrMusicEducationHistory', 'string'],
+
 			['mbrOwnOrgName', 'string'],
 			['mbrInstrumentID', 'integer'],
 			['mbrSingID', 'integer'],

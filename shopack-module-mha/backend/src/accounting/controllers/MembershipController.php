@@ -55,9 +55,11 @@ class MembershipController extends BaseRestController
 
 	public function actionAddToBasket()
 	{
-		$base64Basketdata = $_POST['basketdata'] ?? [];
-		$printCard = $_POST['printCard'] ?? null;
-		$discountCode = $_POST['discountCode'] ?? null;
+		$bodyParams = Yii::$app->request->getBodyParams();
+
+		$base64Basketdata = $bodyParams['basketdata'] ?? [];
+		$printCard = $bodyParams['printCard'] ?? null;
+		$discountCode = $bodyParams['discountCode'] ?? null;
 
 		$result = MembershipForm::addToBasket($base64Basketdata, null, $printCard, $discountCode);
 
@@ -97,12 +99,14 @@ class MembershipController extends BaseRestController
 	{
 		PrivHelper::checkPriv('mha/member-membership/crud', '1000');
 
-		$memberID										= $_POST['memberID'] ?? null;
-		// $ofpID											= $_POST['ofpID'] ?? null;
-		$years											= $_POST['years'];
-		$membershipSaleableID				= $_POST['membershipSaleableID'] ?? null;
-		$membershipCardSaleableID		= $_POST['membershipCardSaleableID'] ?? null;
-		$invoiceID									= $_POST['invoiceID'] ?? null;
+		$bodyParams = Yii::$app->request->getBodyParams();
+
+		$memberID									= $bodyParams['memberID'] ?? null;
+		// $ofpID										= $bodyParams['ofpID'] ?? null;
+		$years										= $bodyParams['years'];
+		$membershipSaleableID			= $bodyParams['membershipSaleableID'] ?? null;
+		$membershipCardSaleableID	= $bodyParams['membershipCardSaleableID'] ?? null;
+		$invoiceID								= $bodyParams['invoiceID'] ?? null;
 
 		$result = MembershipForm::addToInvoice(
 			$memberID,

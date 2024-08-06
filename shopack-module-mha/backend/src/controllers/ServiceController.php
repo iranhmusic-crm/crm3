@@ -31,8 +31,10 @@ class ServiceController extends BaseRestController
 
 	public function actionProcessVoucherItem()
 	{
-		$voucherID = $_POST['vchid'];
-		$data = $_POST['data'];
+		$bodyParams = Yii::$app->request->getBodyParams();
+
+		$voucherID = $bodyParams['vchid'];
+		$data = $bodyParams['data'];
 
 		if (empty(Yii::$app->controller->module->servicePrivateKey))
 			$data = base64_decode($data);
@@ -40,7 +42,7 @@ class ServiceController extends BaseRestController
 			$data = RsaPrivate::model(Yii::$app->controller->module->servicePrivateKey)->decrypt($data);
 		$data = Json::decode($data);
 
-		$userid = $_POST['userid'];
+		$userid = $bodyParams['userid'];
 
 		SaleableModel::ProcessVoucherItem($voucherID, $userid, $data);
 	}

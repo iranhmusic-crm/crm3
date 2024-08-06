@@ -44,7 +44,9 @@ class MemberDocumentController extends BaseCrudController
 
 	public function actionApprove($id)
 	{
-    if (empty($_POST['confirmed']))
+		$bodyParams = Yii::$app->request->getBodyParams();
+
+    if (empty($bodyParams['confirmed']))
       throw new UnprocessableEntityHttpException('این عملیات باید تایید شده باشد');
 
 		if (Yii::$app->request->isAjax == false)

@@ -41,10 +41,12 @@ class MembershipController extends BaseController
 
 	public function actionAddToBasket()
   {
+		$bodyParams = Yii::$app->request->getBodyParams();
+
 		$model = new MembershipForm();
 
 		try {
-			$formPosted = $model->load($_POST);
+			$formPosted = $model->load($bodyParams);
 		} catch (\Throwable $th) {
 			if (Yii::$app->request->isAjax) {
 				return $this->renderAjaxModal('_error', [
@@ -57,7 +59,7 @@ class MembershipController extends BaseController
 
 		$done = false;
 		if ($formPosted)
-			$done = $model->addToBasket($_POST['basketdata'] ?? null);
+			$done = $model->addToBasket($bodyParams['basketdata'] ?? null);
 
 		if (Yii::$app->request->isAjax) {
 			if ($done !== false) {

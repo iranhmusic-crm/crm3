@@ -22,7 +22,6 @@ use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 'mbrMusicExperienceStartAt', //Y/M/D
 'mbrArtHistory',
 'mbrMusicEducationHistory',
-
 'mbrOwnOrgName',
 'mbrInstrumentID',
 'mbrSingID',
@@ -30,7 +29,6 @@ use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 'mbrJob',
 'mbrArtDegree',
 'mbrHonarCreditCode',
-
 'mbrStatus',
 'mbrCreatedAt',
 'mbrCreatedBy',

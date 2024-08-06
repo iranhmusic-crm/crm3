@@ -48,7 +48,7 @@ class MembershipCardController extends BaseRestController
 
 	public function actionAddToBasket()
 	{
-		$base64Basketdata = $_POST['basketdata'] ?? [];
+		$base64Basketdata = Yii::$app->request->getBodyParam('basketdata', []);
 
 		return MembershipCardForm::addToBasket($base64Basketdata);
 	}
