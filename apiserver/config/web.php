@@ -104,7 +104,8 @@ $config = [
 		'jwt' => [
 			'class' => \shopack\base\backend\auth\Jwt::class,
 			'signer' => \bizley\jwt\Jwt::HS512,
-			'signingKey' => 'must be define in local file',
+			'signingKey' => null, //must be define in local file
+			'verifyingKey' => null, //must be define in local file
 			// 'ttl' => 24 * 3600, //24 hours
 		],
 	],
