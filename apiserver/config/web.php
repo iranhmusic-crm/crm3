@@ -85,7 +85,8 @@ $config = [
 		],
 		'db' => $db,
 		'mutex' => [
-			'class' => \shopack\base\common\components\MysqlMutex::class,
+			'class' => \shopack\base\common\components\FileMutex::class,
+			// 'class' => \shopack\base\common\components\MysqlMutex::class,
 		],
 		'formatter' => [
 			'class' => \shopack\base\common\components\Formatter::class,
