@@ -164,13 +164,13 @@ $kanoonDegrees = implode(' - ' , $kanoonDegrees);
   <div class="logo_title"><img src="/images/logo_iran.jpg"></div>
   <div class="user_img" style="background:url('<?= $model->user->imageFile->fullFileUrl ?? null ?>');background-size: cover;background-position: center center;"></div>
   <div class="info">
-    <label style="width: 31%;"><h1>نام</h1><h2><?= $model->user->usrFirstName ?></h2></label>
-    <label style="width: 69%;"><h1>نام خانوادگی</h1><h2><?= $model->user->usrLastName ?></h2></label>
+    <label style="width: 31%;"><h1>نام</h1><h2><?= Html::encode($model->user->usrFirstName) ?></h2></label>
+    <label style="width: 69%;"><h1>نام خانوادگی</h1><h2><?= Html::encode($model->user->usrLastName) ?></h2></label>
     <label><h1>تاریخ تولد</h1><h2><?= Yii::$app->formatter->asPersianNum(Yii::$app->formatter->asJalali($model->user->usrBirthDate)) ?></h2></label>
     <label><h1>کد ملی</h1><h2><?= Yii::$app->formatter->asPersianNum($model->user->usrSSID) ?></h2></label>
-    <label><h1>نام پدر</h1><h2><?= $model->user->usrFatherName ?></h2></label>
-    <label style="width: 46%;"><h1>کد و نوع عضویت</h1><h2><?= Yii::$app->formatter->asPersianNum($model->mbrRegisterCode) ?> - <?= $kanoonDegrees ?></h2></label>
-    <label style="width: 143px;"><h1>کانون</h1><h2><?= $kanoonNames ?></h2></label>
+    <label><h1>نام پدر</h1><h2><?= Html::encode($model->user->usrFatherName) ?></h2></label>
+    <label style="width: 46%;"><h1>کد و نوع عضویت</h1><h2><?= Yii::$app->formatter->asPersianNum($model->mbrRegisterCode) ?> - <?= Html::encode($kanoonDegrees) ?></h2></label>
+    <label style="width: 143px;"><h1>کانون</h1><h2><?= Html::encode($kanoonNames) ?></h2></label>
     <label><h1>اعتبار</h1><h2><?= Yii::$app->formatter->asPersianNum(Yii::$app->formatter->asJalali($model->mbrExpireDate)) ?></h2></label>
     <label style="text-align: left;width: 88px;float: left;"><h3 style="width:100%;">مدیر عامل </h3></label>
   </div>

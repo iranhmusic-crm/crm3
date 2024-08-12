@@ -198,10 +198,10 @@ $kanoonDegrees = implode(' - ' , $kanoonDegrees);
       ?>
     </h2></label>
     <label><h1>Birthday</h1><h2><?= (new \DateTime($model->user->usrBirthDate))->format('Y/m/d') ?></h2></label>
-    <label><h1>National Code</h1><h2><?= $model->user->usrSSID ?></h2></label>
-    <label><h1>Father Name</h1><h2><?= $model->user->usrFatherName_en ?></h2></label>
-    <label><h1>Club</h1><h2><?= $kanoonNames ?></h2></label>
-    <label style="width: 100%;"><h1>Member Code</h1><h2><?= $model->mbrRegisterCode ?> - <?= $kanoonDegrees ?></h2></label>
+    <label><h1>National Code</h1><h2><?= Html::encode($model->user->usrSSID) ?></h2></label>
+    <label><h1>Father Name</h1><h2><?= Html::encode($model->user->usrFatherName_en) ?></h2></label>
+    <label><h1>Club</h1><h2><?= Html::encode($kanoonNames) ?></h2></label>
+    <label style="width: 100%;"><h1>Member Code</h1><h2><?= Html::encode($model->mbrRegisterCode) ?> - <?= Html::encode($kanoonDegrees) ?></h2></label>
     <label><h1>Expire Date</h1><h2><?php
       if (empty($model->mbrExpireDate) == false)
         echo (new \DateTime($model->mbrExpireDate))->format('Y/m/d');

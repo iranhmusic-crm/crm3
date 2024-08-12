@@ -246,8 +246,8 @@ if (empty($model->user->usrBirthCityID) == false) {
         <div class='col'>
           <div class='box1 bordered'>
             <div><span class='fieldLabel'>کد عضویت:</span><span class='fieldValue'><?= Yii::$app->formatter->asPersianNum($model->mbrRegisterCode) ?></span></div>
-            <div><span class='fieldLabel'>نام کانون:</span><span class='fieldValue'><?= $kanoonNames ?></span></div>
-            <div><span class='fieldLabel'>تاریخ:</span><span class='fieldValue'></span><?= $kanoonDates ?></div>
+            <div><span class='fieldLabel'>نام کانون:</span><span class='fieldValue'><?= Html::encode($kanoonNames) ?></span></div>
+            <div><span class='fieldLabel'>تاریخ:</span><span class='fieldValue'></span><?= Html::encode($kanoonDates) ?></div>
           </div>
         </div>
         <div class='col center'>
@@ -276,22 +276,22 @@ if (empty($model->user->usrBirthCityID) == false) {
           <td><span class='fieldLabel'>تاریخ تولد:</span><span class='fieldValue'><?= Yii::$app->formatter->asPersianNum(Yii::$app->formatter->asJalali($model->user->usrBirthDate)) ?></span></td>
         </tr>
         <tr>
-          <td><span class='fieldLabel'>نام:</span><span class='fieldValue'><?= $model->user->usrFirstName ?></span></td>
-          <td><span class='fieldLabel'>نام خانوادگی:</span><span class='fieldValue'><?= $model->user->usrLastName ?></span></td>
-          <td><span class='fieldLabel'>نام پدر:</span><span class='fieldValue'><?= $model->user->usrFatherName ?></span></td>
+          <td><span class='fieldLabel'>نام:</span><span class='fieldValue'><?= Html::encode($model->user->usrFirstName) ?></span></td>
+          <td><span class='fieldLabel'>نام خانوادگی:</span><span class='fieldValue'><?= Html::encode($model->user->usrLastName) ?></span></td>
+          <td><span class='fieldLabel'>نام پدر:</span><span class='fieldValue'><?= Html::encode($model->user->usrFatherName) ?></span></td>
           <td><span class='fieldLabel'>محل تولد:</span><span class='fieldValue'><?= isset($cityModel) ? $cityModel->ctvName : '' ?></span></td>
         </tr>
         <tr>
-          <td><span class='fieldLabel'>نام لاتین:</span><span class='fieldValue dir-ltr'><?= $model->user->usrFirstName_en ?></span></td>
-          <td><span class='fieldLabel'>نام خانوادگی لاتین:</span><span class='fieldValue dir-ltr'><?= $model->user->usrLastName_en ?></span></td>
-          <td><span class='fieldLabel'>نام پدر لاتین:</span><span class='fieldValue dir-ltr'><?= $model->user->usrFatherName_en ?></span></td>
+          <td><span class='fieldLabel'>نام لاتین:</span><span class='fieldValue dir-ltr'><?= Html::encode($model->user->usrFirstName_en) ?></span></td>
+          <td><span class='fieldLabel'>نام خانوادگی لاتین:</span><span class='fieldValue dir-ltr'><?= Html::encode($model->user->usrLastName_en) ?></span></td>
+          <td><span class='fieldLabel'>نام پدر لاتین:</span><span class='fieldValue dir-ltr'><?= Html::encode($model->user->usrFatherName_en) ?></span></td>
           <td></td>
         </tr>
         <tr>
           <td><span class='fieldLabel'>آخرین مدرک تحصیلی:</span><span class='fieldValue'><?= enuUserEducationLevel::getLabel($model->user->usrEducationLevel) ?></span></td>
-          <td><span class='fieldLabel'>رشته تحصیلی:</span><span class='fieldValue'><?= $model->user->usrFieldOfStudy ?></span></td>
-          <td><span class='fieldLabel'>دانشگاه:</span><span class='fieldValue'><?= $model->user->usrEducationPlace ?></span></td>
-          <td><span class='fieldLabel'>شغل اصلی:</span><span class='fieldValue'><?= $model->mbrJob ?? '' ?></span></td>
+          <td><span class='fieldLabel'>رشته تحصیلی:</span><span class='fieldValue'><?= Html::encode($model->user->usrFieldOfStudy) ?></span></td>
+          <td><span class='fieldLabel'>دانشگاه:</span><span class='fieldValue'><?= Html::encode($model->user->usrEducationPlace) ?></span></td>
+          <td><span class='fieldLabel'>شغل اصلی:</span><span class='fieldValue'><?= Html::encode($model->mbrJob ?? '') ?></span></td>
         </tr>
 
         <tr>
@@ -305,11 +305,11 @@ if (empty($model->user->usrBirthCityID) == false) {
       <div class='row'>
         <div class='col-12 bordered h-2cm'>
           <div><span class='fieldLabel'>سوابق آموزشی</span><span class='fieldValue'>(با ذکر نام اساتید و مدت دوره آموزش):</span></div>
-          <div><?= Yii::$app->formatter->asSoftParagraphs(Yii::$app->formatter->asPersianNum($model->mbrMusicEducationHistory)) ?></div>
+          <div><?= Yii::$app->formatter->asSoftParagraphs(Yii::$app->formatter->asPersianNum(Html::encode($model->mbrMusicEducationHistory))) ?></div>
         </div>
         <div class='col-12 bordered h-2cm'>
           <div><span class='fieldLabel'>سوابق فعالیت‌های هنری</span><span class='fieldValue'>(با ذکر نام آثار مکتوب، صوتی و تصویری):</span></div>
-          <div><?= Yii::$app->formatter->asSoftParagraphs(Yii::$app->formatter->asPersianNum($model->mbrArtHistory)) ?></div>
+          <div><?= Yii::$app->formatter->asSoftParagraphs(Yii::$app->formatter->asPersianNum(Html::encode($model->mbrArtHistory))) ?></div>
         </div>
       </div>
 
