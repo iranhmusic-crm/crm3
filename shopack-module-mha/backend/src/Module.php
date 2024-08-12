@@ -95,8 +95,8 @@ class Module
 					'controller' => [$this->id . '/specialty'],
 					'pluralize' => false,
 					'tokens' => [
-						'{id}' => '<id:\\d[\\d,]*>',
-						'{parentid}' => '<parentid:\\d[\\d,]*>',
+						'{id}' => '<id:{_id}>',
+						'{parentid}' => '<parentid:{_id}>',
 					],
 					'extraPatterns' => [
 						'POST {parentid}' => 'create',
@@ -215,26 +215,26 @@ class Module
 					'controller' => [$this->id . '/member-document'],
 					'pluralize' => false,
 				],
-				[
-					'class' => \shopack\base\common\rest\UrlRule::class,
-					// 'prefix' => 'v1',
-					'controller' => [$this->id . '/basket'],
-					'pluralize' => false,
+				// [
+				// 	'class' => \shopack\base\common\rest\UrlRule::class,
+				// 	// 'prefix' => 'v1',
+				// 	'controller' => [$this->id . '/basket'],
+				// 	'pluralize' => false,
 
-					'tokens' => [
-						'{uuid}' => '<uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}>',
-					],
+				// 	'tokens' => [
+				// 		'{uuid}' => '<uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}>',
+				// 	],
 
-					'patterns' => [
-						// 'GET,HEAD'					=> 'index',
-						// 'GET,HEAD {uuid}'		=> 'view',
-						'POST'							=> 'create',
-						'PUT,PATCH {uuid}'	=> 'update',
-						'DELETE {uuid}'			=> 'delete',
-						'{uuid}'						=> 'options',
-						''									=> 'options',
-					],
-				],
+				// 	'patterns' => [
+				// 		// 'GET,HEAD'					=> 'index',
+				// 		// 'GET,HEAD {uuid}'		=> 'view',
+				// 		'POST'							=> 'create',
+				// 		'PUT,PATCH {uuid}'	=> 'update',
+				// 		'DELETE {uuid}'			=> 'delete',
+				// 		'{uuid}'						=> 'options',
+				// 		''									=> 'options',
+				// 	],
+				// ],
 				[
 					'class' => \shopack\base\common\rest\UrlRule::class,
 					// 'prefix' => 'v1',
