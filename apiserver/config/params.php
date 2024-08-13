@@ -4,6 +4,8 @@ return [
   'adminEmail'  => 'must be define in local file',
   'senderEmail' => 'must be define in local file',
   'senderName'  => 'must be define in local file',
+  'apiServerAddress' => 'must be define in local file',
+  'apiRefreshTokenAddress' => 'must be define in local file',
 
   'settings' => [
     'AAA' => [
