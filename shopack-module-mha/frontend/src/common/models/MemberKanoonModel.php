@@ -114,7 +114,7 @@ class MemberKanoonModel extends RestClientActiveRecord
 	/*
 	public function doAccept()
 	{
-    list ($resultStatus, $resultData) = HttpHelper::callApi('mha/member-kanoon/accept',
+    $apiResponse = HttpHelper::callApi('mha/member-kanoon/accept',
       HttpHelper::METHOD_POST,
       [
         'id'                     => $this->mbrknnID,
@@ -123,9 +123,9 @@ class MemberKanoonModel extends RestClientActiveRecord
       ]
     );
 
-		HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
+		HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
-    return true; //[$resultStatus, $resultData['result']];
+    return true;
 	}
 
 	public static function doReject($id)
@@ -133,16 +133,16 @@ class MemberKanoonModel extends RestClientActiveRecord
 		if (empty($id))
 			throw new NotFoundHttpException('Invalid id');
 
-    list ($resultStatus, $resultData) = HttpHelper::callApi('mha/member-kanoon/reject',
+    $apiResponse = HttpHelper::callApi('mha/member-kanoon/reject',
       HttpHelper::METHOD_POST,
       [
         'id' => $id,
       ]
     );
 
-		HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
+		HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
-    return true; //[$resultStatus, $resultData['result']];
+    return true;
 	}
 */
 

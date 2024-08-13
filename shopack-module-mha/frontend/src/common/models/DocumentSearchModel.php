@@ -107,22 +107,6 @@ class DocumentSearchModel extends DocumentModel
 		]);
 
 		return $dataProvider;
-
-		// // $response = self::find()->restExecute('get', 'documentTypesForMember', [
-		// // 	'memberID' => $memberID,
-		// // ]);
-
-		// $result = HttpHelper::callApi(self::$resourceName . "/member-document-types", HttpHelper::METHOD_GET, [
-		// 	'memberID' => $memberID,
-		// ]);
-
-		// if ($result && $result[0] == 200) {
-		// 	$list = $result[1];
-
-
-		// }
-
-		// return null;
 	}
 
 }

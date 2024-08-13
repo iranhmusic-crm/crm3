@@ -367,16 +367,16 @@ class MemberSignupForm extends Model
 			$attributes['mbrknnParams'] = Json::encode($attributes['mbrknnParams']);
 		}
 
-		list ($resultStatus, $resultData) = HttpHelper::callApi('mha/member/signup',
+		$apiResponse = HttpHelper::callApi('mha/member/signup',
 			HttpHelper::METHOD_POST,
 			[],
 			$attributes,
 		);
 
-		if ($resultStatus < 200 || $resultStatus >= 300) {
-			$msg = HttpHelper::formatResultIfFailed('mha', $resultStatus, $resultData);
+		if ($apiResponse['status'] < 200 || $apiResponse['status'] >= 300) {
+			$msg = HttpHelper::formatApiResponseIfFailed('mha', $apiResponse['status'], $apiResponse['data']);
 			if (empty($message) == false) {
-				$this->addError(null, Yii::t('mha', $resultData['message'], $resultData));
+				$this->addError(null, Yii::t('mha', $apiResponse['data']['message'], $apiResponse['data']));
 				return false;
 			}
 		}

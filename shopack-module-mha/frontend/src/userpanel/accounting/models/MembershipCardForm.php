@@ -43,26 +43,26 @@ class MembershipCardForm extends Model
 
 	public static function getRenewalInfo()
 	{
-		list ($resultStatus, $resultData) = HttpHelper::callApi('mha/accounting/membership-card/renewal-info',
+		$apiResponse = HttpHelper::callApi('mha/accounting/membership-card/renewal-info',
 			HttpHelper::METHOD_GET,
 			// [
 			// 	'memberID' => Yii::$app->user->id,
 			// ]
 		);
 
-		HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
+		HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
 		return [
-			$resultData['membershipUserAssetID'],
-			$resultData['price'],
-			$resultData['saleableModel'],
+			$apiResponse['data']['membershipUserAssetID'],
+			$apiResponse['data']['price'],
+			$apiResponse['data']['saleableModel'],
 		];
 	}
 
 	public function addToBasket($basketdata, $saleableID = null)
 	{
 		try {
-			list ($resultStatus, $resultData) = HttpHelper::callApi('mha/accounting/membership-card/add-to-basket',
+			$apiResponse = HttpHelper::callApi('mha/accounting/membership-card/add-to-basket',
 				HttpHelper::METHOD_POST,
 				[],
 				[
@@ -70,9 +70,9 @@ class MembershipCardForm extends Model
 				]
 			);
 
-			HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
+			HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
-			// $newBase64Basketdata = $resultData['basketdata'];
+			// $newBase64Basketdata = $apiResponse['data']['basketdata'];
 			// return $newBase64Basketdata;
 
 		} catch (\Throwable $th) {

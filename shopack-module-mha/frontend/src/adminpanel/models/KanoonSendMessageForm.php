@@ -41,7 +41,7 @@ class KanoonSendMessageForm extends Model
     if ($this->validate() == false)
       throw new UnprocessableEntityHttpException(implode("\n", $this->getFirstErrors()));
 
-    list ($resultStatus, $resultData) = HttpHelper::callApi('mha/kanoon/send-message',
+    $apiResponse = HttpHelper::callApi('mha/kanoon/send-message',
       HttpHelper::METHOD_POST,
       [],
       [
@@ -51,9 +51,9 @@ class KanoonSendMessageForm extends Model
 			]
     );
 
-    HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
+    HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
-    return true; //[$resultStatus, $resultData['result']];
+    return true;
   }
 
 }

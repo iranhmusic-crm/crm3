@@ -284,26 +284,26 @@ class ReportModel extends RestClientActiveRecord
 				))
 			$params['per-page'] = $_GET['per-page'];
 
-		$result = HttpHelper::callApi(self::$resourceName . "/run", HttpHelper::METHOD_GET, $params);
+			$apiResponse = HttpHelper::callApi(self::$resourceName . "/run", HttpHelper::METHOD_GET, $params);
 
-    if ($result[0] != 200)
+    if ($apiResponse['status'] != 200)
 			return null;
 
 		$config = [
-			'allModels' => $result[1]['data'],
+			'allModels' => $apiResponse['data']['data'],
 			// 'sort' => [
 			// 	'attributes' => [
 			// 	],
 			// ],
 		];
 
-		// $config['pagination'] = $result[1]['pagination'];
+		// $config['pagination'] = $apiResponse['data']['pagination'];
 
 		$dataProvider = new ArrayDataProvider($config);
 
-		$dataProvider->setModels($result[1]['data']);
+		$dataProvider->setModels($apiResponse['data']['data']);
 
-		$dataProvider->setTotalCount($result[1]['pagination']['totalCount']);
+		$dataProvider->setTotalCount($apiResponse['data']['pagination']['totalCount']);
 
 		$page = 0;
 		if (empty($_GET['page']) == false)
@@ -314,12 +314,12 @@ class ReportModel extends RestClientActiveRecord
 		$dataProvider->setPagination([
 			'page' => $page,
 			// 'pageSize' => 20,
-			'totalCount' => $result[1]['pagination']['totalCount'],
+			'totalCount' => $apiResponse['data']['pagination']['totalCount'],
 		]);
 
-		// if (isset($result[1]['pagination']['totalCount'])) {
-		// 	// $config['pagination'] = $result[1]['pagination'];
-		// 	$dataProvider->setTotalCount($result[1]['pagination']['totalCount']);
+		// if (isset($apiResponse['data']['pagination']['totalCount'])) {
+		// 	// $config['pagination'] = $apiResponse['data']['pagination'];
+		// 	$dataProvider->setTotalCount($apiResponse['data']['pagination']['totalCount']);
 		// }
 
 		return $dataProvider;
@@ -355,12 +355,12 @@ class ReportModel extends RestClientActiveRecord
 
 		$params['per-page'] = 0;
 
-		$result = HttpHelper::callApi(self::$resourceName . "/run", HttpHelper::METHOD_GET, $params);
+		$apiResponse = HttpHelper::callApi(self::$resourceName . "/run", HttpHelper::METHOD_GET, $params);
 
-    if ($result[0] != 200)
+    if ($apiResponse['status'] != 200)
 			return null;
 
-		return $result[1]['data'];
+		return $apiResponse['data']['data'];
 	}
 
 }

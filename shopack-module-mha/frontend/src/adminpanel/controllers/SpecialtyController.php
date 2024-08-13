@@ -38,9 +38,6 @@ class SpecialtyController extends BaseController
     return $this->render('index', [
 			'searchModel' => $searchModel,
       'dataProvider' => $dataProvider,
-      // 'resultStatus' => $resultStatus,
-      // 'resultData' => $resultData,
-      // 'message' => $messageText,
     ]);
   }
 
@@ -176,15 +173,15 @@ class SpecialtyController extends BaseController
   {
     Yii::$app->response->format = Response::FORMAT_JSON;
 
-    $result = HttpHelper::callApi('mha/specialty', HttpHelper::METHOD_GET, [
+    $apiResponse = HttpHelper::callApi('mha/specialty', HttpHelper::METHOD_GET, [
       'parentid' => $id,
     ]);
 
     //-----------------
     $list = [];
 
-    if ($result[0] == 200) {
-      foreach ($result[1]['data'] as $v) {
+    if ($apiResponse['status'] == 200) {
+      foreach ($apiResponse['data']['data'] as $v) {
         $spcDescFieldTypeName = 'ندارد';
         if (empty($v['spcDescFieldType']) == false ) {
           if (isset($fildTypes[$v['spcDescFieldType']]))

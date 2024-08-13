@@ -106,7 +106,7 @@ class MembershipCardForm extends Model
 		else
 			$data = RsaPrivate::model($parentModule->servicePrivateKey)->encrypt($data);
 
-		list ($resultStatus, $resultData) = HttpHelper::callApi('aaa/basket/item',
+		$apiResponse = HttpHelper::callApi('aaa/basket/item',
 			HttpHelper::METHOD_POST,
 			[],
 			[
@@ -115,9 +115,9 @@ class MembershipCardForm extends Model
 			]
 		);
 
-    HttpHelper::throwResultIfFailed('aaa', $resultStatus, $resultData);
+    HttpHelper::throwApiResponseIfFailed($apiResponse, 'aaa');
 
-		return $resultData;
+		return $apiResponse['data'];
 	}
 
 }

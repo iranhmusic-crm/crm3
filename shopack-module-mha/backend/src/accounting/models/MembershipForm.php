@@ -489,7 +489,7 @@ class MembershipForm extends Model
 		]);
 		$data = RsaPrivate::model($parentModule->servicePrivateKey)->encrypt($data);
 
-		list ($resultStatus, $resultData) = HttpHelper::callApi('aaa/voucher/set-invoice-as-wait-for-payment',
+		$apiResponse = HttpHelper::callApi('aaa/voucher/set-invoice-as-wait-for-payment',
 			HttpHelper::METHOD_POST,
 			[],
 			[
@@ -498,9 +498,9 @@ class MembershipForm extends Model
 			]
 		);
 
-    HttpHelper::throwResultIfFailed('aaa', $resultStatus, $resultData);
+    HttpHelper::throwApiResponseIfFailed($apiResponse, 'aaa');
 
-		return $resultData;
+		return $apiResponse['data'];
 	}
 
 }

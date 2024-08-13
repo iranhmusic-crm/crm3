@@ -110,7 +110,7 @@ class RenewViaInvoiceForm extends Model
 
 	public function getRenewalInfo()
 	{
-		list ($resultStatus, $resultData) = HttpHelper::callApi('mha/accounting/membership/renewal-info-for-invoice',
+		$apiResponse = HttpHelper::callApi('mha/accounting/membership/renewal-info-for-invoice',
 			HttpHelper::METHOD_GET,
 			[
 				'memberID' => $this->memberID,
@@ -118,15 +118,15 @@ class RenewViaInvoiceForm extends Model
 			]
 		);
 
-    HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
+    HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
 		return [
-			$resultData['startDate'],
-			$resultData['maxYears'],
-			$resultData['memberModel'],
-			$resultData['offlinePaymentModel'],
-			$resultData['membershipSaleableModels'],
-			$resultData['membershipCardSaleableModels'],
+			$apiResponse['data']['startDate'],
+			$apiResponse['data']['maxYears'],
+			$apiResponse['data']['memberModel'],
+			$apiResponse['data']['offlinePaymentModel'],
+			$apiResponse['data']['membershipSaleableModels'],
+			$apiResponse['data']['membershipCardSaleableModels'],
 		];
 	}
 
@@ -153,7 +153,7 @@ class RenewViaInvoiceForm extends Model
 			return false;
 
 		try {
-			list ($resultStatus, $resultData) = HttpHelper::callApi('mha/accounting/membership/renew-via-invoice',
+			$apiResponse = HttpHelper::callApi('mha/accounting/membership/renew-via-invoice',
 				HttpHelper::METHOD_POST,
 				[],
 				[
@@ -166,11 +166,11 @@ class RenewViaInvoiceForm extends Model
 				]
 			);
 
-			HttpHelper::throwResultIfFailed('mha', $resultStatus, $resultData);
+			HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
-			$this->membershipItemKey			= $resultData['membershipItemKey'];
-			$this->membershipCardItemKey	= $resultData['membershipCardItemKey'];
-			$this->invoiceID							= $resultData['invoiceID'];
+			$this->membershipItemKey			= $apiResponse['data']['membershipItemKey'];
+			$this->membershipCardItemKey	= $apiResponse['data']['membershipCardItemKey'];
+			$this->invoiceID							= $apiResponse['data']['invoiceID'];
 
 			return ((empty($this->membershipItemKey) == false)
 				|| (empty($this->membershipCardItemKey) == false));
