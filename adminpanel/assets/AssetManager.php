@@ -28,7 +28,10 @@ class AssetManager extends \yii\web\AssetManager
 
 		$this->assetMap = [
 			'bootstrap.css' => $this->hash($bower_bootstrap) . '/dist/css/bootstrap.rtl.css',
+			'bootstrap.min.css' => $this->hash($bower_bootstrap) . '/dist/css/bootstrap.rtl.css',
+
 			'bootstrap-dialog-bs4.css' => $this->hash($vendor_shopack_base_fe) . '/css/bootstrap-dialog-bs4.rtl.css',
+			'bootstrap-dialog-bs4.min.css' => $this->hash($vendor_shopack_base_fe) . '/css/bootstrap-dialog-bs4.rtl.css',
 		];
 
 		parent::init();
