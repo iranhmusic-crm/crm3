@@ -121,12 +121,12 @@ class RenewViaInvoiceForm extends Model
     HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
 		return [
-			$apiResponse['data']['startDate'],
-			$apiResponse['data']['maxYears'],
-			$apiResponse['data']['memberModel'],
-			$apiResponse['data']['offlinePaymentModel'],
-			$apiResponse['data']['membershipSaleableModels'],
-			$apiResponse['data']['membershipCardSaleableModels'],
+			$apiResponse['body']['startDate'],
+			$apiResponse['body']['maxYears'],
+			$apiResponse['body']['memberModel'],
+			$apiResponse['body']['offlinePaymentModel'],
+			$apiResponse['body']['membershipSaleableModels'],
+			$apiResponse['body']['membershipCardSaleableModels'],
 		];
 	}
 
@@ -168,9 +168,9 @@ class RenewViaInvoiceForm extends Model
 
 			HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
-			$this->membershipItemKey			= $apiResponse['data']['membershipItemKey'];
-			$this->membershipCardItemKey	= $apiResponse['data']['membershipCardItemKey'];
-			$this->invoiceID							= $apiResponse['data']['invoiceID'];
+			$this->membershipItemKey			= $apiResponse['body']['membershipItemKey'];
+			$this->membershipCardItemKey	= $apiResponse['body']['membershipCardItemKey'];
+			$this->invoiceID							= $apiResponse['body']['invoiceID'];
 
 			return ((empty($this->membershipItemKey) == false)
 				|| (empty($this->membershipCardItemKey) == false));

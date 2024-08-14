@@ -19,6 +19,7 @@ $baseUrl = str_replace('/web', '', (new Request)->getBaseUrl());
 $baseUrl = rtrim($baseUrl, '/') . '/';
 
 $config = [
+	'isBackend' => true,
 	'isJustForMe' => false,
 	'id' => 'apiserver',
 	'language' => 'fa_IR',

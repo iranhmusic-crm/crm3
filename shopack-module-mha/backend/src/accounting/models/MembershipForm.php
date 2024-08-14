@@ -500,7 +500,7 @@ class MembershipForm extends Model
 
     HttpHelper::throwApiResponseIfFailed($apiResponse, 'aaa');
 
-		return $apiResponse['data'];
+		return $apiResponse['body'];
 	}
 
 }

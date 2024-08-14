@@ -79,13 +79,13 @@ class MembershipForm extends Model
 		HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
 		return [
-			$apiResponse['data']['startDate'],
-			$apiResponse['data']['endDate'],
-			$apiResponse['data']['years'],
-			$apiResponse['data']['unitPrice'],
-			$apiResponse['data']['totalPrice'],
-			$apiResponse['data']['saleableID'],
-			$apiResponse['data']['printCardAmount'],
+			$apiResponse['body']['startDate'],
+			$apiResponse['body']['endDate'],
+			$apiResponse['body']['years'],
+			$apiResponse['body']['unitPrice'],
+			$apiResponse['body']['totalPrice'],
+			$apiResponse['body']['saleableID'],
+			$apiResponse['body']['printCardAmount'],
 		];
 	}
 
@@ -104,9 +104,9 @@ class MembershipForm extends Model
 
 			HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
-			return $apiResponse['data'];
+			return $apiResponse['body'];
 
-			// $newBase64Basketdata = $apiResponse['data']['basketdata'];
+			// $newBase64Basketdata = $apiResponse['body']['basketdata'];
 			// return $newBase64Basketdata;
 
 		} catch (\Throwable $th) {

@@ -290,20 +290,20 @@ class ReportModel extends RestClientActiveRecord
 			return null;
 
 		$config = [
-			'allModels' => $apiResponse['data']['data'],
+			'allModels' => $apiResponse['body']['data'],
 			// 'sort' => [
 			// 	'attributes' => [
 			// 	],
 			// ],
 		];
 
-		// $config['pagination'] = $apiResponse['data']['pagination'];
+		// $config['pagination'] = $apiResponse['body']['pagination'];
 
 		$dataProvider = new ArrayDataProvider($config);
 
-		$dataProvider->setModels($apiResponse['data']['data']);
+		$dataProvider->setModels($apiResponse['body']['data']);
 
-		$dataProvider->setTotalCount($apiResponse['data']['pagination']['totalCount']);
+		$dataProvider->setTotalCount($apiResponse['body']['pagination']['totalCount']);
 
 		$page = 0;
 		if (empty($_GET['page']) == false)
@@ -314,12 +314,12 @@ class ReportModel extends RestClientActiveRecord
 		$dataProvider->setPagination([
 			'page' => $page,
 			// 'pageSize' => 20,
-			'totalCount' => $apiResponse['data']['pagination']['totalCount'],
+			'totalCount' => $apiResponse['body']['pagination']['totalCount'],
 		]);
 
-		// if (isset($apiResponse['data']['pagination']['totalCount'])) {
-		// 	// $config['pagination'] = $apiResponse['data']['pagination'];
-		// 	$dataProvider->setTotalCount($apiResponse['data']['pagination']['totalCount']);
+		// if (isset($apiResponse['body']['pagination']['totalCount'])) {
+		// 	// $config['pagination'] = $apiResponse['body']['pagination'];
+		// 	$dataProvider->setTotalCount($apiResponse['body']['pagination']['totalCount']);
 		// }
 
 		return $dataProvider;
@@ -360,7 +360,7 @@ class ReportModel extends RestClientActiveRecord
     if ($apiResponse['status'] != 200)
 			return null;
 
-		return $apiResponse['data']['data'];
+		return $apiResponse['body']['data'];
 	}
 
 }

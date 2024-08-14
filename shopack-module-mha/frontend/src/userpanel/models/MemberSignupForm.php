@@ -374,9 +374,9 @@ class MemberSignupForm extends Model
 		);
 
 		if ($apiResponse['status'] < 200 || $apiResponse['status'] >= 300) {
-			$msg = HttpHelper::formatApiResponseIfFailed('mha', $apiResponse['status'], $apiResponse['data']);
+			$msg = HttpHelper::formatApiResponseIfFailed('mha', $apiResponse['status'], $apiResponse['body']);
 			if (empty($message) == false) {
-				$this->addError(null, Yii::t('mha', $apiResponse['data']['message'], $apiResponse['data']));
+				$this->addError(null, Yii::t('mha', $apiResponse['body']['message'], $apiResponse['body']));
 				return false;
 			}
 		}

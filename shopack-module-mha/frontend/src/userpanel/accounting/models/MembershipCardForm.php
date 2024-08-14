@@ -53,9 +53,9 @@ class MembershipCardForm extends Model
 		HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
 		return [
-			$apiResponse['data']['membershipUserAssetID'],
-			$apiResponse['data']['price'],
-			$apiResponse['data']['saleableModel'],
+			$apiResponse['body']['membershipUserAssetID'],
+			$apiResponse['body']['price'],
+			$apiResponse['body']['saleableModel'],
 		];
 	}
 
@@ -72,7 +72,7 @@ class MembershipCardForm extends Model
 
 			HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
-			// $newBase64Basketdata = $apiResponse['data']['basketdata'];
+			// $newBase64Basketdata = $apiResponse['body']['basketdata'];
 			// return $newBase64Basketdata;
 
 		} catch (\Throwable $th) {

@@ -181,7 +181,7 @@ class SpecialtyController extends BaseController
     $list = [];
 
     if ($apiResponse['status'] == 200) {
-      foreach ($apiResponse['data']['data'] as $v) {
+      foreach ($apiResponse['body']['data'] as $v) {
         $spcDescFieldTypeName = 'ندارد';
         if (empty($v['spcDescFieldType']) == false ) {
           if (isset($fildTypes[$v['spcDescFieldType']]))

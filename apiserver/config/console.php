@@ -15,6 +15,7 @@ $modules = array_replace_recursive(
 $configLocal = require(__DIR__ . '/console-local.php');
 
 $config = [
+	'isBackend' => true,
 	'isJustForMe' => false,
 	'id' => 'apiserver',
 	'basePath' => dirname(__DIR__),
