@@ -65,7 +65,7 @@ class MemberKanoonModel extends MhaActiveRecord
 
 		if ($accepted) {
 			if (empty($this->mbrknnAcceptedAt))
-				$this->mbrknnAcceptedAt = (new \DateTime())->format('Y-m-d');
+				$this->mbrknnAcceptedAt = (new \DateTime('now', new \DateTimeZone('UTC')))->format('Y-m-d');
 				// throw new UnprocessableEntityHttpException('تاریخ تایید عضویت تعیین نشده است.');
 
 			$transaction = Yii::$app->db->beginTransaction();

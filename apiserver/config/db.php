@@ -16,4 +16,9 @@ return [
 	'schemaCache' => 'cache',
 	'charset' => 'utf8mb4',
 	'tablePrefix' => 'tbl_',
+
+	'on afterOpen' => function($event) {
+		$event->sender->createCommand("SET time_zone = '+00:00'")->execute();
+	}
+
 ];
