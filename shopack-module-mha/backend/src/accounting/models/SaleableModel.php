@@ -8,16 +8,34 @@ namespace iranhmusic\shopack\mha\backend\accounting\models;
 use Yii;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
+use shopack\base\common\accounting\enums\enuUserAssetStatus;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
-use shopack\base\common\accounting\enums\enuUserAssetStatus;
 use iranhmusic\shopack\mha\backend\models\MemberModel;
 
 class SaleableModel extends MhaActiveRecord
 {
   use \iranhmusic\shopack\mha\common\accounting\models\SaleableModelTrait;
   use \shopack\base\backend\accounting\models\BackendSaleableModelTrait;
+
+  public static function tableName()
+  {
+    return '{{%MHA_Accounting_Saleable}}';
+  }
+
+  public function behaviors()
+	{
+		return [
+			[
+				'class' => \shopack\base\common\behaviors\RowDatesAttributesBehavior::class,
+				'createdAtAttribute' => 'slbCreatedAt',
+				'createdByAttribute' => 'slbCreatedBy',
+				'updatedAtAttribute' => 'slbUpdatedAt',
+				'updatedByAttribute' => 'slbUpdatedBy',
+			],
+		];
+	}
 
   public static function getCustomConditionsToValidDiscountsQuery(
     $actorID,
@@ -84,11 +102,6 @@ SQL;
 SQL;
 
     return $qry;
-  }
-
-  public static function tableName()
-  {
-    return '{{%MHA_Accounting_Saleable}}';
   }
 
   /**

@@ -17,4 +17,17 @@ class ProductModel extends MhaActiveRecord
 		return '{{%MHA_Accounting_Product}}';
 	}
 
+	public function behaviors()
+	{
+		return [
+			[
+				'class' => \shopack\base\common\behaviors\RowDatesAttributesBehavior::class,
+				'createdAtAttribute' => 'prdCreatedAt',
+				'createdByAttribute' => 'prdCreatedBy',
+				'updatedAtAttribute' => 'prdUpdatedAt',
+				'updatedByAttribute' => 'prdUpdatedBy',
+			],
+		];
+	}
+
 }

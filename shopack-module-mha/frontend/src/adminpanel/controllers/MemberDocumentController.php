@@ -68,7 +68,7 @@ class MemberDocumentController extends BaseCrudController
 		$model = $this->findModel($id);
 		$model->mbrdocStatus = enuMemberDocumentStatus::Rejected;
 
-		$formPosted = $model->load(Yii::$app->request->post());
+		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
 		$done = false;
 		if ($formPosted)
 			$done = $model->save();

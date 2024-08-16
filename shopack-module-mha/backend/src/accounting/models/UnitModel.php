@@ -17,4 +17,17 @@ class UnitModel extends MhaActiveRecord
 		return '{{%MHA_Accounting_Unit}}';
 	}
 
+	public function behaviors()
+	{
+		return [
+			[
+				'class' => \shopack\base\common\behaviors\RowDatesAttributesBehavior::class,
+				'createdAtAttribute' => 'untCreatedAt',
+				'createdByAttribute' => 'untCreatedBy',
+				'updatedAtAttribute' => 'untUpdatedAt',
+				'updatedByAttribute' => 'untUpdatedBy',
+			],
+		];
+	}
+
 }

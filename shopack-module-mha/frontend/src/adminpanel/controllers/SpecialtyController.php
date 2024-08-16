@@ -55,7 +55,7 @@ class SpecialtyController extends BaseController
     $model = new SpecialtyModel;
     $model->parentid = $parentid;
 
-		$formPosted = $model->load(Yii::$app->request->post());
+		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
 		$done = false;
 		if ($formPosted)
 			$done = $model->save();
@@ -103,7 +103,7 @@ class SpecialtyController extends BaseController
   {
 		$model = $this->findModel($id);
 
-		$formPosted = $model->load(Yii::$app->request->post());
+		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
 		$done = false;
 		if ($formPosted)
 			$done = $model->save();

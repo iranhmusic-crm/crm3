@@ -21,7 +21,7 @@ class MembershipController extends BaseController
     $model->memberID = $memberID;
 		$model->ofpID = $ofpID;
 
-		$formPosted = $model->load(Yii::$app->request->post());
+		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
 		$done = false;
 		if ($formPosted)
 			$done = $model->process();

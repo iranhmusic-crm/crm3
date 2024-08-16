@@ -2713,7 +2713,7 @@ SQL;
        , slbProductID         = 1
        , slbCode              = UUID()
        , slbName              = 'پیش فرض برای کانورت اطلاعات'
-       , slbAvailableFromDate = '1921/03/21 00:00:00'
+       , slbAvailableFromDate = '1991-03-21 00:00:00'
        , slbBasePrice         = 50000
 SQL;
     $this->queryExecute($qry, __FUNCTION__, __LINE__);

@@ -48,6 +48,13 @@ SQL
 		);
 
 		$this->execute(<<<SQL
+UPDATE tbl_MHA_Accounting_Saleable
+   SET slbAvailableFromDate = '1991-03-21 00:00:00'
+ WHERE slbAvailableFromDate = '1921-03-21 00:00:00'
+SQL
+		);
+
+		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Saleable`
 	CHANGE COLUMN `slbAvailableFromDate` `slbAvailableFromDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `slbDesc`,
 	CHANGE COLUMN `slbAvailableToDate` `slbAvailableToDate` TIMESTAMP NULL DEFAULT NULL AFTER `slbAvailableFromDate`,

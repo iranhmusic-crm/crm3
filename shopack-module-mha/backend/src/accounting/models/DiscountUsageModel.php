@@ -27,17 +27,17 @@ class DiscountUsageModel extends MhaActiveRecord
 		return '{{%MHA_Accounting_DiscountUsage}}';
 	}
 
-	// public function behaviors()
-	// {
-	// 	return [
-	// 		[
-	// 			'class' => \shopack\base\common\behaviors\RowDatesAttributesBehavior::class,
-	// 			'createdAtAttribute' => 'dscusgCreatedAt',
-	// 			'createdByAttribute' => 'dscusgCreatedBy',
-	// 			'updatedAtAttribute' => 'dscusgUpdatedAt',
-	// 			'updatedByAttribute' => 'dscusgUpdatedBy',
-	// 		],
-	// 	];
-	// }
+	public function behaviors()
+	{
+		return [
+			[
+				'class' => \shopack\base\common\behaviors\RowDatesAttributesBehavior::class,
+				'createdAtAttribute' => 'dscusgCreatedAt',
+				// 'createdByAttribute' => 'dscusgCreatedBy',
+				// 'updatedAtAttribute' => 'dscusgUpdatedAt',
+				// 'updatedByAttribute' => 'dscusgUpdatedBy',
+			],
+		];
+	}
 
 }
