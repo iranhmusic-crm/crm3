@@ -322,7 +322,7 @@ class MigrateDataController extends Controller
 CREATE TABLE `tbl_convert` (
 	`tableName` VARCHAR(256) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`lastID` BIGINT(20) UNSIGNED NOT NULL,
-	`at` DATETIME NOT NULL DEFAULT (NOW()),
+	`at` TIMESTAMP NOT NULL DEFAULT (NOW()),
 	`info` MEDIUMTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
 	PRIMARY KEY (`tableName`) USING BTREE
 )

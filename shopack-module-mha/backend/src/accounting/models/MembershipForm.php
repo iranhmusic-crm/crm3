@@ -7,7 +7,7 @@ namespace iranhmusic\shopack\mha\backend\accounting\models;
 
 use Yii;
 use yii\base\Model;
-use yii\db\Expression;
+use shopack\base\common\db\DbExpression;
 use yii\db\Query;
 use yii\web\NotFoundHttpException;
 use yii\web\UnprocessableEntityHttpException;
@@ -53,18 +53,16 @@ class MembershipForm extends Model
 			->orderBy('uasValidToDate DESC')
 			->one();
 
-		$now = new \DateTime('now');
-
 		if (empty($lastMembership->uasValidToDate)) {
-			$startDate = new \DateTime($memberModel->mbrAcceptedAt);
+			$startDate = new \DateTime($memberModel->mbrAcceptedAt, new \DateTimeZone('UTC'));
 			$startDate->setTime(0, 0);
 		} else {
-			$startDate = new \DateTime($lastMembership->uasValidToDate);
+			$startDate = new \DateTime($lastMembership->uasValidToDate, new \DateTimeZone('UTC'));
 			$startDate->setTime(0, 0);
 			// $startDate->add(\DateInterval::createFromDateString('1 day'));
 
-			if ($startDate > $now) {
-				$remained = date_diff($now, $startDate);
+			if ($startDate > Yii::$app->db->utcNow) {
+				$remained = date_diff(Yii::$app->db->utcNow, $startDate);
 				if ($remained->days > (31 * 3)) {
 					throw new UnprocessableEntityHttpException('There are more than 3 months of current membership left');
 				}
@@ -76,14 +74,14 @@ class MembershipForm extends Model
 		// $endDate->sub(\DateInterval::createFromDateString('250 day'));
 
 		$years = 1;
-		$target = clone $now;
+		$target = clone Yii::$app->db->utcNow;
 		$target->add(\DateInterval::createFromDateString('6 month'));
 		while ($endDate < $target) {
 			$endDate->add(\DateInterval::createFromDateString('1 year'));
 			++$years;
 		}
 
-		// $diff = $endDate->diff($now)->days;
+		// $diff = $endDate->diff(Yii::$app->db->utcNow)->days;
 		// if ($diff < (365 / 2)) {
 		// 	$endDate->add(\DateInterval::createFromDateString('1 year'));
 		// 	++$years;
@@ -97,7 +95,7 @@ class MembershipForm extends Model
 			->joinWith('product', false, 'INNER JOIN')
 			->joinWith('product.unit')
 			->andWhere(['prdMhaType' => enuMhaProductType::Membership])
-			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+			->andWhere(['<=', 'slbAvailableFromDate', DbExpression::now()])
 			->andWhere(['slbStatus' => enuSaleableStatus::Active])
 			->orderBy('slbAvailableFromDate DESC')
 		;
@@ -119,7 +117,7 @@ class MembershipForm extends Model
 			$cardPrintSaleableModel = SaleableModel::find()
 				->joinWith('product', false, 'INNER JOIN')
 				->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard])
-				->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+				->andWhere(['<=', 'slbAvailableFromDate', DbExpression::now()])
 				->andWhere(['slbStatus' => enuSaleableStatus::Active])
 				->orderBy('slbAvailableFromDate DESC')
 				->one();
@@ -255,8 +253,6 @@ class MembershipForm extends Model
 			->orderBy('uasValidToDate DESC')
 			->one();
 
-		$now = new \DateTime('now');
-
 		if (empty($lastMembership->uasValidToDate)) {
 			$startDate = new \DateTime($memberModel['mbrAcceptedAt']);
 			$startDate->setTime(0, 0);
@@ -265,8 +261,8 @@ class MembershipForm extends Model
 			$startDate->setTime(0, 0);
 
 			//preventing 3 month checking for operators
-			// if ($startDate > $now) {
-			// 	$remained = date_diff($now, $startDate);
+			// if ($startDate > Yii::$app->db->utcNow) {
+			// 	$remained = date_diff(Yii::$app->db->utcNow, $startDate);
 			// 	if ($remained->days > (31 * 3)) {
 			// 		throw new UnprocessableEntityHttpException('There are more than 3 months of current membership left');
 			// 	}
@@ -286,7 +282,7 @@ class MembershipForm extends Model
 				->joinWith('product.unit')
 				->andWhere(['prdMhaType' => $saleableType])
 				->andWhere(['slbStatus' => enuSaleableStatus::Active])
-				->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+				->andWhere(['<=', 'slbAvailableFromDate', DbExpression::now()])
 				->orderBy('slbAvailableFromDate DESC')
 			;
 			SaleableModel::appendDiscountQuery($query, $memberID);
@@ -333,7 +329,7 @@ class MembershipForm extends Model
 				->andWhere(['prdMhaType' => $saleableType])
 				->andWhere(['slbStatus' => enuSaleableStatus::Active])
 				->andWhere(['<=', 'slbAvailableFromDate', ($offlinePaymentModel == null)
-					? (new Expression('NOW()'))
+					? (DbExpression::now())
 					: $offlinePaymentModel->ofpPayDate
 				])
 				->orderBy('slbAvailableFromDate DESC')
@@ -348,7 +344,7 @@ class MembershipForm extends Model
 					->joinWith('product.unit')
 					->andWhere(['prdMhaType' => $saleableType])
 					->andWhere(['slbStatus' => enuSaleableStatus::Active])
-					->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+					->andWhere(['<=', 'slbAvailableFromDate', DbExpression::now()])
 					->orderBy('slbAvailableFromDate DESC')
 				;
 				SaleableModel::appendDiscountQuery($query, $memberID);

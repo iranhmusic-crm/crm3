@@ -14,7 +14,7 @@ use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\backend\models\MemberModel;
 use iranhmusic\shopack\mha\backend\models\MemberKanoonModel;
-use yii\db\Expression;
+use shopack\base\common\db\DbExpression;
 
 class ReportModel extends MhaActiveRecord
 {
@@ -121,8 +121,8 @@ class ReportModel extends MhaActiveRecord
 						$query->andWhere(['birthstate.sttID' => null]);
 						$query->andWhere(['birthcity.ctvID' => null]);
 					} else {
-						$query->andWhere(['IS', 'birthstate.sttID', new Expression('NOT NULL')]);
-						$query->andWhere(['IS', 'birthcity.ctvID', new Expression('NOT NULL')]);
+						$query->andWhere(['IS', 'birthstate.sttID', DbExpression::notNull()]);
+						$query->andWhere(['IS', 'birthcity.ctvID', DbExpression::notNull()]);
 					}
 				},
 				'join' => [
@@ -139,7 +139,7 @@ class ReportModel extends MhaActiveRecord
 					if ($value == 0)
 						$query->andWhere([$key => null]);
 					else
-						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
 				},
 				'join' => [
 					'user',
@@ -154,7 +154,7 @@ class ReportModel extends MhaActiveRecord
 					if ($value == 0)
 						$query->andWhere([$key => null]);
 					else
-						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
 				},
 				'join' => [
 					'user',
@@ -170,7 +170,7 @@ class ReportModel extends MhaActiveRecord
 					if ($value == 0)
 						$query->andWhere([$key => null]);
 					else
-						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
 				},
 				'join' => [
 					'user',
@@ -186,7 +186,7 @@ class ReportModel extends MhaActiveRecord
 					if ($value == 0)
 						$query->andWhere([$key => null]);
 					else
-						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
 				},
 			],
 
@@ -198,7 +198,7 @@ class ReportModel extends MhaActiveRecord
 					if ($value == 0)
 						$query->andWhere([$key => null]);
 					else
-						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
 				},
 			],
 
@@ -210,7 +210,7 @@ class ReportModel extends MhaActiveRecord
 					if ($value == 0)
 						$query->andWhere([$key => null]);
 					else
-						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
 				},
 				'join' => [
 					'kanoon',
@@ -220,7 +220,7 @@ class ReportModel extends MhaActiveRecord
 			// case 'mbrknnParams':         // [I], [S], [R]
 			// 	$joinToKanoon = true;
 			// 	$vals = implode(',', $v);
-			// 	$query->andWhere(new \yii\db\Expression(
+			// 	$query->andWhere(new DbExpression(
 			// 		"JSON_UNQUOTE(JSON_EXTRACT(mbrknnParams, '$.desc')) IN ({$vals})"
 			// 	));
 			// 	break;
@@ -233,7 +233,7 @@ class ReportModel extends MhaActiveRecord
 					if ($value == 0)
 						$query->andWhere([$key => null]);
 					else
-						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
 				},
 			],
 
@@ -245,7 +245,7 @@ class ReportModel extends MhaActiveRecord
 					if ($value == 0)
 						$query->andWhere([$key => null]);
 					else
-						$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
 				},
 			],
 
@@ -265,7 +265,7 @@ class ReportModel extends MhaActiveRecord
 						if ($value == 0)
 							$query->andWhere([$key => null]);
 						else
-							$query->andWhere(['IS', $key, new Expression('NOT NULL')]);
+							$query->andWhere(['IS', $key, DbExpression::notNull()]);
 					},
 				];
 			}
@@ -363,7 +363,7 @@ class ReportModel extends MhaActiveRecord
 					break;
 
 				case 'hasPassword':
-					$query->addSelect(new \yii\db\Expression("usrPasswordHash IS NOT NULL AND usrPasswordHash != '' AS hasPassword"));
+					$query->addSelect(new DbExpression("usrPasswordHash IS NOT NULL AND usrPasswordHash != '' AS hasPassword"));
 					break;
 
 				case 'mbrInstrumentID':

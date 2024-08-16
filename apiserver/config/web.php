@@ -84,13 +84,13 @@ $config = [
 				],
 			],
 		],
+		'formatter' => [
+			'class' => \shopack\base\common\components\Formatter::class,
+		],
 		'db' => $db,
 		'mutex' => [
 			'class' => \shopack\base\common\components\FileMutex::class,
 			// 'class' => \shopack\base\common\components\MysqlMutex::class,
-		],
-		'formatter' => [
-			'class' => \shopack\base\common\components\Formatter::class,
 		],
 		'i18n' => [
 			'class' => \shopack\base\common\components\I18N::class,

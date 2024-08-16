@@ -9,6 +9,7 @@ use Yii;
 use shopack\aaa\backend\models\UserModel;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuSpecialtyStatus;
+use shopack\base\common\db\DbExpression;
 
 class SpecialtyModel extends MhaActiveRecord
 {
@@ -72,7 +73,7 @@ class SpecialtyModel extends MhaActiveRecord
 
 		// fullName
 		$query
-			->addSelect(new \yii\db\Expression("tmpFullName.fullName AS fullName"))
+			->addSelect(new DbExpression("tmpFullName.fullName AS fullName"))
 			->leftJoin(['tmpFullName' => <<<SQL
 			(
         SELECT tbl_MHA_Specialty.spcID

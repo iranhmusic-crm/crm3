@@ -56,6 +56,9 @@ $config = [
 				],
 			],
 		],
+		'formatter' => [
+			'class' => \shopack\base\common\components\Formatter::class,
+		],
 		'db' => $db,
 		'mutex' => [
 			'class' => \shopack\base\common\components\FileMutex::class,

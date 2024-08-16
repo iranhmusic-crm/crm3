@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\backend\models;
 
 use Yii;
-use yii\db\Expression;
+use shopack\base\common\db\DbExpression;
 use yii\web\UnprocessableEntityHttpException;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;

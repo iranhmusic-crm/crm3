@@ -12,6 +12,7 @@ use shopack\base\common\helpers\ExceptionHelper;
 use shopack\base\backend\controller\BaseRestController;
 use shopack\base\backend\helpers\PrivHelper;
 use iranhmusic\shopack\mha\backend\models\SpecialtyModel;
+use shopack\base\common\db\DbExpression;
 
 class SpecialtyController extends BaseRestController
 {
@@ -88,7 +89,7 @@ class SpecialtyController extends BaseRestController
 
 		// // fullName
 		// $query
-		// 	->addSelect(new \yii\db\Expression("CONCAT(REPEAT('.    ', " . $nodeAlias . ".spcLevel), GROUP_CONCAT(parent.spcName ORDER BY parent.spcLeft SEPARATOR ' >> ')) AS fullName"))
+		// 	->addSelect(new DbExpression("CONCAT(REPEAT('.    ', " . $nodeAlias . ".spcLevel), GROUP_CONCAT(parent.spcName ORDER BY parent.spcLeft SEPARATOR ' >> ')) AS fullName"))
 		// 	->join('CROSS JOIN', $tableName . ' parent')
 		// 	->andWhere($nodeAlias . '.spcRoot = parent.spcRoot')
 		// 	->andWhere($nodeAlias . '.spcLeft BETWEEN parent.spcLeft AND parent.spcRight')

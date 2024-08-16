@@ -7,7 +7,7 @@ namespace iranhmusic\shopack\mha\backend\accounting\models;
 
 use Yii;
 use yii\base\Model;
-use yii\db\Expression;
+use shopack\base\common\db\DbExpression;
 use yii\web\NotFoundHttpException;
 use yii\web\UnprocessableEntityHttpException;
 use shopack\base\common\helpers\Json;
@@ -45,7 +45,7 @@ class MembershipCardForm extends Model
 			->joinWith('saleable', false, 'INNER JOIN')
 			->joinWith('saleable.product', false, 'INNER JOIN')
 			->andWhere(['uasActorID' => $memberID])
-			->andWhere(['>=', 'uasValidToDate', new Expression('NOW()')])
+			->andWhere(['>=', 'uasValidToDate', DbExpression::now()])
 			->orderBy('uasValidToDate DESC')
 			->one();
 
@@ -55,7 +55,7 @@ class MembershipCardForm extends Model
 		$saleableModel = SaleableModel::find()
 			->joinWith('product', false, 'INNER JOIN')
 			->andWhere(['prdMhaType' => enuMhaProductType::MembershipCard])
-			->andWhere(['<=', 'slbAvailableFromDate', new Expression('NOW()')])
+			->andWhere(['<=', 'slbAvailableFromDate', DbExpression::now()])
 			->andWhere(['slbStatus' => enuSaleableStatus::Active])
 			->orderBy('slbAvailableFromDate DESC')
 			->one();

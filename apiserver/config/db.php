@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'class' => 'yii\db\Connection',
+	'class' => '\shopack\base\common\db\Connection',
 
 	// 'schemaMap' => [
 	// 	'mysql' => SamIT\Yii2\MariaDb\Schema::class
@@ -16,9 +16,5 @@ return [
 	'schemaCache' => 'cache',
 	'charset' => 'utf8mb4',
 	'tablePrefix' => 'tbl_',
-
-	'on afterOpen' => function($event) {
-		$event->sender->createCommand("SET time_zone = '+00:00'")->execute();
-	}
 
 ];

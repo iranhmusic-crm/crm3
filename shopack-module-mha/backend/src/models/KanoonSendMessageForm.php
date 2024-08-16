@@ -5,7 +5,7 @@
 
 namespace iranhmusic\shopack\mha\backend\models;
 
-use yii\db\Expression;
+use shopack\base\common\db\DbExpression;
 use yii\base\Model;
 use yii\web\UnprocessableEntityHttpException;
 use shopack\aaa\backend\models\MessageModel;
@@ -93,8 +93,8 @@ class KanoonSendMessageForm extends Model
           'usrLastName',
         ])
         ->andWhere(['mbrknnKanoonID' => $this->kanoonID])
-        ->andWhere(['IS', 'usrMobile', new Expression('NOT NULL')])
-        ->andWhere(['IS', 'usrMobileApprovedAt', new Expression('NOT NULL')])
+        ->andWhere(['IS', 'usrMobile', DbExpression::notNull()])
+        ->andWhere(['IS', 'usrMobileApprovedAt', DbExpression::notNull()])
         ->andWhere(['!=', 'usrStatus', enuUserStatus::Removed])
         ->asArray()
         ->all();

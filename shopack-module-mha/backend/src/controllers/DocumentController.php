@@ -10,6 +10,7 @@ use yii\web\ForbiddenHttpException;
 use shopack\base\backend\controller\BaseCrudController;
 use shopack\base\backend\helpers\PrivHelper;
 use iranhmusic\shopack\mha\backend\models\DocumentModel;
+use shopack\base\common\db\DbExpression;
 
 class DocumentController extends BaseCrudController
 {
@@ -75,7 +76,7 @@ class DocumentController extends BaseCrudController
 		;
 
 		$query
-			->addSelect(new \yii\db\Expression("IFNULL(tmpmbrdoc.cnt, 0) AS providedCount"))
+			->addSelect(new DbExpression("IFNULL(tmpmbrdoc.cnt, 0) AS providedCount"))
 			->leftJoin("(
 		SELECT mbrdocMemberID
 				 , mbrdocDocumentID

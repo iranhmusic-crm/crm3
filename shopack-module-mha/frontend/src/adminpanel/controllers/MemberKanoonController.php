@@ -7,6 +7,7 @@ namespace iranhmusic\shopack\mha\frontend\adminpanel\controllers;
 
 use Yii;
 use yii\web\Response;
+use shopack\base\common\db\DbExpression;
 use shopack\base\common\helpers\Url;
 use shopack\base\common\helpers\StringHelper;
 use shopack\base\frontend\common\helpers\Html;
@@ -62,8 +63,8 @@ class MemberKanoonController extends BaseCrudController
 		$model = $this->findModel($id);
 		$model->mbrknnStatus = enuMemberKanoonStatus::Accepted;
 
-    $now = new \DateTime('now');
-    $model->mbrknnAcceptedAt = $now->format('Y-m-d');
+    // $now = new \DateTime('now');
+    $model->mbrknnAcceptedAt = DbExpression::now(); //$now->format('Y-m-d');
 
 		$formPosted = $model->load(Yii::$app->request->post());
 		$done = false;
