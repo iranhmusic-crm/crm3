@@ -91,7 +91,7 @@ class MembershipForm extends Model
 		$endDate = $endDate->format('Y-m-d');
 
 		$query = SaleableModel::find()
-			->select(SaleableModel::selectableColumns())
+			// ->select(SaleableModel::selectableColumns())
 			->joinWith('product', false, 'INNER JOIN')
 			->joinWith('product.unit')
 			->andWhere(['prdMhaType' => enuMhaProductType::Membership])
@@ -230,7 +230,7 @@ class MembershipForm extends Model
 		}
 
 		$memberModel = MemberModel::find()
-			->select(MemberModel::selectableColumns())
+			// ->select(MemberModel::selectableColumns())
 			->addSelect(UserModel::selectableColumns())
 			->innerJoinWith('user')
 			->where(['mbrUserID' => $memberID])
@@ -277,7 +277,7 @@ class MembershipForm extends Model
 		$fnGetSaleables = function($saleableType) use ($memberID, $offlinePaymentModel) {
 			//-----------------
 			$query = SaleableModel::find()
-				->select(SaleableModel::selectableColumns())
+				// ->select(SaleableModel::selectableColumns())
 				->joinWith('product', false, 'INNER JOIN')
 				->joinWith('product.unit')
 				->andWhere(['prdMhaType' => $saleableType])
@@ -295,7 +295,7 @@ class MembershipForm extends Model
 
 			if ($offlinePaymentModel != null) {
 				$query2 = SaleableModel::find()
-					->select(SaleableModel::selectableColumns())
+					// ->select(SaleableModel::selectableColumns())
 					->joinWith('product', false, 'INNER JOIN')
 					->joinWith('product.unit')
 					->andWhere(['prdMhaType' => $saleableType])
@@ -323,7 +323,7 @@ class MembershipForm extends Model
 		$fnGetOneSaleable = function($saleableType) use ($memberID, $offlinePaymentModel) {
 			//-----------------
 			$query = SaleableModel::find()
-				->select(SaleableModel::selectableColumns())
+				// ->select(SaleableModel::selectableColumns())
 				->joinWith('product', false, 'INNER JOIN')
 				->joinWith('product.unit')
 				->andWhere(['prdMhaType' => $saleableType])
@@ -339,7 +339,7 @@ class MembershipForm extends Model
 
 			if ((empty($offlinePaymentModel) == false) && empty($saleableModel['slbID'])) {
 				$query = SaleableModel::find()
-					->select(SaleableModel::selectableColumns())
+					// ->select(SaleableModel::selectableColumns())
 					->joinWith('product', false, 'INNER JOIN')
 					->joinWith('product.unit')
 					->andWhere(['prdMhaType' => $saleableType])

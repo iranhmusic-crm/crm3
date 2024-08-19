@@ -67,12 +67,11 @@ class DocumentController extends BaseCrudController
 		}
 
 		$searchModel = new DocumentModel;
-		$query = $searchModel::find()
-			->select(DocumentModel::selectableColumns())
+		$query = DocumentModel::find()
+			// ->select(DocumentModel::selectableColumns())
 			->with('createdByUser')
 			->with('updatedByUser')
 			->with('removedByUser')
-			->asArray()
 		;
 
 		$query

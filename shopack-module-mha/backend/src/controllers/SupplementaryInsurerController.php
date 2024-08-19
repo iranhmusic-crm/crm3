@@ -40,12 +40,11 @@ class SupplementaryInsurerController extends BaseRestController
 		// PrivHelper::checkPriv(['mha/supplementary-insurer/crud' => '0100']);
 
 		$searchModel = new SupplementaryInsurerModel;
-		$query = $searchModel::find()
-			->select(SupplementaryInsurerModel::selectableColumns())
+		$query = SupplementaryInsurerModel::find()
+			// ->select(SupplementaryInsurerModel::selectableColumns())
 			->with('createdByUser')
 			->with('updatedByUser')
 			->with('removedByUser')
-			->asArray()
 		;
 
 		$searchModel->fillQueryFromRequest($query);
@@ -60,22 +59,15 @@ class SupplementaryInsurerController extends BaseRestController
 	{
 		// PrivHelper::checkPriv(['mha/supplementary-insurer/crud' => '0100']);
 
-		$model = SupplementaryInsurerModel::find()
-			->select(SupplementaryInsurerModel::selectableColumns())
+		$query = SupplementaryInsurerModel::find()
+			// ->select(SupplementaryInsurerModel::selectableColumns())
 			->with('createdByUser')
 			->with('updatedByUser')
 			->with('removedByUser')
 			->where(['sinsID' => $id])
-			->asArray()
-			->one()
 		;
 
-		if ($model !== null)
-			return $model;
-
-		throw new NotFoundHttpException('The requested item does not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
+		return $this->queryOneToResponse($query);
 	}
 
 	public function actionCreate()

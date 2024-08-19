@@ -66,7 +66,7 @@ class MemberKanoonController extends BaseCrudController
     // $now = new \DateTime('now');
     $model->mbrknnAcceptedAt = DbExpression::now(); //$now->format('Y-m-d');
 
-		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
+		$formPosted = $model->load(Yii::$app->request->getBodyParams());
 		$done = false;
 		if ($formPosted)
 			$done = $model->save();
@@ -108,7 +108,7 @@ class MemberKanoonController extends BaseCrudController
 		$model = $this->findModel($id);
 		$model->mbrknnStatus = enuMemberKanoonStatus::Rejected;
 
-		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
+		$formPosted = $model->load(Yii::$app->request->getBodyParams());
 		$done = false;
 		if ($formPosted)
 			$done = $model->save();
@@ -149,7 +149,7 @@ class MemberKanoonController extends BaseCrudController
 	{
 		$model = $this->findModel($id);
 
-		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
+		$formPosted = $model->load(Yii::$app->request->getBodyParams());
 		$done = false;
 		if ($formPosted)
 			$done = $model->save();

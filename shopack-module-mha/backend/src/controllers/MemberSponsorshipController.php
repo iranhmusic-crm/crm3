@@ -43,11 +43,10 @@ class MemberSponsorshipController extends BaseRestController
 		$filter = $this->checkPrivAndGetFilter('mha/member-sponsorship/crud', '0100', 'mbrspsMemberID');
 
 		$searchModel = new MemberSponsorshipModel;
-		$query = $searchModel::find()
-			->select(MemberSponsorshipModel::selectableColumns())
+		$query = MemberSponsorshipModel::find()
+			// ->select(MemberSponsorshipModel::selectableColumns())
 			->joinWith('member.user')
 			->joinWith('masterInsuranceType')
-			->asArray()
 		;
 
 		$searchModel->fillQueryFromRequest($query);
@@ -65,25 +64,17 @@ class MemberSponsorshipController extends BaseRestController
 			$justForMe = true;
 		}
 
-		$model = MemberSponsorshipModel::find()
-			->select(MemberSponsorshipModel::selectableColumns())
+		$query = MemberSponsorshipModel::find()
+			// ->select(MemberSponsorshipModel::selectableColumns())
 			->joinWith('member.user')
 			->joinWith('masterInsuranceType')
 			->andWhere(['mbrspsID' => $id])
-			->asArray()
-			->one()
 		;
 
-		if ($model !== null) {
+		return $this->queryOneToResponse($query, function($model) use($justForMe) {
 			if ($justForMe && ($model['mbrspsMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
-
-			return $model;
-		}
-
-		throw new NotFoundHttpException('The requested item does not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
+		});
 	}
 
 	public function actionCreate()

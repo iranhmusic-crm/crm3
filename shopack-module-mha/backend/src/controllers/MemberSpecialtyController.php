@@ -52,11 +52,10 @@ class MemberSpecialtyController extends BaseRestController
 		$filter = $this->checkPrivAndGetFilter('mha/member-specialty/crud', '0100', 'mbrspcMemberID');
 
 		$searchModel = new MemberSpecialtyModel;
-		$query = $searchModel::find()
-			->select(MemberSpecialtyModel::selectableColumns())
+		$query = MemberSpecialtyModel::find()
+			// ->select(MemberSpecialtyModel::selectableColumns())
 			->joinWith('member.user')
 			->joinWith('specialty')
-			->asArray()
 		;
 
 		$searchModel->fillQueryFromRequest($query);
@@ -74,27 +73,19 @@ class MemberSpecialtyController extends BaseRestController
 			$justForMe = true;
 		}
 
-		$model = MemberSpecialtyModel::find()
-			->select(MemberSpecialtyModel::selectableColumns())
+		$query = MemberSpecialtyModel::find()
+			// ->select(MemberSpecialtyModel::selectableColumns())
 			->joinWith('member.user')
 			->joinWith('specialty')
 			->andWhere(['mbrspcID' => $id])
 			// ->andWhere(['mbrspcMemberID' => $mbrid])
 			// ->andWhere(['mbrspcSpecialtyID' => $spcid])
-			->asArray()
-			->one()
 		;
 
-		if ($model !== null) {
+		return $this->queryOneToResponse($query, function($model) use($justForMe) {
 			if ($justForMe && ($model['mbrspcMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
-
-			return $model;
-		}
-
-		throw new NotFoundHttpException('The requested item does not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
+		});
 	}
 
 	public function actionCreate()

@@ -47,12 +47,11 @@ class ReportController extends BaseRestController
 		PrivHelper::checkPriv(['mha/report/crud' => '0100']);
 
 		$searchModel = new ReportModel;
-		$query = $searchModel::find()
-			->select(ReportModel::selectableColumns())
+		$query = ReportModel::find()
+			// ->select(ReportModel::selectableColumns())
 			->with('createdByUser')
 			->with('updatedByUser')
 			->with('removedByUser')
-			->asArray()
 		;
 
 		$searchModel->fillQueryFromRequest($query);
@@ -67,22 +66,15 @@ class ReportController extends BaseRestController
 	{
 		PrivHelper::checkPriv(['mha/report/crud' => '0100']);
 
-		$model = ReportModel::find()
-			->select(ReportModel::selectableColumns())
+		$query = ReportModel::find()
+			// ->select(ReportModel::selectableColumns())
 			->with('createdByUser')
 			->with('updatedByUser')
 			->with('removedByUser')
 			->where(['rptID' => $id])
-			->asArray()
-			->one()
 		;
 
-		if ($model !== null)
-			return $model;
-
-		throw new NotFoundHttpException('The requested item does not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
+		return $this->queryOneToResponse($query);
 	}
 
 	public function actionCreate()

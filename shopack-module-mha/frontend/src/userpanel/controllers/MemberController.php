@@ -65,7 +65,7 @@ class MemberController extends BaseController
 		$model = new MemberSignupForm;
 		$model->mbrUserID = $userModel->usrID;
 
-		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
+		$formPosted = $model->load(Yii::$app->request->getBodyParams());
 		$done = false;
 		if ($formPosted)
 			$done = $model->save();
@@ -125,7 +125,7 @@ class MemberController extends BaseController
 		$model = new MemberSignupForm;
 		$model->mbrUserID = Yii::$app->user->id;
 
-		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
+		$formPosted = $model->load(Yii::$app->request->getBodyParams());
 		$done = false;
 		if ($formPosted)
 			$done = $model->save();
@@ -166,7 +166,7 @@ class MemberController extends BaseController
   {
 		$model = MemberModel::findOne(Yii::$app->user->id);
 
-		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
+		$formPosted = $model->load(Yii::$app->request->getBodyParams());
 		$done = false;
 		if ($formPosted)
 			$done = $model->save();

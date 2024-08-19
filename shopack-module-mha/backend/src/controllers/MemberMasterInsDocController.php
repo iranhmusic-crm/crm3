@@ -43,10 +43,9 @@ class MemberMasterInsDocController extends BaseRestController
 		$filter = $this->checkPrivAndGetFilter('mha/member-master-ins-doc/crud', '0100', 'mbrminsdocMemberID');
 
 		$searchModel = new MemberMasterInsDocModel;
-		$query = $searchModel::find()
-			->select(MemberMasterInsDocModel::selectableColumns())
+		$query = MemberMasterInsDocModel::find()
+			// ->select(MemberMasterInsDocModel::selectableColumns())
 			->joinWith('member.user')
-			->asArray()
 		;
 
 		$searchModel->fillQueryFromRequest($query);
@@ -64,24 +63,16 @@ class MemberMasterInsDocController extends BaseRestController
 			$justForMe = true;
 		}
 
-		$model = MemberMasterInsDocModel::find()
-			->select(MemberMasterInsDocModel::selectableColumns())
+		$query = MemberMasterInsDocModel::find()
+			// ->select(MemberMasterInsDocModel::selectableColumns())
 			->joinWith('member.user')
 			->andWhere(['mbrminsdocID' => $id])
-			->asArray()
-			->one()
 		;
 
-		if ($model !== null) {
+		return $this->queryOneToResponse($query, function($model) use($justForMe) {
 			if ($justForMe && ($model['mbrminsdocMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
-
-			return $model;
-		}
-
-		throw new NotFoundHttpException('The requested item does not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
+		});
 	}
 
 	public function actionCreate()

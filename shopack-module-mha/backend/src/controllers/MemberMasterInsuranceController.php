@@ -43,11 +43,10 @@ class MemberMasterInsuranceController extends BaseRestController
 		$filter = $this->checkPrivAndGetFilter('mha/member-master-insurance/crud', '0100', 'mbrminshstMemberID');
 
 		$searchModel = new MemberMasterInsuranceModel;
-		$query = $searchModel::find()
-			->select(MemberMasterInsuranceModel::selectableColumns())
+		$query = MemberMasterInsuranceModel::find()
+			// ->select(MemberMasterInsuranceModel::selectableColumns())
 			->joinWith('member.user')
 			->joinWith('masterInsuranceType')
-			->asArray()
 		;
 
 		$searchModel->fillQueryFromRequest($query);
@@ -65,25 +64,17 @@ class MemberMasterInsuranceController extends BaseRestController
 			$justForMe = true;
 		}
 
-		$model = MemberMasterInsuranceModel::find()
-			->select(MemberMasterInsuranceModel::selectableColumns())
+		$query = MemberMasterInsuranceModel::find()
+			// ->select(MemberMasterInsuranceModel::selectableColumns())
 			->joinWith('member.user')
 			->joinWith('masterInsuranceType')
 			->andWhere(['mbrminshstID' => $id])
-			->asArray()
-			->one()
 		;
 
-		if ($model !== null) {
+		return $this->queryOneToResponse($query, function($model) use($justForMe) {
 			if ($justForMe && ($model['mbrminshstMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
-
-			return $model;
-		}
-
-		throw new NotFoundHttpException('The requested item does not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
+		});
 	}
 
 	public function actionCreate()

@@ -37,14 +37,13 @@ class MemberKanoonController extends BaseRestController
 		$filter = $this->checkPrivAndGetFilter('mha/member-kanoon/crud', '0100', 'mbrknnMemberID');
 
 		$searchModel = new MemberKanoonModel;
-		$query = $searchModel::find()
-			->select(MemberKanoonModel::selectableColumns())
+		$query = MemberKanoonModel::find()
+			// ->select(MemberKanoonModel::selectableColumns())
 			->joinWith('member.user')
 			->joinWith('kanoon')
 			->with('createdByUser')
 			->with('updatedByUser')
 			->with('removedByUser')
-			->asArray()
 		;
 
 		$searchModel->fillQueryFromRequest($query);
@@ -62,28 +61,20 @@ class MemberKanoonController extends BaseRestController
 			$justForMe = true;
 		}
 
-		$model = MemberKanoonModel::find()
-			->select(MemberKanoonModel::selectableColumns())
+		$query = MemberKanoonModel::find()
+			// ->select(MemberKanoonModel::selectableColumns())
 			->joinWith('member.user')
 			->joinWith('kanoon')
 			->with('createdByUser')
 			->with('updatedByUser')
 			->with('removedByUser')
 			->andWhere(['mbrknnID' => $id])
-			->asArray()
-			->one()
 		;
 
-		if ($model !== null) {
+		return $this->queryOneToResponse($query, function($model) use($justForMe) {
 			if ($justForMe && ($model['mbrknnMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
-
-			return $model;
-		}
-
-		throw new NotFoundHttpException('The requested item does not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
+		});
 	}
 
 	public function actionCreate()

@@ -36,7 +36,7 @@ class MemberDocumentModel extends MhaActiveRecord
     $query = parent::find();
 
     $query
-      ->select(self::selectableColumns())
+      // ->select(self::selectableColumns())
       ->with('file')
     ;
 

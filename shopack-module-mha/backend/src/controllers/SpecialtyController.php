@@ -79,13 +79,12 @@ class SpecialtyController extends BaseRestController
 			->addOrderBy([$nodeAlias . '.spcLeft' => SORT_ASC])
 		;
 
-		$query = $query
+		// $query = $query
 			// ->select(SpecialtyModel::selectableColumns($nodeAlias))
 			// ->with('createdByUser')
 			// ->with('updatedByUser')
 			// ->with('removedByUser')
-			->asArray()
-		;
+		// ;
 
 		// // fullName
 		// $query
@@ -114,22 +113,15 @@ class SpecialtyController extends BaseRestController
 		$tableName = SpecialtyModel::tableName();
 		$nodeAlias = $tableName; //'node';
 
-		$model = SpecialtyModel::find()
+		$query = SpecialtyModel::find()
 			// ->select(SpecialtyModel::selectableColumns())
 			// ->with('createdByUser')
 			// ->with('updatedByUser')
 			// ->with('removedByUser')
 			->where([$nodeAlias . '.spcID' => $id])
-			->asArray()
-			->one()
 		;
 
-		if ($model !== null)
-			return $model;
-
-		throw new NotFoundHttpException('The requested item does not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
+		return $this->queryOneToResponse($query);
 	}
 
 	public function actionCreate($parentid = null)

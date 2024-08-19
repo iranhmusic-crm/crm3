@@ -43,14 +43,13 @@ class MemberDocumentController extends BaseRestController
 		$filter = $this->checkPrivAndGetFilter('mha/member-document/crud', '0100', 'mbrdocMemberID');
 
 		$searchModel = new MemberDocumentModel;
-		$query = $searchModel::find()
-			->select(MemberDocumentModel::selectableColumns())
+		$query = MemberDocumentModel::find()
+			// ->select(MemberDocumentModel::selectableColumns())
 			->joinWith('member.user')
 			->joinWith('document')
 			->with('createdByUser')
 			->with('updatedByUser')
 			->with('removedByUser')
-			->asArray()
 		;
 
 		$searchModel->fillQueryFromRequest($query);
@@ -68,28 +67,21 @@ class MemberDocumentController extends BaseRestController
 			$justForMe = true;
 		}
 
-		$model = MemberDocumentModel::find()
-			->select(MemberDocumentModel::selectableColumns())
+		$query = MemberDocumentModel::find()
+			// ->select(MemberDocumentModel::selectableColumns())
 			->joinWith('member.user')
 			->joinWith('document')
 			->with('createdByUser')
 			->with('updatedByUser')
 			->with('removedByUser')
 			->andWhere(['mbrdocID' => $id])
-			->asArray()
-			->one()
 		;
 
-		if ($model !== null) {
+		return $this->queryOneToResponse($query, function($model) use($justForMe) {
 			if ($justForMe && ($model['mbrdocMemberID'] != Yii::$app->user->id))
 				throw new ForbiddenHttpException('access denied');
+		});
 
-			return $model;
-		}
-
-		throw new NotFoundHttpException('The requested item does not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
 	}
 
 	public function actionCreate()

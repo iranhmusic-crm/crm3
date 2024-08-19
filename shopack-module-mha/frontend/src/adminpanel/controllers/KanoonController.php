@@ -69,7 +69,7 @@ class KanoonController extends BaseCrudController
     $model = new KanoonSendMessageForm;
     $model->kanoonID = $id;
 
-		$formPosted = $model->load(Yii::$app->request->getBodyParams()/*post*/);
+		$formPosted = $model->load(Yii::$app->request->getBodyParams());
 		$done = false;
 		if ($formPosted)
 			$done = $model->process();

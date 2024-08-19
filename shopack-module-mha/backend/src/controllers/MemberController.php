@@ -61,15 +61,14 @@ class MemberController extends BaseRestController
 		$filter = $this->checkPrivAndGetFilter('mha/member/crud', '0100', 'mbrUserID');
 
 		$searchModel = new MemberModel;
-		$query = $searchModel::find()
-			->select(MemberModel::selectableColumns())
+		$query = MemberModel::find()
+			// ->select(MemberModel::selectableColumns())
 			->addSelect(UserModel::selectableColumns())
 			->innerJoinWith('user')
 			->joinWith('user.imageFile')
 			->with('createdByUser')
 			->with('updatedByUser')
 			->with('removedByUser')
-			->asArray()
 		;
 
 		$this->fillGlobalSearchFromRequest($query, $q);
@@ -89,8 +88,8 @@ class MemberController extends BaseRestController
 				throw new ForbiddenHttpException('access denied');
 		}
 
-		$model = MemberModel::find()
-			->select(MemberModel::selectableColumns())
+		$query = MemberModel::find()
+			// ->select(MemberModel::selectableColumns())
 			->joinWith('user')
 			->joinWith('user.country')
 			->joinWith('user.state')
@@ -106,16 +105,9 @@ class MemberController extends BaseRestController
 			->with('updatedByUser')
 			->with('removedByUser')
 			->where(['mbrUserID' => $id])
-			->asArray()
-			->one()
 		;
 
-		if ($model !== null)
-			return $model;
-
-		throw new NotFoundHttpException('The requested item does not exist.');
-
-		// return RESTfulHelper::modelToResponse($this->findModel($id));
+		return $this->queryOneToResponse($query);
 	}
 
 	public function actionCreate()
