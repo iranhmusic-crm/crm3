@@ -5,18 +5,12 @@
 
 namespace iranhmusic\shopack\mha\backend\controllers;
 
-use Yii;
-use yii\web\NotFoundHttpException;
-use yii\web\UnprocessableEntityHttpException;
-use yii\data\ActiveDataProvider;
-use shopack\base\common\helpers\ExceptionHelper;
 use shopack\base\backend\controller\BaseCrudController;
-use shopack\base\backend\helpers\PrivHelper;
 use iranhmusic\shopack\mha\backend\models\MemberMemberGroupModel;
 
 class MemberMemberGroupController extends BaseCrudController
 {
-	public $modelClass = \iranhmusic\shopack\mha\backend\models\MemberMemberGroupModel::class;
+	public $modelClass = MemberMemberGroupModel::class;
 
 	public function permissions()
 	{
