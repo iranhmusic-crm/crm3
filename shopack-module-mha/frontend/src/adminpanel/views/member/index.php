@@ -53,14 +53,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'format' => 'raw',
             'value' => function ($model, $key, $index, $widget) {
               return Html::asUploadedImage($model->user->imageFile);
-              // if ($model->user->usrImageFileID == null)
-              //   return null;
-              // elseif (empty($model->user->imageFile->fullFileUrl))
-              //   return Yii::t('aaa', '...');
-              // elseif ($model->user->imageFile->isImage())
-              //   return Html::img($model->user->imageFile->fullFileUrl, ['style' => ['width' => '50px']]);
-              // else
-              //   return Html::a(Yii::t('app', 'Download'), $model->user->imageFile->fullFileUrl);
             },
           ],
           [
