@@ -33,7 +33,14 @@ use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 */
 trait MemberKanoonModelTrait
 {
-	// public $mbrRegisterCode = null;
+	public $mbrRegisterCode = null;
+  //just used for export to client
+  public function adhocColumnsInfo()
+  {
+    return [
+      'mbrRegisterCode' => ModelColumnHelper::adhoc(),
+    ];
+  }
 
 	public static $primaryKey = ['mbrknnID'];
 
@@ -44,14 +51,14 @@ trait MemberKanoonModelTrait
 	public function columnsInfo()
 	{
 		return [
-      'mbrRegisterCode' => [
-        enuColumnInfo::type       => 'string',
-        enuColumnInfo::validator  => null,
-        enuColumnInfo::default    => null,
-        enuColumnInfo::required   => false,
-        enuColumnInfo::selectable => false,
-        enuColumnInfo::virtual    => true,
-      ],
+      // 'mbrRegisterCode' => [
+      //   enuColumnInfo::type       => 'string',
+      //   enuColumnInfo::validator  => null,
+      //   enuColumnInfo::default    => null,
+      //   enuColumnInfo::required   => false,
+      //   enuColumnInfo::selectable => false,
+      //   enuColumnInfo::virtual    => true,
+      // ],
 
 			'mbrknnID' => [
 				enuColumnInfo::type       => 'integer',
