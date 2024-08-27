@@ -447,16 +447,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   <div class="clearfix"></div>
                 </div>
                 <div class='card-body text-center'>
-                  <?php
-                    if ($model->user->usrImageFileID == null)
-                      echo Yii::t('app', 'not set');
-                    else if (empty($model->user->imageFile->fullFileUrl))
-                      echo Yii::t('aaa', 'Uploading...');
-                    else if ($model->user->imageFile->isImage())
-                      echo Html::img($model->user->imageFile->fullFileUrl, ['style' => ['width' => '100%']]);
-                    else
-                      echo Html::a(Yii::t('app', 'Download'), $model->user->imageFile->fullFileUrl);
-                  ?>
+                  <?= Html::asUploadedImage($model->user->imageFile, '100%', true) ?>
                 </div>
               </div>
 

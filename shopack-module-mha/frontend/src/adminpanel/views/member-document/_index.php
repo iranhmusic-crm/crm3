@@ -146,14 +146,7 @@ use shopack\base\frontend\common\widgets\JsonTableGrid;
           'attribute' => 'mbrdocFileID',
           'format' => 'raw',
           'value' => function ($model, $key, $index, $widget) {
-            if ($model->mbrdocFileID == null)
-              return null;
-            elseif (empty($model->file->fullFileUrl))
-              return Yii::t('aaa', 'Uploading...');
-            elseif ($model->file->isImage())
-              return Html::img($model->file->fullFileUrl, ['style' => ['width' => '75px']]);
-            else
-              return Html::a(Yii::t('app', 'Download'), $model->file->fullFileUrl);
+            return Html::asUploadedImage($model->file, '75px');
           },
         ],
         [

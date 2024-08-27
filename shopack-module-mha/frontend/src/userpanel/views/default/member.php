@@ -220,16 +220,7 @@ $defects = $model->getDefects();
 							<div class="clearfix"></div>
 						</div>
 						<div class='card-body text-center'>
-							<?php
-								if ($model->user->usrImageFileID == null)
-									echo Yii::t('app', 'Not defined');
-								elseif (empty($model->user->imageFile->fullFileUrl))
-									echo Yii::t('aaa', 'Uploading...');
-								elseif ($model->user->imageFile->isImage())
-									echo Html::img($model->user->imageFile->fullFileUrl, ['style' => ['width' => '100%']]);
-								else
-									echo Html::a(Yii::t('app', 'Download'), $model->imageFile->fullFileUrl);
-							?>
+							<?= Html::asUploadedImage($model->user->imageFile, '100%', true) ?>
 						</div>
 					</div>
 

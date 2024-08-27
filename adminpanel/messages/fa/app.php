@@ -108,6 +108,7 @@ return [
 
 	'Reason' => 'دلیل',
 	'Reasons' => 'دلایل',
+	'Reject Reasons' => 'دلایل رد',
 
 	'Basic Definitions' => 'تعاریف پایه',
 	'Basic Definition' => 'تعریف پایه',
