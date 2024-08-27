@@ -10,18 +10,6 @@ use shopack\base\backend\accounting\controllers\BaseUserAssetController;
 
 class UserAssetController extends BaseUserAssetController
 {
-	public function behaviors()
-	{
-		$behaviors = parent::behaviors();
-
-		// $behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
-		// 	'index',
-		// 	'view',
-		// ];
-
-		return $behaviors;
-	}
-
 	public $modelClass = \iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel::class;
 
 	public function permissions()
@@ -39,9 +27,10 @@ class UserAssetController extends BaseUserAssetController
 										},
 									],
 			'view'   => ['mha/accounting/user-asset/crud' => '0100', 'checker' => $checkOwner],
-			'create' => ['mha/accounting/user-asset/crud' => '1000'],
+			'create' => ['mha/accounting/user-asset/crud' => '1000', 'checker' => $checkOwner],
 			'update' => ['mha/accounting/user-asset/crud' => '0010', 'checker' => $checkOwner],
 			'delete' => ['mha/accounting/user-asset/crud' => '0001', 'checker' => $checkOwner],
+			'undelete' => ['mha/accounting/user-asset/undelete'],
 		];
 	}
 

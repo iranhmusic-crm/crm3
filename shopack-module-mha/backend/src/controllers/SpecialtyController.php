@@ -16,12 +16,6 @@ use shopack\base\common\db\DbExpression;
 
 class SpecialtyController extends BaseRestController
 {
-	// public function behaviors()
-	// {
-	// 	$behaviors = parent::behaviors();
-	// 	return $behaviors;
-	// }
-
 	public function actionOptions()
 	{
 		return 'options';

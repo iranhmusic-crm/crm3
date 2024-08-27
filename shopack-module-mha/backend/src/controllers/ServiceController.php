@@ -17,7 +17,7 @@ class ServiceController extends BaseRestController
 	{
 		$behaviors = parent::behaviors();
 
-		$behaviors[BaseRestController::BEHAVIOR_AUTHENTICATOR]['except'] = [
+		$behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
 			'process-voucher-item',
 		];
 

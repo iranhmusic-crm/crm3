@@ -7,17 +7,12 @@ namespace iranhmusic\shopack\mha\backend;
 
 use Yii;
 use yii\base\BootstrapInterface;
-// use shopack\base\common\shop\ShopModuleTrait;
-// use iranhmusic\shopack\mha\backend\models\MembershipModel;
-// use iranhmusic\shopack\mha\backend\models\MemberMembershipModel;
 use iranhmusic\shopack\mha\backend\accounting\AccountingModule;
 
 class Module
 	extends \shopack\base\common\base\BaseModule
 	implements BootstrapInterface
 {
-	// use ShopModuleTrait;
-
 	//used for trust message channel
 	public $servicePrivateKey;
 
@@ -269,7 +264,6 @@ class Module
 
 		$accounting = $this->getModule('accounting');
 		$accounting->bootstrap($app);
-
 	}
 
 }

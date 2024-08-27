@@ -31,6 +31,7 @@ class DiscountController extends BaseDiscountController
 			'create' => ['mha/accounting/discount/crud', '1000'],
 			'update' => ['mha/accounting/discount/crud', '0010'],
 			'delete' => ['mha/accounting/discount/crud', '0001'],
+			'undelete' => ['mha/accounting/discount/undelete'],
 		];
 	}
 

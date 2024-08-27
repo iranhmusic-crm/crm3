@@ -31,6 +31,7 @@ class ProductController extends BaseProductController
 			'create' => ['mha/accounting/product/crud', '1000'],
 			'update' => ['mha/accounting/product/crud', '0010'],
 			'delete' => ['mha/accounting/product/crud', '0001'],
+			'undelete' => ['mha/accounting/product/undelete'],
 		];
 	}
 

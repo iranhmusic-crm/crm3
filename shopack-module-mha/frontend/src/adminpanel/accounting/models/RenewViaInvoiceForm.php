@@ -68,7 +68,7 @@ class RenewViaInvoiceForm extends Model
 	{
 		return [
 			'memberID'									=> Yii::t('mha', 'Member'),
-			'ofpID'											=> 'پرداخت آفلاین',
+			'ofpID'											=> Yii::t('aaa', 'Offline Payment'),
 			'startDate'									=> 'تاریخ شروع دوره عضویت',
 			'years'											=> 'طول دوره',
 			'membershipSaleableID'			=> 'دوره عضویت',

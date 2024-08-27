@@ -18,12 +18,6 @@ use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 
 class MemberKanoonController extends BaseRestController
 {
-	// public function behaviors()
-	// {
-	// 	$behaviors = parent::behaviors();
-	// 	return $behaviors;
-	// }
-
 	protected function findModel($id)
 	{
 		if (($model = MemberKanoonModel::findOne(['mbrknnID' => $id])) !== null)

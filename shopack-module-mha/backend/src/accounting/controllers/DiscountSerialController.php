@@ -31,6 +31,7 @@ class DiscountSerialController extends BaseDiscountSerialController
 			'create' => ['mha/accounting/discount-serial/crud', '1000'],
 			'update' => ['mha/accounting/discount-serial/crud', '0010'],
 			'delete' => ['mha/accounting/discount-serial/crud', '0001'],
+			'undelete' => ['mha/accounting/discount-serial/undelete'],
 		];
 	}
 

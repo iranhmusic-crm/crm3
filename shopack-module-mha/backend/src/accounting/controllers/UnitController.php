@@ -31,6 +31,7 @@ class UnitController extends BaseUnitController
 			'create' => ['mha/accounting/unit/crud', '1000'],
 			'update' => ['mha/accounting/unit/crud', '0010'],
 			'delete' => ['mha/accounting/unit/crud', '0001'],
+			'undelete' => ['mha/accounting/unit/undelete'],
 		];
 	}
 

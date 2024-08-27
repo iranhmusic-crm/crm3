@@ -36,6 +36,7 @@ class DocumentController extends BaseCrudController
 			'create' => ['mha/document/crud', '1000'],
 			'update' => ['mha/document/crud', '0010'],
 			'delete' => ['mha/document/crud', '0001'],
+			'undelete' => ['mha/document/undelete'],
 		];
 	}
 

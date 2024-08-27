@@ -17,12 +17,6 @@ use iranhmusic\shopack\mha\backend\models\MemberSpecialtyModel;
 
 class MemberSpecialtyController extends BaseRestController
 {
-	// public function behaviors()
-	// {
-	// 	$behaviors = parent::behaviors();
-	// 	return $behaviors;
-	// }
-
 	public function actionOptions()
 	{
 		return 'options';

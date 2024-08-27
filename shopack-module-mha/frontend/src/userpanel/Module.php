@@ -7,11 +7,7 @@ namespace iranhmusic\shopack\mha\frontend\userpanel;
 
 use Yii;
 use yii\base\BootstrapInterface;
-// use shopack\base\common\shop\ShopModuleTrait;
-// use iranhmusic\shopack\mha\frontend\common\models\MembershipModel;
-// use iranhmusic\shopack\mha\frontend\common\models\MemberMembershipModel;
 use iranhmusic\shopack\mha\frontend\common\controllers\BasketController;
-// use iranhmusic\shopack\mha\frontend\userpanel\accounting\controllers\AccountingController;
 use shopack\base\frontend\userpanel\accounting\AccountingModule;
 
 class Module

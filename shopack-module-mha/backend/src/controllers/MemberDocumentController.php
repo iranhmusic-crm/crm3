@@ -17,12 +17,6 @@ use iranhmusic\shopack\mha\backend\models\MemberDocumentModel;
 
 class MemberDocumentController extends BaseRestController
 {
-	// public function behaviors()
-	// {
-	// 	$behaviors = parent::behaviors();
-	// 	return $behaviors;
-	// }
-
 	public function actionOptions()
 	{
 		return 'options';

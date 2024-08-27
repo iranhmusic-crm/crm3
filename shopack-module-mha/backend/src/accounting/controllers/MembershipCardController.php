@@ -13,16 +13,6 @@ use iranhmusic\shopack\mha\backend\accounting\models\MembershipCardForm;
 
 class MembershipCardController extends BaseRestController
 {
-	public function behaviors()
-	{
-		$behaviors = parent::behaviors();
-
-		// $behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
-		// ];
-
-		return $behaviors;
-	}
-
 	public function actionOptions()
 	{
 		return 'options';

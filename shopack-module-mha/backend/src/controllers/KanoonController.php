@@ -37,6 +37,7 @@ class KanoonController extends BaseCrudController
 			'create' => ['mha/kanoon/crud', '1000'],
 			'update' => ['mha/kanoon/crud', '0010'],
 			'delete' => ['mha/kanoon/crud', '0001'],
+			'undelete' => ['mha/kanoon/undelete'],
 		];
 	}
 

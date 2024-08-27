@@ -20,7 +20,7 @@ class ReportController extends BaseRestController
 		$behaviors = parent::behaviors();
 
 		if (YII_ENV_DEV) {
-			$behaviors[BaseRestController::BEHAVIOR_AUTHENTICATOR]['except'] = [
+			$behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
 				'run',
 			];
 		}

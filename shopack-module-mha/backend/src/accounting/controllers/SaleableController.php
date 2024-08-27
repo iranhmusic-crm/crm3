@@ -31,6 +31,7 @@ class SaleableController extends BaseSaleableController
 			'create' => ['mha/accounting/saleable/crud', '1000'],
 			'update' => ['mha/accounting/saleable/crud', '0010'],
 			'delete' => ['mha/accounting/saleable/crud', '0001'],
+			'undelete' => ['mha/accounting/saleable/undelete'],
 		];
 	}
 

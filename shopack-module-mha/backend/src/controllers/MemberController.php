@@ -19,12 +19,6 @@ use iranhmusic\shopack\mha\backend\models\MemberSignupForm;
 
 class MemberController extends BaseRestController
 {
-	// public function behaviors()
-	// {
-	// 	$behaviors = parent::behaviors();
-	// 	return $behaviors;
-	// }
-
 	public function actionOptions()
 	{
 		return 'options';

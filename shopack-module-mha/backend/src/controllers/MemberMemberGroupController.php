@@ -16,18 +16,6 @@ use iranhmusic\shopack\mha\backend\models\MemberMemberGroupModel;
 
 class MemberMemberGroupController extends BaseCrudController
 {
-	public function behaviors()
-	{
-		$behaviors = parent::behaviors();
-
-		// $behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
-		// 	'index',
-		// 	'view',
-		// ];
-
-		return $behaviors;
-	}
-
 	public $modelClass = \iranhmusic\shopack\mha\backend\models\MemberMemberGroupModel::class;
 
 	public function permissions()
@@ -38,6 +26,7 @@ class MemberMemberGroupController extends BaseCrudController
 			'create' => ['mha/member-member-group/crud' => '1000'],
 			'update' => ['mha/member-member-group/crud' => '0010'],
 			'delete' => ['mha/member-member-group/crud' => '0001'],
+			'undelete' => ['mha/member-member-group/undelete'],
 		];
 	}
 

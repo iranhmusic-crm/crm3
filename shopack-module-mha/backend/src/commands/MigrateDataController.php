@@ -19,6 +19,7 @@ use shopack\aaa\common\enums\enuWalletStatus;
 use shopack\aaa\common\enums\enuVoucherType;
 use shopack\aaa\common\enums\enuVoucherStatus;
 use shopack\aaa\common\enums\enuOnlinePaymentStatus;
+use shopack\aaa\common\enums\enuOfflinePaymentType;
 use shopack\aaa\common\enums\enuOfflinePaymentStatus;
 use iranhmusic\shopack\mha\backend\models\BasicDefinitionModel;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
@@ -3159,7 +3160,8 @@ SQL;
             , ofpUUID             = UUID()
             , ofpOwnerUserID      = {$userid}
             , ofpVoucherID        = {$voucherid}
-            , ofpBankOrCart       = {$tbl_billing_bank}
+            , ofpType             = '{$fnGetConst(enuOfflinePaymentType::Pos)}'
+            , ofpBankOrCart_OLD   = {$tbl_billing_bank}
             , ofpTrackNumber      = {$tbl_billing_track}
             , ofpReferenceNumber  = {$tbl_billing_title}
             , ofpAmount           = {$tbl_billing_price}

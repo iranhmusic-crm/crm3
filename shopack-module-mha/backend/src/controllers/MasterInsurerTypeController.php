@@ -31,6 +31,7 @@ class MasterInsurerTypeController extends BaseCrudController
 			'create' => ['mha/master-insurer-type/crud', '1000'],
 			'update' => ['mha/master-insurer-type/crud', '0010'],
 			'delete' => ['mha/master-insurer-type/crud', '0001'],
+			'undelete' => ['mha/master-insurer-type/undelete'],
 		];
 	}
 
