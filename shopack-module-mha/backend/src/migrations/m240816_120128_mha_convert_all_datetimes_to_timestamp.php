@@ -111,8 +111,7 @@ SQL
 		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Kanoon`
 	CHANGE COLUMN `knnCreatedAt` `knnCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `knnStatus`,
-	CHANGE COLUMN `knnUpdatedAt` `knnUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `knnCreatedBy`,
-	CHANGE COLUMN `knnRemovedAt` `knnRemovedAt` TIMESTAMP NULL DEFAULT NULL AFTER `knnRemovedAt_OLD`;
+	CHANGE COLUMN `knnUpdatedAt` `knnUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `knnCreatedBy`;
 SQL
 		);
 
