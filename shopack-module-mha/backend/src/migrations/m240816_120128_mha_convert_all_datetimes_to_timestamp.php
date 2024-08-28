@@ -14,7 +14,7 @@ ALTER TABLE `tbl_convert`
 	CHANGE COLUMN `at` `at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `lastID`;
 SQL
 		);
-
+/*
 		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_AssetUsage`
 	CHANGE COLUMN `usgLastDateTime` `usgLastDateTime` TIMESTAMP NOT NULL AFTER `usgResolution`,
@@ -22,7 +22,7 @@ ALTER TABLE `tbl_MHA_Accounting_AssetUsage`
 	CHANGE COLUMN `usgUpdatedAt` `usgUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `usgCreatedBy`;
 SQL
 		);
-
+*/
 		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_Accounting_Discount`
 	CHANGE COLUMN `dscValidFrom` `dscValidFrom` TIMESTAMP NULL DEFAULT NULL AFTER `dscCodeSerialLength`,

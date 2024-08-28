@@ -59,21 +59,23 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'mbrRegisterCode',
             'format' => 'raw',
             'value' => function ($model, $key, $index, $widget) {
-              return Html::a($model->mbrRegisterCode ?? '[ندارد]', ['view', 'id' => $model->mbrUserID]);
+              return Html::a($model->mbrRegisterCode ??
+                Yii::$app->formatter->asBoolean(false), ['view', 'id' => $model->mbrUserID]);
+              // return Html::a($model->mbrRegisterCode ?? '[ندارد]', ['view', 'id' => $model->mbrUserID]);
             },
           ],
           [
             'attribute' => 'usrFirstName',
             'format' => 'raw',
             'value' => function ($model, $key, $index, $widget) {
-              return $model->user->usrFirstName;
+              return Html::a($model->user->usrFirstName, ['view', 'id' => $model->mbrUserID]);
             },
           ],
           [
             'attribute' => 'usrLastName',
             'format' => 'raw',
             'value' => function ($model, $key, $index, $widget) {
-              return $model->user->usrLastName;
+              return Html::a($model->user->usrLastName, ['view', 'id' => $model->mbrUserID]);
             },
           ],
           [
