@@ -106,9 +106,7 @@ $this->params['breadcrumbs'][] = $this->title;
               [
                 'attribute' => 'dscType',
                 'format' => 'raw',
-                'value' => enuDiscountType::getIcon($model->dscType)
-                  . ' '
-                  . enuDiscountType::getLabel($model->dscType),
+                'value' => enuDiscountType::getLabelWithIcon($model->dscType),
               ],
             ]);
 
