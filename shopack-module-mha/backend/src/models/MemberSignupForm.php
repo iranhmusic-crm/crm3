@@ -8,12 +8,7 @@ namespace iranhmusic\shopack\mha\backend\models;
 use Yii;
 use yii\base\Model;
 use yii\web\UnprocessableEntityHttpException;
-use shopack\base\common\helpers\Json;
-use shopack\base\common\helpers\ArrayHelper;
-use shopack\base\common\validators\GroupRequiredValidator;
-use shopack\base\common\validators\JsonValidator;
 use shopack\aaa\backend\models\UserModel;
-use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 
 class MemberSignupForm extends Model
 {
@@ -201,7 +196,8 @@ class MemberSignupForm extends Model
 	}
 
 	private $_user = null;
-	public function getUser() {
+	public function getUser()
+	{
 		if ($this->_user == null)
 			$this->_user = UserModel::findOne($this->mbrUserID);
 		return $this->_user;

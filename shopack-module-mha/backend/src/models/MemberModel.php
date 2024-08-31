@@ -6,9 +6,9 @@
 namespace iranhmusic\shopack\mha\backend\models;
 
 use Yii;
-use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
-use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 use shopack\aaa\backend\models\UserModel;
+use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
+use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 
 class MemberModel extends MhaActiveRecord
 {

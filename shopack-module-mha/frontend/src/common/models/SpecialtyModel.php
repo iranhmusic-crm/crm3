@@ -8,8 +8,6 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 use Yii;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuSpecialtyStatus;
-use shopack\aaa\frontend\common\models\UserModel;
-use shopack\base\common\validators\GroupRequiredValidator;
 
 class SpecialtyModel extends RestClientActiveRecord
 {

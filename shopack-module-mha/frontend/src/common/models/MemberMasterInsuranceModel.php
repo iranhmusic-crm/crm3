@@ -7,8 +7,6 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
-use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
-use iranhmusic\shopack\mha\frontend\common\models\MasterInsuranceModel;
 
 class MemberMasterInsuranceModel extends RestClientActiveRecord
 {

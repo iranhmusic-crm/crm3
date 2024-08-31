@@ -7,7 +7,6 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
-// use shopack\aaa\common\enums\enuMemberMemberGroupStatus;
 
 class MemberMemberGroupModel extends RestClientActiveRecord
 {

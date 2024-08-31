@@ -7,22 +7,12 @@ namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use yii\base\Model;
 use yii\web\ServerErrorHttpException;
-use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\rest\RestClientDataProvider;
 use iranhmusic\shopack\mha\frontend\common\models\DocumentModel;
 
 class DocumentSearchModel extends DocumentModel
 {
   use \shopack\base\common\db\SearchModelTrait;
-
-	public $providedCount;
-
-	public function attributeLabels()
-	{
-		return ArrayHelper::merge(parent::attributeLabels(), [
-			'providedCount' => 'درج شده',
-		]);
-	}
 
 	public function scenarios()
 	{

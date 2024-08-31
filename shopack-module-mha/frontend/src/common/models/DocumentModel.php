@@ -6,7 +6,6 @@
 namespace iranhmusic\shopack\mha\frontend\common\models;
 
 use Yii;
-use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
 
@@ -33,6 +32,8 @@ class DocumentModel extends RestClientActiveRecord
 			'docRemovedAt'					=> Yii::t('app', 'Removed At'),
 			'docRemovedBy'					=> Yii::t('app', 'Removed By'),
 			'docRemovedBy_User'			=> Yii::t('app', 'Removed By'),
+
+			'providedCount' => 'درج شده',
 		];
 	}
 

@@ -5,11 +5,10 @@
 
 namespace iranhmusic\shopack\mha\backend\models;
 
-use Yii;
-use shopack\aaa\backend\models\UserModel;
-use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
-use iranhmusic\shopack\mha\common\enums\enuSpecialtyStatus;
 use shopack\base\common\db\DbExpression;
+use shopack\aaa\backend\models\UserModel;
+use iranhmusic\shopack\mha\common\enums\enuSpecialtyStatus;
+use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 
 class SpecialtyModel extends MhaActiveRecord
 {

@@ -6,9 +6,6 @@
 namespace iranhmusic\shopack\mha\backend\models;
 
 use shopack\aaa\backend\classes\AAAActiveRecord;
-use shopack\base\common\accounting\enums\enuAmountType;
-use yii\base\InvalidValueException;
-use yii\web\UnprocessableEntityHttpException;
 
 class MemberGroupModel extends AAAActiveRecord
 {

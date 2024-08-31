@@ -5,7 +5,6 @@
 
 namespace iranhmusic\shopack\mha\backend\models;
 
-use Yii;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionStatus;
 

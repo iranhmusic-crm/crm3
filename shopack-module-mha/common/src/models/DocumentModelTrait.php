@@ -29,6 +29,15 @@ use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
 */
 trait DocumentModelTrait
 {
+	public $providedCount;
+	//just used for export to client
+  public function adhocColumnsInfo()
+  {
+    return [
+      'providedCount' => ModelColumnHelper::adhoc(),
+    ];
+  }
+
 	public static $EXPARAM_id					= 'id';
 	public static $EXPARAM_name				= 'name';
 	public static $EXPARAM_type				= 'type';

@@ -7,7 +7,6 @@ namespace iranhmusic\shopack\mha\backend\models;
 
 use Yii;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
-use yii\web\UnprocessableEntityHttpException;
 
 class MemberDocumentModel extends MhaActiveRecord
 {
