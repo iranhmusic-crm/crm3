@@ -183,7 +183,7 @@ strong {
 }
 
 .memberinfobox {
-  height: 5.5cm;
+  height: 6cm;
 }
 
 hr.dotted {
@@ -271,23 +271,23 @@ if (empty($model->user->usrBirthCityID) == false) {
 
       <table class='table table-borderless'>
         <tr>
-          <td><span class='fieldLabel'>جنسیت:</span><span class='fieldValue'><?= ($model->user->usrGender == enuGender::Male ? 'آقا' : ($model->user->usrGender == enuGender::Female ? 'خانم' : '')) ?></span></td>
-          <td><span class='fieldLabel'>کد ملی:</span><span class='fieldValue'><?= Yii::$app->formatter->asPersianNum($model->user->usrSSID) ?></span></td>
-          <td><span class='fieldLabel'>شماره شناسنامه:</span><span class='fieldValue'><?= Yii::$app->formatter->asPersianNum($model->user->usrBirthCertID) ?></span></td>
-          <td><span class='fieldLabel'>تاریخ تولد:</span><span class='fieldValue'><?= Yii::$app->formatter->asPersianNum(Yii::$app->formatter->asJalali($model->user->usrBirthDate)) ?></span></td>
-        </tr>
-        <tr>
           <td><span class='fieldLabel'>نام:</span><span class='fieldValue'><?= Html::encode($model->user->usrFirstName) ?></span></td>
           <td><span class='fieldLabel'>نام خانوادگی:</span><span class='fieldValue'><?= Html::encode($model->user->usrLastName) ?></span></td>
           <td><span class='fieldLabel'>نام پدر:</span><span class='fieldValue'><?= Html::encode($model->user->usrFatherName) ?></span></td>
           <td><span class='fieldLabel'>محل تولد:</span><span class='fieldValue'><?= isset($cityModel) ? $cityModel->ctvName : '' ?></span></td>
         </tr>
         <tr>
+          <td><span class='fieldLabel'>جنسیت:</span><span class='fieldValue'><?= ($model->user->usrGender == enuGender::Male ? 'آقا' : ($model->user->usrGender == enuGender::Female ? 'خانم' : '')) ?></span></td>
+          <td><span class='fieldLabel'>کد ملی:</span><span class='fieldValue'><?= Yii::$app->formatter->asPersianNum($model->user->usrSSID) ?></span></td>
+          <td><span class='fieldLabel'>شماره شناسنامه:</span><span class='fieldValue'><?= Yii::$app->formatter->asPersianNum($model->user->usrBirthCertID) ?></span></td>
+          <td><span class='fieldLabel'>تاریخ تولد:</span><span class='fieldValue'><?= Yii::$app->formatter->asPersianNum(Yii::$app->formatter->asJalali($model->user->usrBirthDate)) ?></span></td>
+        </tr>
+        <!-- <tr>
           <td><span class='fieldLabel'>نام لاتین:</span><span class='fieldValue dir-ltr'><?= Html::encode($model->user->usrFirstName_en) ?></span></td>
           <td><span class='fieldLabel'>نام خانوادگی لاتین:</span><span class='fieldValue dir-ltr'><?= Html::encode($model->user->usrLastName_en) ?></span></td>
           <td><span class='fieldLabel'>نام پدر لاتین:</span><span class='fieldValue dir-ltr'><?= Html::encode($model->user->usrFatherName_en) ?></span></td>
           <td></td>
-        </tr>
+        </tr> -->
         <tr>
           <td><span class='fieldLabel'>آخرین مدرک تحصیلی:</span><span class='fieldValue'><?= enuUserEducationLevel::getLabel($model->user->usrEducationLevel) ?></span></td>
           <td><span class='fieldLabel'>رشته تحصیلی:</span><span class='fieldValue'><?= Html::encode($model->user->usrFieldOfStudy) ?></span></td>

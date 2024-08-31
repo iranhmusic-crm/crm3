@@ -349,6 +349,25 @@ $this->params['breadcrumbs'][] = $this->title;
                     if ($model->canUndelete())
                       $buttons[] = Html::undeleteButton(null, ['id' => $model->mbrUserID]);
 
+                    if (empty($model->user->usrMobile) == false) {
+                      $buttons[] = Html::a('ارسال پیامک', [
+                        '/aaa/user/send-message',
+                        'id' => $model->mbrUserID,
+                      ], [
+                        'class' => 'btn btn-sm btn-primary',
+                        'modal' => true,
+                      ]);
+                    }
+
+                    if (empty($buttons) == false)
+                      echo implode(' ', $buttons);
+                  ?>
+                </div>
+
+                <div class='card-body'>
+                  <?php
+                    $buttons = [];
+
                     $buttons[] = Html::a(Yii::t('mha', 'Print Membership Form'), [
                       'print-membership-form',
                       'id' => $model->mbrUserID,
@@ -384,16 +403,6 @@ $this->params['breadcrumbs'][] = $this->title;
                       // 'modal' => true,
                       'target' => '_blank',
                     ]);
-
-                    if (empty($model->user->usrMobile) == false) {
-                      $buttons[] = Html::a('ارسال پیامک', [
-                        '/aaa/user/send-message',
-                        'id' => $model->mbrUserID,
-                      ], [
-                        'class' => 'btn btn-sm btn-primary',
-                        'modal' => true,
-                      ]);
-                    }
 
                     if (empty($buttons) == false)
                       echo implode(' ', $buttons);
