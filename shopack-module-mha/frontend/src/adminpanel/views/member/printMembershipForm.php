@@ -6,12 +6,13 @@
 /** @var yii\web\View $this */
 
 use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\web\View;
 use shopack\aaa\common\enums\enuGender;
-use iranhmusic\shopack\mha\frontend\common\models\MemberKanoonModel;
-use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 use shopack\aaa\common\enums\enuUserEducationLevel;
 use shopack\aaa\common\enums\enuUserMaritalStatus;
 use shopack\aaa\common\enums\enuUserMilitaryStatus;
+use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
+use iranhmusic\shopack\mha\frontend\common\models\MemberKanoonModel;
 
 $this->title = 'چاپ فرم عضویت';
 $this->params['breadcrumbs'][] = Yii::t('mha', 'Music House');
@@ -181,8 +182,8 @@ strong {
   height: 4cm;
 }
 
-.h-2cm {
-  min-height: 2cm;
+.memberinfobox {
+  height: 5.5cm;
 }
 
 hr.dotted {
@@ -303,13 +304,13 @@ if (empty($model->user->usrBirthCityID) == false) {
       </table>
 
       <div class='row'>
-        <div class='col-12 bordered h-2cm'>
+        <div class='col-12 bordered'>
           <div><span class='fieldLabel'>سوابق آموزشی</span><span class='fieldValue'>(با ذکر نام اساتید و مدت دوره آموزش):</span></div>
-          <div><?= Yii::$app->formatter->asSoftParagraphs(Yii::$app->formatter->asPersianNum(Html::encode($model->mbrMusicEducationHistory))) ?></div>
+        <div class='resize memberinfobox'><?= Yii::$app->formatter->asSoftParagraphs(Yii::$app->formatter->asPersianNum(Html::encode($model->mbrMusicEducationHistory))) ?></div>
         </div>
-        <div class='col-12 bordered h-2cm'>
+        <div class='col-12 bordered'>
           <div><span class='fieldLabel'>سوابق فعالیت‌های هنری</span><span class='fieldValue'>(با ذکر نام آثار مکتوب، صوتی و تصویری):</span></div>
-          <div><?= Yii::$app->formatter->asSoftParagraphs(Yii::$app->formatter->asPersianNum(Html::encode($model->mbrArtHistory))) ?></div>
+        <div class='resize memberinfobox'><?= Yii::$app->formatter->asSoftParagraphs(Yii::$app->formatter->asPersianNum(Html::encode($model->mbrArtHistory))) ?></div>
         </div>
       </div>
 
@@ -393,3 +394,37 @@ if (empty($model->user->usrBirthCityID) == false) {
     </div>
   </div>
 </div>
+
+<?php
+  $js =<<<JS
+var autoSizeText = function() {
+  var el, elements, _i, _len, _results;
+  elements = $('.resize');
+
+  if (elements.length < 0)
+    return;
+
+  _results = [];
+  for (_i = 0, _len = elements.length; _i < _len; _i++) {
+    el = elements[_i];
+    _results.push((function(el) {
+      var resizeText, _results1;
+      resizeText = function() {
+        var elNewFontSize;
+        elNewFontSize = (parseInt($(el).css('font-size').slice(0, -2)) - 1) + 'px';
+        return $(el).css('font-size', elNewFontSize);
+      };
+      _results1 = [];
+      while (el.scrollHeight > el.offsetHeight) {
+        _results1.push(resizeText());
+      }
+       return _results1;
+    })(el));
+  }
+  return _results;
+};
+JS;
+
+  $this->registerJs($js);
+  $this->registerJs("return autoSizeText();", View::POS_READY);
+?>
