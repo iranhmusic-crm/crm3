@@ -23,6 +23,7 @@ class MemberSignupForm extends Model
 	public $usrMobile;
 	public $usrSSID;
 	public $usrBirthDate;
+	public $usrBirthCityID;
 	public $usrCountryID;
 	public $usrStateID;
 	public $usrCityOrVillageID;
@@ -63,6 +64,7 @@ class MemberSignupForm extends Model
 				'usrMobile',
 				'usrSSID',
 				'usrBirthDate',
+				'usrBirthCityID',
 				'usrCountryID',
 				'usrStateID',
 				'usrCityOrVillageID',
@@ -135,6 +137,12 @@ class MemberSignupForm extends Model
 				'required',
 				'when' => function ($model) {
 					return (empty($model->user->usrBirthDate));
+				},
+			],
+			['usrBirthCityID',
+				'required',
+				'when' => function ($model) {
+					return (empty($model->user->usrBirthCityID));
 				},
 			],
 			['usrCountryID',
@@ -260,6 +268,10 @@ class MemberSignupForm extends Model
 			if (array_key_exists('usrBirthDate', $bodyParams)) {
 				$userFieldsCount++;
 				$this->user->usrBirthDate = $this->usrBirthDate;
+			}
+			if (array_key_exists('usrBirthCityID', $bodyParams)) {
+				$userFieldsCount++;
+				$this->user->usrBirthCityID = $this->usrBirthCityID;
 			}
 			if (array_key_exists('usrCountryID', $bodyParams)) {
 				$userFieldsCount++;

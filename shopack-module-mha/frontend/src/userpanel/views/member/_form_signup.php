@@ -3,30 +3,23 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-use yii\web\JsExpression;
-use borales\extensions\phoneInput\PhoneInput;
+// use yii\web\JsExpression;
+// use borales\extensions\phoneInput\PhoneInput;
 use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\Url;
-use shopack\base\frontend\common\widgets\Select2;
-use shopack\base\frontend\common\widgets\DepDrop;
-use shopack\base\frontend\common\widgets\datetime\DatePicker;
-use shopack\base\frontend\common\helpers\Html;
-use shopack\base\common\helpers\HttpHelper;
 use shopack\base\common\helpers\ArrayHelper;
+use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
-use shopack\aaa\frontend\common\models\UserModel;
+use shopack\base\frontend\common\widgets\Select2;
+use shopack\base\frontend\common\widgets\datetime\DatePicker;
 use shopack\aaa\common\enums\enuGender;
-use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
-use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
-use shopack\aaa\frontend\common\models\GeoCountryModel;
-use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
-use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 use shopack\aaa\frontend\common\widgets\form\GeoCityOrVillageChooseFormField;
 use shopack\aaa\frontend\common\widgets\form\GeoCountryChooseFormField;
 use shopack\aaa\frontend\common\widgets\form\GeoStateChooseFormField;
-use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
-
+use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
+use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
+use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 ?>
 
 <div class='member-form'>
@@ -157,6 +150,11 @@ use shopack\aaa\frontend\common\widgets\form\GeoTownChooseFormField;
 							],
 						],
 					]
+				]);
+			}
+			if (empty($model->user->usrBirthCityID)) {
+				$builder->fields([
+					GeoCityOrVillageChooseFormField::field($this, $model, 'usrBirthCityID'),
 				]);
 			}
 

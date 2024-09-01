@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <p>در صورت تمایل به عضویت در خانه موسیقی، ابتدا <?= $approves ?> خود را تایید کرده، سپس به همین صفحه مراجعه کنید.</p>
     <?php } else { ?>
       <p>در صورت تمایل به عضویت در خانه موسیقی، بر روی لینک زیر کلیک کنید:</p>
-      <a href='mha/member/signup' class='btn btn-success'><?= Yii::t('mha', 'Signup Member') ?></a>
+      <a href='/mha/member/signup' class='btn btn-success'><?= Yii::t('mha', 'Signup Member') ?></a>
     <?php } ?>
   </div>
 </div>

@@ -28,6 +28,7 @@ class MemberSignupForm extends Model
 	public $usrMobile;
 	public $usrSSID;
 	public $usrBirthDate;
+	public $usrBirthCityID;
 	public $usrCountryID;
 	public $usrStateID;
 	public $usrCityOrVillageID;
@@ -68,6 +69,7 @@ class MemberSignupForm extends Model
 				'usrMobile',
 				'usrSSID',
 				'usrBirthDate',
+				'usrBirthCityID',
 				'usrCountryID',
 				'usrStateID',
 				'usrCityOrVillageID',
@@ -136,12 +138,20 @@ class MemberSignupForm extends Model
 					return (empty($model->user->usrSSID));
 				},
 			],
+
 			['usrBirthDate',
 				'required',
 				'when' => function ($model) {
 					return (empty($model->user->usrBirthDate));
 				},
 			],
+			['usrBirthCityID',
+				'required',
+				'when' => function ($model) {
+					return (empty($model->user->usrBirthCityID));
+				},
+			],
+
 			['usrCountryID',
 				'required',
 				'when' => function ($model) {
@@ -223,6 +233,7 @@ class MemberSignupForm extends Model
       'usrPasswordHash'      => Yii::t('aaa', 'Password Hash'),
       'usrPasswordCreatedAt' => Yii::t('aaa', 'Password Created At'),
 			'usrBirthDate'         => Yii::t('aaa', 'Birth Date'),
+			'usrBirthCityID'       => Yii::t('aaa', 'Birth Location'),
 			'usrCountryID'         => Yii::t('aaa', 'Country'),
 			'usrStateID'           => Yii::t('aaa', 'State'),
 			'usrCityOrVillageID'   => Yii::t('aaa', 'City Or Village'),
@@ -277,6 +288,7 @@ class MemberSignupForm extends Model
 		$this->usrMobile					= $this->user->usrMobile;
 		$this->usrSSID						= $this->user->usrSSID;
 		$this->usrBirthDate				= $this->user->usrBirthDate;
+		$this->usrBirthCityID			= $this->user->usrBirthCityID;
 		$this->usrCountryID				= $this->user->usrCountryID;
 		$this->usrStateID					= $this->user->usrStateID;
 		$this->usrCityOrVillageID	= $this->user->usrCityOrVillageID;
@@ -305,6 +317,7 @@ class MemberSignupForm extends Model
 			|| empty($this->user->usrMobile)
 			|| empty($this->user->usrSSID)
 			|| empty($this->user->usrBirthDate)
+			|| empty($this->user->usrBirthCityID)
 			|| empty($this->user->usrCountryID)
 			|| empty($this->user->usrStateID)
 			|| empty($this->user->usrCityOrVillageID)
@@ -374,7 +387,7 @@ class MemberSignupForm extends Model
 		);
 
 		if ($apiResponse['status'] < 200 || $apiResponse['status'] >= 300) {
-			$msg = HttpHelper::formatApiResponseIfFailed('mha', $apiResponse['status'], $apiResponse['body']);
+			$message = HttpHelper::formatApiResponseIfFailed($apiResponse, 'mha');
 			if (empty($message) == false) {
 				$this->addError(null, Yii::t('mha', $apiResponse['body']['message'], $apiResponse['body']));
 				return false;

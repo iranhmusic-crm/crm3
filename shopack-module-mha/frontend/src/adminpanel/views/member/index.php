@@ -6,9 +6,9 @@
 /** @var yii\web\View $this */
 
 use shopack\base\common\helpers\Url;
-use shopack\base\frontend\common\widgets\grid\GridView;
-use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
+use shopack\base\frontend\common\helpers\Html;
+use shopack\base\frontend\common\widgets\grid\GridView;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 
@@ -27,14 +27,14 @@ $this->params['breadcrumbs'][] = $this->title;
 			<div class="clearfix"></div>
 		</div>
 
-		<div class='card-body'>
-			<?php
-				echo $this->render('_search', [
-					'searchModel' => $searchModel,
-					'dataProvider' => $dataProvider,
-				]);
+    <?php
+		// <div class='card-body'>
+		// 		echo $this->render('_search', [
+		// 			'searchModel' => $searchModel,
+		// 			'dataProvider' => $dataProvider,
+		// 		]);
+    //   </div>
 			?>
-		</div>
 
     <div class='card-body'>
       <?php

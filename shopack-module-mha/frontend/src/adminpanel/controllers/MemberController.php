@@ -8,11 +8,9 @@ namespace iranhmusic\shopack\mha\frontend\adminpanel\controllers;
 use Yii;
 use yii\web\Response;
 use yii\web\UnprocessableEntityHttpException;
-use shopack\base\frontend\common\helpers\Html;
 use shopack\aaa\frontend\common\auth\BaseCrudController;
 use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 use iranhmusic\shopack\mha\frontend\common\models\MemberSearchModel;
-use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 use iranhmusic\shopack\mha\frontend\common\models\MemberKanoonModel;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 
@@ -134,7 +132,12 @@ class MemberController extends BaseCrudController
     Yii::$app->response->format = Response::FORMAT_JSON;
 
     $out['total_count'] = 0;
-		$out['items'] = [['id' => '', 'name' => '']];
+		$out['items'] = [
+      [
+        'id'    => '',
+        'name'  => '',
+      ],
+    ];
 
 		if (empty($q))
 			return $this->renderJson($out);
@@ -158,9 +161,9 @@ class MemberController extends BaseCrudController
         $list[] = [
           'id' => $model->mbrUserID,
 
-          'firstname' => $model->user->usrFirstName,
-          'lastname'  => $model->user->usrLastName,
-          'email'     => $model->user->usrEmail,
+          // 'firstname' => $model->user->usrFirstName,
+          // 'lastname'  => $model->user->usrLastName,
+          // 'email'     => $model->user->usrEmail,
 
           'name' => $model->displayName(),
           'title' => $model->displayName('{fn} {ln}'),
