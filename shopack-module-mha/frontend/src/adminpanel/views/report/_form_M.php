@@ -546,93 +546,64 @@ JS;
 
 		$builder->fields([
 			['@section', 'label' => 'ستون‌های خروجی'],
-			['@cols' => 4, 'vertical' => true],
+			// ['@cols' => 4, 'vertical' => true],
+			['@reset-cols'],
 		]);
 
-		$outputFields = [
-      // 'usrID'                 => Yii::t('app', 'ID'),
-			'usrImageFileID'        => Yii::t('aaa', 'Image'),
-      'usrGender'             => Yii::t('aaa', 'Gender'),
-      'usrFirstName'          => Yii::t('aaa', 'First Name'),
-      'usrFirstName_en'       => Yii::t('aaa', 'First Name (en)'),
-      'usrLastName'           => Yii::t('aaa', 'Last Name'),
-      'usrLastName_en'        => Yii::t('aaa', 'Last Name (en)'),
-      'usrFatherName'         => Yii::t('aaa', 'Father Name'),
-      'usrFatherName_en'      => Yii::t('aaa', 'Father Name (en)'),
-
-			'@col-break',
-
-			'usrEmail'              => Yii::t('aaa', 'Email'),
-      'usrEmailApprovedAt'    => Yii::t('aaa', 'Email Approved At'),
-      'usrMobile'             => Yii::t('aaa', 'Mobile'),
-      'usrMobileApprovedAt'   => Yii::t('aaa', 'Mobile Approved At'),
-      'usrSSID'               => Yii::t('aaa', 'SSID'),
-      // 'usrRoleID'             => Yii::t('aaa', 'Role'),
-      // 'usrPrivs'              => Yii::t('aaa', 'Exclusive Privs'),
-      // 'usrPassword'           => Yii::t('aaa', 'Password'),
-      // 'usrRetypePassword'     => Yii::t('aaa', 'Retype Password'),
-      // 'usrPasswordHash'       => Yii::t('aaa', 'Password Hash'),
-      'hasPassword'           => Yii::t('aaa', 'Has Password'),
-      'usrPasswordCreatedAt'  => Yii::t('aaa', 'Password Created At'),
-      // 'usrMustChangePassword' => Yii::t('aaa', 'Must Change Password'),
-
-			'@col-break',
-
-			'usrBirthDate'          => Yii::t('aaa', 'Birth Date'),
-			'usrBirthCityID'        => Yii::t('aaa', 'Birth Location'),
-			'usrCountryID'          => Yii::t('aaa', 'Country'),
-			'usrStateID'            => Yii::t('aaa', 'State'),
-			'usrCityOrVillageID'    => Yii::t('aaa', 'City Or Village'),
-			'usrTownID'             => Yii::t('aaa', 'Town'),
-			'usrZipCode'            => Yii::t('aaa', 'Zip Code'),
-			'usrHomeAddress'        => Yii::t('aaa', 'Home Address'),
-
-			'mbrJob'									=> Yii::t('mha', 'Job'),
-
-			'@col-break',
-
-      'usrStatus'             => Yii::t('app', 'Status'),
-      // 'usrCreatedAt'          => Yii::t('app', 'Created At'),
-      // 'usrCreatedBy'          => Yii::t('app', 'Created By'),
-      // 'usrCreatedBy_User'     => Yii::t('app', 'Created By'),
-      // 'usrUpdatedAt'          => Yii::t('app', 'Updated At'),
-      // 'usrUpdatedBy'          => Yii::t('app', 'Updated By'),
-      // 'usrUpdatedBy_User'     => Yii::t('app', 'Updated By'),
-      // 'usrRemovedAt'          => Yii::t('app', 'Removed At'),
-      // 'usrRemovedBy'          => Yii::t('app', 'Removed By'),
-      // 'usrRemovedBy_User'     => Yii::t('app', 'Removed By'),
-
-			'mbrRegisterCode'					=> Yii::t('mha', 'Register Code'),
-			'mbrAcceptedAt'						=> Yii::t('mha', 'Registration Accepted At'),
-			'mbrExpireDate'						=> Yii::t('mha', 'Expire Date'),
-
-			'knnName'									=> Yii::t('mha', 'Kanoon'),
-			'mbrknnMembershipDegree'	=> Yii::t('mha', 'Membership Degree'),
-
-			'mbrInstrumentID'					=> Yii::t('mha', 'Instrument'),
-			'mbrSingID'								=> Yii::t('mha', 'Sing'),
-			'mbrResearchID'						=> Yii::t('mha', 'Research'),
+		$outputFields = $model->outputFields();
+		$breaksBefore = [
+			'user.usrEmail',
+			'user.usrBirthDate',
+      'user.usrStatus',
 		];
 
+		$data = [];
 		foreach ($outputFields as $k => $v) {
-			if ($v == '@col-break') {
-				$builder->fields([
-					['@col-break'],
-				]);
-			} else {
-				$builder->fields([
-					[
-						"rptOutputFields[{$k}]",
-						'label' => $v,
-						'type' => FormBuilder::FIELD_CHECKBOX,
-						'widgetOptions' => [[], true],
-						'fieldOptions' => [
-							'autoOffset' => false,
-						],
-					],
-				]);
-			}
+			$label = is_array($v) ? $v['label'] : $v;
+			$data[$k] = $label;
 		}
+		$builder->fields([
+			[
+				"rptOutputFields",
+				'label' => false,
+				'type' => FormBuilder::FIELD_CHECKBOXLIST,
+				'data' => $data,
+				'widgetOptions' => [
+					'class' => 'row',
+					'item' => function ($index, $label, $name, $checked, $value)
+						use($outputFields, $breaksBefore)
+					{
+						$out = [];
+
+						if ($index == 0) {
+							$out[] = '<div class="col">';
+						}
+
+						if (in_array($value, $breaksBefore)) {
+							$out[] = '</div><div class="col">';
+						}
+
+						$out[] = Html::tag('div', Html::checkbox($name, $checked, [
+							'value' => $value,
+							'label' => $label,
+						]), [
+							// 'class' => 'form-check-input',
+							// 'labeloptions' => [
+							// 	'class' => 'form-check-label',
+							// ],
+						]);
+
+						if ($index == count($outputFields)-1) {
+							$out[] = '</div>';
+						}
+
+						return implode('', $out);
+					},
+					// 'inline' => true,
+				],
+			],
+		]);
+
 	?>
 
 	<?php $builder->beginField(); ?>

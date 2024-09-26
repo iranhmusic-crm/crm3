@@ -90,19 +90,19 @@ DELETE FROM tbl_convert;
 ----------------------------------------------------------
 
 -- SMS:
-cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/message/process-queue 2>&1 >>logs/aaa_message_process-queue.log
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.2/bin/php yii aaa/message/process-queue 2>&1 >>logs/aaa_message_process-queue.log
 
 -- FILE:
-cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/file/process-queue 200 2>&1 >>logs/aaa_file_process-queue.log
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.2/bin/php yii aaa/file/process-queue 200 2>&1 >>logs/aaa_file_process-queue.log
 
 TEST(1) item:
-cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii aaa/file/process-queue 1 2>&1 >>logs/aaa_file_process-queue.log
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.2/bin/php yii aaa/file/process-queue 1 2>&1 >>logs/aaa_file_process-queue.log
 
 -- MIGRATE:
-cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii migrate/up --interactive 0 2>&1 >>logs/migrate.log
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.2/bin/php yii migrate/up --interactive 0 2>&1 >>logs/migrate.log
 
 -- CONVERT:
-cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.1/bin/php yii mha/migrate-data/from-v2 2>&1 >>logs/mha-migrate-data-from-v2.log
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.2/bin/php yii mha/migrate-data/from-v2 2>&1 >>logs/mha-migrate-data-from-v2.log
 
 SELECT uquStatus, COUNT(*) FROM tbl_AAA_UploadQueue GROUP BY uquStatus WITH ROLLUP;
 

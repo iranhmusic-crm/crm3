@@ -20,7 +20,7 @@ class ReportController extends BaseRestController
 		$behaviors = parent::behaviors();
 
 		if (YII_ENV_DEV) {
-			$behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
+			$behaviors[static::BEHAVIOR_AUTHENTICATOR]['optional'] = [
 				'run',
 			];
 		}
@@ -158,7 +158,7 @@ class ReportController extends BaseRestController
 		$queryParams = Yii::$app->request->getQueryParams();
 		$model->fillQueryOrderByPart($queryParams, $query);
 
-		return $this->queryAllToResponse($query);
+		return $this->queryAllToResponse($query); //, false);
 	}
 
 }

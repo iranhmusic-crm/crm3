@@ -45,52 +45,194 @@ class ReportModel extends RestClientActiveRecord
 
 	public function outputFields()
 	{
+		//by appearance order
 		return [
-			'mbrUserID'              => [
-				'label' => 'کد کاربری', //Yii::t('aaa', 'User ID'),
+			'mbrUserID' => [
+				'label' => Yii::t('aaa', 'User ID'),
 				'format' => 'raw',
 				'value' => function ($model, $key, $index, $widget) {
 					return Html::a($model['mbrUserID'], ['/mha/member/view', 'id' => $model['mbrUserID']]);
 				},
+				'export' => function ($model) {
+					return $model['mbrUserID'];
+				},
 			],
-			'usrImageFileID'         => Yii::t('aaa', 'Image'),
-			'usrGender'              => [
+
+			//user
+			// 'user.usrID'									=> Yii::t('aaa', 'User ID'),
+			'user.usrImageFileID'         => [
+				'label' => Yii::t('aaa', 'Image'),
+				'value' => function ($model, $key, $index, $widget) {
+					return Html::asUploadedImage($model['user']['imageFile'] ?? null, '50px', false);
+				},
+				'export' => false,
+			],
+			'user.usrGender'              => [
 				'label' => Yii::t('aaa', 'Gender'),
 				'value' => function ($model, $key, $index, $widget) {
-					return enuGender::getLabel($model['usrGender']);
-				},
-				'export' => function ($value) {
-					return enuGender::getLabel($value);
+					return enuGender::getLabel($model['user']['usrGender'] ?? null);
 				},
 			],
-			'usrFirstName'           => Yii::t('aaa', 'First Name'),
-			'usrFirstName_en'        => Yii::t('aaa', 'First Name (en)'),
-			'usrLastName'            => Yii::t('aaa', 'Last Name'),
-			'usrLastName_en'         => Yii::t('aaa', 'Last Name (en)'),
+			'user.usrFirstName'           => Yii::t('aaa', 'First Name'),
+			'user.usrFirstName_en'        => Yii::t('aaa', 'First Name (en)'),
+			'user.usrLastName'            => Yii::t('aaa', 'Last Name'),
+			'user.usrLastName_en'         => Yii::t('aaa', 'Last Name (en)'),
+			'user.usrFatherName'          => Yii::t('aaa', 'Father Name'),
+			'user.usrFatherName_en'       => Yii::t('aaa', 'Father Name (en)'),
+			'user.usrEmail'               => Yii::t('aaa', 'Email'),
+			'user.usrEmailApprovedAt'     => [
+				'label' => Yii::t('aaa', 'Email Approved At'),
+				'format' => 'jalaliWithTime',
+				'export' => function ($model) {
+					return Yii::$app->formatter->asJalaliWithTime($model['user']['usrEmailApprovedAt'] ?? null);
+				},
+			],
+			'user.usrMobile'              => [
+				'label' => Yii::t('aaa', 'Mobile'),
+				'format' => 'phone',
+			],
+			'user.usrMobileApprovedAt'    => [
+				'label' => Yii::t('aaa', 'Mobile Approved At'),
+				'format' => 'jalaliWithTime',
+				'export' => function ($model) {
+					return Yii::$app->formatter->asJalaliWithTime($model['user']['usrMobileApprovedAt'] ?? null);
+				},
+			],
+			'user.usrSSID'                => Yii::t('aaa', 'SSID'),
+			'user.hasPassword'            => [
+				'label' => Yii::t('aaa', 'Has Password'),
+				'value' => function ($model, $key, $index, $widget) {
+					return ($model['user']['hasPassword'] ?? false ? 'بلی' : 'خیر');
+				},
+			],
+			'user.usrPasswordCreatedAt'   => [
+				'label' => Yii::t('aaa', 'Password Created At'),
+				'format' => 'jalaliWithTime',
+				'export' => function ($model) {
+					return Yii::$app->formatter->asJalaliWithTime($model['user']['usrPasswordCreatedAt'] ?? null);
+				},
+			],
+			// 'usrMustChangePassword'  => Yii::t('aaa', 'Must Change Password'),
+			'user.usrBirthDate'           => [
+				'label' => Yii::t('aaa', 'Birth Date'),
+				'format' => 'jalali',
+				'export' => function ($model) {
+					return Yii::$app->formatter->asJalali($model['user']['usrBirthDate'] ?? null);
+				},
+			],
+			'user.usrBirthCityID'         => [
+				'label' => Yii::t('aaa', 'Birth Location'),
+				'value' => function ($model, $key, $index, $widget) {
+					return ($model['user']['birthCityOrVillage']['ctvName'] ?? null);
+				},
+			],
+			'user.usrCountryID'           => [
+				'label' => Yii::t('aaa', 'Country'),
+				'value' => function ($model, $key, $index, $widget) {
+					return ($model['user']['country']['cntrName'] ?? null);
+				},
+			],
+			'user.usrStateID'             => [
+				'label' => Yii::t('aaa', 'State'),
+				'value' => function ($model, $key, $index, $widget) {
+					return ($model['user']['state']['sttName'] ?? null);
+				},
+			],
+			'user.usrCityOrVillageID'     => [
+				'label' => Yii::t('aaa', 'City Or Village'),
+				'value' => function ($model, $key, $index, $widget) {
+					return ($model['user']['cityOrVillage']['ctvName'] ?? null);
+				},
+			],
+			'user.usrTownID'              => [
+				'label' => Yii::t('aaa', 'Town'),
+				'value' => function ($model, $key, $index, $widget) {
+					return ($model['user']['town']['twnName'] ?? null);
+				},
+			],
+			'user.usrZipCode'             => Yii::t('aaa', 'Zip Code'),
+			'user.usrHomeAddress'         => Yii::t('aaa', 'Home Address'),
 
-			'mbrRegisterCode'        => Yii::t('mha', 'Register Code'),
-			'mbrAcceptedAt'          => [
+			'mbrJob' => Yii::t('mha', 'Job'),
+
+			// 'birthCityOrVillage.ctvName'          => 'شهر تولد',
+			// 'birthCityOrVillage.state.sttName'    => 'استان تولد',
+			// 'cityOrVillage.ctvName'   => 'شهر سکونت',
+			// 'state.sttName'    				=> 'استان سکونت',
+
+			'user.usrStatus'              => [
+				'label' => Yii::t('app', 'Status'),
+				'value' => function ($model, $key, $index, $widget) {
+					return enuUserStatus::getLabel($model['user']['usrStatus'] ?? null);
+				},
+				'export' => function ($model) {
+					return enuUserStatus::getLabel($model['user']['usrStatus'] ?? null);
+				},
+			],
+
+			//member
+			'mbrRegisterCode' => Yii::t('mha', 'Register Code'),
+			'mbrAcceptedAt' => [
 				'label' => Yii::t('mha', 'Registration Accepted At'),
 				'format' => 'jalaliWithTime',
-				'export' => function ($value) {
-					return Yii::$app->formatter->asJalaliWithTime($value);
+				'export' => function ($model) {
+					return Yii::$app->formatter->asJalaliWithTime($model['mbrAcceptedAt'] ?? null);
 				},
 			],
-			'mbrExpireDate'          => [
+			'mbrExpireDate' => [
 				'label' => Yii::t('mha', 'Expire Date'),
 				'format' => 'jalali',
-				'export' => function ($value) {
-					return Yii::$app->formatter->asJalali($value);
+				'export' => function ($model) {
+					return Yii::$app->formatter->asJalali($model['mbrExpireDate'] ?? null);
 				},
 			],
 
-			'knnName'                => Yii::t('mha', 'Kanoon'),
+			// 'knnName' => [
+			'kanoonNames' => [
+				'label' => Yii::t('mha', 'Kanoon'),
+				'value' => function ($model, $key, $index, $widget) {
+					$value = $model['kanoonNames'] ?? null;
+					if (empty($value))
+						return null;
+					$value = explode('|', $value);
+					return implode(' - ', $value);
+				},
+			],
 
-			'InstrumentName'         => Yii::t('mha', 'Instrument'),
-			'SingName'							 => Yii::t('mha', 'Sing'),
-			'ResearchName'					 => Yii::t('mha', 'Research'),
+			// 'mbrknnMembershipDegree' => [
+			'kanoonDegrees' => [
+				'label' => Yii::t('mha', 'Membership Degree'),
+				'value' => function ($model, $key, $index, $widget) {
+					$value = $model['kanoonDegrees'] ?? null;
+					if (empty($value))
+						return null;
+					$value = explode('|', $value);
+					$result = [];
+					foreach ($value as $v) {
+						$result[] = enuKanoonMembershipDegree::getLabel($v);
+					}
+					return implode(' - ', $result);
+				},
+			],
 
-			'mbrJob'					 => Yii::t('mha', 'Job'),
+			'mbrInstrumentID' => [
+				'label' => Yii::t('mha', 'Instrument'),
+				'value' => function ($model, $key, $index, $widget) {
+					return $model['instrument']['bdfName'] ?? null;
+				},
+			],
+			'mbrSingID' => [
+				'label' => Yii::t('mha', 'Sing'),
+				'value' => function ($model, $key, $index, $widget) {
+					return $model['sing']['bdfName'] ?? null;
+				},
+			],
+			'mbrResearchID' => [
+				'label' => Yii::t('mha', 'Research'),
+				'value' => function ($model, $key, $index, $widget) {
+					return $model['research']['bdfName'] ?? null;
+				},
+			],
 
 			// 'mbrknnParams'           => [
 			//   'label' => 'تخصص',
@@ -132,99 +274,6 @@ class ReportModel extends RestClientActiveRecord
 			//     return $desc;
 			//   },
 			// ],
-			'mbrknnMembershipDegree' => [
-				'label' => Yii::t('mha', 'Membership Degree'),
-				'value' => function ($model, $key, $index, $widget) {
-					return enuKanoonMembershipDegree::getLabel($model['mbrknnMembershipDegree']);
-				},
-				'export' => function ($value) {
-					return enuKanoonMembershipDegree::getLabel($value);
-				},
-			],
-
-			'usrFatherName'          => Yii::t('aaa', 'Father Name'),
-			'usrFatherName_en'       => Yii::t('aaa', 'Father Name (en)'),
-			'usrEmail'               => Yii::t('aaa', 'Email'),
-			'usrEmailApprovedAt'     => [
-				'label' => Yii::t('aaa', 'Email Approved At'),
-				'format' => 'jalaliWithTime',
-				'export' => function ($value) {
-					return Yii::$app->formatter->asJalaliWithTime($value);
-				},
-			],
-			'usrMobile'              => [
-				'label' => Yii::t('aaa', 'Mobile'),
-				'format' => 'phone',
-				// 'template' => '<phone>{value}</phone>',
-				// 'value' => function ($model, $key, $index, $widget) {
-				//   return '<phone>' . Yii::$app->formatter->asPhone($model['usrMobile']) . '</phone>';
-				// },
-			],
-			'usrMobileApprovedAt'    => [
-				'label' => Yii::t('aaa', 'Mobile Approved At'),
-				'format' => 'jalaliWithTime',
-				'export' => function ($value) {
-					return Yii::$app->formatter->asJalaliWithTime($value);
-				},
-			],
-			'usrSSID'                => Yii::t('aaa', 'SSID'),
-			// 'usrRoleID'              => Yii::t('aaa', 'Role'),
-			// 'usrPrivs'               => Yii::t('aaa', 'Exclusive Privs'),
-			// 'usrPassword'            => Yii::t('aaa', 'Password'),
-			// 'usrRetypePassword'      => Yii::t('aaa', 'Retype Password'),
-			// 'usrPasswordHash'        => Yii::t('aaa', 'Password Hash'),
-			'hasPassword'            => [
-				'label' => Yii::t('aaa', 'Has Password'),
-				'value' => function ($model, $key, $index, $widget) {
-					return ($model['hasPassword'] ? 'بلی' : 'خیر');
-				},
-			],
-			'usrPasswordCreatedAt'   => [
-				'label' => Yii::t('aaa', 'Password Created At'),
-				'format' => 'jalaliWithTime',
-				'export' => function ($value) {
-					return Yii::$app->formatter->asJalaliWithTime($value);
-				},
-			],
-			// 'usrMustChangePassword'  => Yii::t('aaa', 'Must Change Password'),
-			'usrBirthDate'           => [
-				'label' => Yii::t('aaa', 'Birth Date'),
-				'format' => 'jalali',
-				'export' => function ($value) {
-					return Yii::$app->formatter->asJalali($value);
-				},
-			],
-			'usrBirthCityID'         => Yii::t('aaa', 'Birth Location'),
-			'BirthStateName'         => 'استان تولد',
-			'BirthCityName'          => 'شهر تولد',
-			'usrStatus'              => [
-				'label' => Yii::t('app', 'Status'),
-				'value' => function ($model, $key, $index, $widget) {
-					return enuUserStatus::getLabel($model['usrStatus']);
-				},
-				'export' => function ($value) {
-					return enuUserStatus::getLabel($value);
-				},
-			],
-			// 'usrCreatedAt'           => Yii::t('app', 'Created At'),
-			// 'usrCreatedBy'           => Yii::t('app', 'Created By'),
-			// 'usrCreatedBy_User'      => Yii::t('app', 'Created By'),
-			// 'usrUpdatedAt'           => Yii::t('app', 'Updated At'),
-			// 'usrUpdatedBy'           => Yii::t('app', 'Updated By'),
-			// 'usrUpdatedBy_User'      => Yii::t('app', 'Updated By'),
-			// 'usrRemovedAt'           => Yii::t('app', 'Removed At'),
-			// 'usrRemovedBy'           => Yii::t('app', 'Removed By'),
-			// 'usrRemovedBy_User'      => Yii::t('app', 'Removed By'),
-
-			'usrCountryID'           => Yii::t('aaa', 'Country'),
-			'usrStateID'             => Yii::t('aaa', 'State'),
-			'usrCityOrVillageID'     => Yii::t('aaa', 'City Or Village'),
-			'usrTownID'              => Yii::t('aaa', 'Town'),
-			'usrHomeAddress'         => Yii::t('aaa', 'Home Address'),
-			'usrZipCode'             => Yii::t('aaa', 'Zip Code'),
-
-			'HomeStateName'          => 'استان سکونت',
-			'HomeCityName'           => 'شهر سکونت',
 		];
 	}
 
@@ -280,10 +329,12 @@ class ReportModel extends RestClientActiveRecord
 
 		if ((empty($_GET['per-page']) == false) || (
 					isset($_GET['per-page']) && ($_GET['per-page'] == 0)
-				))
+				)
+		) {
 			$params['per-page'] = $_GET['per-page'];
+		}
 
-			$apiResponse = HttpHelper::callApi(self::$resourceName . "/run", HttpHelper::METHOD_GET, $params);
+		$apiResponse = HttpHelper::callApi(self::$resourceName . "/run", HttpHelper::METHOD_GET, $params);
 
     if ($apiResponse['status'] != 200)
 			return null;

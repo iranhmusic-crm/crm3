@@ -13,6 +13,7 @@ use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\backend\models\MemberModel;
 use iranhmusic\shopack\mha\backend\models\MemberKanoonModel;
+use shopack\base\common\helpers\ArrayHelper;
 
 class ReportModel extends MhaActiveRecord
 {
@@ -43,6 +44,21 @@ class ReportModel extends MhaActiveRecord
 				'updatedByAttribute' => 'rptUpdatedBy',
 			],
 		];
+	}
+
+	public function beforeSave($insert)
+	{
+		if (parent::beforeSave($insert) == false)
+			return false;
+
+		if ((empty($this->rptOutputFields) == false)
+			&& (ArrayHelper::isIndexed($this->rptOutputFields) == false)
+		) {
+			//it is converted to indexed to order the appropriate output fields
+			$this->rptOutputFields = array_keys($this->rptOutputFields);
+		}
+
+		return true;
 	}
 
 	/**
@@ -83,6 +99,411 @@ class ReportModel extends MhaActiveRecord
 			"usrBirthLocation": {"City": "877", "State": "1227"}
 		}
 		*/
+
+		$fnAddBetweenCondition = function($field, $values) use (&$query) {
+			if (empty($values['From']) == false) {
+				if (empty($values['To']) == false)
+					$query->andWhere(['BETWEEN', $field, $values['From'], $values['To']]);
+				else
+					$query->andWhere(['>=', $field, $values['From']]);
+			} else if (empty($values['To']) == false)
+				$query->andWhere(['<=', $field, $values['To']]);
+		};
+
+		$fnApplyLikeSearchCondition = function($field, $values) use (&$query) {
+			$vals = explode(' ', $values);
+
+			$ors = ['OR'];
+
+			foreach ($vals as $val) {
+				$ors[] = ['LIKE', $field, $val];
+			}
+			$query->andWhere($ors);
+		};
+
+		$inputFieldsSchema = [
+			'usrBirthLocation' => [
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0) {
+						$query->andWhere(['birthstate.sttID' => null]);
+						$query->andWhere(['birthcity.ctvID' => null]);
+					} else {
+						$query->andWhere(['IS', 'birthstate.sttID', DbExpression::notNull()]);
+						$query->andWhere(['IS', 'birthcity.ctvID', DbExpression::notNull()]);
+					}
+				},
+				'filterCallback' => function($query, $key, $value) {
+					if (empty($value['State']) == false)
+						$query->andWhere(['birthstate.sttID' => $value['State']]);
+
+					if (empty($value['City']) == false)
+						$query->andWhere(['birthcity.ctvID' => $value['City']]);
+				},
+				'join' => [
+					'user',
+					'userBirthLocation',
+				],
+			],
+
+			'usrBirthDate' => [ // [From], [To]
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
+				},
+				'filterCallback' => function($query, $key, $value) use ($fnAddBetweenCondition) {
+					$fnAddBetweenCondition($key, $value);
+				},
+				'join' => [
+					'user',
+				],
+			],
+
+			'usrStateID' => [
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
+				},
+				'filterCallback' => function($query, $key, $value) {
+					$query->andWhere([$key => $value]);
+				},
+				'join' => [
+					'user',
+					'userHomeLocation',
+				],
+			],
+
+			'usrCityOrVillageID' => [
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
+				},
+				'filterCallback' => function($query, $key, $value) {
+					$query->andWhere([$key => $value]);
+				},
+				'join' => [
+					'user',
+					'userHomeLocation',
+				],
+			],
+
+			'mbrAcceptedAt' => [ // [From], [To]
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
+				},
+				'filterCallback' => function($query, $key, $value) use ($fnAddBetweenCondition) {
+					$fnAddBetweenCondition($key, $value);
+				},
+			],
+
+			'mbrExpireDate' => [ // [From], [To]
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
+				},
+				'filterCallback' => function($query, $key, $value) use ($fnAddBetweenCondition) {
+					$fnAddBetweenCondition($key, $value);
+				},
+			],
+
+			'mbrknnKanoonID' => [
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere(['kanoonIDs' => null]);
+					else
+						$query->andWhere(['IS', 'kanoonIDs', DbExpression::notNull()]);
+				},
+				'filterCallback' => function($query, $key, $value) {
+					if (is_string($value))
+						$value = ',' . $value . ',';
+					else if (is_array($value)) {
+						foreach ($value as &$v) {
+							$v = ',' . $v . ',';
+						}
+					}
+					$query->andWhere(['IN', DbExpression::concat("','", 'kanoonIDs', "','"), $value]);
+				},
+				'join' => [
+					'kanoon',
+				],
+			],
+			'mbrknnMembershipDegree' => [
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere(['kanoonDegrees' => null]);
+					else
+						$query->andWhere(['IS', 'kanoonDegrees', DbExpression::notNull()]);
+				},
+				'filterCallback' => function($query, $key, $value) {
+					if (is_string($value))
+						$value = ',' . $value . ',';
+					else if (is_array($value)) {
+						foreach ($value as &$v) {
+							$v = ',' . $v . ',';
+						}
+					}
+					$query->andWhere(['IN', DbExpression::concat("','", 'kanoonDegrees', "','"), $value]);
+				},
+				'join' => [
+					'kanoon',
+				],
+			],
+
+			// case 'mbrknnParams':         // [I], [S], [R]
+			// 	$joinToKanoon = true;
+			// 	$vals = implode(',', $v);
+			// 	$query->andWhere(new DbExpression(
+			// 		"JSON_UNQUOTE(JSON_EXTRACT(mbrknnParams, '$.desc')) IN ({$vals})"
+			// 	));
+			// 	break;
+
+			'mbrJob' => [
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
+				},
+				'filterCallback' => function($query, $key, $value) use ($fnApplyLikeSearchCondition) {
+					$fnApplyLikeSearchCondition($key, $value);
+				},
+			],
+
+			'mbrRegisterCode' => [
+				'hasCallback' => function($query, $key, $value) {
+					if ($value == 0)
+						$query->andWhere([$key => null]);
+					else
+						$query->andWhere(['IS', $key, DbExpression::notNull()]);
+				},
+				'filterCallback' => function($query, $key, $value) use ($fnApplyLikeSearchCondition) {
+					$fnApplyLikeSearchCondition($key, $value);
+				},
+			],
+
+		];
+
+		$fnApplyFilter = function($key, $value, $applyHas)
+			use ($inputFieldsSchema, &$query, &$joins)
+		{
+			if (isset($inputFieldsSchema[$key])) {
+				$schema = $inputFieldsSchema[$key];
+			} else {
+				$schema = [
+					'filterCallback' => function($query, $key, $value) {
+						$query->andWhere(['IN', $key, $value]);
+					},
+					'hasCallback' => function($query, $key, $value) {
+						if ($value == 0)
+							$query->andWhere([$key => null]);
+						else
+							$query->andWhere(['IS', $key, DbExpression::notNull()]);
+					},
+				];
+			}
+
+			$callback = ($applyHas
+				? ($schema['hasCallback'] ?? null)
+				: $schema['filterCallback']
+			);
+
+			if ($callback !== null) {
+				call_user_func($callback, $query, $key, $value);
+			}
+
+			if (isset($schema['join'])) {
+				foreach ((array)$schema['join'] as $j) {
+					$joins[$j] = true;
+				}
+			}
+		};
+
+		foreach ($this->rptInputFields as $k => $v) {
+			if (str_ends_with($k, '_Has')) {
+				// if ($v == 1) {
+					$kk = substr($k, 0, -4); //strip _Has fron end
+					// if (isset($inputFieldsSchema[$kk]))
+						$fnApplyFilter($kk, $v[0] ?? $v, true);
+				// }
+			} else { //if (isset($inputFieldsSchema[$k])) {
+				if (array_key_exists($k . '_Has', $this->rptInputFields) == false)
+					$fnApplyFilter($k, $v, false);
+			}
+		}
+
+		//-- rptOutputFields ---------------------------------
+		foreach ($this->rptOutputFields as $field) {
+			if (str_starts_with($field, 'user.')) {
+				$joins['user'] = true;
+
+				if ($field == 'user.usrImage')
+					$joins['userImage'] = true;
+				else if ($field == 'user.usrBirthCityID')
+					$joins['userBirthLocation'] = true;
+				else if (in_array($field, [
+						'user.usrCountryID',
+						'user.usrStateID',
+						'user.usrCityOrVillageID',
+						'user.usrTownID',
+					]))
+				$joins['userHomeLocation'] = true;
+
+			} else if (str_starts_with($field, 'mbrknn')
+				|| str_starts_with($field, 'knn')
+				|| str_starts_with($field, 'kanoon')
+			) {
+				$joins['kanoon'] = true;
+			// } else if (str_starts_with($field, 'mbr')) {
+			// } else  {
+				// unknown field
+			}
+		}
+
+		//columns
+		// $query
+		// 	->select('mbrUserID')
+		// ;
+
+		foreach ($this->rptOutputFields as $field) {
+			switch ($field) {
+				case 'usrBirthCityID':
+					// $query->addSelect([
+					// 	'birthcity.ctvName AS BirthCityName',
+					// 	'birthstate.sttName AS BirthStateName',
+					// ]);
+					break;
+
+				case 'usrStateID':
+					// $query->addSelect([
+					// 	'homestate.sttName AS HomeStateName',
+					// ]);
+					break;
+
+				case 'usrCityOrVillageID':
+					// $query->addSelect([
+					// 	'homecity.ctvName AS HomeCityName',
+					// ]);
+					break;
+
+				case 'knnName':
+					// $query->addSelect([
+					// 	'knnID',
+					// 	'knnName',
+					// 	// 'mbrknnParams',
+					// 	'knnDescFieldType',
+					// ]);
+					break;
+
+				case 'hasPassword':
+					// $query->addSelect(new DbExpression("usrPasswordHash IS NOT NULL AND usrPasswordHash != '' AS hasPassword"));
+					break;
+
+				case 'mbrInstrumentID':
+					$query->joinWith('instrument'); //, false);
+					break;
+
+				case 'mbrSingID':
+					$query->joinWith('sing'); //, false);
+					break;
+
+				case 'mbrResearchID':
+					$query->joinWith('research'); //, false);
+					break;
+
+				default:
+					// $query->addSelect($field);
+					break;
+			}
+		}
+
+		//join
+		if (isset($joins['user'])) {
+			$query->innerJoinWith('user'); //, false);
+
+			if (isset($joins['userImage']))
+				$query->joinWith('user.imageFile'); //, false);
+
+			if (isset($joins['userBirthLocation']))
+				$query->joinWith('user.birthCityOrVillage'); //, false);
+
+			if (isset($joins['userHomeLocation'])) {
+				$query
+					->joinWith('user.country') //, false)
+					->joinWith('user.state') //, false)
+					->joinWith('user.cityOrVillage') //, false)
+					->joinWith('user.town') //, false)
+				;
+			}
+		}
+
+		$fnGetValue = function($value, $qouted = false) {
+			return ($qouted ? "'" : "") . "{$value}" . ($qouted ? "'" : "");
+		};
+
+		if (isset($joins['kanoon'])) {
+			$knnNameFieldName = 'knnName';
+			$query
+				->addSelect(new DbExpression("kanoons.kanoonIDs AS kanoonIDs"))
+				->addSelect(new DbExpression("kanoons.kanoonNames AS kanoonNames"))
+				->addSelect(new DbExpression("kanoons.kanoonDegrees AS kanoonDegrees"))
+				->leftJoin("(
+    SELECT  mbrknnMemberID
+         ,  GROUP_CONCAT(knn.knnID SEPARATOR '|') AS kanoonIDs
+         ,  GROUP_CONCAT(knn.{$knnNameFieldName} SEPARATOR '|') AS kanoonNames
+         ,  GROUP_CONCAT(mbrknn.mbrknnMembershipDegree SEPARATOR '|') AS kanoonDegrees
+      FROM  tbl_MHA_Member_Kanoon mbrknn
+INNER JOIN  tbl_MHA_Kanoon knn
+        ON  knn.knnID = mbrknn.mbrknnKanoonID
+     WHERE  mbrknnStatus = '{$fnGetValue(enuMemberKanoonStatus::Accepted)}'
+  GROUP BY  mbrknnMemberID
+            ) AS kanoons",
+					"kanoons.mbrknnMemberID = tbl_MHA_Member.mbrUserID")
+			;
+
+			// $query
+			// 	->leftJoin(MemberKanoonModel::tableName(), [
+			// 		'AND',
+			// 		MemberKanoonModel::tableName() . '.mbrknnMemberID = '
+			// 		. MemberModel::tableName() . '.mbrUserID',
+			// 		MemberKanoonModel::tableName() . ".mbrknnStatus = '" . enuMemberKanoonStatus::Accepted . "'"
+			// 	])
+			// 	->leftJoin(KanoonModel::tableName(),
+			// 		KanoonModel::tableName() . '.knnID = '
+			// 		. MemberKanoonModel::tableName() . '.mbrknnKanoonID'
+			// 	)
+			// ;
+		}
+
+		return $query;
+	}
+
+/*	private function runMembers1()
+	{
+		$query = MemberModel::find();
+		$joins = [];
+
+		// $joinToUser = false;
+		// $joinToUserImage = false;
+		// $joinToUserBirthLocation = false;
+		// $joinToUserHomeLocation = false;
+		// $joinToKanoon = false;
+
+		//-- rptInputFields ------------------------------
+		// {
+		// 	"mbrknnParams": {"I": "55"},
+		// 	"mbrknnKanoonID": "8",
+		// 	"usrBirthLocation": {"City": "877", "State": "1227"}
+		// }
 
 		$fnAddBetweenCondition = function($field, $values) use (&$query) {
 			if (empty($values['From']) == false) {
@@ -433,6 +854,7 @@ class ReportModel extends MhaActiveRecord
 
 		return $query;
 	}
+*/
 
 	/**
 	 * return query

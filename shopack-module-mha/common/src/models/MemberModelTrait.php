@@ -39,6 +39,17 @@ use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 */
 trait MemberModelTrait
 {
+	public $kanoonNames;
+	public $kanoonDegrees;
+	//just used for export to client
+  public function adhocColumnsInfo()
+  {
+    return [
+      'kanoonNames' => ModelColumnHelper::adhoc(),
+			'kanoonDegrees' => ModelColumnHelper::adhoc(),
+    ];
+  }
+
 	public static $primaryKey = ['mbrUserID'];
 
 	public function primaryKeyValue() {

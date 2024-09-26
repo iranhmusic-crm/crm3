@@ -65,9 +65,9 @@ class ReportController extends BaseCrudController
   {
 		$model = $this->findModel($id);
 
-		$data = $model->export();
+		$rows = $model->export();
 
-    if (empty($data)) {
+    if (empty($rows)) {
       return 'empty';
     }
 
@@ -76,26 +76,37 @@ class ReportController extends BaseCrudController
     //--header
     $labels = [];
     $outputFields = $model->outputFields();
-    foreach ($data[0] as $k => $v) {
-      if (isset($outputFields[$k]['label'])) {
-        $labels[] = $outputFields[$k]['label'];
-      } else if (isset($outputFields[$k])) {
-        $labels[] = $outputFields[$k];
-      } else {
-        $labels[] = $k;
-      }
-    }
+    foreach ($outputFields as $fieldName => $fieldSchema) {
+      if (isset($fieldSchema['export']) && ($fieldSchema['export'] === false))
+        continue;
+
+			$labels[] = is_array($fieldSchema) ? $fieldSchema['label'] : $fieldSchema;
+		}
+    // foreach ($data[0] as $k => $v) {
+    //   if (isset($outputFields[$k]['label'])) {
+    //     $labels[] = $outputFields[$k]['label'];
+    //   } else if (isset($outputFields[$k])) {
+    //     $labels[] = $outputFields[$k];
+    //   } else {
+    //     $labels[] = $k;
+    //   }
+    // }
     $content[] = implode(',', $labels);
 
     //rows
-    foreach ($data as $row) {
+    foreach ($rows as $row) {
       $line = [];
 
-      foreach ($row as $k => $v) {
-        if (($v !== null) && isset($outputFields[$k]['export'])) {
-          $line[] = call_user_func($outputFields[$k]['export'], $v);
+      foreach ($outputFields as $fieldName => $fieldSchema) {
+        if (isset($fieldSchema['export']) && ($fieldSchema['export'] === false))
+          continue;
+
+        if (isset($fieldSchema['export'])) {
+          $line[] = call_user_func($fieldSchema['export'], $row);
+        } else if (isset($fieldSchema['value'])) {
+          $line[] = call_user_func($fieldSchema['value'], $row, null, null, null);
         } else {
-          $line[] = $v;
+          $line[] = ArrayHelper::getValue($row, $fieldName);
         }
       }
 
