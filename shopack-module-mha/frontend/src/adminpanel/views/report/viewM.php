@@ -87,20 +87,12 @@ $this->params['breadcrumbs'][] = $this->title;
 				$memberKanoonModel = new MemberKanoonModel();
 				$kanoonModel = new KanoonModel();
 
-				$rptOutputFields = array_keys($model->rptOutputFields);
-				foreach ($rptOutputFields as $k => &$v) {
-					if ($v == 'hasPassword')
-						$v = yii::t('aaa', 'User') . ': ' . $userModel->getAttributeLabel($v);
-					else if (str_starts_with($v, 'usr'))
-						$v = yii::t('aaa', 'User') . ': ' . $userModel->getAttributeLabel($v);
-					else if (str_starts_with($v, 'mbrknn'))
-						$v = yii::t('mha', 'Kanoon') . ': ' . $memberKanoonModel->getAttributeLabel($v);
-					else if (str_starts_with($v, 'knn'))
-						$v = yii::t('mha', 'Kanoon') . ': ' . $kanoonModel->getAttributeLabel($v);
-					else if (str_starts_with($v, 'mbr'))
-						$v = yii::t('mha', 'Member') . ': ' . $memberModel->getAttributeLabel($v);
+				$labels = [];
+				$outputFields = $model->outputFields();
+				foreach ($model->rptOutputFields as $fieldName) {
+					$fieldSchema = $outputFields[$fieldName];
+					$labels[] = is_array($fieldSchema) ? $fieldSchema['label'] : $fieldSchema;
 				}
-				sort($rptOutputFields);
 
 				echo DetailView::widget([
 					'model' => $model,
@@ -114,7 +106,7 @@ $this->params['breadcrumbs'][] = $this->title;
 						[
 							'attribute' => 'rptOutputFields',
 							'format' => 'raw',
-							'value' => implode('<br>', $rptOutputFields),
+							'value' => implode('<br>', $labels),
 						],
 					],
 				]);
