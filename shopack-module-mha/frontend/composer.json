@@ -23,6 +23,8 @@
         "shopack/yii2-base-frontend": "@dev",
         "shopack/yii2-module-aaa-common": "@dev",
         "shopack/yii2-module-aaa-frontend": "@dev",
+        "shopack/yii2-interface-accounting-common": "@dev",
+        "shopack/yii2-interface-accounting-frontend": "@dev",
         "kartik-v/yii2-grid": "dev-master",
         "kartik-v/yii2-bootstrap5-dropdown": "@dev",
         "kartik-v/yii2-detail-view": "dev-master",

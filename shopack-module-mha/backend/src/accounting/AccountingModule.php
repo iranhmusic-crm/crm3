@@ -13,7 +13,7 @@ use iranhmusic\shopack\mha\backend\accounting\models\DiscountUsageModel;
 use iranhmusic\shopack\mha\backend\accounting\models\UserAssetModel;
 use iranhmusic\shopack\mha\backend\accounting\models\BasketModel;
 
-class AccountingModule extends \shopack\base\backend\accounting\AccountingModule
+class AccountingModule extends \shopack\interface\accounting\backend\AccountingModule
 {
 	public $unitModelClass = UnitModel::class;
 	public $productModelClass = ProductModel::class;

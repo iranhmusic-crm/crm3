@@ -11,7 +11,7 @@ use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
-use shopack\base\common\accounting\enums\enuProductStatus;
+use shopack\interface\accounting\common\enums\enuProductStatus;
 
 // \shopack\base\frontend\common\DynamicParamsFormAsset::register($this);
 ?>

@@ -29,6 +29,8 @@
         "shopack/yii2-module-common-backend": "@dev",
         "shopack/yii2-module-aaa-common": "@dev",
         "shopack/yii2-module-aaa-backend": "@dev",
+        "shopack/yii2-interface-accounting-common": "@dev",
+        "shopack/yii2-interface-accounting-backend": "@dev",
         "iranhmusic/shopack-module-mha-common": "@dev",
         "iranhmusic/shopack-module-mha-backend": "@dev",
         "sam-it/yii2-mariadb": "^3.1",

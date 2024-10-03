@@ -13,7 +13,7 @@ use yii\web\UnprocessableEntityHttpException;
 use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\common\security\RsaPrivate;
-use shopack\base\common\accounting\enums\enuSaleableStatus;
+use shopack\interface\accounting\common\enums\enuSaleableStatus;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuMembershipStatus;
 use iranhmusic\shopack\mha\backend\models\MemberModel;

@@ -8,7 +8,7 @@ namespace iranhmusic\shopack\mha\frontend\common\accounting\models;
 use Yii;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
-use shopack\base\common\accounting\enums\enuSaleableStatus;
+use shopack\interface\accounting\common\enums\enuSaleableStatus;
 use iranhmusic\shopack\mha\common\accounting\enums\enuSaleableType;
 
 class MembershipCardSaleableModel extends RestClientActiveRecord

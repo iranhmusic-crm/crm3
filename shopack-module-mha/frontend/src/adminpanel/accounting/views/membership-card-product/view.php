@@ -9,7 +9,7 @@ use shopack\base\common\helpers\ArrayHelper;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\PopoverX;
 use shopack\base\frontend\common\widgets\DetailView;
-use shopack\base\common\accounting\enums\enuProductStatus;
+use shopack\interface\accounting\common\enums\enuProductStatus;
 use shopack\cmn\frontend\common\helpers\I18NHelper;
 
 $modelClass = Yii::$app->controller->modelClass;

@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\backend\accounting\controllers;
 
 use Yii;
-use shopack\base\backend\accounting\controllers\BaseUserAssetController;
+use shopack\interface\accounting\backend\controllers\BaseUserAssetController;
 
 class UserAssetController extends BaseUserAssetController
 {

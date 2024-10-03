@@ -15,7 +15,7 @@ use Ramsey\Uuid\Uuid;
 use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\common\security\RsaPrivate;
-use shopack\base\common\accounting\enums\enuSaleableStatus;
+use shopack\interface\accounting\common\enums\enuSaleableStatus;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuMembershipStatus;
 use iranhmusic\shopack\mha\backend\models\MemberModel;
@@ -25,7 +25,7 @@ use iranhmusic\shopack\mha\backend\models\MemberMemberGroupModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 use shopack\aaa\backend\models\OfflinePaymentModel;
 use shopack\aaa\backend\models\UserModel;
-use shopack\base\common\accounting\enums\enuAmountType;
+use shopack\interface\accounting\common\enums\enuAmountType;
 use yii\web\ServerErrorHttpException;
 
 class MembershipForm extends Model

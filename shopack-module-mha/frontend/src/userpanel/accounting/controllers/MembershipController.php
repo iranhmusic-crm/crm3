@@ -11,7 +11,7 @@ use shopack\base\frontend\common\helpers\Html;
 use shopack\aaa\frontend\common\auth\BaseController;
 use iranhmusic\shopack\mha\frontend\userpanel\accounting\models\MembershipForm;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipUserAssetSearchModel;
-use shopack\base\common\accounting\enums\enuUserAssetStatus;
+use shopack\interface\accounting\common\enums\enuUserAssetStatus;
 
 class MembershipController extends BaseController
 {

@@ -10,7 +10,7 @@ use shopack\base\common\rest\enuColumnInfo;
 use shopack\base\common\rest\enuColumnSearchType;
 use shopack\base\common\validators\JsonValidator;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
-use shopack\base\common\accounting\models\BaseProductModelTrait;
+use shopack\interface\accounting\common\models\BaseProductModelTrait;
 
 /*
 'prdMhaType',

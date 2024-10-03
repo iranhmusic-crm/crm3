@@ -5,7 +5,7 @@
 
 namespace iranhmusic\shopack\mha\backend\accounting\controllers;
 
-use shopack\base\backend\accounting\controllers\BaseSaleableController;
+use shopack\interface\accounting\backend\controllers\BaseSaleableController;
 
 class SaleableController extends BaseSaleableController
 {

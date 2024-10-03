@@ -8,7 +8,7 @@ namespace iranhmusic\shopack\mha\frontend\common\accounting\models;
 use Yii;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
-use shopack\base\common\accounting\enums\enuProductStatus;
+use shopack\interface\accounting\common\enums\enuProductStatus;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
 class MembershipProductModel extends RestClientActiveRecord

@@ -7,7 +7,7 @@ namespace iranhmusic\shopack\mha\backend\accounting\models;
 
 use Yii;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
-// use shopack\base\common\accounting\enums\enuDiscountUsageStatus;
+// use shopack\interface\accounting\common\enums\enuDiscountUsageStatus;
 
 class DiscountUsageModel extends MhaActiveRecord
 {

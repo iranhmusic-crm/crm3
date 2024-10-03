@@ -5,7 +5,7 @@
 
 namespace iranhmusic\shopack\mha\backend\accounting\controllers;
 
-use shopack\base\backend\accounting\controllers\BaseUnitController;
+use shopack\interface\accounting\backend\controllers\BaseUnitController;
 
 class UnitController extends BaseUnitController
 {

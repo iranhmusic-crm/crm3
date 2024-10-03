@@ -5,9 +5,9 @@
 
 /** @var yii\web\View $this */
 
-use shopack\base\common\accounting\enums\enuAmountType;
-use shopack\base\common\accounting\enums\enuDiscountStatus;
-use shopack\base\common\accounting\enums\enuDiscountType;
+use shopack\interface\accounting\common\enums\enuAmountType;
+use shopack\interface\accounting\common\enums\enuDiscountStatus;
+use shopack\interface\accounting\common\enums\enuDiscountType;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\PopoverX;
 use shopack\base\frontend\common\widgets\DetailView;

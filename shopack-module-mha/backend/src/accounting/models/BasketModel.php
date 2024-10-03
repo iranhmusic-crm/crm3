@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\backend\accounting\models;
 
 use Yii;
-use shopack\base\backend\accounting\models\BaseBasketModel;
+use shopack\interface\accounting\backend\models\BaseBasketModel;
 use iranhmusic\shopack\mha\common\accounting\enums\enuMhaProductType;
 
 class BasketModel extends BaseBasketModel

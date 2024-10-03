@@ -5,7 +5,7 @@
 
 namespace iranhmusic\shopack\mha\backend\accounting\controllers;
 
-use shopack\base\backend\accounting\controllers\BaseDiscountController;
+use shopack\interface\accounting\backend\controllers\BaseDiscountController;
 
 class DiscountController extends BaseDiscountController
 {

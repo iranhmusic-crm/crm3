@@ -8,9 +8,9 @@
 use shopack\base\common\helpers\StringHelper;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\grid\GridView;
-use shopack\base\common\accounting\enums\enuAmountType;
-use shopack\base\common\accounting\enums\enuSaleableStatus;
-use shopack\base\common\accounting\enums\enuSaleableType;
+use shopack\interface\accounting\common\enums\enuAmountType;
+use shopack\interface\accounting\common\enums\enuSaleableStatus;
+use shopack\interface\accounting\common\enums\enuSaleableType;
 
 $modelClass = Yii::$app->controller->modelClass;
 

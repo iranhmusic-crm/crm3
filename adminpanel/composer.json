@@ -39,6 +39,8 @@
         "shopack/yii2-module-cmn-frontend": "@dev",
         "shopack/yii2-module-aaa-common": "@dev",
         "shopack/yii2-module-aaa-frontend": "@dev",
+        "shopack/yii2-interface-accounting-common": "@dev",
+        "shopack/yii2-interface-accounting-frontend": "@dev",
         "iranhmusic/shopack-module-mha-common": "@dev",
         "iranhmusic/shopack-module-mha-frontend": "@dev",
         "kartik-v/yii2-popover-x": "dev-master"

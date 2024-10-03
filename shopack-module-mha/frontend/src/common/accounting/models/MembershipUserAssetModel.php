@@ -8,7 +8,7 @@ namespace iranhmusic\shopack\mha\frontend\common\accounting\models;
 use Yii;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
-use shopack\base\common\accounting\enums\enuUserAssetStatus;
+use shopack\interface\accounting\common\enums\enuUserAssetStatus;
 use iranhmusic\shopack\mha\common\accounting\enums\enuUserAssetType;
 use shopack\base\common\helpers\ArrayHelper;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\UserAssetModel;

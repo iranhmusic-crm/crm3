@@ -9,8 +9,8 @@ use Yii;
 use shopack\base\common\helpers\HttpHelper;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use iranhmusic\shopack\mha\common\enums\enuDocumentStatus;
-use shopack\base\common\accounting\enums\enuAmountType;
-use shopack\base\common\accounting\enums\enuDiscountType;
+use shopack\interface\accounting\common\enums\enuAmountType;
+use shopack\interface\accounting\common\enums\enuDiscountType;
 use shopack\base\frontend\common\helpers\Html;
 
 class DiscountModel extends RestClientActiveRecord

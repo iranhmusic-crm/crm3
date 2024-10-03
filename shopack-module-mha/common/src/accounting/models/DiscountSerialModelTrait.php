@@ -9,7 +9,7 @@ use shopack\base\common\rest\ModelColumnHelper;
 use shopack\base\common\rest\enuColumnInfo;
 use shopack\base\common\rest\enuColumnSearchType;
 use shopack\base\common\validators\JsonValidator;
-use shopack\base\common\accounting\models\BaseDiscountSerialModelTrait;
+use shopack\interface\accounting\common\models\BaseDiscountSerialModelTrait;
 
 /*
 */

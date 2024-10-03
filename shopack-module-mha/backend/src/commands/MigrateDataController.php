@@ -32,7 +32,7 @@ use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 use shopack\aaa\common\enums\enuUserEducationLevel;
 use shopack\aaa\common\enums\enuUserMaritalStatus;
 use shopack\aaa\common\enums\enuUserMilitaryStatus;
-use shopack\base\common\accounting\enums\enuUserAssetStatus;
+use shopack\interface\accounting\common\enums\enuUserAssetStatus;
 
 /*
 USE dbiranhmusic_yii;

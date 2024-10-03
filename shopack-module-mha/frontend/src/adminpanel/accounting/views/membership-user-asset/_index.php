@@ -11,7 +11,7 @@ use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
 // use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
 // use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
-use shopack\base\common\accounting\enums\enuUserAssetStatus;
+use shopack\interface\accounting\common\enums\enuUserAssetStatus;
 ?>
 
 <?php

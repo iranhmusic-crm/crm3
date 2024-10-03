@@ -22,7 +22,9 @@
         "shopack/yii2-base-common": "@dev",
         "shopack/yii2-base-backend": "@dev",
         "shopack/yii2-module-aaa-common": "@dev",
-        "shopack/yii2-module-aaa-backend": "@dev"
+        "shopack/yii2-module-aaa-backend": "@dev",
+        "shopack/yii2-interface-accounting-common": "@dev",
+        "shopack/yii2-interface-accounting-backend": "@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "4.8.34",

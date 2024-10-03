@@ -6,7 +6,7 @@
 namespace iranhmusic\shopack\mha\frontend\adminpanel\accounting\controllers;
 
 use shopack\aaa\frontend\common\auth\BaseCrudController;
-use shopack\base\common\accounting\enums\enuProductType;
+use shopack\interface\accounting\common\enums\enuProductType;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipCardProductModel;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipCardProductSearchModel;
 // use iranhmusic\shopack\mha\common\enums\enuMembershipCardStatus;

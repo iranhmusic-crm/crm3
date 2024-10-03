@@ -7,7 +7,7 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\frontend\common\widgets\ActiveForm;
 use shopack\base\frontend\common\widgets\FormBuilder;
-use shopack\base\common\accounting\enums\enuSaleableStatus;
+use shopack\interface\accounting\common\enums\enuSaleableStatus;
 ?>
 
 <div class='membership-saleable-form'>

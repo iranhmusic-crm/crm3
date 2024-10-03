@@ -9,7 +9,7 @@ use shopack\base\frontend\common\widgets\grid\GridView;
 use shopack\base\frontend\common\helpers\Html;
 use shopack\base\common\helpers\StringHelper;
 use shopack\aaa\frontend\common\models\SaleableModel;
-use shopack\base\common\accounting\enums\enuSaleableStatus;
+use shopack\interface\accounting\common\enums\enuSaleableStatus;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipCardSaleableModel;
 ?>
 
