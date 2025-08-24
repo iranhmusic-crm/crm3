@@ -5,7 +5,7 @@
 
 namespace iranhmusic\shopack\mha\frontend\adminpanel\accounting\controllers;
 
-use shopack\base\frontend\adminpanel\accounting\controllers\BaseDiscountController;
+use shopack\interface\accounting\frontend\adminpanel\controllers\BaseDiscountController;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\DiscountModel;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\DiscountSearchModel;
 // use iranhmusic\shopack\mha\common\enums\enuDiscountStatus;

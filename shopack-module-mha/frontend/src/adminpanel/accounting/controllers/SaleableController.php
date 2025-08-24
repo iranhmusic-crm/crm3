@@ -5,7 +5,7 @@
 
 namespace iranhmusic\shopack\mha\frontend\adminpanel\accounting\controllers;
 
-use shopack\base\frontend\adminpanel\accounting\controllers\BaseSaleableController;
+use shopack\interface\accounting\frontend\adminpanel\controllers\BaseSaleableController;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\SaleableModel;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\SaleableSearchModel;
 // use iranhmusic\shopack\mha\common\enums\enuSaleableStatus;

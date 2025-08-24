@@ -84,7 +84,7 @@ $config = [
 				// '@yii/web/migrations',
 				// '@app/migrations',
 				// '@core/migrations',
-				// '@shopack/migrations/accounting' => [
+				// '@shopack/accounting/migrations' => [
 				// 	'targetModules' => ['mha'],
 				// ],
 				'@cmn/migrations',
@@ -92,12 +92,18 @@ $config = [
 				'@mha/migrations',
 				// '@app/modules/mha/migrations',
 				// '@yii/../yii2-queue/src/drivers/db/migrations',
+				'@shopack/interface/accounting/backend/migrations' => [
+					'mha',
+				],
 			],
 		],
-		// 'migrate-core-accounting' => [
-		// 	'class' => 'yii\console\controllers\MigrateController',
-		// 	'migrationPath' => '@core/migrations',
-		// ],
+		/*
+		'migrate-core-accounting' => [
+			// 'class' => 'yii\console\controllers\MigrateController',
+			'class' => \shopack\base\common\console\controllers\MigrateController::class,
+			'migrationPath' => '@shopack/accounting/migrations', //'@core/migrations',
+		],
+		/**/
 		'migrate-cmn' => [
 			// 'class' => 'yii\console\controllers\MigrateController',
 			'class' => \shopack\base\common\console\controllers\MigrateController::class,
@@ -112,6 +118,15 @@ $config = [
 			// 'class' => 'yii\console\controllers\MigrateController',
 			'class' => \shopack\base\common\console\controllers\MigrateController::class,
 			'migrationPath' => '@mha/migrations',
+		],
+		'migrate-shopack-accounting' => [
+			'class' => \shopack\base\common\console\controllers\MigrateController::class,
+			'isPerModule' => true,
+			'migrationPath' => [
+				'@shopack/interface/accounting/backend/migrations' => [
+					'mha',
+				],
+			],
 		],
 
 		//'migrationPath' => null, // allows to disable not namespaced migration completely

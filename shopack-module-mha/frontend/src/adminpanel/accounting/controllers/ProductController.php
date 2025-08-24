@@ -5,7 +5,7 @@
 
 namespace iranhmusic\shopack\mha\frontend\adminpanel\accounting\controllers;
 
-use shopack\base\frontend\adminpanel\accounting\controllers\BaseProductController;
+use shopack\interface\accounting\frontend\adminpanel\controllers\BaseProductController;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\ProductModel;
 use iranhmusic\shopack\mha\frontend\common\accounting\models\ProductSearchModel;
 // use iranhmusic\shopack\mha\common\enums\enuProductStatus;

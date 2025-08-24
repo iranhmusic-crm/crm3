@@ -8,7 +8,7 @@ namespace iranhmusic\shopack\mha\frontend\userpanel;
 use Yii;
 use yii\base\BootstrapInterface;
 use iranhmusic\shopack\mha\frontend\common\controllers\BasketController;
-use shopack\base\frontend\userpanel\accounting\AccountingModule;
+use shopack\interface\accounting\frontend\userpanel\AccountingModule;
 
 class Module
 	extends \shopack\base\common\base\BaseModule
