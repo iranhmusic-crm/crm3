@@ -17,42 +17,42 @@ SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_BasicDefinition`
+ALTER TABLE `tbl_MHA_BasicDefinition`
 	CHANGE COLUMN `bdfCreatedAt` `bdfCreatedAt` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `bdfStatus`,
 	CHANGE COLUMN `bdfUpdatedAt` `bdfUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `bdfCreatedBy`;
 SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_Document`
+ALTER TABLE `tbl_MHA_Document`
 	CHANGE COLUMN `docCreatedAt` `docCreatedAt` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `docStatus`,
 	CHANGE COLUMN `docUpdatedAt` `docUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `docCreatedBy`;
 SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_Kanoon`
+ALTER TABLE `tbl_MHA_Kanoon`
 	CHANGE COLUMN `knnCreatedAt` `knnCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `knnStatus`,
 	CHANGE COLUMN `knnUpdatedAt` `knnUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `knnCreatedBy`;
 SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_MasterInsurer`
+ALTER TABLE `tbl_MHA_MasterInsurer`
 	CHANGE COLUMN `minsCreatedAt` `minsCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `minsStatus`,
 	CHANGE COLUMN `minsUpdatedAt` `minsUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `minsCreatedBy`;
 SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_MasterInsurerType`
+ALTER TABLE `tbl_MHA_MasterInsurerType`
 	CHANGE COLUMN `minstypCreatedAt` `minstypCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `minstypStatus`,
 	CHANGE COLUMN `minstypUpdatedAt` `minstypUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `minstypCreatedBy`;
 SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_Member`
+ALTER TABLE `tbl_MHA_Member`
 	CHANGE COLUMN `mbrAcceptedAt` `mbrAcceptedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrRegisterCode`,
 	CHANGE COLUMN `mbrCreatedAt` `mbrCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `mbrStatus`,
 	CHANGE COLUMN `mbrUpdatedAt` `mbrUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrCreatedBy`;
@@ -60,14 +60,14 @@ SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_MemberGroup`
+ALTER TABLE `tbl_MHA_MemberGroup`
 	CHANGE COLUMN `mgpCreatedAt` `mgpCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `mgpStatus`,
 	CHANGE COLUMN `mgpUpdatedAt` `mgpUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mgpCreatedBy`;
 SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_MemberMasterInsDoc`
+ALTER TABLE `tbl_MHA_MemberMasterInsDoc`
 	CHANGE COLUMN `mbrminsdocDocDate` `mbrminsdocDocDate` DATE NULL DEFAULT NULL AFTER `mbrminsdocDocNumber`,
 	CHANGE COLUMN `mbrminsdocCreatedAt` `mbrminsdocCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `mbrminsdocStatus`,
 	CHANGE COLUMN `mbrminsdocUpdatedAt` `mbrminsdocUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrminsdocCreatedBy`;
@@ -75,7 +75,7 @@ SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_MemberMasterInsuranceHistory`
+ALTER TABLE `tbl_MHA_MemberMasterInsuranceHistory`
 	CHANGE COLUMN `mbrminshstIssuanceDate` `mbrminshstIssuanceDate` DATE NULL DEFAULT NULL AFTER `mbrminshstCoName`,
 	CHANGE COLUMN `mbrminshstCreatedAt` `mbrminshstCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `mbrminshstIssuanceDate`,
 	CHANGE COLUMN `mbrminshstUpdatedAt` `mbrminshstUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrminshstCreatedBy`;
@@ -83,7 +83,7 @@ SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_MemberSponsorship`
+ALTER TABLE `tbl_MHA_MemberSponsorship`
 	CHANGE COLUMN `mbrspsBirthDate` `mbrspsBirthDate` DATE NULL DEFAULT NULL AFTER `mbrspsFatherName`,
 	CHANGE COLUMN `mbrspsCreatedAt` `mbrspsCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `mbrspsInsuranceCode`,
 	CHANGE COLUMN `mbrspsUpdatedAt` `mbrspsUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrspsCreatedBy`;
@@ -91,7 +91,7 @@ SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_MemberSupplementaryInsDoc`
+ALTER TABLE `tbl_MHA_MemberSupplementaryInsDoc`
 	CHANGE COLUMN `mbrsinsdocDocDate` `mbrsinsdocDocDate` DATE NULL DEFAULT NULL AFTER `mbrsinsdocDocNumber`,
 	CHANGE COLUMN `mbrsinsdocCreatedAt` `mbrsinsdocCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `mbrsinsdocStatus`,
 	CHANGE COLUMN `mbrsinsdocUpdatedAt` `mbrsinsdocUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrsinsdocCreatedBy`;
@@ -99,14 +99,14 @@ SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_Member_Document`
+ALTER TABLE `tbl_MHA_Member_Document`
 	CHANGE COLUMN `mbrdocCreatedAt` `mbrdocCreatedAt` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `mbrdocStatus`,
 	CHANGE COLUMN `mbrdocUpdatedAt` `mbrdocUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrdocCreatedBy`;
 SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_Member_Kanoon`
+ALTER TABLE `tbl_MHA_Member_Kanoon`
 	CHANGE COLUMN `mbrknnAcceptedAt` `mbrknnAcceptedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrknnHistory`,
 	CHANGE COLUMN `mbrknnCreatedAt` `mbrknnCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `mbrknnStatus`,
 	CHANGE COLUMN `mbrknnUpdatedAt` `mbrknnUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrknnCreatedBy`;
@@ -114,7 +114,7 @@ SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_Member_MemberGroup`
+ALTER TABLE `tbl_MHA_Member_MemberGroup`
 	CHANGE COLUMN `mbrmgpStartAt` `mbrmgpStartAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrmgpMemberGroupID`,
 	CHANGE COLUMN `mbrmgpEndAt` `mbrmgpEndAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrmgpStartAt`,
 	CHANGE COLUMN `mbrmgpCreatedAt` `mbrmgpCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `mbrmgpEndAt`,
@@ -123,28 +123,28 @@ SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_Member_Specialty`
+ALTER TABLE `tbl_MHA_Member_Specialty`
 	CHANGE COLUMN `mbrspcCreatedAt` `mbrspcCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `mbrspcDesc`,
 	CHANGE COLUMN `mbrspcUpdatedAt` `mbrspcUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `mbrspcCreatedBy`;
 SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_Report`
+ALTER TABLE `tbl_MHA_Report`
 	CHANGE COLUMN `rptCreatedAt` `rptCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `rptStatus`,
 	CHANGE COLUMN `rptUpdatedAt` `rptUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `rptCreatedBy`;
 SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_Specialty`
+ALTER TABLE `tbl_MHA_Specialty`
 	CHANGE COLUMN `spcCreatedAt` `spcCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `spcStatus`,
 	CHANGE COLUMN `spcUpdatedAt` `spcUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `spcCreatedBy`;
 SQL
 		);
 
 		$this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_SupplementaryInsurer`
+ALTER TABLE `tbl_MHA_SupplementaryInsurer`
 	CHANGE COLUMN `sinsCreatedAt` `sinsCreatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `sinsStatus`,
 	CHANGE COLUMN `sinsUpdatedAt` `sinsUpdatedAt` TIMESTAMP NULL DEFAULT NULL AFTER `sinsCreatedBy`;
 SQL

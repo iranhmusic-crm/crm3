@@ -11,7 +11,7 @@ class m230910_064534_mha_create_accounting extends Migration
   public function safeUp()
   {
     $this->execute(<<<SQL
-ALTER TABLE `tbl_M_H_A_Accounting_Product`
+ALTER TABLE `tbl_MHA_Accounting_Product`
   ADD COLUMN `prdMhaType` CHAR(1) NOT NULL COMMENT 'M:Membership, C:Card Print, P:Post Packet' COLLATE 'utf8mb4_unicode_ci' AFTER `prdRemovedBy`;
 SQL
     );
