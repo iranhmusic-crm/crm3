@@ -5,26 +5,12 @@
 
 use shopack\base\common\db\Migration;
 
+/* this will be applied after m231231_000000_accounting_change_slbAvailableFromDate_notnull@mha */
 class m231231_113559_mha_change_slbAvailableFromDate_notnull extends Migration
 {
   public function safeUp()
   {
-    $this->execute(<<<SQL
-ALTER TABLE `tbl_MHA_Accounting_Saleable`
-	CHANGE COLUMN `slbAvailableFromDate` `slbAvailableFromDate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `slbDesc`;
-SQL
-    );
-
-    $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_Accounting_Saleable_before_insert`;");
-    $this->execute(<<<SQL
-CREATE TRIGGER `trg_tbl_MHA_Accounting_Saleable_before_insert` BEFORE INSERT ON `tbl_MHA_Accounting_Saleable` FOR EACH ROW BEGIN
-	IF NEW.slbCode IS NULL THEN
-		SET NEW.slbCode = UUID();
-	END IF;
-END
-SQL
-    );
-
+    //nothing to do
   }
 
   public function safeDown()
