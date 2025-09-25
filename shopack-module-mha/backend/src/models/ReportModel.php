@@ -225,13 +225,13 @@ class ReportModel extends MhaActiveRecord
 				},
 				'filterCallback' => function($query, $key, $value) {
 					if (is_string($value))
-						$value = ',' . $value . ',';
+						$value = ['|' . $value . '|'];
 					else if (is_array($value)) {
 						foreach ($value as &$v) {
-							$v = ',' . $v . ',';
+							$v = '|' . $v . '|';
 						}
 					}
-					$query->andWhere(['IN', DbExpression::concat("','", 'kanoonIDs', "','"), $value]);
+					$query->andWhere(['LIKE', DbExpression::concat("'|'", 'kanoonIDs', "'|'"), $value]);
 				},
 				'join' => [
 					'kanoon',
@@ -246,13 +246,13 @@ class ReportModel extends MhaActiveRecord
 				},
 				'filterCallback' => function($query, $key, $value) {
 					if (is_string($value))
-						$value = ',' . $value . ',';
+						$value = ['|' . $value . '|'];
 					else if (is_array($value)) {
 						foreach ($value as &$v) {
-							$v = ',' . $v . ',';
+							$v = '|' . $v . '|';
 						}
 					}
-					$query->andWhere(['IN', DbExpression::concat("','", 'kanoonDegrees', "','"), $value]);
+					$query->andWhere(['LIKE', DbExpression::concat("'|'", 'kanoonDegrees', "'|'"), $value]);
 				},
 				'join' => [
 					'kanoon',
