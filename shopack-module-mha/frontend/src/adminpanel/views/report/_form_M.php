@@ -64,7 +64,7 @@ JS;
 		$this->registerJs($js, \yii\web\View::POS_END);
 
 		$js =<<<JS
-$('[id*="-has--"]').each(function() { $(this).on('change', function(e) {
+$('[id*="-rptinputfields-has-"]').each(function() { $(this).on('change', function(e) {
 	nullableRadioCheckChanged(e);
 }); });
 JS;
@@ -86,7 +86,7 @@ JS;
 			['@section', 'label' => 'فیلترهای ورودی'],
 
 			[
-				'rptInputFields[mbrRegisterCode_Has]',
+				'rptInputFields[Has][mbrRegisterCode]',
 				'label' => 'کد عضویت',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -101,14 +101,14 @@ JS;
 				'rptInputFields[mbrRegisterCode]',
 				'label' => '',
 				'visibleConditions' => [
-					'rptInputFields[mbrRegisterCode_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrRegisterCode]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 			],
 
 			['@col-break'],
 
 			[
-				'rptInputFields[usrGender_Has]',
+				'rptInputFields[Has][usrGender]',
 				'label' => 'جنسیت',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -123,7 +123,7 @@ JS;
 				'rptInputFields[usrGender]',
 				'label' => '',
 				'visibleConditions' => [
-					'rptInputFields[usrGender_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][usrGender]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
@@ -143,7 +143,7 @@ JS;
 			'<hr>',
 
 			[
-				'rptInputFields[mbrAcceptedAt_Has]',
+				'rptInputFields[Has][mbrAcceptedAt]',
 				'label' => 'تاریخ تایید عضویت',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -158,7 +158,7 @@ JS;
 				'rptInputFields[mbrAcceptedAt][From]',
 				'label' => 'از',
 				'visibleConditions' => [
-					'rptInputFields[mbrAcceptedAt_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrAcceptedAt]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
@@ -176,7 +176,7 @@ JS;
 			['rptInputFields[mbrAcceptedAt][To]',
 				'label' => 'تا',
 				'visibleConditions' => [
-					'rptInputFields[mbrAcceptedAt_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrAcceptedAt]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
@@ -195,7 +195,7 @@ JS;
 			['@col-break'],
 
 			[
-				'rptInputFields[mbrExpireDate_Has]',
+				'rptInputFields[Has][mbrExpireDate]',
 				'label' => 'تاریخ انقضای عضویت',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -210,7 +210,7 @@ JS;
 				'rptInputFields[mbrExpireDate][From]',
 				'label' => 'از',
 				'visibleConditions' => [
-					'rptInputFields[mbrExpireDate_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrExpireDate]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
@@ -229,7 +229,7 @@ JS;
 				'rptInputFields[mbrExpireDate][To]',
 				'label' => 'تا',
 				'visibleConditions' => [
-					'rptInputFields[mbrExpireDate_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrExpireDate]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
@@ -249,7 +249,7 @@ JS;
 			'<hr>',
 
 			[
-				'rptInputFields[usrBirthLocation_Has]',
+				'rptInputFields[Has][usrBirthLocation]',
 				'label' => 'محل تولد',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -263,26 +263,26 @@ JS;
 			GeoStateChooseFormField::field($this, $model, 'rptInputFields[usrBirthLocation][State]', true, false, null, [
 				'label' => 'استان',
 				'visibleConditions' => [
-					'rptInputFields[usrBirthLocation_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][usrBirthLocation]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 			]),
 			GeoCityOrVillageChooseFormField::field($this, $model, 'rptInputFields[usrBirthLocation][City]', true, false, 'rptInputFields[usrBirthLocation][State]', [
 				'label' => 'شهر',
 				'visibleConditions' => [
-					'rptInputFields[usrBirthLocation_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][usrBirthLocation]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 			]),
 			GeoTownChooseFormField::field($this, $model, 'rptInputFields[usrBirthLocation][Town]', true, false, 'rptInputFields[usrBirthLocation][City]', [
 				'label' => 'منطقه',
 				'visibleConditions' => [
-					'rptInputFields[usrBirthLocation_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][usrBirthLocation]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 			]),
 
 			['@col-break'],
 
 			[
-				'rptInputFields[usrBirthDate_Has]',
+				'rptInputFields[Has][usrBirthDate]',
 				'label' => 'تاریخ تولد',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -297,7 +297,7 @@ JS;
 				'rptInputFields[usrBirthDate][From]',
 				'label' => 'از',
 				'visibleConditions' => [
-					'rptInputFields[usrBirthDate_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][usrBirthDate]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
@@ -316,7 +316,7 @@ JS;
 				'rptInputFields[usrBirthDate][To]',
 				'label' => 'تا',
 				'visibleConditions' => [
-					'rptInputFields[usrBirthDate_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][usrBirthDate]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => DatePicker::class,
@@ -336,7 +336,7 @@ JS;
 			'<hr>',
 
 			[
-				'rptInputFields[Location_Has]',
+				'rptInputFields[Has][Location]',
 				'label' => 'محل سکونت',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -350,13 +350,13 @@ JS;
 			GeoStateChooseFormField::field($this, $model, 'rptInputFields[usrStateID]', true, false, null, [
 				'label' => 'استان',
 				'visibleConditions' => [
-					'rptInputFields[Location_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][Location]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 			]),
 			GeoCityOrVillageChooseFormField::field($this, $model, 'rptInputFields[usrCityOrVillageID]', true, false, 'rptInputFields[usrStateID]', [
 				'label' => 'شهر',
 				'visibleConditions' => [
-					'rptInputFields[Location_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][Location]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 			]),
 
@@ -366,7 +366,7 @@ JS;
 
 		$builder->fields([
 			[
-				'rptInputFields[mbrknnKanoonID_Has]',
+				'rptInputFields[Has][mbrknn][KanoonID]',
 				'label' => 'کانون',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -377,17 +377,17 @@ JS;
 					'inline' => true,
 				],
 			],
-			KanoonChooseFormField::field($this, $model, 'rptInputFields[mbrknnKanoonID]', true, true, [
+			KanoonChooseFormField::field($this, $model, 'rptInputFields[mbrknn][KanoonID]', true, true, [
 				'label' => '',
 				'visibleConditions' => [
-					'rptInputFields[mbrknnKanoonID_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrknn][KanoonID]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 			]),
 		]);
 
 		$builder->fields([
 			[
-				'rptInputFields[mbrknnMembershipDegree_Has]',
+				'rptInputFields[Has][mbrknn][MembershipDegree]',
 				'label' => 'رده عضویت',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -399,10 +399,10 @@ JS;
 				],
 			],
 			[
-				'rptInputFields[mbrknnMembershipDegree]',
+				'rptInputFields[mbrknn][MembershipDegree]',
 				'label' => '',
 				'visibleConditions' => [
-					'rptInputFields[mbrknnMembershipDegree_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrknn][MembershipDegree]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
@@ -422,7 +422,7 @@ JS;
 			['@col-break'],
 
 			[
-				'rptInputFields[mbrInstrumentID_Has]',
+				'rptInputFields[Has][mbrInstrumentID]',
 				'label' => 'ساز',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -437,7 +437,7 @@ JS;
 				'rptInputFields[mbrInstrumentID]',
 				'label' => '',
 				'visibleConditions' => [
-					'rptInputFields[mbrInstrumentID_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrInstrumentID]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
@@ -455,7 +455,7 @@ JS;
 			],
 
 			[
-				'rptInputFields[mbrSingID_Has]',
+				'rptInputFields[Has][mbrSingID]',
 				'label' => 'آواز',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -470,7 +470,7 @@ JS;
 				'rptInputFields[mbrSingID]',
 				'label' => '',
 				'visibleConditions' => [
-					'rptInputFields[mbrSingID_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrSingID]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
@@ -488,7 +488,7 @@ JS;
 			],
 
 			[
-				'rptInputFields[mbrResearchID_Has]',
+				'rptInputFields[Has][mbrResearchID]',
 				'label' => 'پژوهش',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -503,7 +503,7 @@ JS;
 				'rptInputFields[mbrResearchID]',
 				'label' => '',
 				'visibleConditions' => [
-					'rptInputFields[mbrResearchID_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrResearchID]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
@@ -523,7 +523,7 @@ JS;
 			'<hr>',
 
 			[
-				'rptInputFields[mbrJob_Has]',
+				'rptInputFields[Has][mbrJob]',
 				'label' => 'شغل',
 				'type' => FormBuilder::FIELD_CHECKBOXLIST,
 				'data' => [
@@ -538,7 +538,7 @@ JS;
 				'rptInputFields[mbrJob]',
 				'label' => '',
 				'visibleConditions' => [
-					'rptInputFields[mbrJob_Has]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
+					'rptInputFields[Has][mbrJob]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
 				],
 				'type' => FormBuilder::FIELD_TEXT,
 			],
