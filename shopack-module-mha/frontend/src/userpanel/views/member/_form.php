@@ -35,13 +35,13 @@ var formatUser = function(user)
 {
 	if (user.loading)
 		return 'در حال جستجو...'; //user.text;
-	return '<div style="overflow:hidden;">' + '<b>' + user.firstname + ' ' + user.lastname + '</b> - ' + user.email + '</div>';
+	return '<div style="overflow:hidden;">' + user.name + '</div>';
 };
 var formatUserSelection = function(user)
 {
 	if (user.text)
 		return user.text;
-	return user.firstname + ' ' + user.lastname + ' - ' + user.email;
+	return user.name;
 }
 JS;
 			$this->registerJs($formatJs, \yii\web\View::POS_HEAD);
@@ -66,7 +66,7 @@ function(data, params)
 JS;
 			if (!empty($model->mbrUserID)) {
 				$userModel = UserModel::findOne($model->mbrUserID);
-				$userDesc = $userModel->usrFirstName . ' ' . $userModel->usrLastName . ' - ' . $userModel->usrEmail;
+				$userDesc = $userModel->displayName();
 			} else
 				$userDesc = null;
 
@@ -193,6 +193,13 @@ JS;
 			]);
 		} else {
 			//edit mode
+			$builder->fields([
+				[
+					'mbrUserID',
+					'type' => FormBuilder::FIELD_STATIC,
+					'staticValue' => $model->user->displayName(),
+				],
+			]);
 		}
 
 		$builder->fields([

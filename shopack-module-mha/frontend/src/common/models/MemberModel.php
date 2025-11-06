@@ -99,7 +99,7 @@ class MemberModel extends RestClientActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'mbrCreateNewUser'          => Yii::t('mha', 'Create new user'),
+			'mbrCreateNewUser'          => Yii::t('aaa', 'Create new user'),
 			'mbrUserID'                 => Yii::t('mha', 'Related User'),
 			'mbrRegisterCode'           => Yii::t('mha', 'Register Code'),
 			'mbrAcceptedAt'							=> Yii::t('mha', 'Registration Accepted At'),
