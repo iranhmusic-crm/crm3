@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -10,6 +11,7 @@ use shopack\base\common\helpers\Url;
 use shopack\base\frontend\common\rest\RestClientActiveRecord;
 use shopack\aaa\frontend\common\models\UserModel;
 use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
+use shopack\base\common\helpers\ArrayHelper;
 
 class MemberModel extends RestClientActiveRecord
 {
@@ -30,11 +32,16 @@ class MemberModel extends RestClientActiveRecord
 	public $usrMobile;
 	public $usrSSID;
 
-	public function extraRules() {
+	public function extraRules()
+	{
+		if ($this->isNewRecord == false)
+			return [];
+
 		return [
 			['mbrCreateNewUser', 'boolean'],
 
-			['mbrUserID',
+			[
+				'mbrUserID',
 				'required',
 				'when' => function ($model) {
 					return ($model->mbrCreateNewUser == false);
@@ -44,54 +51,57 @@ class MemberModel extends RestClientActiveRecord
 				}"
 			],
 
-			[['usrEmail',
-  			'usrMobile',
-	  		'usrSSID',
+			[[
+				'usrEmail',
+				'usrMobile',
+				'usrSSID',
 				'usrGender',
 				'usrFirstName',
 				'usrFirstName_en',
 				'usrLastName',
-        'usrLastName_en',
+				'usrLastName_en',
 				'usrFatherName',
 				'usrFatherName_en',
 			], 'string'],
 
-      // [[
-      //   'usrEmail',
-      //   'usrMobile',
-      // ], GroupRequiredValidator::class,
-      //   'min' => 1,
-      //   'in' => [
-      //     'usrEmail',
-      //     'usrMobile',
-      //   ],
-      //   'message' => Yii::t('aaa', 'one of email or mobile is required'),
+			// [[
+			//   'usrEmail',
+			//   'usrMobile',
+			// ], GroupRequiredValidator::class,
+			//   'min' => 1,
+			//   'in' => [
+			//     'usrEmail',
+			//     'usrMobile',
+			//   ],
+			//   'message' => Yii::t('aaa', 'one of email or mobile is required'),
 			// 	'when' => function ($model) {
 			// 		return ($model->mbrCreateNewUser);
 			// 	},
 			// 	'whenClient' => "function (attribute, value) {
 			// 		return $('#membermodel-mbrcreatenewuser')[0].checked;
 			// 	}"
-      // ],
+			// ],
 
-			[[
-        'usrMobile',
-        'usrSSID',
-				'usrGender',
-				'usrFirstName',
-				'usrFirstName_en',
-        'usrLastName',
-        'usrLastName_en',
-				'usrFatherName',
-				'usrFatherName_en',
-      ], 'required',
+			[
+				[
+					'usrMobile',
+					'usrSSID',
+					'usrGender',
+					'usrFirstName',
+					'usrFirstName_en',
+					'usrLastName',
+					'usrLastName_en',
+					'usrFatherName',
+					'usrFatherName_en',
+				],
+				'required',
 				'when' => function ($model) {
 					return ($model->mbrCreateNewUser);
 				},
 				'whenClient' => "function (attribute, value) {
 					return $('#membermodel-mbrcreatenewuser')[0].checked;
 				}"
-      ],
+			],
 
 		];
 	}
@@ -128,52 +138,52 @@ class MemberModel extends RestClientActiveRecord
 			'mbrRemovedBy'              => Yii::t('app', 'Removed By'),
 			'mbrRemovedBy_User'         => Yii::t('app', 'Removed By'),
 
-      'usrID'                 => Yii::t('app', 'ID'),
-      'usrGender'             => Yii::t('aaa', 'Gender'),
-      'usrFirstName'          => Yii::t('aaa', 'First Name'),
-      'usrFirstName_en'       => Yii::t('aaa', 'First Name (en)'),
-      'usrLastName'           => Yii::t('aaa', 'Last Name'),
-      'usrLastName_en'        => Yii::t('aaa', 'Last Name (en)'),
-      'usrFatherName'         => Yii::t('aaa', 'Father Name'),
-      'usrFatherName_en'      => Yii::t('aaa', 'Father Name (en)'),
-      'usrEmail'              => Yii::t('aaa', 'Email'),
-      'usrEmailApprovedAt'    => Yii::t('aaa', 'Email Approved At'),
-      'usrMobile'             => Yii::t('aaa', 'Mobile'),
-      'usrMobileApprovedAt'   => Yii::t('aaa', 'Mobile Approved At'),
-      'usrSSID'               => Yii::t('aaa', 'SSID'),
+			'usrID'                 => Yii::t('app', 'ID'),
+			'usrGender'             => Yii::t('aaa', 'Gender'),
+			'usrFirstName'          => Yii::t('aaa', 'First Name'),
+			'usrFirstName_en'       => Yii::t('aaa', 'First Name (en)'),
+			'usrLastName'           => Yii::t('aaa', 'Last Name'),
+			'usrLastName_en'        => Yii::t('aaa', 'Last Name (en)'),
+			'usrFatherName'         => Yii::t('aaa', 'Father Name'),
+			'usrFatherName_en'      => Yii::t('aaa', 'Father Name (en)'),
+			'usrEmail'              => Yii::t('aaa', 'Email'),
+			'usrEmailApprovedAt'    => Yii::t('aaa', 'Email Approved At'),
+			'usrMobile'             => Yii::t('aaa', 'Mobile'),
+			'usrMobileApprovedAt'   => Yii::t('aaa', 'Mobile Approved At'),
+			'usrSSID'               => Yii::t('aaa', 'SSID'),
 			'usrBirthCertID'      	=> Yii::t('aaa', 'Birth Cert ID'),
-      'usrRoleID'             => Yii::t('aaa', 'Role'),
-      'usrPrivs'              => Yii::t('aaa', 'Exclusive Privs'),
-      'usrPassword'           => Yii::t('aaa', 'Password'),
-      'usrRetypePassword'     => Yii::t('aaa', 'Retype Password'),
-      'usrPasswordHash'       => Yii::t('aaa', 'Password Hash'),
-      'usrPasswordCreatedAt'  => Yii::t('aaa', 'Password Created At'),
-      'usrMustChangePassword' => Yii::t('aaa', 'Must Change Password'),
+			'usrRoleID'             => Yii::t('aaa', 'Role'),
+			'usrPrivs'              => Yii::t('aaa', 'Exclusive Privs'),
+			'usrPassword'           => Yii::t('aaa', 'Password'),
+			'usrRetypePassword'     => Yii::t('aaa', 'Retype Password'),
+			'usrPasswordHash'       => Yii::t('aaa', 'Password Hash'),
+			'usrPasswordCreatedAt'  => Yii::t('aaa', 'Password Created At'),
+			'usrMustChangePassword' => Yii::t('aaa', 'Must Change Password'),
 			'usr2FA'								=> Yii::t('aaa', 'Two Factor Authentication'),
 			'usrBirthDate'          => Yii::t('aaa', 'Birth Date'),
-      'usrBirthCityID'      	=> Yii::t('aaa', 'Birth Location'),
+			'usrBirthCityID'      	=> Yii::t('aaa', 'Birth Location'),
 			'usrCountryID'          => Yii::t('aaa', 'Country'),
 			'usrStateID'            => Yii::t('aaa', 'State'),
 			'usrCityOrVillageID'    => Yii::t('aaa', 'City Or Village'),
 			'usrTownID'             => Yii::t('aaa', 'Town'),
 			'usrHomeAddress'        => Yii::t('aaa', 'Home Address'),
 			'usrZipCode'            => Yii::t('aaa', 'Zip Code'),
-      'usrPhones'             => Yii::t('aaa', 'Phones'),
-      'usrWorkAddress'        => Yii::t('aaa', 'Work Address'),
-      'usrWorkPhones'         => Yii::t('aaa', 'Work Phones'),
-      'usrWebsite'            => Yii::t('aaa', 'Website'),
+			'usrPhones'             => Yii::t('aaa', 'Phones'),
+			'usrWorkAddress'        => Yii::t('aaa', 'Work Address'),
+			'usrWorkPhones'         => Yii::t('aaa', 'Work Phones'),
+			'usrWebsite'            => Yii::t('aaa', 'Website'),
 			'usrImage'              => Yii::t('aaa', 'Image'),
 			'usrImageFileID'        => Yii::t('aaa', 'Image'),
 
-      'usrEducationLevel'     => Yii::t('aaa', 'Education Level'),
-      'usrFieldOfStudy'       => Yii::t('aaa', 'Field Of Study'),
-      'usrYearOfGraduation'   => Yii::t('aaa', 'Year Of Graduation'),
-      'usrEducationPlace'     => Yii::t('aaa', 'Education Place'),
-      'usrMaritalStatus'      => Yii::t('aaa', 'Marital Status'),
-      'usrMilitaryStatus'     => Yii::t('aaa', 'Military Status'),
+			'usrEducationLevel'     => Yii::t('aaa', 'Education Level'),
+			'usrFieldOfStudy'       => Yii::t('aaa', 'Field Of Study'),
+			'usrYearOfGraduation'   => Yii::t('aaa', 'Year Of Graduation'),
+			'usrEducationPlace'     => Yii::t('aaa', 'Education Place'),
+			'usrMaritalStatus'      => Yii::t('aaa', 'Marital Status'),
+			'usrMilitaryStatus'     => Yii::t('aaa', 'Military Status'),
 			'usrStatus'             => Yii::t('aaa', 'User Status'),
 
-      'hasPassword'           => Yii::t('aaa', 'Has Password'),
+			'hasPassword'           => Yii::t('aaa', 'Has Password'),
 		];
 	}
 
@@ -185,42 +195,50 @@ class MemberModel extends RestClientActiveRecord
 	}
 
 	public function isSoftDeleted()
-  {
-    return ($this->mbrStatus == enuMemberStatus::Removed);
-  }
-
-	public static function canCreate() {
-		return true;
-	}
-
-	public function canUpdate() {
-		return ($this->mbrStatus != enuMemberStatus::Removed);
-	}
-
-	public function canDelete() {
-		return ($this->mbrStatus != enuMemberStatus::Removed);
-	}
-
-	public function canUndelete() {
+	{
 		return ($this->mbrStatus == enuMemberStatus::Removed);
 	}
 
-	public function getUser() {
+	public static function canCreate()
+	{
+		return true;
+	}
+
+	public function canUpdate()
+	{
+		return ($this->mbrStatus != enuMemberStatus::Removed);
+	}
+
+	public function canDelete()
+	{
+		return ($this->mbrStatus != enuMemberStatus::Removed);
+	}
+
+	public function canUndelete()
+	{
+		return ($this->mbrStatus == enuMemberStatus::Removed);
+	}
+
+	public function getUser()
+	{
 		return $this->hasOne(UserModel::class, ['usrID' => 'mbrUserID']);
 	}
 
-	public function load($data, $formName = null) {
+	public function load($data, $formName = null)
+	{
 		$ret = parent::load($data, $formName);
 
 		//load relations
 		try {
-      $this->user->load($data);
-		} catch (\Throwable $exp) {}
+			$this->user->load($data);
+		} catch (\Throwable $exp) {
+		}
 
 		return $ret;
 	}
 
-	public function save($runValidation = true, $attributeNames = null) {
+	public function save($runValidation = true, $attributeNames = null)
+	{
 		if ($this->isNewRecord) {
 			if ($this->mbrCreateNewUser) {
 				$userModel = new UserModel();
@@ -277,7 +295,7 @@ class MemberModel extends RestClientActiveRecord
 			$format = '{fn} {ln} {em} {mob}';
 
 		// if ($this->mbrRegisterCode)
-			$result = '[عضویت: ' . ($this->mbrRegisterCode ?? 'ندارد') . '] ';
+		$result = '[عضویت: ' . ($this->mbrRegisterCode ?? 'ندارد') . '] ';
 
 		return $result . $this->user->displayName($format);
 	}
@@ -361,5 +379,4 @@ class MemberModel extends RestClientActiveRecord
 
 		return implode('|', $desc);
 	}
-
 }
