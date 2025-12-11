@@ -56,7 +56,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
         $column = array_merge($column, $outputSchema);
         // if (empty($template) == false) {
         //   $column['value'] = function($model) use ($template) {
-        //     return strtr($template, '{value}', formatted value)
+        //     return strtr($template, ['{value}' => formatted value])
         //   };
         // }
       } else {
@@ -83,7 +83,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
     //     $column = array_merge($column, $v);
     //     // if (empty($template) == false) {
     //     //   $column['value'] = function($model) use ($template) {
-    //     //     return strtr($template, '{value}', formatted value)
+    //     //     return strtr($template, ['{value}' => formatted value])
     //     //   };
     //     // }
     //   } else {

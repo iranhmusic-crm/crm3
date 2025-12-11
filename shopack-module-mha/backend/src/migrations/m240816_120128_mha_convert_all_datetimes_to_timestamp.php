@@ -10,11 +10,11 @@ class m240816_120128_mha_convert_all_datetimes_to_timestamp extends Migration
 {
 	public function safeUp()
 	{
-		$this->execute(<<<SQL
-ALTER TABLE `tbl_convert`
-	CHANGE COLUMN `at` `at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `lastID`;
-SQL
-		);
+// 		$this->execute(<<<SQL
+// ALTER TABLE `tbl_convert`
+// 	CHANGE COLUMN `at` `at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `lastID`;
+// SQL
+// 		);
 
 		$this->execute(<<<SQL
 ALTER TABLE `tbl_MHA_BasicDefinition`

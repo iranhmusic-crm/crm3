@@ -4,7 +4,23 @@
  */
 
 use shopack\base\common\db\Migration;
-use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
+// use iranhmusic\shopack\mha\common\enums\enuMemberMembershipStatus;
+
+use shopack\base\common\base\BaseEnum;
+
+abstract class enuMemberMembershipStatus extends BaseEnum
+{
+	const WaitForPay = 'W';
+	const Paid       = 'P';
+
+	public static $messageCategory = 'mha';
+
+	public static $list = [
+		self::WaitForPay => 'Wait For Pay',
+		self::Paid       => 'Paid',
+	];
+
+};
 
 class m230829_064731_mha_add_expiredate_to_tblmember extends Migration
 {

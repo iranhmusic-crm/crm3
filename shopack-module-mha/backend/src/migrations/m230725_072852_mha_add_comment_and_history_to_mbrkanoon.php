@@ -16,7 +16,7 @@ ALTER TABLE `tbl_MHA_Member_Kanoon`
     ADD COLUMN `mbrknnHistory` JSON NULL AFTER `mbrknnComment`;
 SQL
         );
-        $this->alterColumn('tbl_MHA_Member_Kanoon', 'mbrknnDesc', $this->json());
+        $this->alterColumn('tbl_MHA_Member_Kanoon', 'mbrknnParams', $this->json());
         $this->alterColumn('tbl_MHA_Member_Kanoon', 'mbrknnHistory', $this->json());
 
         $this->execute("DROP TRIGGER IF EXISTS `trg_tbl_MHA_Member_Kanoon_before_insert`;");

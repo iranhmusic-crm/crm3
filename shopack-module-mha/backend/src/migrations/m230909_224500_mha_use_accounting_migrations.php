@@ -10,14 +10,14 @@ class m230909_224500_mha_use_accounting_migrations extends Migration
 {
 	public function safeUp()
 	{
-		Yii::$app->controller->addMigrationHistory("m230910_000000_accounting_create_accounting@mha");
-		Yii::$app->controller->addMigrationHistory("m231113_000000_accounting_rename_coupon_to_discount@mha");
-		Yii::$app->controller->addMigrationHistory("m231219_000000_accounting_convert_uasVoucherItemInfo@mha");
-		Yii::$app->controller->addMigrationHistory("m231231_000000_accounting_change_slbAvailableFromDate_notnull@mha");
-		Yii::$app->controller->addMigrationHistory("m240102_000000_accounting_create_discount_sn_usage_referrer@mha");
-		Yii::$app->controller->addMigrationHistory("m240131_000000_accounting_set_status_to_draft_for_basket_items@mha");
-		Yii::$app->controller->addMigrationHistory("m240619_000000_accounting_fix_saleable_beforeinsert_trigger@mha");
-		Yii::$app->controller->addMigrationHistory("m240816_000000_accounting_convert_all_datetimes_to_timestamp@mha");
+		// Yii::$app->controller->addMigrationHistory("m230910_000000_accounting_create_accounting@mha");
+		// Yii::$app->controller->addMigrationHistory("m231113_000000_accounting_rename_coupon_to_discount@mha");
+		// Yii::$app->controller->addMigrationHistory("m231219_000000_accounting_convert_uasVoucherItemInfo@mha");
+		// Yii::$app->controller->addMigrationHistory("m231231_000000_accounting_change_slbAvailableFromDate_notnull@mha");
+		// Yii::$app->controller->addMigrationHistory("m240102_000000_accounting_create_discount_sn_usage_referrer@mha");
+		// Yii::$app->controller->addMigrationHistory("m240131_000000_accounting_set_status_to_draft_for_basket_items@mha");
+		// Yii::$app->controller->addMigrationHistory("m240619_000000_accounting_fix_saleable_beforeinsert_trigger@mha");
+		// Yii::$app->controller->addMigrationHistory("m240816_000000_accounting_convert_all_datetimes_to_timestamp@mha");
 
 		return true;
 
