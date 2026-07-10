@@ -57,31 +57,31 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
 					'url' => ['/aaa/auth/login'],
 				];
 			} else {
-				$userMenuItems = [
-					'label' => Yii::t('app', 'Menu'),
-					'dropdownOptions' => ['class' => 'dropdown-items-reverse'],
-					'items' => [
-						// '<li class="nav-item">' . Html::a(
-						//   'Logout (' . Yii::$app->user->identity->email . ')',
-						//   ['/aaa/auth/logout'],
-						//   [
-						//     'method' => 'post',
-						//     'form' => [
-						//       'csrf' => false,
-						//     ],
-						//     'button' => [
-						//       'class' => 'nav-link btn btn-link logout',
-						//     ],
-						//   ]
-						// ) . '</li>',
-						['label' => Yii::$app->user->identity->usrEmail ?? (Yii::$app->user->identity->usrMobile ?? '')],
-						'<hr class="dropdown-divider">',
-						['label' => Yii::t('aaa', 'My Profile'), 'url' => ['/aaa/profile']],
-						// ['label' => Yii::t('aaa', 'Financial'), 'url' => ['/aaa/fin']],
-						'<hr class="dropdown-divider">',
-						['label' => Yii::t('aaa', 'Logout'), 'url' => ['/aaa/auth/logout']],
-					],
-				];
+				// $userMenuItems = [
+				// 	'label' => Yii::t('app', 'Menu'),
+				// 	'dropdownOptions' => ['class' => 'dropdown-items-reverse'],
+				// 	'items' => [
+				// 		// '<li class="nav-item">' . Html::a(
+				// 		//   'Logout (' . Yii::$app->user->identity->email . ')',
+				// 		//   ['/aaa/auth/logout'],
+				// 		//   [
+				// 		//     'method' => 'post',
+				// 		//     'form' => [
+				// 		//       'csrf' => false,
+				// 		//     ],
+				// 		//     'button' => [
+				// 		//       'class' => 'nav-link btn btn-link logout',
+				// 		//     ],
+				// 		//   ]
+				// 		// ) . '</li>',
+				// 		['label' => Yii::$app->user->identity->usrEmail ?? (Yii::$app->user->identity->usrMobile ?? '')],
+				// 		'<hr class="dropdown-divider">',
+				// 		['label' => Yii::t('aaa', 'My Profile'), 'url' => ['/aaa/profile']],
+				// 		// ['label' => Yii::t('aaa', 'Financial'), 'url' => ['/aaa/fin']],
+				// 		'<hr class="dropdown-divider">',
+				// 		['label' => Yii::t('aaa', 'Logout'), 'url' => ['/aaa/auth/logout']],
+				// 	],
+				// ];
 			}
 
 			echo Nav::widget([
@@ -91,7 +91,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
 						'label' => Yii::$app->formatter->asJalali(new \DateTime('now', new \DateTimeZone('UTC')), 'w Y/m/d'),
 						'options' => ['class' => 'me-0 ms-auto'],
 					],
-					$userMenuItems,
+					// $userMenuItems,
 				]
 			]);
 			NavBar::end();
@@ -314,7 +314,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
 	<footer id="footer" class="footer mt-auto py-3 bg-light">
 		<div class="container">
 			<div class="row text-muted">
-				<div class="col text-end">اتوماسیون خانه موسیقی ایران - نسخه 3.3</div>
+				<div class="col text-end">اتوماسیون خانه موسیقی ایران - نسخه 3.4</div>
 			</div>
 		</div>
 	</footer>

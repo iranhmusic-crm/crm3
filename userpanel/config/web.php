@@ -1,17 +1,31 @@
 <?php
 
 // $db = require __DIR__ . '/db.php';
-$params = array_replace_recursive(
-	require(__DIR__ . '/params.php'),
-	require(__DIR__ . '/params-local.php')
-);
-$modules = array_replace_recursive(
-	require(__DIR__ . '/modules.php'),
-	require(__DIR__ . '/modules-local.php')
-);
-$webLocal = require(__DIR__ . '/web-local.php');
+
+$params = require(__DIR__ . '/params.php');
+if (file_exists(__DIR__ . '/params-local.php')) {
+	$params = array_replace_recursive(
+		$params,
+		require(__DIR__ . '/params-local.php')
+	);
+}
+
+$modules = require(__DIR__ . '/modules.php');
+if (file_exists(__DIR__ . '/modules-local.php')) {
+	$modules = array_replace_recursive(
+		$modules,
+		require(__DIR__ . '/modules-local.php')
+	);
+}
+
+if (file_exists(__DIR__ . '/web-local.php')) {
+	$webLocal = require(__DIR__ . '/web-local.php');
+} else {
+	$webLocal = [];
+}
 
 use \yii\web\Request;
+
 $baseUrl = str_replace('/web', '', (new Request)->getBaseUrl());
 $baseUrl = rtrim($baseUrl, '/') . '/';
 
@@ -20,12 +34,12 @@ $config = [
 	'id' => 'userpanel',
 	'name' => 'خانه موسیقی من',
 	'language' => 'fa_IR',
-  'basePath' => dirname(__DIR__),
+	'basePath' => dirname(__DIR__),
 	'homeUrl' => $baseUrl,
-  'aliases' => [
-    '@bower' => '@vendor/bower-asset',
-    '@npm'   => '@vendor/npm-asset',
-  ],
+	'aliases' => [
+		'@bower' => '@vendor/bower-asset',
+		'@npm'   => '@vendor/npm-asset',
+	],
 	'bootstrap' => array_merge([
 		'log',
 		'gridview',
@@ -59,44 +73,44 @@ $config = [
 				'iconAttribute' => '{:entity}Image',
 				'iconTypeAttribute' => 'icon_type'
 			],
-			'normalizeAttributeFunction' => function($attribute, $treeClass, $module) {
+			'normalizeAttributeFunction' => function ($attribute, $treeClass, $module) {
 				if (property_exists($treeClass, 'entity'))
 					return str_replace('{:entity}', $treeClass::entity, $attribute);
 				return $attribute;
 			}
 		],
 	], $modules['modules']),
-  'components' => [
-    'request' => [
+	'components' => [
+		'request' => [
 			'class' => \shopack\base\common\web\Request::class,
-      // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+			// !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
 			'cookieValidationKey' => 'must be define in local file',
 			'baseUrl' => $baseUrl,
-    ],
-    'cache' => [
-      'class' => 'yii\caching\FileCache',
-    ],
-    'user' => [
+		],
+		'cache' => [
+			'class' => 'yii\caching\FileCache',
+		],
+		'user' => [
 			'class' => \shopack\aaa\frontend\common\components\User::class,
-    ],
-    'errorHandler' => [
-      'errorAction' => 'site/error',
-    ],
-    'mailer' => [
-      'class' => \yii\symfonymailer\Mailer::class,
-      'viewPath' => '@app/mail',
-      // send all mails to a file by default.
-      'useFileTransport' => false,
-    ],
-    'log' => [
-      'traceLevel' => YII_DEBUG ? 999 : 0,
-      'targets' => [
-        [
-          'class' => 'yii\log\FileTarget',
-          'levels' => ['error', 'warning'],
-        ],
-      ],
-    ],
+		],
+		'errorHandler' => [
+			'errorAction' => 'site/error',
+		],
+		'mailer' => [
+			'class' => \yii\symfonymailer\Mailer::class,
+			'viewPath' => '@app/mail',
+			// send all mails to a file by default.
+			'useFileTransport' => false,
+		],
+		'log' => [
+			'traceLevel' => YII_DEBUG ? 999 : 0,
+			'targets' => [
+				[
+					'class' => 'yii\log\FileTarget',
+					'levels' => ['error', 'warning'],
+				],
+			],
+		],
 		'formatter' => [
 			'class' => \shopack\base\common\components\Formatter::class,
 		],
@@ -171,8 +185,8 @@ $config = [
 		'member' => [
 			'class' => \iranhmusic\shopack\mha\frontend\common\components\MemberManager::class,
 		],
-  ],
-  'params' => $params,
+	],
+	'params' => $params,
 ];
 
 if (YII_DEBUG) {
@@ -180,7 +194,7 @@ if (YII_DEBUG) {
 	$config['modules']['debug'] = [
 		'class' => 'yii\debug\Module',
 		'allowedIPs' => ['*'],
-		'checkAccessCallback' => function($action) {
+		'checkAccessCallback' => function ($action) {
 			if (YII_ENV_DEV)
 				return true;
 			return ((\Yii::$app->user->isGuest == false) && (\Yii::$app->user->id == 52));

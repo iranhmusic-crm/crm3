@@ -1,20 +1,37 @@
 <?php
 
-$db = array_replace_recursive(
-	require(__DIR__ . '/db.php'),
-	require(__DIR__ . '/db-local.php')
-);
-$params = array_replace_recursive(
-	require(__DIR__ . '/params.php'),
-	require(__DIR__ . '/params-local.php')
-);
-$modules = array_replace_recursive(
-	require(__DIR__ . '/modules.php'),
-	require(__DIR__ . '/modules-local.php')
-);
-$webLocal = require(__DIR__ . '/web-local.php');
+$db = require(__DIR__ . '/db.php');
+if (file_exists(__DIR__ . '/db-local.php')) {
+	$db = array_replace_recursive(
+		$db,
+		require(__DIR__ . '/db-local.php')
+	);
+}
+
+$params = require(__DIR__ . '/params.php');
+if (file_exists(__DIR__ . '/params-local.php')) {
+	$params = array_replace_recursive(
+		$params,
+		require(__DIR__ . '/params-local.php')
+	);
+}
+
+$modules = require(__DIR__ . '/modules.php');
+if (file_exists(__DIR__ . '/modules-local.php')) {
+	$modules = array_replace_recursive(
+		$modules,
+		require(__DIR__ . '/modules-local.php')
+	);
+}
+
+if (file_exists(__DIR__ . '/web-local.php')) {
+	$webLocal = require(__DIR__ . '/web-local.php');
+} else {
+	$webLocal = [];
+}
 
 use \yii\web\Request;
+
 $baseUrl = str_replace('/web', '', (new Request)->getBaseUrl());
 $baseUrl = rtrim($baseUrl, '/') . '/';
 

@@ -417,6 +417,7 @@ label.col-form-label {
 
 ul.kv-sidenav a {
   color: #fff;
+  border-bottom: 0 !important;
 }
 
 .kv-sidenav .active > ul {
@@ -437,6 +438,9 @@ ul.kv-sidenav > li.nav-item.active > ul > li.nav-item.active > ul > li.nav-item.
   color: #6c757d;
 }
 
+.table:has(.nav) {
+  --bs-table-bg: transparent;
+}
 ul.kv-sidenav a.nav-link.active {
   background-color: unset !important;
 }

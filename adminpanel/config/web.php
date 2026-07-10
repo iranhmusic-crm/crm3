@@ -1,17 +1,31 @@
 <?php
 
 // $db = require __DIR__ . '/db.php';
-$params = array_replace_recursive(
-	require(__DIR__ . '/params.php'),
-	require(__DIR__ . '/params-local.php')
-);
-$modules = array_replace_recursive(
-	require(__DIR__ . '/modules.php'),
-	require(__DIR__ . '/modules-local.php')
-);
-$webLocal = require(__DIR__ . '/web-local.php');
+
+$params = require(__DIR__ . '/params.php');
+if (file_exists(__DIR__ . '/params-local.php')) {
+	$params = array_replace_recursive(
+		$params,
+		require(__DIR__ . '/params-local.php')
+	);
+}
+
+$modules = require(__DIR__ . '/modules.php');
+if (file_exists(__DIR__ . '/modules-local.php')) {
+	$modules = array_replace_recursive(
+		$modules,
+		require(__DIR__ . '/modules-local.php')
+	);
+}
+
+if (file_exists(__DIR__ . '/web-local.php')) {
+	$webLocal = require(__DIR__ . '/web-local.php');
+} else {
+	$webLocal = [];
+}
 
 use \yii\web\Request;
+
 $baseUrl = str_replace('/web', '', (new Request)->getBaseUrl());
 $baseUrl = rtrim($baseUrl, '/') . '/';
 
@@ -60,7 +74,7 @@ $config = [
 				'iconAttribute' => '{:entity}Image',
 				'iconTypeAttribute' => 'icon_type'
 			],
-			'normalizeAttributeFunction' => function($attribute, $treeClass, $module) {
+			'normalizeAttributeFunction' => function ($attribute, $treeClass, $module) {
 				if (property_exists($treeClass, 'entity'))
 					return str_replace('{:entity}', $treeClass::entity, $attribute);
 				return $attribute;
@@ -177,7 +191,7 @@ if (YII_DEBUG) {
 	$config['modules']['debug'] = [
 		'class' => 'yii\debug\Module',
 		'allowedIPs' => ['*'],
-		'checkAccessCallback' => function($action) {
+		'checkAccessCallback' => function ($action) {
 			if (YII_ENV_DEV)
 				return true;
 			return ((\Yii::$app->user->isGuest == false) && (\Yii::$app->user->id == 52));
