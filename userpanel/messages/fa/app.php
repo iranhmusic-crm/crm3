@@ -20,6 +20,8 @@ return [
 	'Files' => 'فایل‌ها',
 
 	'Group' => 'گروه',
+	'Group 1' => 'گروه 1',
+	'Group 2' => 'گروه 2',
 
 	'Created At' => 'ایجاد در',
 	'Created By' => 'ایجاد توسط',

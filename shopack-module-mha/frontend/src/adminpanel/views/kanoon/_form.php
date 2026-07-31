@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -18,83 +19,103 @@ use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
 
 <div class='kanoon-form'>
 	<?php
-		$form = ActiveForm::begin([
-			'model' => $model,
-			'formConfig' => [
-				'labelSpan' => 4,
+	$form = ActiveForm::begin([
+		'model' => $model,
+		'formConfig' => [
+			'labelSpan' => 4,
+		],
+	]);
+
+	$builder = $form->getBuilder();
+
+	$fildTypes = [
+		'text' => 'متن',
+	];
+	$mhaList = enuBasicDefinitionType::getList();
+	foreach ($mhaList as $k => $v) {
+		$fildTypes['mha:' . $k] = $v;
+	}
+
+	$builder->fields([
+		[
+			'knnStatus',
+			'type' => FormBuilder::FIELD_RADIOLIST,
+			'data' => enuKanoonStatus::listData('form'),
+			'widgetOptions' => [
+				'inline' => true,
 			],
-		]);
-
-		$builder = $form->getBuilder();
-
-		$fildTypes = [
-			'text' => 'متن',
-		];
-		$mhaList = enuBasicDefinitionType::getList();
-		foreach($mhaList as $k => $v) {
-			$fildTypes['mha:' . $k] = $v;
-		}
-
-		$builder->fields([
-			['knnStatus',
-				'type' => FormBuilder::FIELD_RADIOLIST,
-				'data' => enuKanoonStatus::listData('form'),
-				'widgetOptions' => [
-					'inline' => true,
+		],
+		['knnName'],
+		['knnNameEn'],
+		[
+			'knnGroupID',
+			'type' => FormBuilder::FIELD_WIDGET,
+			'widget' => Select2::class,
+			'widgetOptions' => [
+				'data' => [
+					'1' => Yii::t('app', 'Group 1'),
+					'2' => Yii::t('app', 'Group 2'),
+				],
+				'options' => [
+					'placeholder' => Yii::t('app', '-- Choose --'),
+					'dir' => 'rtl',
+				],
+				'pluginOptions' => [
+					'allowClear' => false,
 				],
 			],
-			['knnName'],
-			['knnNameEn'],
-			['knnGroupID'],
-			['knnDescFieldType',
-				'type' => FormBuilder::FIELD_WIDGET,
-				'widget' => Select2::class,
-				'widgetOptions' => [
-					'data' => $fildTypes,
-					'options' => [
-						'placeholder' => Yii::t('app', '-- Choose --'),
-						'dir' => 'rtl',
-					],
-					'pluginOptions' => [
-						'allowClear' => true,
-					],
+		],
+		[
+			'knnDescFieldType',
+			'type' => FormBuilder::FIELD_WIDGET,
+			'widget' => Select2::class,
+			'widgetOptions' => [
+				'data' => $fildTypes,
+				'options' => [
+					'placeholder' => Yii::t('app', '-- Choose --'),
+					'dir' => 'rtl',
+				],
+				'pluginOptions' => [
+					'allowClear' => true,
 				],
 			],
-			['knnDescFieldLabel',
-				'visibleConditions' => [
-					'knnDescFieldType' => ['!=', ''],
-				],
+		],
+		[
+			'knnDescFieldLabel',
+			'visibleConditions' => [
+				'knnDescFieldType' => ['!=', ''],
 			],
-			['@static' => '<hr>'],
-		]);
+		],
+		['@static' => '<hr>'],
+	]);
 
-		$builder->fields(MemberChooseFormField::field($this, $model, 'knnPresidentMemberID'));
-		$builder->fields(MemberChooseFormField::field($this, $model, 'knnVicePresidentMemberID'));
-		$builder->fields(MemberChooseFormField::field($this, $model, 'knnOzv1MemberID'));
-		$builder->fields(MemberChooseFormField::field($this, $model, 'knnOzv2MemberID'));
-		$builder->fields(MemberChooseFormField::field($this, $model, 'knnOzv3MemberID'));
-		$builder->fields(MemberChooseFormField::field($this, $model, 'knnWardenMemberID'));
-		$builder->fields(MemberChooseFormField::field($this, $model, 'knnTalkerMemberID'));
+	$builder->fields(MemberChooseFormField::field($this, $model, 'knnPresidentMemberID'));
+	$builder->fields(MemberChooseFormField::field($this, $model, 'knnVicePresidentMemberID'));
+	$builder->fields(MemberChooseFormField::field($this, $model, 'knnOzv1MemberID'));
+	$builder->fields(MemberChooseFormField::field($this, $model, 'knnOzv2MemberID'));
+	$builder->fields(MemberChooseFormField::field($this, $model, 'knnOzv3MemberID'));
+	$builder->fields(MemberChooseFormField::field($this, $model, 'knnWardenMemberID'));
+	$builder->fields(MemberChooseFormField::field($this, $model, 'knnTalkerMemberID'));
 	?>
 
 	<?php $builder->beginField(); ?>
-		<div id='params-container' class='row offset-md-2'></div>
+	<div id='params-container' class='row offset-md-2'></div>
 	<?php $builder->endField(); ?>
 
 	<?php $builder->beginFooter(); ?>
-		<div class="card-footer">
-			<div class="float-end">
-				<?= Html::activeSubmitButton($model) ?>
-			</div>
-			<div>
-				<?= Html::formErrorSummary($model); ?>
-			</div>
-			<div class="clearfix"></div>
+	<div class="card-footer">
+		<div class="float-end">
+			<?= Html::activeSubmitButton($model) ?>
 		</div>
+		<div>
+			<?= Html::formErrorSummary($model); ?>
+		</div>
+		<div class="clearfix"></div>
+	</div>
 	<?php $builder->endFooter(); ?>
 
 	<?php
-		$builder->render();
-		$form->endForm(); //ActiveForm::end();
+	$builder->render();
+	$form->endForm(); //ActiveForm::end();
 	?>
 </div>
