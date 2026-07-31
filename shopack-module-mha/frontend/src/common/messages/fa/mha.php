@@ -314,6 +314,6 @@ return [
 
 	'Member Document Reject Reason' => 'دلیل رد مدرک عضو',
 
-	'It is not possible to make a new Kanoon registration request, due to the use of all membership capacity' => 'به دلیل استفاده از تمام ظرفیت عضویت، امکان درخواست عضویت در کانون وجود ندارد',
-	'It is not possible to make a new Kanoon registration request, due to an open request' => 'به دلیل باز بودن درخواست، امکان درخواست عضویت در کانون وجود ندارد',
+	'It is not possible to make a new Kanoon registration request, due to the use of all membership capacity' => 'به دلیل استفاده از تمام ظرفیت عضویت در گروه کانون، امکان درخواست عضویت در کانون وجود ندارد',
+	'It is not possible to make a new Kanoon registration request, due to an open request' => 'به دلیل وجود درخواست باز در گروه کانون، امکان درخواست عضویت در کانون وجود ندارد',
 ];
