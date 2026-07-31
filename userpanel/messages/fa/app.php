@@ -19,6 +19,8 @@ return [
 	'Settings' => 'تنظیمات',
 	'Files' => 'فایل‌ها',
 
+	'Group' => 'گروه',
+
 	'Created At' => 'ایجاد در',
 	'Created By' => 'ایجاد توسط',
 	'Updated At' => 'ویرایش در',

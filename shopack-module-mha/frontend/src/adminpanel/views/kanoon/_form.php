@@ -45,6 +45,7 @@ use iranhmusic\shopack\mha\frontend\common\widgets\form\MemberChooseFormField;
 			],
 			['knnName'],
 			['knnNameEn'],
+			['knnGroupID'],
 			['knnDescFieldType',
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,

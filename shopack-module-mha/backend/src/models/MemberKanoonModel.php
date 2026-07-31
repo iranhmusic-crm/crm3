@@ -7,6 +7,7 @@
 namespace iranhmusic\shopack\mha\backend\models;
 
 use Yii;
+use yii\base\ModelEvent;
 use yii\web\UnprocessableEntityHttpException;
 use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 use iranhmusic\shopack\mha\backend\classes\MhaActiveRecord;
@@ -16,6 +17,13 @@ use shopack\aaa\common\enums\enuGender;
 class MemberKanoonModel extends MhaActiveRecord
 {
     use \iranhmusic\shopack\mha\common\models\MemberKanoonModelTrait;
+
+    public function init()
+    {
+        parent::init();
+
+        $this->on(static::EVENT_BEFORE_INSERT, [$this, 'slotAfterInsert']);
+    }
 
     public static function tableName()
     {
@@ -35,6 +43,41 @@ class MemberKanoonModel extends MhaActiveRecord
                 'updatedByAttribute' => 'mbrknnUpdatedBy',
             ],
         ];
+    }
+
+    public function slotBeforeInsert(ModelEvent $event)
+    {
+        $qry = <<<SQL
+    SELECT  CASE
+                WHEN mbrknnStatus = 'A'         THEN 'a' -- ACCEPTED -> ACTIVE
+                WHEN mbrknnStatus IN ('J', 'C') THEN 'c' -- REJECTED|CANCELLED -> CLOSE
+                ELSE 'o' -- OPEN
+            END AS stt
+         ,  COUNT(*) AS cnt
+      FROM  tbl_MHA_Member_Kanoon mbrknn
+INNER JOIN  tbl_MHA_Kanoon knn
+        ON  knn.knnID = mbrknn.mbrknnKanoonID
+     WHERE  mbrknnMemberID = {$this->mbrknnMemberID}
+       AND  knnGroupID = {$this->kanoon->knnGroupID}
+  GROUP BY  stt
+SQL;
+
+        $rows = Yii::$app->db->createCommand($qry)->queryAll();
+        if (empty($rows))
+            return;
+
+        foreach ($rows as $row) {
+            $status = $row['stt'];
+            $count = $row['cnt'];
+
+            if ($status == 'a') {
+                $event->isValid = false;
+                throw new UnprocessableEntityHttpException('Due to the use of all membership capacity, it is not possible to approve membership request in the Kanoon');
+            } else if ($status == 'o') {
+                $event->isValid = false;
+                throw new UnprocessableEntityHttpException('It is not possible to make a new Kanoon registration request due to an open request');
+            }
+        }
     }
 
     public function save($runValidation = true, $attributeNames = null)

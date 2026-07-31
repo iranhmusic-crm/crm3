@@ -63,6 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 return Html::a($model->knnNameEn, ['view', 'id' => $model->knnID]);
               },
             ],
+            'knnGroupID',
             [
               'attribute' => 'knnDescFieldType',
               'value' => function ($model, $key, $index, $widget) use ($fildTypes) {

@@ -98,6 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'knnName',
             'knnNameEn',
+            'knnGroupID',
             [
               'attribute' => 'knnDescFieldType',
               'value' => (empty($model->knnDescFieldType) ? null

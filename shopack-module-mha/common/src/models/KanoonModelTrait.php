@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -25,6 +26,7 @@ use iranhmusic\shopack\mha\common\enums\enuKanoonStatus;
 'knnOzv3MemberID',
 'knnWardenMemberID',
 'knnTalkerMemberID',
+'knnGroupID',
 'knnStatus',
 'knnCreatedAt',
 'knnCreatedBy',
@@ -33,235 +35,254 @@ use iranhmusic\shopack\mha\common\enums\enuKanoonStatus;
 'knnRemovedAt',
 'knnRemovedBy',
 */
+
 trait KanoonModelTrait
 {
-	public static $primaryKey = ['knnID'];
+    public static $primaryKey = ['knnID'];
 
-	public function primaryKeyValue() {
-		return $this->knnID;
-	}
+    public function primaryKeyValue()
+    {
+        return $this->knnID;
+    }
 
-	public function columnsInfo()
-	{
-		return [
-			'knnID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-      'knnUUID' => ModelColumnHelper::UUID(),
-			'knnName' => [
-				enuColumnInfo::type       => ['string', 'max' => 128],
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => true,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::like,
-			],
-			'knnNameEn' => [
-				enuColumnInfo::type       => ['string', 'max' => 128],
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::like,
-			],
-			'knnDescFieldType' => [
-				enuColumnInfo::type       => ['string', 'max' => 64],
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'knnDescFieldLabel' => [
-				enuColumnInfo::type       => ['string', 'max' => 64],
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'knnPresidentMemberID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'knnVicePresidentMemberID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'knnOzv1MemberID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'knnOzv2MemberID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'knnOzv3MemberID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'knnWardenMemberID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'knnTalkerMemberID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'knnStatus' => [
-				enuColumnInfo::isStatus   => true,
-				enuColumnInfo::type       => ['string', 'max' => 1],
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => enuKanoonStatus::Active,
-				enuColumnInfo::required   => true,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
+    public function columnsInfo()
+    {
+        return [
+            'knnID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnUUID' => ModelColumnHelper::UUID(),
+            'knnName' => [
+                enuColumnInfo::type       => ['string', 'max' => 128],
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => true,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::like,
+            ],
+            'knnNameEn' => [
+                enuColumnInfo::type       => ['string', 'max' => 128],
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::like,
+            ],
+            'knnDescFieldType' => [
+                enuColumnInfo::type       => ['string', 'max' => 64],
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnDescFieldLabel' => [
+                enuColumnInfo::type       => ['string', 'max' => 64],
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnPresidentMemberID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnVicePresidentMemberID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnOzv1MemberID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnOzv2MemberID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnOzv3MemberID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnWardenMemberID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnTalkerMemberID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnGroupID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => 1,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'knnStatus' => [
+                enuColumnInfo::isStatus   => true,
+                enuColumnInfo::type       => ['string', 'max' => 1],
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => enuKanoonStatus::Active,
+                enuColumnInfo::required   => true,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
 
-			'knnCreatedAt' => ModelColumnHelper::CreatedAt(),
-      'knnCreatedBy' => ModelColumnHelper::CreatedBy(),
-      'knnUpdatedAt' => ModelColumnHelper::UpdatedAt(),
-      'knnUpdatedBy' => ModelColumnHelper::UpdatedBy(),
-			'knnRemovedAt' => ModelColumnHelper::RemovedAt(),
-			'knnRemovedBy' => ModelColumnHelper::RemovedBy(),
-		];
-	}
+            'knnCreatedAt' => ModelColumnHelper::CreatedAt(),
+            'knnCreatedBy' => ModelColumnHelper::CreatedBy(),
+            'knnUpdatedAt' => ModelColumnHelper::UpdatedAt(),
+            'knnUpdatedBy' => ModelColumnHelper::UpdatedBy(),
+            'knnRemovedAt' => ModelColumnHelper::RemovedAt(),
+            'knnRemovedBy' => ModelColumnHelper::RemovedBy(),
+        ];
+    }
 
-	public function getCreatedByUser() {
-		$className = get_called_class();
+    public function getCreatedByUser()
+    {
+        $className = get_called_class();
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\shopack\aaa\backend\models\UserModel';
-		else
-			$className = '\shopack\aaa\frontend\common\models\UserModel';
+        if (str_contains($className, '\\backend\\'))
+            $className = '\shopack\aaa\backend\models\UserModel';
+        else
+            $className = '\shopack\aaa\frontend\common\models\UserModel';
 
-		return $this->hasOne($className, ['usrID' => 'knnCreatedBy']);
-	}
+        return $this->hasOne($className, ['usrID' => 'knnCreatedBy']);
+    }
 
-	public function getUpdatedByUser() {
-		$className = get_called_class();
+    public function getUpdatedByUser()
+    {
+        $className = get_called_class();
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\shopack\aaa\backend\models\UserModel';
-		else
-			$className = '\shopack\aaa\frontend\common\models\UserModel';
+        if (str_contains($className, '\\backend\\'))
+            $className = '\shopack\aaa\backend\models\UserModel';
+        else
+            $className = '\shopack\aaa\frontend\common\models\UserModel';
 
-		return $this->hasOne($className, ['usrID' => 'knnUpdatedBy']);
-	}
+        return $this->hasOne($className, ['usrID' => 'knnUpdatedBy']);
+    }
 
-	public function getRemovedByUser() {
-		$className = get_called_class();
+    public function getRemovedByUser()
+    {
+        $className = get_called_class();
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\shopack\aaa\backend\models\UserModel';
-		else
-			$className = '\shopack\aaa\frontend\common\models\UserModel';
+        if (str_contains($className, '\\backend\\'))
+            $className = '\shopack\aaa\backend\models\UserModel';
+        else
+            $className = '\shopack\aaa\frontend\common\models\UserModel';
 
-		return $this->hasOne($className, ['usrID' => 'knnRemovedBy']);
-	}
+        return $this->hasOne($className, ['usrID' => 'knnRemovedBy']);
+    }
 
-	public function getPresident() {
-		$className = get_called_class();
+    public function getPresident()
+    {
+        $className = get_called_class();
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
-		else
-			$className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
+        if (str_contains($className, '\\backend\\'))
+            $className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
+        else
+            $className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
 
-		return $this->hasOne($className, ['mbrUserID' => 'knnPresidentMemberID']);
-	}
-	public function getVicePresident() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['mbrUserID' => 'knnPresidentMemberID']);
+    }
+    public function getVicePresident()
+    {
+        $className = get_called_class();
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
-		else
-			$className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
+        if (str_contains($className, '\\backend\\'))
+            $className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
+        else
+            $className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
 
-		return $this->hasOne($className, ['mbrUserID' => 'knnVicePresidentMemberID']);
-	}
-	public function getOzv1() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['mbrUserID' => 'knnVicePresidentMemberID']);
+    }
+    public function getOzv1()
+    {
+        $className = get_called_class();
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
-		else
-			$className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
+        if (str_contains($className, '\\backend\\'))
+            $className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
+        else
+            $className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
 
-		return $this->hasOne($className, ['mbrUserID' => 'knnOzv1MemberID']);
-	}
-	public function getOzv2() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['mbrUserID' => 'knnOzv1MemberID']);
+    }
+    public function getOzv2()
+    {
+        $className = get_called_class();
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
-		else
-			$className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
+        if (str_contains($className, '\\backend\\'))
+            $className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
+        else
+            $className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
 
-		return $this->hasOne($className, ['mbrUserID' => 'knnOzv2MemberID']);
-	}
-	public function getOzv3() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['mbrUserID' => 'knnOzv2MemberID']);
+    }
+    public function getOzv3()
+    {
+        $className = get_called_class();
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
-		else
-			$className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
+        if (str_contains($className, '\\backend\\'))
+            $className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
+        else
+            $className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
 
-		return $this->hasOne($className, ['mbrUserID' => 'knnOzv3MemberID']);
-	}
-	public function getWarden() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['mbrUserID' => 'knnOzv3MemberID']);
+    }
+    public function getWarden()
+    {
+        $className = get_called_class();
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
-		else
-			$className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
+        if (str_contains($className, '\\backend\\'))
+            $className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
+        else
+            $className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
 
-		return $this->hasOne($className, ['mbrUserID' => 'knnWardenMemberID']);
-	}
-	public function getTalker() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['mbrUserID' => 'knnWardenMemberID']);
+    }
+    public function getTalker()
+    {
+        $className = get_called_class();
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
-		else
-			$className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
+        if (str_contains($className, '\\backend\\'))
+            $className = '\iranhmusic\shopack\mha\backend\models\MemberModel';
+        else
+            $className = '\iranhmusic\shopack\mha\frontend\common\models\MemberModel';
 
-		return $this->hasOne($className, ['mbrUserID' => 'knnTalkerMemberID']);
-	}
-
+        return $this->hasOne($className, ['mbrUserID' => 'knnTalkerMemberID']);
+    }
 }

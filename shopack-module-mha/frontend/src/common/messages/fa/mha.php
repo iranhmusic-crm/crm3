@@ -312,4 +312,7 @@ return [
 	'Max Qty Reached' => 'حداکثر تعداد مجاز در سبد خرید وجود دارد',
 
 	'Member Document Reject Reason' => 'دلیل رد مدرک عضو',
+
+	'It is not possible to make a new Kanoon registration request due to an open request' => 'به دلیل باز بودن درخواست، ثبت درخواست عضویت در کانون امکان پذیر نیست',
+	'Due to the use of all membership capacity, it is not possible to approve membership request in the Kanoon' => 'به دلیل استفاده از تمام ظرفیت عضویت، امکان تایید درخواست عضویت در کانون وجود ندارد',
 ];
