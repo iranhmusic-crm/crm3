@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -313,6 +314,6 @@ return [
 
 	'Member Document Reject Reason' => 'دلیل رد مدرک عضو',
 
-	'It is not possible to make a new Kanoon registration request due to an open request' => 'به دلیل باز بودن درخواست، ثبت درخواست عضویت در کانون امکان پذیر نیست',
-	'Due to the use of all membership capacity, it is not possible to approve membership request in the Kanoon' => 'به دلیل استفاده از تمام ظرفیت عضویت، امکان تایید درخواست عضویت در کانون وجود ندارد',
+	'It is not possible to make a new Kanoon registration request, due to the use of all membership capacity' => 'به دلیل استفاده از تمام ظرفیت عضویت، امکان درخواست عضویت در کانون وجود ندارد',
+	'It is not possible to make a new Kanoon registration request, due to an open request' => 'به دلیل باز بودن درخواست، امکان درخواست عضویت در کانون وجود ندارد',
 ];

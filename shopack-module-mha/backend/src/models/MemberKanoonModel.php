@@ -22,7 +22,7 @@ class MemberKanoonModel extends MhaActiveRecord
     {
         parent::init();
 
-        $this->on(static::EVENT_BEFORE_INSERT, [$this, 'slotAfterInsert']);
+        $this->on(static::EVENT_BEFORE_INSERT, [$this, 'slotBeforeInsert']);
     }
 
     public static function tableName()
@@ -72,10 +72,10 @@ SQL;
 
             if ($status == 'a') {
                 $event->isValid = false;
-                throw new UnprocessableEntityHttpException('Due to the use of all membership capacity, it is not possible to approve membership request in the Kanoon');
+                throw new UnprocessableEntityHttpException('{"i18n-cat":"mha","msg":"It is not possible to make a new Kanoon registration request, due to the use of all membership capacity"}');
             } else if ($status == 'o') {
                 $event->isValid = false;
-                throw new UnprocessableEntityHttpException('It is not possible to make a new Kanoon registration request due to an open request');
+                throw new UnprocessableEntityHttpException('{"i18n-cat":"mha","msg":"It is not possible to make a new Kanoon registration request, due to an open request"}');
             }
         }
     }
