@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -9,6 +10,7 @@ use Yii;
 use yii\base\Model;
 use shopack\base\common\helpers\Json;
 use shopack\base\common\helpers\ArrayHelper;
+use shopack\base\common\helpers\GeneralHelper;
 use shopack\base\common\validators\GroupRequiredValidator;
 use shopack\base\common\validators\JsonValidator;
 use shopack\aaa\frontend\common\models\UserModel;
@@ -17,384 +19,416 @@ use shopack\base\common\helpers\HttpHelper;
 
 class MemberSignupForm extends Model
 {
-	public $usrGender;
-	public $usrFirstName;
-	public $usrFirstName_en;
-	public $usrLastName;
-	public $usrLastName_en;
-	public $usrFatherName;
-	public $usrFatherName_en;
-	public $usrEmail;
-	public $usrMobile;
-	public $usrSSID;
-	public $usrBirthDate;
-	public $usrBirthCityID;
-	public $usrCountryID;
-	public $usrStateID;
-	public $usrCityOrVillageID;
-	// public $usrTownID;
-	public $usrHomeAddress;
-	public $usrZipCode;
-	// public $usrImageFileID;
+    public $usrGender;
+    public $usrFirstName;
+    public $usrFirstName_en;
+    public $usrLastName;
+    public $usrLastName_en;
+    public $usrFatherName;
+    public $usrFatherName_en;
+    public $usrEmail;
+    public $usrMobile;
+    public $usrSSID;
+    public $usrBirthDate;
+    public $usrBirthCityID;
+    public $usrCountryID;
+    public $usrStateID;
+    public $usrCityOrVillageID;
+    // public $usrTownID;
+    public $usrHomeAddress;
+    public $usrZipCode;
+    // public $usrImageFileID;
 
-	public $mbrUserID;
-	public $mbrMusicExperiences;
-	public $mbrMusicExperienceStartAt;
-	public $mbrArtHistory;
-	public $mbrMusicEducationHistory;
+    public $mbrUserID;
+    public $mbrMusicExperiences;
+    public $mbrMusicExperienceStartAt;
+    public $mbrArtHistory;
+    public $mbrMusicEducationHistory;
 
-	public $mbrOwnOrgName;
-	public $mbrInstrumentID;
-	public $mbrSingID;
-	public $mbrResearchID;
-	public $mbrJob;
-	public $mbrArtDegree;
-	public $mbrHonarCreditCode;
+    public $mbrOwnOrgName;
+    public $mbrInstrumentID;
+    public $mbrSingID;
+    public $mbrResearchID;
+    public $mbrJob;
+    public $mbrArtDegree;
+    public $mbrHonarCreditCode;
 
-	public $kanoonID;
-	public $mbrknnParams;
+    public $kanoonID;
+    public $mbrknnParams;
 
-	public function rules()
-	{
-		return [
-			[[
-				'usrGender',
-				'usrFirstName',
-				'usrFirstName_en',
-				'usrLastName',
-				'usrLastName_en',
-				'usrFatherName',
-				'usrFatherName_en',
-				'usrEmail',
-				'usrMobile',
-				'usrSSID',
-				'usrBirthDate',
-				'usrBirthCityID',
-				'usrCountryID',
-				'usrStateID',
-				'usrCityOrVillageID',
-				// 'usrTownID',
-				'usrHomeAddress',
-				'usrZipCode',
-			], 'safe'],
+    public function rules()
+    {
+        return [
+            [[
+                'usrGender',
+                'usrFirstName',
+                'usrFirstName_en',
+                'usrLastName',
+                'usrLastName_en',
+                'usrFatherName',
+                'usrFatherName_en',
+                'usrEmail',
+                'usrMobile',
+                'usrSSID',
+                'usrBirthDate',
+                'usrBirthCityID',
+                'usrCountryID',
+                'usrStateID',
+                'usrCityOrVillageID',
+                // 'usrTownID',
+                'usrHomeAddress',
+                'usrZipCode',
+            ], 'safe'],
 
-			['usrGender',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrGender));
-				},
-			],
-			['usrFirstName',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrFirstName));
-				},
-			],
-			['usrFirstName_en',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrFirstName_en));
-				},
-			],
-			['usrLastName',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrLastName));
-				},
-			],
-			['usrLastName_en',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrLastName_en));
-				},
-			],
-			['usrFatherName',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrFatherName));
-				},
-			],
-			['usrFatherName_en',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrFatherName_en));
-				},
-			],
-			['usrEmail',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrEmail));
-				},
-			],
-			['usrMobile',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrMobile));
-				},
-			],
-			['usrSSID',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrSSID));
-				},
-			],
+            [
+                'usrGender',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrGender));
+                },
+            ],
+            [
+                'usrFirstName',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrFirstName));
+                },
+            ],
+            [
+                'usrFirstName_en',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrFirstName_en));
+                },
+            ],
+            [
+                'usrLastName',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrLastName));
+                },
+            ],
+            [
+                'usrLastName_en',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrLastName_en));
+                },
+            ],
+            [
+                'usrFatherName',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrFatherName));
+                },
+            ],
+            [
+                'usrFatherName_en',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrFatherName_en));
+                },
+            ],
+            [
+                'usrEmail',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrEmail));
+                },
+            ],
+            [
+                'usrMobile',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrMobile));
+                },
+            ],
 
-			['usrBirthDate',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrBirthDate));
-				},
-			],
-			['usrBirthCityID',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrBirthCityID));
-				},
-			],
+            // [
+            //     'usrSSID',
+            //     'validateSSID'
+            // ],
 
-			['usrCountryID',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrCountryID));
-				},
-			],
-			['usrStateID',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrStateID));
-				},
-			],
-			['usrCityOrVillageID',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrCityOrVillageID));
-				},
-			],
-			['usrHomeAddress',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrHomeAddress));
-				},
-			],
-			['usrZipCode',
-				'required',
-				'when' => function ($model) {
-					return (empty($model->user->usrZipCode));
-				},
-			],
+            [
+                'usrSSID',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrSSID));
+                },
+            ],
 
-			[[
-				'mbrUserID',
-				'kanoonID',
-			], 'integer'],
+            [
+                'usrBirthDate',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrBirthDate));
+                },
+            ],
+            [
+                'usrBirthCityID',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrBirthCityID));
+                },
+            ],
 
-			['mbrMusicExperiences', 'string'],
-			['mbrMusicExperienceStartAt', 'safe'],
-			['mbrArtHistory', 'string'],
-			['mbrMusicEducationHistory', 'string'],
+            [
+                'usrCountryID',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrCountryID));
+                },
+            ],
+            [
+                'usrStateID',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrStateID));
+                },
+            ],
+            [
+                'usrCityOrVillageID',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrCityOrVillageID));
+                },
+            ],
+            [
+                'usrHomeAddress',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrHomeAddress));
+                },
+            ],
+            [
+                'usrZipCode',
+                'required',
+                'when' => function ($model) {
+                    return (empty($model->user->usrZipCode));
+                },
+            ],
 
-			['mbrOwnOrgName', 'string'],
-			['mbrInstrumentID', 'integer'],
-			['mbrSingID', 'integer'],
-			['mbrResearchID', 'integer'],
-			['mbrJob', 'string'],
-			['mbrArtDegree', 'integer'],
-			['mbrHonarCreditCode', 'string'],
+            [[
+                'mbrUserID',
+                'kanoonID',
+            ], 'integer'],
 
-			['mbrknnParams', JsonValidator::class],
+            ['mbrMusicExperiences', 'string'],
+            ['mbrMusicExperienceStartAt', 'safe'],
+            ['mbrArtHistory', 'string'],
+            ['mbrMusicEducationHistory', 'string'],
 
-			[[
-				'mbrUserID',
-        'kanoonID',
-      ], 'required'],
+            ['mbrOwnOrgName', 'string'],
+            ['mbrInstrumentID', 'integer'],
+            ['mbrSingID', 'integer'],
+            ['mbrResearchID', 'integer'],
+            ['mbrJob', 'string'],
+            ['mbrArtDegree', 'integer'],
+            ['mbrHonarCreditCode', 'string'],
 
-		];
-	}
+            ['mbrknnParams', JsonValidator::class],
 
-	public function attributeLabels()
-	{
-		return [
-      'usrGender'            => Yii::t('aaa', 'Gender'),
-      'usrFirstName'         => Yii::t('aaa', 'First Name'),
-      'usrFirstName_en'      => Yii::t('aaa', 'First Name (en)'),
-      'usrLastName'          => Yii::t('aaa', 'Last Name'),
-      'usrLastName_en'       => Yii::t('aaa', 'Last Name (en)'),
-      'usrFatherName'        => Yii::t('aaa', 'Father Name'),
-      'usrFatherName_en'     => Yii::t('aaa', 'Father Name (en)'),
-      'usrEmail'             => Yii::t('aaa', 'Email'),
-      'usrEmailApprovedAt'   => Yii::t('aaa', 'Email Approved At'),
-      'usrMobile'            => Yii::t('aaa', 'Mobile'),
-      'usrMobileApprovedAt'  => Yii::t('aaa', 'Mobile Approved At'),
-      'usrSSID'              => Yii::t('aaa', 'SSID'),
-      'usrRoleID'            => Yii::t('aaa', 'Role'),
-      'usrPrivs'             => Yii::t('aaa', 'Exclusive Privs'),
-      'usrPassword'          => Yii::t('aaa', 'Password'),
-      'usrRetypePassword'    => Yii::t('aaa', 'Retype Password'),
-      'usrPasswordHash'      => Yii::t('aaa', 'Password Hash'),
-      'usrPasswordCreatedAt' => Yii::t('aaa', 'Password Created At'),
-			'usrBirthDate'         => Yii::t('aaa', 'Birth Date'),
-			'usrBirthCityID'       => Yii::t('aaa', 'Birth Location'),
-			'usrCountryID'         => Yii::t('aaa', 'Country'),
-			'usrStateID'           => Yii::t('aaa', 'State'),
-			'usrCityOrVillageID'   => Yii::t('aaa', 'City Or Village'),
-			// 'usrTownID'            => Yii::t('aaa', 'Town'),
-			'usrHomeAddress'       => Yii::t('aaa', 'Home Address'),
-			'usrZipCode'           => Yii::t('aaa', 'Zip Code'),
-			'usrImage'             => Yii::t('aaa', 'Image'),
-      'usrStatus'            => Yii::t('app', 'Status'),
+            [[
+                'mbrUserID',
+                'kanoonID',
+            ], 'required'],
 
-			'kanoonID'          				=> Yii::t('mha', 'Kanoon'),
-			'mbrUserID'       					=> Yii::t('mha', 'User'),
-			'mbrMusicExperiences'       => Yii::t('mha', 'Music Experiences'),
-			'mbrMusicExperienceStartAt' => Yii::t('mha', 'Music Experience Start At'),
-			'mbrArtHistory'             => Yii::t('mha', 'Art History'),
-			'mbrMusicEducationHistory'  => Yii::t('mha', 'Music Education History'),
+        ];
+    }
 
-			'mbrOwnOrgName'             => Yii::t('mha', 'Own Org Name'),
-			'mbrInstrumentID'           => Yii::t('mha', 'Instrument'),
-			'mbrSingID'                 => Yii::t('mha', 'Sing'),
-			'mbrResearchID'             => Yii::t('mha', 'Research'),
-			'mbrJob'                    => Yii::t('mha', 'Job'),
-			'mbrArtDegree'              => Yii::t('mha', 'Art Degree'),
-			'mbrHonarCreditCode'        => Yii::t('mha', 'Honar Credit Code'),
+    public function attributeLabels()
+    {
+        return [
+            'usrGender'            => Yii::t('aaa', 'Gender'),
+            'usrFirstName'         => Yii::t('aaa', 'First Name'),
+            'usrFirstName_en'      => Yii::t('aaa', 'First Name (en)'),
+            'usrLastName'          => Yii::t('aaa', 'Last Name'),
+            'usrLastName_en'       => Yii::t('aaa', 'Last Name (en)'),
+            'usrFatherName'        => Yii::t('aaa', 'Father Name'),
+            'usrFatherName_en'     => Yii::t('aaa', 'Father Name (en)'),
+            'usrEmail'             => Yii::t('aaa', 'Email'),
+            'usrEmailApprovedAt'   => Yii::t('aaa', 'Email Approved At'),
+            'usrMobile'            => Yii::t('aaa', 'Mobile'),
+            'usrMobileApprovedAt'  => Yii::t('aaa', 'Mobile Approved At'),
+            'usrSSID'              => Yii::t('aaa', 'SSID'),
+            'usrRoleID'            => Yii::t('aaa', 'Role'),
+            'usrPrivs'             => Yii::t('aaa', 'Exclusive Privs'),
+            'usrPassword'          => Yii::t('aaa', 'Password'),
+            'usrRetypePassword'    => Yii::t('aaa', 'Retype Password'),
+            'usrPasswordHash'      => Yii::t('aaa', 'Password Hash'),
+            'usrPasswordCreatedAt' => Yii::t('aaa', 'Password Created At'),
+            'usrBirthDate'         => Yii::t('aaa', 'Birth Date'),
+            'usrBirthCityID'       => Yii::t('aaa', 'Birth Location'),
+            'usrCountryID'         => Yii::t('aaa', 'Country'),
+            'usrStateID'           => Yii::t('aaa', 'State'),
+            'usrCityOrVillageID'   => Yii::t('aaa', 'City Or Village'),
+            // 'usrTownID'            => Yii::t('aaa', 'Town'),
+            'usrHomeAddress'       => Yii::t('aaa', 'Home Address'),
+            'usrZipCode'           => Yii::t('aaa', 'Zip Code'),
+            'usrImage'             => Yii::t('aaa', 'Image'),
+            'usrStatus'            => Yii::t('app', 'Status'),
 
-		];
-	}
+            'kanoonID'                          => Yii::t('mha', 'Kanoon'),
+            'mbrUserID'                           => Yii::t('mha', 'User'),
+            'mbrMusicExperiences'       => Yii::t('mha', 'Music Experiences'),
+            'mbrMusicExperienceStartAt' => Yii::t('mha', 'Music Experience Start At'),
+            'mbrArtHistory'             => Yii::t('mha', 'Art History'),
+            'mbrMusicEducationHistory'  => Yii::t('mha', 'Music Education History'),
 
-	public function attributeHints()
-	{
-		return [
-			'mbrOwnOrgName' => 'در صورت دارا بودن کسب و کار شخصی، عنوان آنرا در این بخش وارد کنید',
-		];
-	}
+            'mbrOwnOrgName'             => Yii::t('mha', 'Own Org Name'),
+            'mbrInstrumentID'           => Yii::t('mha', 'Instrument'),
+            'mbrSingID'                 => Yii::t('mha', 'Sing'),
+            'mbrResearchID'             => Yii::t('mha', 'Research'),
+            'mbrJob'                    => Yii::t('mha', 'Job'),
+            'mbrArtDegree'              => Yii::t('mha', 'Art Degree'),
+            'mbrHonarCreditCode'        => Yii::t('mha', 'Honar Credit Code'),
 
-	private $_user = null;
-	public function getUser() {
-		if ($this->_user == null)
-			$this->_user = UserModel::findOne($this->mbrUserID);
-		return $this->_user;
-	}
+        ];
+    }
 
-  public function load($data, $formName = null)
-  {
-		$this->usrGender					= $this->user->usrGender;
-		$this->usrFirstName				= $this->user->usrFirstName;
-		$this->usrFirstName_en		= $this->user->usrFirstName_en;
-		$this->usrLastName				= $this->user->usrLastName;
-		$this->usrLastName_en			= $this->user->usrLastName_en;
-		$this->usrFatherName			= $this->user->usrFatherName;
-		$this->usrFatherName_en		= $this->user->usrFatherName_en;
-		$this->usrEmail						= $this->user->usrEmail;
-		$this->usrMobile					= $this->user->usrMobile;
-		$this->usrSSID						= $this->user->usrSSID;
-		$this->usrBirthDate				= $this->user->usrBirthDate;
-		$this->usrBirthCityID			= $this->user->usrBirthCityID;
-		$this->usrCountryID				= $this->user->usrCountryID;
-		$this->usrStateID					= $this->user->usrStateID;
-		$this->usrCityOrVillageID	= $this->user->usrCityOrVillageID;
-		// $this->usrTownID					= $this->user->usrTownID;
-		$this->usrHomeAddress			= $this->user->usrHomeAddress;
-		$this->usrZipCode					= $this->user->usrZipCode;
-		// $this->usrImageFileID			= $this->user->usrImageFileID;
+    public function attributeHints()
+    {
+        return [
+            'mbrOwnOrgName' => 'در صورت دارا بودن کسب و کار شخصی، عنوان آنرا در این بخش وارد کنید',
+        ];
+    }
 
-		$this->_oldAttributes = $this->attributes;
+    private $_user = null;
+    public function getUser()
+    {
+        if ($this->_user == null)
+            $this->_user = UserModel::findOne($this->mbrUserID);
+        return $this->_user;
+    }
 
-		$ret = parent::load($data, $formName);
-		return $ret;
-	}
+    public function validateSSID($attribute, $params)
+    {
+        if ((empty($this[$attribute]) == false) && (GeneralHelper::isValidIranSSID($this[$attribute]) == false)) {
+            $this->addError($attribute, Yii::t('aaa', 'Invalid SSID'));
+        }
+    }
 
-	public function mustSetUserInfo()
-	{
-		return (
-			empty($this->user->usrGender)
-			|| empty($this->user->usrFirstName)
-			|| empty($this->user->usrFirstName_en)
-			|| empty($this->user->usrLastName)
-			|| empty($this->user->usrLastName_en)
-			|| empty($this->user->usrFatherName)
-			|| empty($this->user->usrFatherName_en)
-			|| empty($this->user->usrEmail)
-			|| empty($this->user->usrMobile)
-			|| empty($this->user->usrSSID)
-			|| empty($this->user->usrBirthDate)
-			|| empty($this->user->usrBirthCityID)
-			|| empty($this->user->usrCountryID)
-			|| empty($this->user->usrStateID)
-			|| empty($this->user->usrCityOrVillageID)
-			// || empty($this->user->usrTownID)
-			|| empty($this->user->usrHomeAddress)
-			|| empty($this->user->usrZipCode)
-		);
-	}
+    public function load($data, $formName = null)
+    {
+        $this->usrGender                    = $this->user->usrGender;
+        $this->usrFirstName                = $this->user->usrFirstName;
+        $this->usrFirstName_en        = $this->user->usrFirstName_en;
+        $this->usrLastName                = $this->user->usrLastName;
+        $this->usrLastName_en            = $this->user->usrLastName_en;
+        $this->usrFatherName            = $this->user->usrFatherName;
+        $this->usrFatherName_en        = $this->user->usrFatherName_en;
+        $this->usrEmail                        = $this->user->usrEmail;
+        $this->usrMobile                    = $this->user->usrMobile;
+        $this->usrSSID                        = $this->user->usrSSID;
+        $this->usrBirthDate                = $this->user->usrBirthDate;
+        $this->usrBirthCityID            = $this->user->usrBirthCityID;
+        $this->usrCountryID                = $this->user->usrCountryID;
+        $this->usrStateID                    = $this->user->usrStateID;
+        $this->usrCityOrVillageID    = $this->user->usrCityOrVillageID;
+        // $this->usrTownID					= $this->user->usrTownID;
+        $this->usrHomeAddress            = $this->user->usrHomeAddress;
+        $this->usrZipCode                    = $this->user->usrZipCode;
+        // $this->usrImageFileID			= $this->user->usrImageFileID;
 
-	private $_oldAttributes;
-	public function getOldAttributes()
-	{
-		return $this->_oldAttributes === null ? [] : $this->_oldAttributes;
-	}
-	private function isAttributeDirty($attribute, $value)
-	{
-		$old_attribute = $this->oldAttributes[$attribute];
-		if (is_array($value) && is_array($this->oldAttributes[$attribute])) {
-			$value = ArrayHelper::recursiveSort($value);
-			$old_attribute = ArrayHelper::recursiveSort($old_attribute);
-		}
+        $this->_oldAttributes = $this->attributes;
 
-		return $value !== $old_attribute;
-	}
-	public function getDirtyAttributes($names = null)
-	{
-		if ($names === null) {
-			$names = $this->attributes();
-		}
-		$names = array_flip($names);
-		$attributes = [];
-		if ($this->_oldAttributes === null) {
-			foreach ($this->attributes as $name => $value) {
-				if (isset($names[$name])) {
-					$attributes[$name] = $value;
-				}
-			}
-		} else {
-			foreach ($this->attributes as $name => $value) {
-				if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $this->isAttributeDirty($name, $value))) {
-					$attributes[$name] = $value;
-				}
-			}
-		}
+        $ret = parent::load($data, $formName);
+        return $ret;
+    }
 
-		return $attributes;
-	}
+    public function mustSetUserInfo()
+    {
+        return (
+            empty($this->user->usrGender)
+            || empty($this->user->usrFirstName)
+            || empty($this->user->usrFirstName_en)
+            || empty($this->user->usrLastName)
+            || empty($this->user->usrLastName_en)
+            || empty($this->user->usrFatherName)
+            || empty($this->user->usrFatherName_en)
+            || empty($this->user->usrEmail)
+            || empty($this->user->usrMobile)
+            || empty($this->user->usrSSID)
+            || empty($this->user->usrBirthDate)
+            || empty($this->user->usrBirthCityID)
+            || empty($this->user->usrCountryID)
+            || empty($this->user->usrStateID)
+            || empty($this->user->usrCityOrVillageID)
+            // || empty($this->user->usrTownID)
+            || empty($this->user->usrHomeAddress)
+            || empty($this->user->usrZipCode)
+        );
+    }
 
-	public function save()
-	{
-		if ($this->validate() == false)
-			return false;
+    private $_oldAttributes;
+    public function getOldAttributes()
+    {
+        return $this->_oldAttributes === null ? [] : $this->_oldAttributes;
+    }
+    private function isAttributeDirty($attribute, $value)
+    {
+        $old_attribute = $this->oldAttributes[$attribute];
+        if (is_array($value) && is_array($this->oldAttributes[$attribute])) {
+            $value = ArrayHelper::recursiveSort($value);
+            $old_attribute = ArrayHelper::recursiveSort($old_attribute);
+        }
 
-		$attributes = $this->getDirtyAttributes();
+        return $value !== $old_attribute;
+    }
+    public function getDirtyAttributes($names = null)
+    {
+        if ($names === null) {
+            $names = $this->attributes();
+        }
+        $names = array_flip($names);
+        $attributes = [];
+        if ($this->_oldAttributes === null) {
+            foreach ($this->attributes as $name => $value) {
+                if (isset($names[$name])) {
+                    $attributes[$name] = $value;
+                }
+            }
+        } else {
+            foreach ($this->attributes as $name => $value) {
+                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $this->isAttributeDirty($name, $value))) {
+                    $attributes[$name] = $value;
+                }
+            }
+        }
 
-		if (isset($attributes['mbrknnParams'])
-			&& ($attributes['mbrknnParams'] !== null)
-			&& ($attributes['mbrknnParams'] !== '')
-		) {
-			$attributes['mbrknnParams'] = Json::encode($attributes['mbrknnParams']);
-		}
+        return $attributes;
+    }
 
-		$apiResponse = HttpHelper::callApi('mha/member/signup',
-			HttpHelper::METHOD_POST,
-			[],
-			$attributes,
-		);
+    public function save()
+    {
+        if ($this->validate() == false)
+            return false;
 
-		if ($apiResponse['status'] < 200 || $apiResponse['status'] >= 300) {
-			$message = HttpHelper::formatApiResponseIfFailed($apiResponse, 'mha');
-			if (empty($message) == false) {
-				$this->addError(null, Yii::t('mha', $apiResponse['body']['message'], $apiResponse['body']));
-				return false;
-			}
-		}
+        $attributes = $this->getDirtyAttributes();
 
-		return true;
-	}
+        if (
+            isset($attributes['mbrknnParams'])
+            && ($attributes['mbrknnParams'] !== null)
+            && ($attributes['mbrknnParams'] !== '')
+        ) {
+            $attributes['mbrknnParams'] = Json::encode($attributes['mbrknnParams']);
+        }
 
+        $apiResponse = HttpHelper::callApi(
+            'mha/member/signup',
+            HttpHelper::METHOD_POST,
+            [],
+            $attributes,
+        );
+
+        if ($apiResponse['status'] < 200 || $apiResponse['status'] >= 300) {
+            $message = HttpHelper::formatApiResponseIfFailed($apiResponse, 'mha');
+            if (empty($message) == false) {
+                $this->addError(null, Yii::t('mha', $apiResponse['body']['message'], $apiResponse['body']));
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

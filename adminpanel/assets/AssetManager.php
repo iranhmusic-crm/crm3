@@ -23,9 +23,7 @@ class AssetManager extends \yii\web\AssetManager
 
 		// $this->hashCallback = $hashCallback;
 
-// die(Yii::getAlias(\yii\bootstrap5\BootstrapAsset::$sourcePath));
-// die(realpath(Yii::getAlias('@bower/bootstrap')));
-
+		// $bower_bootstrap = realpath(Yii::getAlias('@bower/bootstrap/dist/css'));
 		$bower_bootstrap = realpath(Yii::getAlias('@vendor/twbs/bootstrap/dist/css'));
 		$vendor_shopack_base_fe = realpath(Yii::getAlias('@vendor/shopack/yii2-base-frontend/src/common/assets'));
 

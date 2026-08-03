@@ -18,6 +18,7 @@ use shopack\aaa\frontend\common\widgets\form\GeoCityOrVillageChooseFormField;
 use shopack\aaa\frontend\common\widgets\form\GeoCountryChooseFormField;
 use shopack\aaa\frontend\common\widgets\form\GeoStateChooseFormField;
 use iranhmusic\shopack\mha\common\enums\enuBasicDefinitionType;
+use iranhmusic\shopack\mha\common\enums\enuKanoonStatus;
 use iranhmusic\shopack\mha\frontend\common\models\KanoonModel;
 use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 ?>
@@ -131,11 +132,11 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 					]
 				]);
 			}
-			if (empty($model->user->usrSSID)) {
+			// if (empty($model->user->usrSSID)) {
 				$builder->fields([
 					['usrSSID']
 				]);
-			}
+			// }
 			if (empty($model->user->usrBirthDate)) {
 				$builder->fields([
 					[
@@ -211,7 +212,7 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
 				'type' => FormBuilder::FIELD_WIDGET,
 				'widget' => Select2::class,
 				'widgetOptions' => [
-					'data' => ArrayHelper::map(KanoonModel::find()->asArray()->noLimit()->all(), 'knnID', 'knnName'),
+					'data' => ArrayHelper::map(KanoonModel::find()->asArray()->noLimit()->andWhere(['knnStatus' => enuKanoonStatus::Active])->all(), 'knnID', 'knnName'),
 					'options' => [
 						'placeholder' => Yii::t('app', '-- Choose --'),
 						'dir' => 'rtl',
