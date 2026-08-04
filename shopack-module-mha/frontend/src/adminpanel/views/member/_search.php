@@ -35,28 +35,27 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberSearchModel;
                         ],
                     ])
                         ->widget(\yii\bootstrap5\ToggleButtonGroup::class, [
-                            'type' => 'radio',
+                            'type' => \yii\bootstrap5\ToggleButtonGroup::TYPE_RADIO,
                             'labelOptions' => ['class' => ['btn-outline-secondary', 'btn-sm']],
                             'items' => [
                                 MemberSearchModel::FILTER_MODE_HAS_REG_CODE => 'دارای کد عضویت',
+                                MemberSearchModel::FILTER_MODE_WAIT_FOR_SEND_TO_KANOON => 'منتظر تایید برای ارسال به کمیسیون',
                                 MemberSearchModel::FILTER_MODE_WAIT_FOR_KANOON_APPROVAL => 'منتظر بررسی کمیسیون',
                                 MemberSearchModel::FILTER_MODE_ONLINE_REG_REQ => 'درخواست عضویت آنلاین',
                                 // MemberSearchModel::FILTER_MODE_WAIT_FOR_BASE_APPROVAL => 'منتظر تایید مدارک',
                                 MemberSearchModel::FILTER_MODE_ALL => 'همه',
                             ],
                         ]);
+
+                    $JS = <<<JS
+$("#{$filter_mode_id}").change(function () {
+    $('#{$grid_id}').yiiGridView('applyFilter');
+});
+JS;
+                    $this->registerJs($JS, \yii\web\View::POS_READY);
                     ?>
                 </div>
             </div>
-        </div>
-
-        <div class='form-group pull-right'>
-            <?php
-            echo Html::submitButton(Yii::t('appmgmt', 'Filter'), ['class' => 'btn btn-primary', 'style' => [
-                'min-width' => '100px',
-            ]]);
-            // echo Html::resetButton(Yii::t('yii', 'Reset'), ['class' => 'btn btn-outline-secondary']);
-            ?>
         </div>
 
         <div class='clearfix'></div>

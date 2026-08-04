@@ -39,20 +39,19 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
       </div>
       <div class="col d-flex login-center min-vh-100">
         <div class='w-100 text-center'>
-          <?php
-            $systemStates = [];
-            if (YII_DEBUG)    $systemStates[] = 'D';
-            if (YII_ENV_DEV)  $systemStates[] = 'V';
-            if (empty($systemStates) == false) {
-              echo '<h2>(' . implode(', ', $systemStates) . ')</h2>';
-            }
-          ?>
-
           <p><?= Html::img('/images/logo_main_bw_h200.png') ?></p>
           <p>کاربر محترم</p>
           <p>این پنل مختص مدیران و اپراتورهای سیستم می‌باشد.</p>
           <p>در صورتیکه شما قصد دارید به عنوان اپراتور در سیستم فعالیت کنید، ابتدا باید در این پنل ثبت نام کرده و پس از تایید ایمیل خود، افزایش سطح دسترسی را از مدیر سیستم درخواست کنید.</p>
           <p>در غیر اینصورت از طریق پنل اعضا اقدام به ثبت نام و یا ورود به سیستم کنید.</p>
+          <?php
+            $systemStates = [];
+            if (YII_DEBUG)    $systemStates[] = 'Dbg';
+            if (YII_ENV_DEV)  $systemStates[] = 'Dev';
+            if (empty($systemStates) == false) {
+              echo '<h2>(' . implode(', ', $systemStates) . ')</h2>';
+            }
+          ?>
         </div>
       </div>
     </div>

@@ -39,8 +39,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
   <header id="header">
     <?php
       $systemStates = [];
-      if (YII_DEBUG)    $systemStates[] = 'D';
-      if (YII_ENV_DEV)  $systemStates[] = 'V';
+			if (YII_DEBUG)    $systemStates[] = 'Dbg';
+			if (YII_ENV_DEV)  $systemStates[] = 'Dev';
       $systemStates = implode(', ', $systemStates);
 
       NavBar::begin([

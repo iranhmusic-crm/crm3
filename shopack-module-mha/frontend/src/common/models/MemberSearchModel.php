@@ -17,13 +17,13 @@ class MemberSearchModel extends MemberModel
 {
     use \shopack\base\common\db\SearchModelTrait;
 
-    const FILTER_MODE_HAS_REG_CODE             = 0;
-    const FILTER_MODE_WAIT_FOR_KANOON_APPROVAL = 1;
-    const FILTER_MODE_ONLINE_REG_REQ           = 2;
-    const FILTER_MODE_WAIT_FOR_BASE_APPROVAL   = 3;
-    const FILTER_MODE_ALL                      = 4;
+    // const FILTER_MODE_HAS_REG_CODE             = 0;
+    // const FILTER_MODE_WAIT_FOR_KANOON_APPROVAL = 1;
+    // const FILTER_MODE_ONLINE_REG_REQ           = 2;
+    // const FILTER_MODE_WAIT_FOR_BASE_APPROVAL   = 3;
+    // const FILTER_MODE_ALL                      = 4;
 
-    public $filter_mode;
+    public $filter_mode = 0;
 
     public function extraRules()
     {
@@ -140,38 +140,11 @@ class MemberSearchModel extends MemberModel
             ->andFilterWhere(['like', 'usrFirstName_en', $this->usrFirstName_en])
             ->andFilterWhere(['like', 'usrLastName', $this->usrLastName])
             ->andFilterWhere(['like', 'usrLastName_en', $this->usrLastName_en])
+
+            ->addUrlParameter('filter_mode', $this->filter_mode)
         ;
 
         $this->applySearchValuesInQuery($query, $params);
-
-        switch ($this->filter_mode) {
-            case self::FILTER_MODE_HAS_REG_CODE:
-                $dataProvider->query
-                    ->andWhere('mbrRegisterCode>0')
-                ;
-                break;
-
-            case self::FILTER_MODE_WAIT_FOR_KANOON_APPROVAL:
-                $dataProvider->query
-                    ->andWhere('IFNULL(shpobjPrice, 0) = 0')
-                ;
-                break;
-
-            case self::FILTER_MODE_ONLINE_REG_REQ:
-                $dataProvider->query
-                    ->andWhere('mbrRegisterCode IS NULL')
-                ;
-                break;
-
-            case self::FILTER_MODE_WAIT_FOR_BASE_APPROVAL:
-                $dataProvider->query
-                    ->andWhere('IFNULL(shpobjPrice, 0) > 0')
-                ;
-                break;
-
-            case self::FILTER_MODE_ALL:
-                break;
-        }
 
         return $dataProvider;
     }

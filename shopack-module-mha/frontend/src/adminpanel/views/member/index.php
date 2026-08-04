@@ -30,9 +30,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class='card-body'>
             <?php
+            $grid_id = StringHelper::generateRandomId();
+            $filter_mode_id = Html::getInputId($searchModel, 'filter_mode');
+
             echo $this->render('_search', [
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
+                'grid_id' => $grid_id,
+                'filter_mode_id' => $filter_mode_id,
             ]);
             ?>
         </div>
@@ -40,9 +45,10 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class='card-body'>
             <?php
             echo GridView::widget([
-                'id' => StringHelper::generateRandomId(),
+                'id' => $grid_id,
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
+                'filterSelector' => "#{$filter_mode_id} input",
 
                 'columns' => [
                     [

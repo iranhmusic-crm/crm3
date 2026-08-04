@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -37,239 +38,253 @@ use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 'mbrRemovedAt',
 'mbrRemovedBy',
 */
+
 trait MemberModelTrait
 {
-	public $kanoonNames;
-	public $kanoonDegrees;
-	//just used for export to client
-  public function adhocColumnsInfo()
-  {
-    return [
-      'kanoonNames' => ModelColumnHelper::adhoc(),
-			'kanoonDegrees' => ModelColumnHelper::adhoc(),
-    ];
-  }
+    const FILTER_MODE_HAS_REG_CODE             = 0;
+    const FILTER_MODE_WAIT_FOR_SEND_TO_KANOON  = 1;
+    const FILTER_MODE_WAIT_FOR_KANOON_APPROVAL = 2;
+    const FILTER_MODE_ONLINE_REG_REQ           = 3;
+    const FILTER_MODE_WAIT_FOR_BASE_APPROVAL   = 4;
+    const FILTER_MODE_ALL                      = 5;
 
-	public static $primaryKey = ['mbrUserID'];
+    public $kanoonNames;
+    public $kanoonDegrees;
+    //just used for export to client
+    public function adhocColumnsInfo()
+    {
+        return [
+            'kanoonNames' => ModelColumnHelper::adhoc(),
+            'kanoonDegrees' => ModelColumnHelper::adhoc(),
+        ];
+    }
 
-	public function primaryKeyValue() {
-		return $this->mbrUserID;
-	}
+    public static $primaryKey = ['mbrUserID'];
 
-	public function columnsInfo()
-	{
-		return [
-			'mbrUserID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false, //true,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-      'mbrUUID' => ModelColumnHelper::UUID(),
-			'mbrRegisterCode' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'mbrAcceptedAt' => [
-				enuColumnInfo::type       => 'safe',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'mbrExpireDate' => [
-				enuColumnInfo::type       => 'safe',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'mbrExpireDateLastAlertAtDayDiff' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-			],
-			'mbrMusicExperiences' => [
-				enuColumnInfo::type       => ['string', 'max' => 65000], //TEXT
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        // enuColumnInfo::search     => null,
-			],
-			'mbrMusicExperienceStartAt' => [
-				enuColumnInfo::type       => 'safe', //Date
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        // enuColumnInfo::search     => null,
-			],
-			'mbrArtHistory' => [
-				enuColumnInfo::type       => ['string', 'max' => 65000], //TEXT
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        // enuColumnInfo::search     => null,
-			],
-			'mbrMusicEducationHistory' => [
-				enuColumnInfo::type       => ['string', 'max' => 65000], //TEXT
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        // enuColumnInfo::search     => null,
-			],
-			'mbrOwnOrgName' => [
-				enuColumnInfo::type       => ['string', 'max' => 1024],
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::like,
-			],
-			'mbrInstrumentID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'mbrSingID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'mbrResearchID' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'mbrJob' => [
-				enuColumnInfo::type       => ['string', 'max' => 512],
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::like,
-			],
-			'mbrArtDegree' => [
-				enuColumnInfo::type       => 'integer',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
-			'mbrHonarCreditCode' => [
-				enuColumnInfo::type       => ['string', 'max' => 64],
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => null,
-				enuColumnInfo::required   => false,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::like,
-			],
-			'mbrStatus' => [
-				enuColumnInfo::isStatus   => true,
-				enuColumnInfo::type       => ['string', 'max' => 1],
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => enuMemberStatus::WaitingForApproval,
-				enuColumnInfo::required   => true,
-				enuColumnInfo::selectable => true,
-        enuColumnInfo::search     => enuColumnSearchType::exact,
-			],
+    public function primaryKeyValue()
+    {
+        return $this->mbrUserID;
+    }
 
-			'mbrCreatedAt' => ModelColumnHelper::CreatedAt(),
-      'mbrCreatedBy' => ModelColumnHelper::CreatedBy(),
-      'mbrUpdatedAt' => ModelColumnHelper::UpdatedAt(),
-      'mbrUpdatedBy' => ModelColumnHelper::UpdatedBy(),
-			'mbrRemovedAt' => ModelColumnHelper::RemovedAt(),
-			'mbrRemovedBy' => ModelColumnHelper::RemovedBy(),
-		];
-	}
+    public function columnsInfo()
+    {
+        return [
+            'mbrUserID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false, //true,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'mbrUUID' => ModelColumnHelper::UUID(),
+            'mbrRegisterCode' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'mbrAcceptedAt' => [
+                enuColumnInfo::type       => 'safe',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'mbrExpireDate' => [
+                enuColumnInfo::type       => 'safe',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'mbrExpireDateLastAlertAtDayDiff' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+            ],
+            'mbrMusicExperiences' => [
+                enuColumnInfo::type       => ['string', 'max' => 65000], //TEXT
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                // enuColumnInfo::search     => null,
+            ],
+            'mbrMusicExperienceStartAt' => [
+                enuColumnInfo::type       => 'safe', //Date
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                // enuColumnInfo::search     => null,
+            ],
+            'mbrArtHistory' => [
+                enuColumnInfo::type       => ['string', 'max' => 65000], //TEXT
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                // enuColumnInfo::search     => null,
+            ],
+            'mbrMusicEducationHistory' => [
+                enuColumnInfo::type       => ['string', 'max' => 65000], //TEXT
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                // enuColumnInfo::search     => null,
+            ],
+            'mbrOwnOrgName' => [
+                enuColumnInfo::type       => ['string', 'max' => 1024],
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::like,
+            ],
+            'mbrInstrumentID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'mbrSingID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'mbrResearchID' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'mbrJob' => [
+                enuColumnInfo::type       => ['string', 'max' => 512],
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::like,
+            ],
+            'mbrArtDegree' => [
+                enuColumnInfo::type       => 'integer',
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
+            'mbrHonarCreditCode' => [
+                enuColumnInfo::type       => ['string', 'max' => 64],
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => null,
+                enuColumnInfo::required   => false,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::like,
+            ],
+            'mbrStatus' => [
+                enuColumnInfo::isStatus   => true,
+                enuColumnInfo::type       => ['string', 'max' => 1],
+                enuColumnInfo::validator  => null,
+                enuColumnInfo::default    => enuMemberStatus::WaitingForApproval,
+                enuColumnInfo::required   => true,
+                enuColumnInfo::selectable => true,
+                enuColumnInfo::search     => enuColumnSearchType::exact,
+            ],
 
-	public function getCreatedByUser() {
-		$className = get_called_class();
+            'mbrCreatedAt' => ModelColumnHelper::CreatedAt(),
+            'mbrCreatedBy' => ModelColumnHelper::CreatedBy(),
+            'mbrUpdatedAt' => ModelColumnHelper::UpdatedAt(),
+            'mbrUpdatedBy' => ModelColumnHelper::UpdatedBy(),
+            'mbrRemovedAt' => ModelColumnHelper::RemovedAt(),
+            'mbrRemovedBy' => ModelColumnHelper::RemovedBy(),
+        ];
+    }
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\shopack\aaa\backend\models\UserModel';
-		else
-			$className = '\shopack\aaa\frontend\common\models\UserModel';
+    public function getCreatedByUser()
+    {
+        $className = get_called_class();
 
-		return $this->hasOne($className, ['usrID' => 'mbrCreatedBy']);
-	}
+        if (str_contains($className, '\\backend\\'))
+            $className = '\shopack\aaa\backend\models\UserModel';
+        else
+            $className = '\shopack\aaa\frontend\common\models\UserModel';
 
-	public function getUpdatedByUser() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['usrID' => 'mbrCreatedBy']);
+    }
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\shopack\aaa\backend\models\UserModel';
-		else
-			$className = '\shopack\aaa\frontend\common\models\UserModel';
+    public function getUpdatedByUser()
+    {
+        $className = get_called_class();
 
-		return $this->hasOne($className, ['usrID' => 'mbrUpdatedBy']);
-	}
+        if (str_contains($className, '\\backend\\'))
+            $className = '\shopack\aaa\backend\models\UserModel';
+        else
+            $className = '\shopack\aaa\frontend\common\models\UserModel';
 
-	public function getRemovedByUser() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['usrID' => 'mbrUpdatedBy']);
+    }
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\shopack\aaa\backend\models\UserModel';
-		else
-			$className = '\shopack\aaa\frontend\common\models\UserModel';
+    public function getRemovedByUser()
+    {
+        $className = get_called_class();
 
-		return $this->hasOne($className, ['usrID' => 'mbrRemovedBy']);
-	}
+        if (str_contains($className, '\\backend\\'))
+            $className = '\shopack\aaa\backend\models\UserModel';
+        else
+            $className = '\shopack\aaa\frontend\common\models\UserModel';
 
-	public function getInstrument() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['usrID' => 'mbrRemovedBy']);
+    }
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\models\BasicDefinitionModel';
-		else
-			$className = 'iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel';
+    public function getInstrument()
+    {
+        $className = get_called_class();
 
-		return $this->hasOne($className, ['bdfID' => 'mbrInstrumentID']);
-	}
+        if (str_contains($className, '\\backend\\'))
+            $className = '\iranhmusic\shopack\mha\backend\models\BasicDefinitionModel';
+        else
+            $className = 'iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel';
 
-	public function getSing() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['bdfID' => 'mbrInstrumentID']);
+    }
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\models\BasicDefinitionModel';
-		else
-			$className = 'iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel';
+    public function getSing()
+    {
+        $className = get_called_class();
 
-		return $this->hasOne($className, ['bdfID' => 'mbrSingID']);
-	}
+        if (str_contains($className, '\\backend\\'))
+            $className = '\iranhmusic\shopack\mha\backend\models\BasicDefinitionModel';
+        else
+            $className = 'iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel';
 
-	public function getResearch() {
-		$className = get_called_class();
+        return $this->hasOne($className, ['bdfID' => 'mbrSingID']);
+    }
 
-		if (str_contains($className, '\\backend\\'))
-			$className = '\iranhmusic\shopack\mha\backend\models\BasicDefinitionModel';
-		else
-			$className = 'iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel';
+    public function getResearch()
+    {
+        $className = get_called_class();
 
-		return $this->hasOne($className, ['bdfID' => 'mbrResearchID']);
-	}
+        if (str_contains($className, '\\backend\\'))
+            $className = '\iranhmusic\shopack\mha\backend\models\BasicDefinitionModel';
+        else
+            $className = 'iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel';
 
+        return $this->hasOne($className, ['bdfID' => 'mbrResearchID']);
+    }
 }

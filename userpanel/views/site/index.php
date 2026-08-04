@@ -1,11 +1,13 @@
 <?php
 /** @var yii\web\View $this */
+
+use shopack\base\frontend\common\helpers\Html;
+
 $this->title = 'پیشخوان';
 ?>
 
 <div class="site-index w-100 min-vh-100 d-grid" style="align-content: center;">
   <div class="jumbotron text-center bg-transparent">
-    <h1 class="w-50 mx-auto pb-3" style="border-bottom: 2px dashed #318fa9">خانه موسیقی ایران</h1>
-    <h2>پنل کاربری</h2>
+    <p><?= Html::img('/images/logo_main_bw_h200.png') ?></p>
   </div>
 </div>

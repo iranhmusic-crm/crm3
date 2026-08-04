@@ -565,3 +565,7 @@ select {
   color: var(--bs-table-color);
   border-color: var(--bs-table-border-color);
 }
+
+.site-login button, .site-login a.btn {
+  min-width: 100px;
+}
