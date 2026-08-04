@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -17,154 +18,150 @@ use iranhmusic\shopack\mha\backend\models\MemberDocumentModel;
 
 class MemberDocumentController extends BaseRestController
 {
-	public function actionOptions()
-	{
-		return 'options';
-	}
+    public function actionOptions()
+    {
+        return 'options';
+    }
 
-	protected function findModel($id)
-	{
-		if (($model = MemberDocumentModel::findOne([
-					'mbrdocID' => $id,
-				])) !== null)
-			return $model;
+    protected function findModel($id)
+    {
+        if (($model = MemberDocumentModel::findOne([
+            'mbrdocID' => $id,
+        ])) !== null)
+            return $model;
 
-		throw new NotFoundHttpException('The requested item does not exist.');
-	}
+        throw new NotFoundHttpException('The requested item does not exist.');
+    }
 
-	public function actionIndex()
-	{
-		$filter = $this->checkPrivAndGetFilter('mha/member-document/crud', '0100', 'mbrdocMemberID');
+    public function actionIndex()
+    {
+        $filter = $this->checkPrivAndGetFilter('mha/member-document/crud', '0100', 'mbrdocMemberID');
 
-		$searchModel = new MemberDocumentModel;
-		$query = MemberDocumentModel::find()
-			// ->select(MemberDocumentModel::selectableColumns())
-			->joinWith('member.user')
-			->joinWith('document')
-			->with('createdByUser')
-			->with('updatedByUser')
-			->with('removedByUser')
-		;
+        $searchModel = new MemberDocumentModel;
+        $query = MemberDocumentModel::find()
+            // ->select(MemberDocumentModel::selectableColumns())
+            ->joinWith('member.user')
+            ->joinWith('document')
+            ->with('createdByUser')
+            ->with('updatedByUser')
+            ->with('removedByUser');
 
-		$searchModel->fillQueryFromRequest($query);
+        $searchModel->fillQueryFromRequest($query);
 
-		if (empty($filter) == false)
-			$query->andWhere($filter);
+        if (empty($filter) == false)
+            $query->andWhere($filter);
 
-		return $this->queryAllToResponse($query);
-	}
+        return $this->queryAllToResponse($query);
+    }
 
-	public function actionView($id)
-	{
-		$justForMe = false;
-		if (PrivHelper::hasPriv('mha/member-document/crud', '0100') == false) {
-			$justForMe = true;
-		}
+    public function actionView($id)
+    {
+        $justForMe = false;
+        if (PrivHelper::hasPriv('mha/member-document/crud', '0100') == false) {
+            $justForMe = true;
+        }
 
-		$query = MemberDocumentModel::find()
-			// ->select(MemberDocumentModel::selectableColumns())
-			->joinWith('member.user')
-			->joinWith('document')
-			->with('createdByUser')
-			->with('updatedByUser')
-			->with('removedByUser')
-			->andWhere(['mbrdocID' => $id])
-		;
+        $query = MemberDocumentModel::find()
+            // ->select(MemberDocumentModel::selectableColumns())
+            ->joinWith('member.user')
+            ->joinWith('document')
+            ->with('createdByUser')
+            ->with('updatedByUser')
+            ->with('removedByUser')
+            ->andWhere(['mbrdocID' => $id]);
 
-		return $this->queryOneToResponse($query, function($model) use($justForMe) {
-			if ($justForMe && ($model['mbrdocMemberID'] != Yii::$app->user->id))
-				throw new ForbiddenHttpException('access denied');
-		});
+        return $this->queryOneToResponse($query, function ($model) use ($justForMe) {
+            if ($justForMe && ($model['mbrdocMemberID'] != Yii::$app->user->id))
+                throw new ForbiddenHttpException('access denied');
+        });
+    }
 
-	}
+    public function actionCreate()
+    {
+        $justForMe = false;
+        if (PrivHelper::hasPriv('mha/member-document/crud', '1000') == false) {
+            $justForMe = true;
+        }
 
-	public function actionCreate()
-	{
-		$justForMe = false;
-		if (PrivHelper::hasPriv('mha/member-document/crud', '1000') == false) {
-			$justForMe = true;
-		}
+        $model = new MemberDocumentModel();
+        if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
+            throw new NotFoundHttpException("parameters not provided");
 
-		$model = new MemberDocumentModel();
-		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
-			throw new NotFoundHttpException("parameters not provided");
+        if ($justForMe && ($model->mbrdocMemberID != Yii::$app->user->id))
+            throw new ForbiddenHttpException('access denied');
 
-		if ($justForMe && ($model->mbrdocMemberID != Yii::$app->user->id))
-			throw new ForbiddenHttpException('access denied');
+        try {
+            if ($model->save() == false)
+                throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
+        } catch (\Exception $exp) {
+            $msg = ExceptionHelper::CheckDuplicate($exp, $model);
+            throw new UnprocessableEntityHttpException($msg);
+        }
 
-		try {
-			if ($model->save() == false)
-				throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
-		} catch(\Exception $exp) {
-			$msg = ExceptionHelper::CheckDuplicate($exp, $model);
-			throw new UnprocessableEntityHttpException($msg);
-		}
+        return [
+            // 'result' => [
+            // 'message' => 'created',
+            // 'mbrdocID' => $model->mbrdocID,
+            // 'mbrStatus' => $model->mbrdocStatus,
+            'mbrdocFileID' => $model->mbrdocFileID,
+            'mbrdocCreatedAt' => $model->mbrdocCreatedAt,
+            'mbrdocCreatedBy' => $model->mbrdocCreatedBy,
+            // ],
+        ];
+    }
 
-		return [
-			// 'result' => [
-				// 'message' => 'created',
-				// 'mbrdocID' => $model->mbrdocID,
-				// 'mbrStatus' => $model->mbrdocStatus,
-				'mbrdocFileID' => $model->mbrdocFileID,
-				'mbrdocCreatedAt' => $model->mbrdocCreatedAt,
-				'mbrdocCreatedBy' => $model->mbrdocCreatedBy,
-			// ],
-		];
-	}
+    public function actionUpdate($id)
+    {
+        $justForMe = false;
+        if (PrivHelper::hasPriv('mha/member-document/crud', '0010') == false) {
+            $justForMe = true;
+        }
 
-	public function actionUpdate($id)
-	{
-		$justForMe = false;
-		if (PrivHelper::hasPriv('mha/member-document/crud', '0010') == false) {
-			$justForMe = true;
-		}
+        $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
+            throw new NotFoundHttpException("parameters not provided");
 
-		$model = $this->findModel($id);
-		if ($model->load(Yii::$app->request->getBodyParams(), '') == false)
-			throw new NotFoundHttpException("parameters not provided");
+        if ($justForMe && ($model->mbrdocMemberID != Yii::$app->user->id))
+            throw new ForbiddenHttpException('access denied');
 
-		if ($justForMe && ($model->mbrdocMemberID != Yii::$app->user->id))
-			throw new ForbiddenHttpException('access denied');
+        if ($model->save() == false)
+            throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
 
-		if ($model->save() == false)
-			throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
+        return [
+            // 'result' => [
+            // 'message' => 'updated',
+            // 'mbrUserID' => $model->mbrUserID,
+            // 'mbrStatus' => $model->mbrStatus,
+            'mbrdocUpdatedAt' => $model->mbrdocUpdatedAt,
+            'mbrdocUpdatedBy' => $model->mbrdocUpdatedBy,
+            // ],
+        ];
+    }
 
-		return [
-			// 'result' => [
-				// 'message' => 'updated',
-				// 'mbrUserID' => $model->mbrUserID,
-				// 'mbrStatus' => $model->mbrStatus,
-				'mbrdocUpdatedAt' => $model->mbrdocUpdatedAt,
-				'mbrdocUpdatedBy' => $model->mbrdocUpdatedBy,
-			// ],
-		];
-	}
+    public function actionDelete($id)
+    {
+        $justForMe = false;
+        if (PrivHelper::hasPriv('mha/member-document/crud', '0001') == false) {
+            $justForMe = true;
+        }
 
-	public function actionDelete($id)
-	{
-		$justForMe = false;
-		if (PrivHelper::hasPriv('mha/member-document/crud', '0001') == false) {
-			$justForMe = true;
-		}
+        $model = $this->findModel($id);
 
-		$model = $this->findModel($id);
+        if ($justForMe && ($model->mbrdocMemberID != Yii::$app->user->id))
+            throw new ForbiddenHttpException('access denied');
 
-		if ($justForMe && ($model->mbrdocMemberID != Yii::$app->user->id))
-			throw new ForbiddenHttpException('access denied');
+        if ($model->delete() === false)
+            throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
 
-		if ($model->delete() === false)
-			throw new UnprocessableEntityHttpException(implode("\n", $model->getFirstErrors()));
-
-		return [
-			'result' => 'ok',
-			// 'result' => [
-				// 'message' => 'deleted',
-				// 'mbrUserID' => $model->mbrUserID,
-				// 'mbrStatus' => $model->mbrStatus,
-				// 'mbrdocRemovedAt' => $model->mbrdocRemovedAt,
-				// 'mbrdocRemovedBy' => $model->mbrdocRemovedBy,
-			// ],
-		];
-	}
-
+        return [
+            'result' => 'ok',
+            // 'result' => [
+            // 'message' => 'deleted',
+            // 'mbrUserID' => $model->mbrUserID,
+            // 'mbrStatus' => $model->mbrStatus,
+            // 'mbrdocRemovedAt' => $model->mbrdocRemovedAt,
+            // 'mbrdocRemovedBy' => $model->mbrdocRemovedBy,
+            // ],
+        ];
+    }
 }

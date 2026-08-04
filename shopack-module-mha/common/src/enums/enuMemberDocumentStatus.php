@@ -16,9 +16,9 @@ abstract class enuMemberDocumentStatus extends BaseEnum
 	public static $messageCategory = 'mha';
 
 	public static $list = [
-		self::WaitForApprove => 'Wait For Approve',
-		self::Approved       => 'Approved',
-		self::Rejected       => 'Rejected',
+		self::WaitForApprove => 'منتظر تایید', //'Wait For Approve',
+		self::Approved       => 'تایید شده', //'Approved',
+		self::Rejected       => 'رد شده', //'Rejected',
 	];
 
 };

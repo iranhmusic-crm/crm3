@@ -15,7 +15,7 @@ class m260710_175626_mha_create_message_templates_for_kanoon extends Migration
         $this->execute("UPDATE tbl_AAA_MessageTemplate SET mstName='خانه موسیقی: ارسال پیام به اعضای کانون',  mstParams = 'kanoon,member,message' WHERE mstKey = 'mha:kanoonMessageToMembers';");
 
         $this->batchInsertIgnore('tbl_AAA_MessageTemplate', [
-			'mstUUID',
+            'mstUUID',
             'mstKey',
             'mstMedia',
             'mstLanguage',
@@ -27,7 +27,7 @@ class m260710_175626_mha_create_message_templates_for_kanoon extends Migration
             'mstName',
             'mstBody',
         ], [
-            [new Expression('UUID()'), 'mha:kanoonMembershipRequest_WaitForSend',           'S', 'fa', 'D', '{{', '}}', 'member,kanoon',          1, 'خانه موسیقی: تغییر وضعیت عضویت در کانون به منتظر ارسال',          "عضو محترم {{member}}\n" . "درخواست شما برای عضویت در کانون {{kanoon}}\n" . "به منتظر ارسال به کمیسیون تبدیل شد"],
+            [new Expression('UUID()'), 'mha:kanoonMembershipRequest_WaitForSend',           'S', 'fa', 'D', '{{', '}}', 'member,kanoon',          1, 'خانه موسیقی: درخواست عضویت جدید در کانون',                        "عضو محترم {{member}}\n" . "درخواست شما برای عضویت در کانون {{kanoon}}\n" . "ثبت شد و منتظر تایید مدیریت برای ارسال به کمیسیون میباشد"],
             [new Expression('UUID()'), 'mha:kanoonMembershipRequest_WaitForSurvey',         'S', 'fa', 'D', '{{', '}}', 'member,kanoon',          1, 'خانه موسیقی: تغییر وضعیت عضویت در کانون به منتظر بررسی',          "عضو محترم {{member}}\n" . "درخواست شما برای عضویت در کانون {{kanoon}}\n" . "به منتظر بررسی توسط کمیسیون تبدیل شد"],
             [new Expression('UUID()'), 'mha:kanoonMembershipRequest_WaitForResurvey',       'S', 'fa', 'D', '{{', '}}', 'member,kanoon',          1, 'خانه موسیقی: تغییر وضعیت عضویت در کانون به منتظر بررسی مجدد',     "عضو محترم {{member}}\n" . "درخواست شما برای عضویت در کانون {{kanoon}}\n" . "به منتظر بررسی مجدد توسط کمیسیون تبدیل شد"],
             [new Expression('UUID()'), 'mha:kanoonMembershipRequest_Azmoon',                'S', 'fa', 'D', '{{', '}}', 'member,kanoon',          1, 'خانه موسیقی: تغییر وضعیت عضویت در کانون به نیاز به آزمون',        "عضو محترم {{member}}\n" . "درخواست شما برای عضویت در کانون {{kanoon}}\n" . "به نیاز به آزمون تبدیل شد"],

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -20,231 +21,234 @@ use shopack\base\frontend\common\widgets\JsonTableGrid;
 ?>
 
 <?php
-  $mbrdocMemberID = Yii::$app->request->queryParams['mbrdocMemberID'] ?? null;
+$mbrdocMemberID = Yii::$app->request->queryParams['mbrdocMemberID'] ?? null;
 ?>
 
 <div class='row'>
   <div class='col'>
     <?php
-      // echo Alert::widget(['key' => 'shoppingcart']);
+    // echo Alert::widget(['key' => 'shoppingcart']);
 
-      // if (isset($statusReport))
-      // 	echo (is_array($statusReport) ? Html::icon($statusReport[0], ['plugin' => 'glyph']) . ' ' . $statusReport[1] : $statusReport);
+    // if (isset($statusReport))
+    // 	echo (is_array($statusReport) ? Html::icon($statusReport[0], ['plugin' => 'glyph']) . ' ' . $statusReport[1] : $statusReport);
 
-      $rejectReasons = ArrayHelper::map(BasicDefinitionModel::find()
+    $rejectReasons = ArrayHelper::map(
+      BasicDefinitionModel::find()
         ->where(['bdfType' => enuBasicDefinitionType::MemberDocumentyRejectReason])
         ->noLimit()
         ->asArray()
         ->all(),
-        'bdfID',
-        'bdfName'
-      );
+      'bdfID',
+      'bdfName'
+    );
 
-      $columns = [
-        [
-          'class' => 'kartik\grid\SerialColumn',
-        ],
-        [
-          'class' => 'shopack\base\frontend\common\widgets\grid\ExpandRowColumn',
-          'value' => function ($model, $key, $index, $column) {
-            return GridView::ROW_COLLAPSED;
-            // this bahaviour moved to gridview::run for covering initialize error
-            // return ($selected_adngrpID == $model->adngrpID ? GridView::ROW_EXPANDED : GridView::ROW_COLLAPSED);
-          },
-          'detail' => function ($model) use($rejectReasons) {
-            $result = [];
-            $result[] = '<tr><td>' . implode('</td><td>', [
-              '#',
-              'تاریخ',
-              'وضعیت',
-              'توضیح',
-            ]) . '</td></tr>';
-            if (empty($model->mbrdocHistory == false)) {
-              $items = array_reverse($model->mbrdocHistory);
-              foreach ($items as $k => $item) {
-                $status = empty($item['status']) ? '' : enuMemberDocumentStatus::getLabel($item['status']);
+    $columns = [
+      [
+        'class' => 'kartik\grid\SerialColumn',
+      ],
+      [
+        'class' => 'shopack\base\frontend\common\widgets\grid\ExpandRowColumn',
+        'value' => function ($model, $key, $index, $column) {
+          return GridView::ROW_COLLAPSED;
+          // this bahaviour moved to gridview::run for covering initialize error
+          // return ($selected_adngrpID == $model->adngrpID ? GridView::ROW_EXPANDED : GridView::ROW_COLLAPSED);
+        },
+        'detail' => function ($model) use ($rejectReasons) {
+          $result = [];
+          $result[] = '<tr><td>' . implode('</td><td>', [
+            '#',
+            'تاریخ',
+            'وضعیت',
+            'توضیح',
+          ]) . '</td></tr>';
+          if (empty($model->mbrdocHistory == false)) {
+            $items = array_reverse($model->mbrdocHistory);
+            foreach ($items as $k => $item) {
+              $status = empty($item['status']) ? '' : enuMemberDocumentStatus::getLabel($item['status']);
 
-                if ($item['status'] == enuMemberDocumentStatus::Rejected) {
-                  $reasons = [];
+              if ($item['status'] == enuMemberDocumentStatus::Rejected) {
+                $reasons = [];
 
+                if (empty($model->mbrdocRejectReasonIDs) == false) {
                   foreach ($model->mbrdocRejectReasonIDs as $r) {
                     if (isset($rejectReasons[$r]))
                       $reasons[] = $rejectReasons[$r];
                   }
-
-                  if (empty($reasons) == false) {
-                    $status .= ' (' . implode(' - ', $reasons) . ')';
-                  }
                 }
 
-                $result[] = '<tr><td>' . implode('</td><td>', [
-                  $k + 1,
-                  empty($item['at']) ? '' : Yii::$app->formatter->asJalaliWithTime($item['at']),
-                  $status,
-                  $item['comment'] ?? '',
-                ]) . '</td></tr>';
+                if (empty($reasons) == false) {
+                  $status .= ' (' . implode(' - ', $reasons) . ')';
+                }
               }
+
+              $result[] = '<tr><td>' . implode('</td><td>', [
+                $k + 1,
+                empty($item['at']) ? '' : Yii::$app->formatter->asJalaliWithTime($item['at']),
+                $status,
+                $item['comment'] ?? '',
+              ]) . '</td></tr>';
+            }
+          }
+
+          $result = implode('', $result);
+
+          $paramsTable = JsonTableGrid::formatParamsDataAsTable($model->mbrdocExtraParams, $model->document->docExtraParamsSchema, function ($value, $schema) {
+            if (str_starts_with($schema['type'], 'mha:bdef:')) {
+              $model = BasicDefinitionModel::findOne($value);
+              return $model->bdfName;
             }
 
-            $result = implode('', $result);
+            if ($schema['type'] == 'mha:kanoon') {
+              $model = KanoonModel::findOne($value);
+              return $model->knnName;
+            }
 
-            $paramsTable = JsonTableGrid::formatParamsDataAsTable($model->mbrdocExtraParams, $model->document->docExtraParamsSchema, function($value, $schema) {
-              if (str_starts_with($schema['type'], 'mha:bdef:')) {
-                $model = BasicDefinitionModel::findOne($value);
-                return $model->bdfName;
-              }
+            return null;
+          });
 
-              if ($schema['type'] == 'mha:kanoon') {
-                $model = KanoonModel::findOne($value);
-                return $model->knnName;
-              }
+          return "<div class='row'>"
 
-              return null;
-            });
+            . "<div class='col'>"
+            . Html::div($model->getAttributeLabel('mbrdocHistory') . ':')
+            . '<table class="table table-bordered table-striped">'
+            . $result
+            . '</table>'
+            . "</div>"
 
-            return "<div class='row'>"
+            . "<div class='col'>"
+            . Html::div($model->getAttributeLabel('mbrdocExtraParams') . ':')
+            . $paramsTable
+            . "</div>"
 
-              . "<div class='col'>"
-              . Html::div($model->getAttributeLabel('mbrdocHistory') . ':')
-              . '<table class="table table-bordered table-striped">'
-              . $result
-              . '</table>'
-              . "</div>"
+            . "</div>";
 
-              . "<div class='col'>"
-              . Html::div($model->getAttributeLabel('mbrdocExtraParams') . ':')
-              . $paramsTable
-              . "</div>"
+          // return Html::div($model->getAttributeLabel('mbrdocHistory') . ':')
+          //   . '<table class="table table-bordered table-striped">'
+          //   . $result
+          //   . '</table>'
+          //   . Html::div($model->getAttributeLabel('mbrdocExtraParams') . ':')
+          //   . $paramsTable;
+        },
+      ],
+    ];
 
-              . "</div>";
-
-            // return Html::div($model->getAttributeLabel('mbrdocHistory') . ':')
-            //   . '<table class="table table-bordered table-striped">'
-            //   . $result
-            //   . '</table>'
-            //   . Html::div($model->getAttributeLabel('mbrdocExtraParams') . ':')
-            //   . $paramsTable;
-          },
-        ],
-      ];
-
-      if (empty($mbrdocMemberID)) {
-        $columns = array_merge($columns, [
-          [
-            'class' => \iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberDataColumn::class,
-            'attribute' => 'mbrdocMemberID',
-            'format' => 'raw',
-            'value' => function ($model, $key, $index, $widget) {
-              return Html::a($model->member->displayName(), ['/mha/member/view', 'id' => $model->mbrdocMemberID]); //, ['class' => ['btn', 'btn-sm', 'btn-outline-secondary']]);
-            },
-          ],
-        ]);
-      }
-
+    if (empty($mbrdocMemberID)) {
       $columns = array_merge($columns, [
         [
-          'attribute' => 'mbrdocFileID',
+          'class' => \iranhmusic\shopack\mha\frontend\common\widgets\grid\MemberDataColumn::class,
+          'attribute' => 'mbrdocMemberID',
           'format' => 'raw',
           'value' => function ($model, $key, $index, $widget) {
-            return Html::asUploadedImage($model->file, '75px');
-          },
-        ],
-        [
-          // 'class' => \iranhmusic\shopack\mha\frontend\common\widgets\grid\DocumentDataColumn::class,
-          'attribute' => 'mbrdocDocumentID',
-          'value' => function ($model, $key, $index, $widget) {
-            return $model->document->docName;
-          },
-        ],
-        'mbrdocTitle',
-        [
-          'attribute' => 'mbrdocStatus',
-          'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
-          'enumClass' => enuMemberDocumentStatus::class,
-        ],
-        'mbrdocComment',
-        [
-          'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
-          'header' => MemberDocumentModel::canCreate() ? Html::createButton(null, [
-            'create',
-            'mbrdocMemberID' => $mbrdocMemberID ?? $_GET['mbrdocMemberID'] ?? null,
-          ]) : Yii::t('app', 'Actions'),
-          'template' => '{accept} {reject} {delete}{undelete}',
-
-          'buttons' => [
-            'accept' => function ($url, $model, $key) {
-              return Html::confirmButton(Yii::t('aaa', 'Approve'), [
-                'approve',
-                'id' => $model->mbrdocID,
-              ], Yii::t('aaa', 'Are you sure you want to APPROVE this item?'), [
-                'class' => 'btn btn-sm btn-success',
-                'ajax' => 'post',
-              ]);
-            },
-            'reject' => function ($url, $model, $key) {
-              return Html::a(Yii::t('aaa', 'Reject'), [
-                'reject',
-                'id' => $model->mbrdocID,
-              ], [
-                'class' => 'btn btn-sm btn-warning',
-                'modal' => true,
-                // 'ajax' => 'post',
-              ]);
-            },
-          ],
-
-          'visibleButtons' => [
-            'update' => function ($model, $key, $index) {
-              return $model->canUpdate();
-            },
-            'delete' => function ($model, $key, $index) {
-              return $model->canDelete();
-            },
-            'undelete' => function ($model, $key, $index) {
-              return $model->canUndelete();
-            },
-            'accept' => function ($model, $key, $index) {
-              return $model->canAccept();
-            },
-            'reject' => function ($model, $key, $index) {
-              return $model->canReject();
-            },
-          ],
-        ],
-        [
-          'attribute' => 'rowDate',
-          'noWrap' => true,
-          'format' => 'raw',
-          'label' => 'ایجاد / ویرایش',
-          'value' => function($model) {
-            return Html::formatRowDates(
-              $model->mbrdocCreatedAt,
-              $model->createdByUser,
-              $model->mbrdocUpdatedAt,
-              $model->updatedByUser,
-              // $model->mbrdocRemovedAt,
-              // $model->removedByUser,
-            );
+            return Html::a($model->member->displayName(), ['/mha/member/view', 'id' => $model->mbrdocMemberID]); //, ['class' => ['btn', 'btn-sm', 'btn-outline-secondary']]);
           },
         ],
       ]);
+    }
 
-      echo GridView::widget([
-        'id' => StringHelper::generateRandomId(),
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => $columns,
-      ]);
+    $columns = array_merge($columns, [
+      [
+        'attribute' => 'mbrdocFileID',
+        'format' => 'raw',
+        'value' => function ($model, $key, $index, $widget) {
+          return Html::asUploadedImage($model->file, '75px');
+        },
+      ],
+      [
+        // 'class' => \iranhmusic\shopack\mha\frontend\common\widgets\grid\DocumentDataColumn::class,
+        'attribute' => 'mbrdocDocumentID',
+        'value' => function ($model, $key, $index, $widget) {
+          return $model->document->docName;
+        },
+      ],
+      'mbrdocTitle',
+      [
+        'attribute' => 'mbrdocStatus',
+        'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
+        'enumClass' => enuMemberDocumentStatus::class,
+      ],
+      'mbrdocComment',
+      [
+        'class' => \shopack\base\frontend\common\widgets\ActionColumn::class,
+        'header' => MemberDocumentModel::canCreate() ? Html::createButton(null, [
+          'create',
+          'mbrdocMemberID' => $mbrdocMemberID ?? $_GET['mbrdocMemberID'] ?? null,
+        ]) : Yii::t('app', 'Actions'),
+        'template' => '{accept} {reject} {delete}{undelete}',
+
+        'buttons' => [
+          'accept' => function ($url, $model, $key) {
+            return Html::confirmButton(Yii::t('aaa', 'Approve'), [
+              'approve',
+              'id' => $model->mbrdocID,
+            ], Yii::t('aaa', 'Are you sure you want to APPROVE this item?'), [
+              'class' => 'btn btn-sm btn-success',
+              'ajax' => 'post',
+            ]);
+          },
+          'reject' => function ($url, $model, $key) {
+            return Html::a(Yii::t('aaa', 'Reject'), [
+              'reject',
+              'id' => $model->mbrdocID,
+            ], [
+              'class' => 'btn btn-sm btn-warning',
+              'modal' => true,
+              // 'ajax' => 'post',
+            ]);
+          },
+        ],
+
+        'visibleButtons' => [
+          'update' => function ($model, $key, $index) {
+            return $model->canUpdate();
+          },
+          'delete' => function ($model, $key, $index) {
+            return $model->canDelete();
+          },
+          'undelete' => function ($model, $key, $index) {
+            return $model->canUndelete();
+          },
+          'accept' => function ($model, $key, $index) {
+            return $model->canAccept();
+          },
+          'reject' => function ($model, $key, $index) {
+            return $model->canReject();
+          },
+        ],
+      ],
+      [
+        'attribute' => 'rowDate',
+        'noWrap' => true,
+        'format' => 'raw',
+        'label' => 'ایجاد / ویرایش',
+        'value' => function ($model) {
+          return Html::formatRowDates(
+            $model->mbrdocCreatedAt,
+            $model->createdByUser,
+            $model->mbrdocUpdatedAt,
+            $model->updatedByUser,
+            // $model->mbrdocRemovedAt,
+            // $model->removedByUser,
+          );
+        },
+      ],
+    ]);
+
+    echo GridView::widget([
+      'id' => StringHelper::generateRandomId(),
+      'dataProvider' => $dataProvider,
+      'filterModel' => $searchModel,
+      'columns' => $columns,
+    ]);
     ?>
   </div>
-<?php if (empty($mbrdocMemberID) == false): ?>
-  <div class='col-4'>
-    <div class='card'>
-      <div class='card-header'>
-        <div class='card-title'><?= Yii::t('mha', 'Required Documents') ?></div>
-      </div>
-      <div class='card-body'>
-        <?php
+  <?php if (empty($mbrdocMemberID) == false): ?>
+    <div class='col-4'>
+      <div class='card'>
+        <div class='card-header'>
+          <div class='card-title'><?= Yii::t('mha', 'Required Documents') ?></div>
+        </div>
+        <div class='card-body'>
+          <?php
           $doctypesSearchModel = new DocumentSearchModel();
           $doctypesDataProvider = $doctypesSearchModel->getDocumentTypesForMember($mbrdocMemberID);
 
@@ -285,9 +289,9 @@ use shopack\base\frontend\common\widgets\JsonTableGrid;
               ],
             ],
           ]);
-        ?>
+          ?>
+        </div>
       </div>
     </div>
-  </div>
-<?php endif; ?>
+  <?php endif; ?>
 </div>
