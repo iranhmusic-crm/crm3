@@ -65,6 +65,11 @@
         "process-timeout": 1800,
         "fxp-asset": {
             "enabled": false
+        },
+        "policy": {
+            "advisories": {
+                "block": false
+            }
         }
     },
     "scripts": {
