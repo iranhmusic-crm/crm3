@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -27,607 +28,653 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="member-view w-100">
-  <div class='card'>
-		<div class='card-header'>
-			<div class="float-end">
-				<?= MemberModel::canCreate() ? Html::createButton() : '' ?>
-        <?php
-          PopoverX::begin([
-            // 'header' => 'Hello world',
-            'closeButton' => false,
-            'toggleButton' => [
-              'label' => Yii::t('app', 'Logs'),
-              'class' => 'btn btn-sm btn-outline-secondary',
-            ],
-            'placement' => PopoverX::ALIGN_AUTO_BOTTOM,
-          ]);
-
-          echo DetailView::widget([
-            'model' => $model,
-            'enableEditMode' => false,
-            'attributes' => [
-              'mbrCreatedAt:jalaliWithTime',
-              [
-                'attribute' => 'mbrCreatedBy_User',
-                'format' => 'raw',
-                'value' => $model->createdByUser->actorName ?? '-',
-              ],
-              'mbrUpdatedAt:jalaliWithTime',
-              [
-                'attribute' => 'mbrUpdatedBy_User',
-                'format' => 'raw',
-                'value' => $model->updatedByUser->actorName ?? '-',
-              ],
-              'mbrRemovedAt:jalaliWithTime',
-              [
-                'attribute' => 'mbrRemovedBy_User',
-                'format' => 'raw',
-                'value' => $model->removedByUser->actorName ?? '-',
-              ],
-            ],
-          ]);
-
-          PopoverX::end();
-        ?>
-			</div>
-      <div class='card-title'><?= $this->title ?></div>
-			<div class="clearfix"></div>
-		</div>
-
-    <div class='card-tabs'>
-  		<?php $tabs = Tabs::begin($this); ?>
-
-      <?php $tabs->beginTabPage('مشخصات'); ?>
-        <div>
-          <div class='row mb-3'>
-            <div class='col-9'>
-              <?php
-                echo DetailView::widget([
-                  'model' => $model,
-                  'enableEditMode' => false,
-                  'cols' => 2,
-                  'isVertical' => true,
-                  'attributes' => [
-                    [
-                      'attribute' => 'mbrRegisterCode',
-                      'value' => '[' . ($model->mbrRegisterCode ?? 'ندارد') . ']',
+    <div class='card'>
+        <div class='card-header'>
+            <div class="float-end">
+                <?= MemberModel::canCreate() ? Html::createButton(NULL, NULL, [
+                    'data-popup-size' => 'lg',
+                ]) : '' ?>
+                <?php
+                PopoverX::begin([
+                    // 'header' => 'Hello world',
+                    'closeButton' => false,
+                    'toggleButton' => [
+                        'label' => Yii::t('app', 'Logs'),
+                        'class' => 'btn btn-sm btn-outline-secondary',
                     ],
-                    [
-                      'attribute' => 'mbrStatus',
-                      'value' => enuMemberStatus::getLabel($model->mbrStatus),
-                    ],
-                    'mbrAcceptedAt:jalaliWithTime',
-                    'mbrExpireDate:jalali',
-                    [
-                      'group' => true,
-                      'cols' => 2,
-                      'label' => 'اطلاعات پایه',
-                      'groupOptions' => ['class' => 'info-row'],
-                      'isVertical' => false,
-                    ],
-                    [
-                      'attribute' => 'usrGender',
-                      'value' => enuGender::getLabel($model->user->usrGender),
-                    ],
-                    [
-                      'attribute' => 'mbrUserID',
-                      'format' => 'raw',
-                      'value' => Html::a($model->user->displayName(), ['/aaa/user/view', 'id' => $model->mbrUserID]) . ' (' . enuUserStatus::getLabel($model->user->usrStatus) . ')', //, ['class' => ['btn', 'btn-sm', 'btn-outline-secondary']]),
-                    ],
-                    // [
-                    //   'group' => true,
-                    // ],
-                    [
-                      'attribute' => 'usrSSID',
-                      'value' => $model->user->usrSSID,
-                    ],
-                    [
-                      'attribute' => 'usrBirthCertID',
-                      'value' => $model->user->usrBirthCertID,
-                    ],
-                    [
-                      'attribute' => 'usrFirstName',
-                      'value' => $model->user->usrFirstName,
-                    ],
-                    [
-                      'attribute' => 'usrFirstName_en',
-                      'value' => $model->user->usrFirstName_en,
-                    ],
-                    [
-                      'attribute' => 'usrLastName',
-                      'value' => $model->user->usrLastName,
-                    ],
-                    [
-                      'attribute' => 'usrLastName_en',
-                      'value' => $model->user->usrLastName_en,
-                    ],
-                    [
-                      'attribute' => 'usrFatherName',
-                      'value' => $model->user->usrFatherName,
-                    ],
-                    [
-                      'attribute' => 'usrFatherName_en',
-                      'value' => $model->user->usrFatherName_en,
-                    ],
-                    [
-                      'attribute' => 'usrBirthCityID',
-                      'value' => $model->user->birthCityOrVillage->ctvName ?? null,
-                    ],
-                    [
-                      'attribute' => 'usrBirthDate',
-                      'value' => $model->user->usrBirthDate,
-                      'format' => 'jalali',
-                    ],
-
-                    [
-                      'attribute' => 'usrEducationLevel',
-                      'value' => enuUserEducationLevel::getLabel($model->user->usrEducationLevel),
-                    ],
-                    [
-                      'attribute' => 'usrFieldOfStudy',
-                      'value' => $model->user->usrFieldOfStudy,
-                    ],
-                    [
-                      'attribute' => 'usrYearOfGraduation',
-                      'value' => $model->user->usrYearOfGraduation,
-                    ],
-                    [
-                      'attribute' => 'usrEducationPlace',
-                      'value' => $model->user->usrEducationPlace,
-                    ],
-                    [
-                      'attribute' => 'usrMaritalStatus',
-                      'value' => enuUserMaritalStatus::getLabel($model->user->usrMaritalStatus),
-                    ],
-                    [
-                      'attribute' => 'usrMilitaryStatus',
-                      'value' => enuUserMilitaryStatus::getLabel($model->user->usrMilitaryStatus),
-                    ],
-
-                    [
-                      'group' => 'true',
-                      'label' => 'اطلاعات ورود و دسترسی',
-                      'isVertical' => false,
-                      'groupOptions' => ['class' => 'info-row'],
-                    ],
-                    [
-                      'attribute' => 'usrEmail',
-                      'valueColOptions' => ['class' => ['dir-ltr', 'text-start']],
-                      'value' => $model->user->usrEmail,
-                    ],
-                    [
-                      'attribute' => 'usrEmailApprovedAt',
-                      'format' => 'jalaliWithTime',
-                      'value' => $model->user->usrEmailApprovedAt,
-                    ],
-                    [
-                      'attribute' => 'usrMobile',
-                      'format' => 'phone',
-                      'value' => $model->user->usrMobile,
-                    ],
-                    [
-                      'attribute' => 'usrMobileApprovedAt',
-                      'format' => 'jalaliWithTime',
-                      'value' => $model->user->usrMobileApprovedAt,
-                    ],
-                    [
-                      'attribute' => 'hasPassword',
-                      'format' => 'boolean',
-                      'value' => $model->user->hasPassword,
-                    ],
-                    [
-                      'attribute' => 'usrPasswordCreatedAt',
-                      'format' => 'jalaliWithTime',
-                      'value' => $model->user->usrPasswordCreatedAt,
-                    ],
-                    [
-                      'attribute' => 'usrRoleID',
-                      'label' => 'جایگاه دسترسی',
-                      'value' => $model->user->role->rolName,
-                    ],
-                    [
-                      'attribute' => 'usrPrivs',
-                      'visible' => $model->user->canViewColumn('usrPrivs'),
-                      'value' => Json::encode($model->user->usrPrivs),
-                    ],
-
-                    [
-                      'group' => true,
-                      'cols' => 1,
-                      'label' => 'اطلاعات آدرس',
-                      'groupOptions' => ['class' => 'info-row'],
-                    ],
-                    [
-                      'attribute' => 'usrCountryID',
-                      'value' => $model->user->country->cntrName ?? null,
-                    ],
-                    [
-                      'attribute' => 'usrStateID',
-                      'value' => $model->user->state->sttName ?? null,
-                    ],
-                    [
-                      'attribute' => 'usrCityOrVillageID',
-                      'value' => $model->user->cityOrVillage->ctvName ?? null,
-                    ],
-                    [
-                      'attribute' => 'usrTownID',
-                      'value' => $model->user->town->twnName ?? null,
-                    ],
-                    [
-                      'attribute' => 'usrHomeAddress',
-                      'value' => $model->user->usrHomeAddress,
-                    ],
-                    [
-                      'attribute' => 'usrZipCode',
-                      'value' => $model->user->usrZipCode,
-                    ],
-                    [
-                      'attribute' => 'usrPhones',
-                      'value' => $model->user->usrPhones,
-                    ],
-                    [
-                      'attribute' => 'usrWorkAddress',
-                      'value' => $model->user->usrWorkAddress,
-                    ],
-                    [
-                      'attribute' => 'usrWorkPhones',
-                      'value' => $model->user->usrWorkPhones,
-                    ],
-                    [
-                      'attribute' => 'usrWebsite',
-                      'value' => $model->user->usrWebsite,
-                    ],
-
-                    [
-                      'group' => true,
-                      'cols' => 1,
-                      'label' => 'اطلاعات تکمیلی',
-                      'groupOptions' => ['class' => 'info-row'],
-                    ],
-                    'mbrMusicExperiences:paragraphs',
-                    'mbrMusicExperienceStartAt:jalali',
-
-                    [
-                      'attribute' => 'mbrInstrumentID',
-                      'value' => $model->instrument->bdfName ?? null,
-                    ],
-                    [
-                      'attribute' => 'mbrSingID',
-                      'value' => $model->sing->bdfName ?? null,
-                    ],
-                    [
-                      'attribute' => 'mbrResearchID',
-                      'value' => $model->research->bdfName ?? null,
-                    ],
-                    [
-                      'attribute' => 'mbrArtDegree',
-                      'value' => empty($model->mbrArtDegree) ? null
-                                  : 'درجه ' . $model->mbrArtDegree,
-                    ],
-                    'mbrHonarCreditCode',
-                    'mbrJob',
-                    'mbrOwnOrgName',
-
-                    'mbrArtHistory:paragraphs',
-                    'mbrMusicEducationHistory:paragraphs',
-
-                  ],
+                    'placement' => PopoverX::ALIGN_AUTO_BOTTOM,
                 ]);
-              ?>
+
+                echo DetailView::widget([
+                    'model' => $model,
+                    'enableEditMode' => false,
+                    'attributes' => [
+                        'mbrCreatedAt:jalaliWithTime',
+                        [
+                            'attribute' => 'mbrCreatedBy_User',
+                            'format' => 'raw',
+                            'value' => $model->createdByUser->actorName ?? '-',
+                        ],
+                        'mbrUpdatedAt:jalaliWithTime',
+                        [
+                            'attribute' => 'mbrUpdatedBy_User',
+                            'format' => 'raw',
+                            'value' => $model->updatedByUser->actorName ?? '-',
+                        ],
+                        'mbrRemovedAt:jalaliWithTime',
+                        [
+                            'attribute' => 'mbrRemovedBy_User',
+                            'format' => 'raw',
+                            'value' => $model->removedByUser->actorName ?? '-',
+                        ],
+                    ],
+                ]);
+
+                PopoverX::end();
+                ?>
             </div>
-            <div class='col-3'>
-              <div class='card'>
-                <div class='card-body'>
-                  <?php
-                    $buttons = [];
-
-                    if ($model->canUpdate()) {
-                      $buttons[] = Html::a(Yii::t('mha', 'Update User'), [
-                        '/aaa/user/update',
-                        'id' => $model->mbrUserID,
-                        'ref' => Url::to(['view', 'id' => $model->mbrUserID], true),
-                      ], [
-                        'modal' => true,
-                        'class' => 'btn btn-sm btn-primary',
-                        'data-popup-size' => 'lg',
-                      ]);
-                    }
-
-                    if ($model->canUpdate()) {
-                      $buttons[] = Html::updateButton(null, ['id' => $model->mbrUserID], [
-                        'modal' => true,
-                        'data-popup-size' => 'lg',
-                      ]);
-                      $buttons[] = Html::updateButton('تعیین رمز', ['/aaa/user/password-reset', 'id' => $model->mbrUserID], [
-                        'btn' => 'warning',
-                      ]);
-                    }
-
-                    if ($model->canDelete())
-                      $buttons[] = Html::deleteButton(null, ['id' => $model->mbrUserID]);
-
-                    if ($model->canUndelete())
-                      $buttons[] = Html::undeleteButton(null, ['id' => $model->mbrUserID]);
-
-                    if (empty($model->user->usrMobile) == false) {
-                      $buttons[] = Html::a('ارسال پیامک', [
-                        '/aaa/user/send-message',
-                        'id' => $model->mbrUserID,
-                      ], [
-                        'class' => 'btn btn-sm btn-primary',
-                        'modal' => true,
-                      ]);
-                    }
-
-                    if (empty($buttons) == false)
-                      echo implode(' ', $buttons);
-                  ?>
-                </div>
-
-                <div class='card-body'>
-                  <?php
-                    $buttons = [];
-
-                    $buttons[] = Html::a(Yii::t('mha', 'Print Membership Form'), [
-                      'print-membership-form',
-                      'id' => $model->mbrUserID,
-                    ], [
-                      'class' => 'btn btn-sm btn-primary',
-                      // 'modal' => true,
-                      'target' => '_blank',
-                    ]);
-
-                    $buttons[] = Html::a(Yii::t('mha', 'Print Card (Front)'), [
-                      'print-card-front',
-                      'id' => $model->mbrUserID,
-                    ], [
-                      'class' => 'btn btn-sm btn-primary',
-                      // 'modal' => true,
-                      'target' => '_blank',
-                    ]);
-
-                    $buttons[] = Html::a(Yii::t('mha', 'Print Card (Back)'), [
-                      'print-card-back',
-                      'id' => $model->mbrUserID,
-                    ], [
-                      'class' => 'btn btn-sm btn-primary',
-                      // 'modal' => true,
-                      'target' => '_blank',
-                    ]);
-
-                    $buttons[] = Html::a('چاپ معرفی نامه صندوق هنر', [
-                      'print-art-fund-letter',
-                      'id' => $model->mbrUserID,
-                    ], [
-                      'class' => 'btn btn-sm btn-primary',
-                      // 'modal' => true,
-                      'target' => '_blank',
-                    ]);
-
-                    if (empty($buttons) == false)
-                      echo implode(' ', $buttons);
-                  ?>
-                </div>
-              </div>
-              <?php
-                $defects = $model->getDefects();
-                if (empty($defects) == false) {
-              ?>
-              <div class='card border-default mt-3'>
-                <div class='card-header'>
-                  <div class="float-end">
-                    <div class='badge bg-danger'><?= count($defects) ?></div>
-                  </div>
-                  <div class='card-title'><?= Yii::t('app', 'نواقص پرونده') ?></div>
-                  <div class="clearfix"></div>
-                </div>
-                <div class='card-body'>
-                  <?php
-                    echo '<ol>';
-                    foreach ($defects as $lbl => $val) {
-                      echo '<li>';
-                      echo '<b>' . $val['label'] . '</b>';
-                      echo ': ';
-                      if (is_array($val['desc'])) {
-                        echo '<ul><li>' . implode('</li><li>', $val['desc']) . '</li></ul>';
-                      } else {
-                        echo $val['desc'];
-                      }
-                      echo '</li>';
-                    }
-                    echo '</ol>';
-                  ?>
-                </div>
-              </div>
-              <?php
-                }
-              ?>
-
-              <div class='card border-default mt-3'>
-                <div class='card-header'>
-                  <div class="float-end">
-                    <?= Html::updateButton(Yii::t('aaa', 'Update Image'), [
-                      '/aaa/user/update-image',
-                      'id' => $model->mbrUserID,
-                      'ref' => Url::to(['view', 'id' => $model->mbrUserID], true),
-                    ]) ?>
-                  </div>
-                  <div class='card-title'><?= Yii::t('aaa', 'Official Personal Photo') ?></div>
-                  <div class="clearfix"></div>
-                </div>
-                <div class='card-body text-center'>
-                  <?= Html::asUploadedImage($model->user->imageFile, '100%', true) ?>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
+            <div class='card-title'><?= $this->title ?></div>
+            <div class="clearfix"></div>
         </div>
-      <?php $tabs->endTabPage(); ?>
 
-      <?php $tabs->newAjaxTabPage(Yii::t('mha', 'Member Groups'), [
-          '/mha/member-member-group/index',
-          'mbrmgpMemberID' => $model->mbrUserID,
-        ],
-        'member-member-groups'
-      ); ?>
+        <div class='card-tabs'>
+            <?php $tabs = Tabs::begin($this); ?>
 
-      <?php $tabs->newAjaxTabPage(Yii::t('mha', 'Documents'), [
-          '/mha/member-document/index',
-          'mbrdocMemberID' => $model->mbrUserID,
-        ],
-        'member-documents'
-      ); ?>
+            <?php $tabs->beginTabPage('مشخصات'); ?>
+            <div>
+                <div class='row mb-3'>
+                    <div class='col-9'>
+                        <?php
+                        echo DetailView::widget([
+                            'model' => $model,
+                            'enableEditMode' => false,
+                            'cols' => 2,
+                            'isVertical' => true,
+                            'attributes' => [
+                                [
+                                    'attribute' => 'mbrRegisterCode',
+                                    'value' => '[' . ($model->mbrRegisterCode ?? 'ندارد') . ']',
+                                ],
+                                [
+                                    'attribute' => 'mbrStatus',
+                                    'value' => enuMemberStatus::getLabel($model->mbrStatus),
+                                ],
+                                'mbrAcceptedAt:jalaliWithTime',
+                                'mbrExpireDate:jalali',
+                                [
+                                    'group' => true,
+                                    'cols' => 2,
+                                    'label' => 'اطلاعات پایه',
+                                    'groupOptions' => ['class' => 'info-row'],
+                                    'isVertical' => false,
+                                ],
+                                [
+                                    'attribute' => 'mbrUserID',
+                                    'format' => 'raw',
+                                    'value' => Html::a($model->user->displayName(), ['/aaa/user/view', 'id' => $model->mbrUserID]) . ' (' . enuUserStatus::getLabel($model->user->usrStatus) . ')', //, ['class' => ['btn', 'btn-sm', 'btn-outline-secondary']]),
+                                ],
+                                [
+                                    'group' => true,
+                                ],
+                                [
+                                    'attribute' => 'usrGender',
+                                    'value' => enuGender::getLabel($model->user->usrGender),
+                                ],
+                                [
+                                    'attribute' => 'usrDeadAt',
+                                    'format' => 'jalali',
+                                    'value' => $model->user->usrDeadAt,
+                                ],
+                                [
+                                    'attribute' => 'usrSSID',
+                                    'value' => $model->user->usrSSID,
+                                ],
+                                [
+                                    'attribute' => 'usrBirthCertID',
+                                    'value' => $model->user->usrBirthCertID,
+                                ],
+                                [
+                                    'attribute' => 'usrFirstName',
+                                    'value' => $model->user->usrFirstName,
+                                ],
+                                [
+                                    'attribute' => 'usrFirstName_en',
+                                    'value' => $model->user->usrFirstName_en,
+                                ],
+                                [
+                                    'attribute' => 'usrLastName',
+                                    'value' => $model->user->usrLastName,
+                                ],
+                                [
+                                    'attribute' => 'usrLastName_en',
+                                    'value' => $model->user->usrLastName_en,
+                                ],
+                                [
+                                    'attribute' => 'usrFatherName',
+                                    'value' => $model->user->usrFatherName,
+                                ],
+                                [
+                                    'attribute' => 'usrFatherName_en',
+                                    'value' => $model->user->usrFatherName_en,
+                                ],
+                                [
+                                    'attribute' => 'usrBirthCityID',
+                                    'value' => $model->user->birthCityOrVillage->ctvName ?? null,
+                                ],
+                                [
+                                    'attribute' => 'usrBirthDate',
+                                    'value' => $model->user->usrBirthDate,
+                                    'format' => 'jalali',
+                                ],
 
-      <?php $tabs->newAjaxTabPage(Yii::t('mha', 'Specialties'), [
-          '/mha/member-specialty/index',
-          'mbrspcMemberID' => $model->mbrUserID,
-        ],
-        'member-specialty'
-      ); ?>
+                                [
+                                    'attribute' => 'usrEducationLevel',
+                                    'value' => enuUserEducationLevel::getLabel($model->user->usrEducationLevel),
+                                ],
+                                [
+                                    'attribute' => 'usrFieldOfStudy',
+                                    'value' => $model->user->usrFieldOfStudy,
+                                ],
+                                [
+                                    'attribute' => 'usrYearOfGraduation',
+                                    'value' => $model->user->usrYearOfGraduation,
+                                ],
+                                [
+                                    'attribute' => 'usrEducationPlace',
+                                    'value' => $model->user->usrEducationPlace,
+                                ],
+                                [
+                                    'attribute' => 'usrMaritalStatus',
+                                    'value' => enuUserMaritalStatus::getLabel($model->user->usrMaritalStatus),
+                                ],
+                                [
+                                    'attribute' => 'usrMilitaryStatus',
+                                    'value' => enuUserMilitaryStatus::getLabel($model->user->usrMilitaryStatus),
+                                ],
 
-      <?php $tabs->newAjaxTabPage(Yii::t('mha', 'Kanoons'), [
-          '/mha/member-kanoon/index',
-          'mbrknnMemberID' => $model->mbrUserID,
-        ],
-        'member-kanoons'
-      ); ?>
+                                [
+                                    'group' => 'true',
+                                    'label' => 'اطلاعات ورود و دسترسی',
+                                    'isVertical' => false,
+                                    'groupOptions' => ['class' => 'info-row'],
+                                ],
+                                [
+                                    'attribute' => 'usrEmail',
+                                    'valueColOptions' => ['class' => ['dir-ltr', 'text-start']],
+                                    'value' => $model->user->usrEmail,
+                                ],
+                                [
+                                    'attribute' => 'usrEmailApprovedAt',
+                                    'format' => 'jalaliWithTime',
+                                    'value' => $model->user->usrEmailApprovedAt,
+                                ],
+                                [
+                                    'attribute' => 'usrMobile',
+                                    'format' => 'phone',
+                                    'value' => $model->user->usrMobile,
+                                ],
+                                [
+                                    'attribute' => 'usrMobileApprovedAt',
+                                    'format' => 'jalaliWithTime',
+                                    'value' => $model->user->usrMobileApprovedAt,
+                                ],
+                                [
+                                    'attribute' => 'hasPassword',
+                                    'format' => 'boolean',
+                                    'value' => $model->user->hasPassword,
+                                ],
+                                [
+                                    'attribute' => 'usrPasswordCreatedAt',
+                                    'format' => 'jalaliWithTime',
+                                    'value' => $model->user->usrPasswordCreatedAt,
+                                ],
+                                [
+                                    'attribute' => 'usrRoleID',
+                                    'label' => 'جایگاه دسترسی',
+                                    'value' => $model->user->role->rolName,
+                                ],
+                                [
+                                    'attribute' => 'usrPrivs',
+                                    'visible' => $model->user->canViewColumn('usrPrivs'),
+                                    'value' => Json::encode($model->user->usrPrivs),
+                                ],
 
-      <?php
-        $tabs->beginTabPage(Yii::t('mha', 'Insurance'), [
-          'member-master-insurances',
-          'member-master-ins-docs',
-          'member-supplementary-ins-docs',
-        ]);
+                                [
+                                    'group' => true,
+                                    'cols' => 1,
+                                    'label' => 'اطلاعات آدرس',
+                                    'groupOptions' => ['class' => 'info-row'],
+                                ],
+                                [
+                                    'attribute' => 'usrCountryID',
+                                    'value' => $model->user->country->cntrName ?? null,
+                                ],
+                                [
+                                    'attribute' => 'usrStateID',
+                                    'value' => $model->user->state->sttName ?? null,
+                                ],
+                                [
+                                    'attribute' => 'usrCityOrVillageID',
+                                    'value' => $model->user->cityOrVillage->ctvName ?? null,
+                                ],
+                                [
+                                    'attribute' => 'usrTownID',
+                                    'value' => $model->user->town->twnName ?? null,
+                                ],
+                                [
+                                    'attribute' => 'usrHomeAddress',
+                                    'value' => $model->user->usrHomeAddress,
+                                ],
+                                [
+                                    'attribute' => 'usrZipCode',
+                                    'value' => $model->user->usrZipCode,
+                                ],
+                                [
+                                    'attribute' => 'usrPhones',
+                                    'value' => $model->user->usrPhones,
+                                ],
+                                [
+                                    'attribute' => 'usrWorkAddress',
+                                    'value' => $model->user->usrWorkAddress,
+                                ],
+                                [
+                                    'attribute' => 'usrWorkPhones',
+                                    'value' => $model->user->usrWorkPhones,
+                                ],
+                                [
+                                    'attribute' => 'usrWebsite',
+                                    'value' => $model->user->usrWebsite,
+                                ],
 
-        $tabs2 = Tabs::begin($this, [
-          'pluginOptions' => [
-            'id' => 'tabs_insurances',
-            // 'position' => \kartik\tabs\TabsX::POS_LEFT,
-            // 'bordered' => true,
-          ],
-        ]);
+                                [
+                                    'group' => true,
+                                    'cols' => 1,
+                                    'label' => 'اطلاعات تکمیلی',
+                                    'groupOptions' => ['class' => 'info-row'],
+                                ],
+                                'mbrMusicExperiences:paragraphs',
+                                'mbrMusicExperienceStartAt:jalali',
 
-        $tabs2->newAjaxTabPage(Yii::t('mha', 'Master Insurances'), [
-            '/mha/member-master-insurance/index',
-            'mbrminshstMemberID' => $model->mbrUserID,
-          ],
-          'member-master-insurances'
-        );
+                                [
+                                    'attribute' => 'mbrInstrumentID',
+                                    'value' => $model->instrument->bdfName ?? null,
+                                ],
+                                [
+                                    'attribute' => 'mbrSingID',
+                                    'value' => $model->sing->bdfName ?? null,
+                                ],
+                                [
+                                    'attribute' => 'mbrResearchID',
+                                    'value' => $model->research->bdfName ?? null,
+                                ],
+                                [
+                                    'attribute' => 'mbrArtDegree',
+                                    'value' => empty($model->mbrArtDegree) ? null
+                                        : 'درجه ' . $model->mbrArtDegree,
+                                ],
+                                'mbrHonarCreditCode',
+                                'mbrJob',
+                                'mbrOwnOrgName',
 
-        //use runaction for proper loading grid expand column
-        $tabs2->beginTabPage(Yii::t('mha', 'Master Insurance Documents'), 'member-master-ins-docs');
-        echo Yii::$app->runAction('/mha/member-master-ins-doc/index', ArrayHelper::merge($_GET, [
-          'isPartial' => true,
-          'params' => [
-            'mbrminsdocMemberID' => $model->mbrUserID,
-          ],
-        ]));
-        $tabs2->endTabPage();
+                                'mbrArtHistory:paragraphs',
+                                'mbrMusicEducationHistory:paragraphs',
 
-        // $tabs2->newAjaxTabPage(Yii::t('mha', 'Master Insurance Documents'), [
-        //     '/mha/member-master-ins-doc/index',
-        //     'mbrminsdocMemberID' => $model->mbrUserID,
-        //   ],
-        //   'member-master-ins-docs'
-        // );
+                            ],
+                        ]);
+                        ?>
+                    </div>
+                    <div class='col-3'>
+                        <div class='card'>
+                            <div class='card-body'>
+                                <?php
+                                $buttons = [];
 
-        //use runaction for proper loading grid expand column
-        $tabs2->beginTabPage(Yii::t('mha', 'Supplementary Insurance Documents'), 'member-supplementary-ins-docs');
-        echo Yii::$app->runAction('/mha/member-supplementary-ins-doc/index', ArrayHelper::merge($_GET, [
-          'isPartial' => true,
-          'params' => [
-            'mbrsinsdocMemberID' => $model->mbrUserID,
-          ],
-        ]));
-        $tabs2->endTabPage();
+                                if ($model->canUpdate()) {
+                                    $buttons[] = Html::a(Yii::t('mha', 'Update User'), [
+                                        '/aaa/user/update',
+                                        'id' => $model->mbrUserID,
+                                        'ref' => Url::to(['view', 'id' => $model->mbrUserID], true),
+                                    ], [
+                                        'modal' => true,
+                                        'class' => 'btn btn-sm btn-primary',
+                                        'data-popup-size' => 'lg',
+                                    ]);
+                                }
 
-        // $tabs2->newAjaxTabPage(Yii::t('mha', 'Supplementary Insurance Documents'), [
-        //     '/mha/member-supplementary-ins-doc/index',
-        //     'mbrsinsdocMemberID' => $model->mbrUserID,
-        //   ],
-        //   'member-supplementary-ins-docs'
-        // );
+                                if ($model->canUpdate()) {
+                                    $buttons[] = Html::updateButton(null, ['id' => $model->mbrUserID], [
+                                        'modal' => true,
+                                        'data-popup-size' => 'lg',
+                                    ]);
+                                    $buttons[] = Html::updateButton('تعیین رمز', ['/aaa/user/password-reset', 'id' => $model->mbrUserID], [
+                                        'btn' => 'warning',
+                                    ]);
+                                }
 
-        $tabs2->end();
+                                if ($model->canDelete())
+                                    $buttons[] = Html::deleteButton(null, ['id' => $model->mbrUserID]);
 
-        $tabs->endTabPage();
-      ?>
+                                if ($model->canUndelete())
+                                    $buttons[] = Html::undeleteButton(null, ['id' => $model->mbrUserID]);
 
-      <?php $tabs->newAjaxTabPage(Yii::t('mha', 'Sponsorships'), [
-          '/mha/member-sponsorship/index',
-          'mbrspsMemberID' => $model->mbrUserID,
-        ],
-        'member-sponsorships'
-      ); ?>
+                                if (empty($model->user->usrMobile) == false) {
+                                    $buttons[] = Html::a('ارسال پیامک', [
+                                        '/aaa/user/send-message',
+                                        'id' => $model->mbrUserID,
+                                    ], [
+                                        'class' => 'btn btn-sm btn-primary',
+                                        'modal' => true,
+                                    ]);
+                                }
 
-      <?php $tabs->newAjaxTabPage(Yii::t('mha', 'Memberships'), [
-          // '/mha/member-membership/index',
-          '/mha/accounting/membership-user-asset/index',
-          'uasActorID' => $model->mbrUserID,
-        ],
-        'member-memberships'
-      ); ?>
+                                if ($model->canUpdate()) {
+                                    if ($model->user->usrDeadAt == NULL)
+                                        $buttons[] = Html::updateButton('درج تاریخ فوت', ['/aaa/user/set-deadtime', 'id' => $model->mbrUserID], [
+                                            'btn' => 'warning',
+                                        ]);
+                                    else
+                                        $buttons[] = Html::confirmButton('بازگشت به زندگی', [
+                                            '/aaa/user/remove-deadtime',
+                                            'id' => $model->mbrUserID,
+                                        ], 'آیا می‌خواهید تاریخ فوت حذف شود؟', [
+                                            'class' => 'btn btn-sm btn-warning',
+                                            'ajax' => 'post',
+                                        ]);
+                                }
 
-      <?php
-        $tabs->beginTabPage(Yii::t('aaa', 'Financial'), [
-          'wallets',
-          'wallet-transactions',
-          'orders',
-          'online-payments',
-          'offline-payments',
-        ]);
+                                if (empty($buttons) == false)
+                                    echo implode(' ', $buttons);
+                                ?>
+                            </div>
 
-        $tabs2 = Tabs::begin($this, [
-          'pluginOptions' => [
-            'id' => 'tabs_fin',
-            // 'position' => \kartik\tabs\TabsX::POS_LEFT,
-            // 'bordered' => true,
-          ],
-        ]);
+                            <div class='card-body'>
+                                <?php
+                                $buttons = [];
 
-        $tabs2->newAjaxTabPage(Yii::t('aaa', 'Orders'), [
-            '/aaa/order/index',
-            'vchOwnerUserID' => $model->mbrUserID,
-          ],
-          'orders'
-        );
+                                $buttons[] = Html::a(Yii::t('mha', 'Print Membership Form'), [
+                                    'print-membership-form',
+                                    'id' => $model->mbrUserID,
+                                ], [
+                                    'class' => 'btn btn-sm btn-primary',
+                                    // 'modal' => true,
+                                    'target' => '_blank',
+                                ]);
 
-        $tabs2->newAjaxTabPage(Yii::t('aaa', 'Online Payments'), [
-            '/aaa/online-payment/index',
-            'vchOwnerUserID' => $model->mbrUserID,
-          ],
-          'online-payments'
-        );
+                                $buttons[] = Html::a(Yii::t('mha', 'Print Card (Front)'), [
+                                    'print-card-front',
+                                    'id' => $model->mbrUserID,
+                                ], [
+                                    'class' => 'btn btn-sm btn-primary',
+                                    // 'modal' => true,
+                                    'target' => '_blank',
+                                ]);
 
-        $tabs2->newAjaxTabPage(Yii::t('aaa', 'Offline Payments'), [
-            '/aaa/offline-payment/index',
-            'ofpOwnerUserID' => $model->mbrUserID,
-          ],
-          'offline-payments'
-        );
+                                $buttons[] = Html::a(Yii::t('mha', 'Print Card (Back)'), [
+                                    'print-card-back',
+                                    'id' => $model->mbrUserID,
+                                ], [
+                                    'class' => 'btn btn-sm btn-primary',
+                                    // 'modal' => true,
+                                    'target' => '_blank',
+                                ]);
 
-        $tabs2->newAjaxTabPage(Yii::t('aaa', 'Wallets'), [
-            '/aaa/wallet/index',
-            'walOwnerUserID' => $model->mbrUserID,
-          ],
-          'wallets'
-        );
+                                $buttons[] = Html::a('چاپ معرفی نامه صندوق هنر', [
+                                    'print-art-fund-letter',
+                                    'id' => $model->mbrUserID,
+                                ], [
+                                    'class' => 'btn btn-sm btn-primary',
+                                    // 'modal' => true,
+                                    'target' => '_blank',
+                                ]);
 
-        $tabs2->newAjaxTabPage(Yii::t('aaa', 'Wallet Transactions'), [
-            '/aaa/wallet-transaction/index',
-            'walOwnerUserID' => $model->mbrUserID,
-          ],
-          'wallet-transactions'
-        );
+                                if (empty($buttons) == false)
+                                    echo implode(' ', $buttons);
+                                ?>
+                            </div>
+                        </div>
+                        <?php
+                        $defects = $model->getDefects();
+                        if (empty($defects) == false) {
+                        ?>
+                            <div class='card border-default mt-3'>
+                                <div class='card-header'>
+                                    <div class="float-end">
+                                        <div class='badge bg-danger'><?= count($defects) ?></div>
+                                    </div>
+                                    <div class='card-title'><?= Yii::t('app', 'نواقص پرونده') ?></div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class='card-body'>
+                                    <?php
+                                    echo '<ol>';
+                                    foreach ($defects as $lbl => $val) {
+                                        echo '<li>';
+                                        echo '<b>' . $val['label'] . '</b>';
+                                        echo ': ';
+                                        if (is_array($val['desc'])) {
+                                            echo '<ul><li>' . implode('</li><li>', $val['desc']) . '</li></ul>';
+                                        } else {
+                                            echo $val['desc'];
+                                        }
+                                        echo '</li>';
+                                    }
+                                    echo '</ol>';
+                                    ?>
+                                </div>
+                            </div>
+                        <?php
+                        }
+                        ?>
 
-        $tabs2->end();
+                        <div class='card border-default mt-3'>
+                            <div class='card-header'>
+                                <div class="float-end">
+                                    <?= Html::updateButton(Yii::t('aaa', 'Update Image'), [
+                                        '/aaa/user/update-image',
+                                        'id' => $model->mbrUserID,
+                                        'ref' => Url::to(['view', 'id' => $model->mbrUserID], true),
+                                    ]) ?>
+                                </div>
+                                <div class='card-title'><?= Yii::t('aaa', 'Official Personal Photo') ?></div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class='card-body text-center'>
+                                <?= Html::asUploadedImage($model->user->imageFile, '100%', true) ?>
+                            </div>
+                        </div>
 
-        $tabs->endTabPage();
-      ?>
+                    </div>
+                </div>
 
-      <?php $tabs->end(); ?>
+            </div>
+            <?php $tabs->endTabPage(); ?>
+
+            <?php $tabs->newAjaxTabPage(
+                Yii::t('mha', 'Member Groups'),
+                [
+                    '/mha/member-member-group/index',
+                    'mbrmgpMemberID' => $model->mbrUserID,
+                ],
+                'member-member-groups'
+            ); ?>
+
+            <?php $tabs->newAjaxTabPage(
+                Yii::t('mha', 'Documents'),
+                [
+                    '/mha/member-document/index',
+                    'mbrdocMemberID' => $model->mbrUserID,
+                ],
+                'member-documents'
+            ); ?>
+
+            <?php $tabs->newAjaxTabPage(
+                Yii::t('mha', 'Specialties'),
+                [
+                    '/mha/member-specialty/index',
+                    'mbrspcMemberID' => $model->mbrUserID,
+                ],
+                'member-specialty'
+            ); ?>
+
+            <?php $tabs->newAjaxTabPage(
+                Yii::t('mha', 'Kanoons'),
+                [
+                    '/mha/member-kanoon/index',
+                    'mbrknnMemberID' => $model->mbrUserID,
+                ],
+                'member-kanoons'
+            ); ?>
+
+            <?php
+            $tabs->beginTabPage(Yii::t('mha', 'Insurance'), [
+                'member-master-insurances',
+                'member-master-ins-docs',
+                'member-supplementary-ins-docs',
+            ]);
+
+            $tabs2 = Tabs::begin($this, [
+                'pluginOptions' => [
+                    'id' => 'tabs_insurances',
+                    // 'position' => \kartik\tabs\TabsX::POS_LEFT,
+                    // 'bordered' => true,
+                ],
+            ]);
+
+            $tabs2->newAjaxTabPage(
+                Yii::t('mha', 'Master Insurances'),
+                [
+                    '/mha/member-master-insurance/index',
+                    'mbrminshstMemberID' => $model->mbrUserID,
+                ],
+                'member-master-insurances'
+            );
+
+            //use runaction for proper loading grid expand column
+            $tabs2->beginTabPage(Yii::t('mha', 'Master Insurance Documents'), 'member-master-ins-docs');
+            echo Yii::$app->runAction('/mha/member-master-ins-doc/index', ArrayHelper::merge($_GET, [
+                'isPartial' => true,
+                'params' => [
+                    'mbrminsdocMemberID' => $model->mbrUserID,
+                ],
+            ]));
+            $tabs2->endTabPage();
+
+            // $tabs2->newAjaxTabPage(Yii::t('mha', 'Master Insurance Documents'), [
+            //     '/mha/member-master-ins-doc/index',
+            //     'mbrminsdocMemberID' => $model->mbrUserID,
+            //   ],
+            //   'member-master-ins-docs'
+            // );
+
+            //use runaction for proper loading grid expand column
+            $tabs2->beginTabPage(Yii::t('mha', 'Supplementary Insurance Documents'), 'member-supplementary-ins-docs');
+            echo Yii::$app->runAction('/mha/member-supplementary-ins-doc/index', ArrayHelper::merge($_GET, [
+                'isPartial' => true,
+                'params' => [
+                    'mbrsinsdocMemberID' => $model->mbrUserID,
+                ],
+            ]));
+            $tabs2->endTabPage();
+
+            // $tabs2->newAjaxTabPage(Yii::t('mha', 'Supplementary Insurance Documents'), [
+            //     '/mha/member-supplementary-ins-doc/index',
+            //     'mbrsinsdocMemberID' => $model->mbrUserID,
+            //   ],
+            //   'member-supplementary-ins-docs'
+            // );
+
+            $tabs2->end();
+
+            $tabs->endTabPage();
+            ?>
+
+            <?php $tabs->newAjaxTabPage(
+                Yii::t('mha', 'Sponsorships'),
+                [
+                    '/mha/member-sponsorship/index',
+                    'mbrspsMemberID' => $model->mbrUserID,
+                ],
+                'member-sponsorships'
+            ); ?>
+
+            <?php $tabs->newAjaxTabPage(
+                Yii::t('mha', 'Memberships'),
+                [
+                    // '/mha/member-membership/index',
+                    '/mha/accounting/membership-user-asset/index',
+                    'uasActorID' => $model->mbrUserID,
+                ],
+                'member-memberships'
+            ); ?>
+
+            <?php
+            $tabs->beginTabPage(Yii::t('aaa', 'Financial'), [
+                'wallets',
+                'wallet-transactions',
+                'orders',
+                'online-payments',
+                'offline-payments',
+            ]);
+
+            $tabs2 = Tabs::begin($this, [
+                'pluginOptions' => [
+                    'id' => 'tabs_fin',
+                    // 'position' => \kartik\tabs\TabsX::POS_LEFT,
+                    // 'bordered' => true,
+                ],
+            ]);
+
+            $tabs2->newAjaxTabPage(
+                Yii::t('aaa', 'Orders'),
+                [
+                    '/aaa/order/index',
+                    'vchOwnerUserID' => $model->mbrUserID,
+                ],
+                'orders'
+            );
+
+            $tabs2->newAjaxTabPage(
+                Yii::t('aaa', 'Online Payments'),
+                [
+                    '/aaa/online-payment/index',
+                    'vchOwnerUserID' => $model->mbrUserID,
+                ],
+                'online-payments'
+            );
+
+            $tabs2->newAjaxTabPage(
+                Yii::t('aaa', 'Offline Payments'),
+                [
+                    '/aaa/offline-payment/index',
+                    'ofpOwnerUserID' => $model->mbrUserID,
+                ],
+                'offline-payments'
+            );
+
+            $tabs2->newAjaxTabPage(
+                Yii::t('aaa', 'Wallets'),
+                [
+                    '/aaa/wallet/index',
+                    'walOwnerUserID' => $model->mbrUserID,
+                ],
+                'wallets'
+            );
+
+            $tabs2->newAjaxTabPage(
+                Yii::t('aaa', 'Wallet Transactions'),
+                [
+                    '/aaa/wallet-transaction/index',
+                    'walOwnerUserID' => $model->mbrUserID,
+                ],
+                'wallet-transactions'
+            );
+
+            $tabs2->end();
+
+            $tabs->endTabPage();
+            ?>
+
+            <?php $tabs->end(); ?>
+        </div>
     </div>
-  </div>
 </div>

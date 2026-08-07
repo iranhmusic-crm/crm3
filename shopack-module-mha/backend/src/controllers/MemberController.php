@@ -128,15 +128,19 @@ class MemberController extends BaseRestController
                     ->andWhere(['is', 'mbrRegisterCode', DbExpression::null()]);
                 break;
 
-            // case MemberModel::FILTER_MODE_WAIT_FOR_BASE_APPROVAL:
-            //     $query
-            //         ->andWhere('IFNULL(shpobjPrice, 0) > 0')
-            //     ;
-            //     break;
-
-            case MemberModel::FILTER_MODE_ALL:
-                break;
+                // case MemberModel::FILTER_MODE_WAIT_FOR_BASE_APPROVAL:
+                //     $query
+                //         ->andWhere('IFNULL(shpobjPrice, 0) > 0')
+                //     ;
+                //     break;
         }
+
+        if ($filter_mode == MemberModel::FILTER_MODE_DEAD)
+            $query
+                ->andWhere(['is not', 'usrDeadAt', DbExpression::null()]);
+        else if ($filter_mode != MemberModel::FILTER_MODE_ALL)
+            $query
+                ->andWhere(['is', 'usrDeadAt', DbExpression::null()]);
 
         //--------------------------------------------
         return $this->queryAllToResponse($query);

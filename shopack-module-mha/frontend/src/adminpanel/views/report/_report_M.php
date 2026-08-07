@@ -51,6 +51,8 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
       if (is_array($outputSchema)) {
         if (isset($outputSchema['export']))
           unset($outputSchema['export']);
+        if (isset($outputSchema['checked']))
+          unset($outputSchema['checked']);
 
         // $template = ArrayHelper::remove($outputSchema, 'template', null);
         $column = array_merge($column, $outputSchema);

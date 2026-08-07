@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -67,19 +68,20 @@ class ReportModel extends RestClientActiveRecord
 				},
 				'export' => false,
 			],
-			'user.usrGender'              => [
+			'user.usrGender' => [
 				'label' => Yii::t('aaa', 'Gender'),
 				'value' => function ($model, $key, $index, $widget) {
 					return enuGender::getLabel($model['user']['usrGender'] ?? null);
 				},
+				'checked' => true,
 			],
-			'user.usrFirstName'           => Yii::t('aaa', 'First Name'),
-			'user.usrFirstName_en'        => Yii::t('aaa', 'First Name (en)'),
-			'user.usrLastName'            => Yii::t('aaa', 'Last Name'),
-			'user.usrLastName_en'         => Yii::t('aaa', 'Last Name (en)'),
-			'user.usrFatherName'          => Yii::t('aaa', 'Father Name'),
-			'user.usrFatherName_en'       => Yii::t('aaa', 'Father Name (en)'),
-			'user.usrEmail'               => Yii::t('aaa', 'Email'),
+			'user.usrFirstName'           => ['label' => Yii::t('aaa', 'First Name'), 'checked' => true,],
+			'user.usrFirstName_en'        => ['label' => Yii::t('aaa', 'First Name (en)'),],
+			'user.usrLastName'            => ['label' => Yii::t('aaa', 'Last Name'), 'checked' => true,],
+			'user.usrLastName_en'         => ['label' => Yii::t('aaa', 'Last Name (en)'),],
+			'user.usrFatherName'          => ['label' => Yii::t('aaa', 'Father Name'),],
+			'user.usrFatherName_en'       => ['label' => Yii::t('aaa', 'Father Name (en)'),],
+			'user.usrEmail'               => ['label' => Yii::t('aaa', 'Email'),],
 			'user.usrEmailApprovedAt'     => [
 				'label' => Yii::t('aaa', 'Email Approved At'),
 				'format' => 'jalaliWithTime',
@@ -119,11 +121,20 @@ class ReportModel extends RestClientActiveRecord
 				'export' => function ($model) {
 					return Yii::$app->formatter->asJalali($model['user']['usrBirthDate'] ?? null);
 				},
+				'checked' => true,
 			],
 			'user.usrBirthCityID'         => [
 				'label' => Yii::t('aaa', 'Birth Location'),
 				'value' => function ($model, $key, $index, $widget) {
 					return ($model['user']['birthCityOrVillage']['ctvName'] ?? null);
+				},
+				'checked' => true,
+			],
+			'user.usrDeadAt'   => [
+				'label' => Yii::t('aaa', 'Dead At'),
+				'format' => 'jalali',
+				'export' => function ($model) {
+					return Yii::$app->formatter->asJalali($model['user']['usrDeadAt'] ?? null);
 				},
 			],
 			'user.usrCountryID'           => [
@@ -155,10 +166,10 @@ class ReportModel extends RestClientActiveRecord
 
 			'mbrJob' => Yii::t('mha', 'Job'),
 
-			// 'birthCityOrVillage.ctvName'          => 'شهر تولد',
-			// 'birthCityOrVillage.state.sttName'    => 'استان تولد',
-			// 'cityOrVillage.ctvName'   => 'شهر سکونت',
-			// 'state.sttName'    				=> 'استان سکونت',
+			// 'birthCityOrVillage.ctvName'       => 'شهر تولد',
+			// 'birthCityOrVillage.state.sttName' => 'استان تولد',
+			// 'cityOrVillage.ctvName'            => 'شهر سکونت',
+			// 'state.sttName'    				  => 'استان سکونت',
 
 			'user.usrStatus'              => [
 				'label' => Yii::t('app', 'Status'),
@@ -171,13 +182,17 @@ class ReportModel extends RestClientActiveRecord
 			],
 
 			//member
-			'mbrRegisterCode' => Yii::t('mha', 'Register Code'),
+			'mbrRegisterCode' => [
+				'label' => Yii::t('mha', 'Register Code'),
+				'checked' => true,
+			],
 			'mbrAcceptedAt' => [
 				'label' => Yii::t('mha', 'Registration Accepted At'),
 				'format' => 'jalaliWithTime',
 				'export' => function ($model) {
 					return Yii::$app->formatter->asJalaliWithTime($model['mbrAcceptedAt'] ?? null);
 				},
+				'checked' => true,
 			],
 			'mbrExpireDate' => [
 				'label' => Yii::t('mha', 'Expire Date'),
@@ -185,6 +200,7 @@ class ReportModel extends RestClientActiveRecord
 				'export' => function ($model) {
 					return Yii::$app->formatter->asJalali($model['mbrExpireDate'] ?? null);
 				},
+				'checked' => true,
 			],
 
 			// 'knnName' => [
@@ -197,6 +213,7 @@ class ReportModel extends RestClientActiveRecord
 					$value = explode('|', $value);
 					return implode(' - ', $value);
 				},
+				'checked' => true,
 			],
 
 			// 'mbrknnMembershipDegree' => [
@@ -213,6 +230,7 @@ class ReportModel extends RestClientActiveRecord
 					}
 					return implode(' - ', $result);
 				},
+				'checked' => true,
 			],
 
 			'mbrInstrumentID' => [
@@ -278,28 +296,32 @@ class ReportModel extends RestClientActiveRecord
 	}
 
 	public function isSoftDeleted()
-  {
-    return ($this->rptStatus == enuReportStatus::Removed);
-  }
+	{
+		return ($this->rptStatus == enuReportStatus::Removed);
+	}
 
-	public static function canCreate() {
+	public static function canCreate()
+	{
 		return true;
 	}
 
-	public function canUpdate() {
+	public function canUpdate()
+	{
 		return ($this->rptStatus != enuReportStatus::Removed);
 	}
 
-	public function canDelete() {
+	public function canDelete()
+	{
 		return ($this->rptStatus != enuReportStatus::Removed);
 	}
 
-	public function canUndelete() {
+	public function canUndelete()
+	{
 		return ($this->rptStatus == enuReportStatus::Removed);
 	}
 
 	public function save($runValidation = true, $attributeNames = null)
-  {
+	{
 		$errors = [];
 
 		$this->rptInputFields = ArrayHelper::filterNullOrEmpty($this->rptInputFields);
@@ -316,8 +338,8 @@ class ReportModel extends RestClientActiveRecord
 		}
 
 		//---------------------
-    return parent::save($runValidation, $attributeNames);
-  }
+		return parent::save($runValidation, $attributeNames);
+	}
 
 	public function run()
 	{
@@ -328,15 +350,15 @@ class ReportModel extends RestClientActiveRecord
 		if (empty($_GET['page']) == false) $params['page'] = $_GET['page'];
 
 		if ((empty($_GET['per-page']) == false) || (
-					isset($_GET['per-page']) && ($_GET['per-page'] == 0)
-				)
+				isset($_GET['per-page']) && ($_GET['per-page'] == 0)
+			)
 		) {
 			$params['per-page'] = $_GET['per-page'];
 		}
 
 		$apiResponse = HttpHelper::callApi(self::$resourceName . "/run", HttpHelper::METHOD_GET, $params);
 
-    if ($apiResponse['status'] != 200)
+		if ($apiResponse['status'] != 200)
 			return null;
 
 		$config = [
@@ -407,10 +429,9 @@ class ReportModel extends RestClientActiveRecord
 
 		$apiResponse = HttpHelper::callApi(self::$resourceName . "/run", HttpHelper::METHOD_GET, $params);
 
-    if ($apiResponse['status'] != 200)
+		if ($apiResponse['status'] != 200)
 			return null;
 
 		return $apiResponse['body']['data'];
 	}
-
 }

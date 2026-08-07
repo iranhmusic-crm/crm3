@@ -46,7 +46,8 @@ trait MemberModelTrait
     const FILTER_MODE_WAIT_FOR_KANOON_APPROVAL = 2;
     const FILTER_MODE_ONLINE_REG_REQ           = 3;
     const FILTER_MODE_WAIT_FOR_BASE_APPROVAL   = 4;
-    const FILTER_MODE_ALL                      = 5;
+    const FILTER_MODE_DEAD                     = 5;
+    const FILTER_MODE_ALL                      = 6;
 
     public $kanoonNames;
     public $kanoonDegrees;

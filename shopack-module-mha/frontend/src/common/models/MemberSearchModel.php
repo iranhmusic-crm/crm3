@@ -17,12 +17,6 @@ class MemberSearchModel extends MemberModel
 {
     use \shopack\base\common\db\SearchModelTrait;
 
-    // const FILTER_MODE_HAS_REG_CODE             = 0;
-    // const FILTER_MODE_WAIT_FOR_KANOON_APPROVAL = 1;
-    // const FILTER_MODE_ONLINE_REG_REQ           = 2;
-    // const FILTER_MODE_WAIT_FOR_BASE_APPROVAL   = 3;
-    // const FILTER_MODE_ALL                      = 4;
-
     public $filter_mode = 0;
 
     public function extraRules()
@@ -109,6 +103,7 @@ class MemberSearchModel extends MemberModel
                     'usrEmail',
                     'usrMobile',
                     'usrSSID',
+                    'usrDeadAt',
                     'usrCreatedAt' => [
                         'default' => SORT_DESC
                     ],

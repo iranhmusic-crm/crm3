@@ -43,6 +43,7 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberSearchModel;
                                 MemberSearchModel::FILTER_MODE_WAIT_FOR_KANOON_APPROVAL => 'منتظر بررسی کمیسیون',
                                 MemberSearchModel::FILTER_MODE_ONLINE_REG_REQ => 'درخواست عضویت آنلاین',
                                 // MemberSearchModel::FILTER_MODE_WAIT_FOR_BASE_APPROVAL => 'منتظر تایید مدارک',
+                                MemberSearchModel::FILTER_MODE_DEAD => 'فوت شده',
                                 MemberSearchModel::FILTER_MODE_ALL => 'همه',
                             ],
                         ]);

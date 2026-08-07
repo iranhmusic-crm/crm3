@@ -18,82 +18,82 @@ use shopack\base\common\helpers\ArrayHelper;
 
 class ReportModel extends MhaActiveRecord
 {
-  use \iranhmusic\shopack\mha\common\models\ReportModelTrait;
+    use \iranhmusic\shopack\mha\common\models\ReportModelTrait;
 
-  use \shopack\base\common\db\SoftDeleteActiveRecordTrait;
-  public function initSoftDelete()
-  {
-    $this->softdelete_RemovedStatus  = enuReportStatus::Removed;
-    // $this->softdelete_StatusField    = 'rptStatus';
-    $this->softdelete_RemovedAtField = 'rptRemovedAt';
-    $this->softdelete_RemovedByField = 'rptRemovedBy';
-  }
-
-  public static function tableName()
-  {
-    return '{{%MHA_Report}}';
-  }
-
-  public function behaviors()
-  {
-    return [
-      [
-        'class' => \shopack\base\common\behaviors\RowDatesAttributesBehavior::class,
-        'createdAtAttribute' => 'rptCreatedAt',
-        'createdByAttribute' => 'rptCreatedBy',
-        'updatedAtAttribute' => 'rptUpdatedAt',
-        'updatedByAttribute' => 'rptUpdatedBy',
-      ],
-    ];
-  }
-
-  public function beforeSave($insert)
-  {
-    if (parent::beforeSave($insert) == false)
-      return false;
-
-    if ((empty($this->rptOutputFields) == false)
-      && (ArrayHelper::isIndexed($this->rptOutputFields) == false)
-    ) {
-      //it is converted to indexed to order the appropriate output fields
-      $this->rptOutputFields = array_keys($this->rptOutputFields);
+    use \shopack\base\common\db\SoftDeleteActiveRecordTrait;
+    public function initSoftDelete()
+    {
+        $this->softdelete_RemovedStatus  = enuReportStatus::Removed;
+        // $this->softdelete_StatusField    = 'rptStatus';
+        $this->softdelete_RemovedAtField = 'rptRemovedAt';
+        $this->softdelete_RemovedByField = 'rptRemovedBy';
     }
 
-    return true;
-  }
-
-  /**
-   * return query
-   */
-  public function run()
-  {
-    switch ($this->rptType) {
-      case enuReportType::Members:
-        return $this->runMembers();
-
-      case enuReportType::Fiancial:
-        return $this->runFinancial();
+    public static function tableName()
+    {
+        return '{{%MHA_Report}}';
     }
 
-    throw new NotFoundHttpException('Report type not supported.');
-  }
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => \shopack\base\common\behaviors\RowDatesAttributesBehavior::class,
+                'createdAtAttribute' => 'rptCreatedAt',
+                'createdByAttribute' => 'rptCreatedBy',
+                'updatedAtAttribute' => 'rptUpdatedAt',
+                'updatedByAttribute' => 'rptUpdatedBy',
+            ],
+        ];
+    }
 
-  /**
-   * return query
-   */
-  private function runMembers()
-  {
-    $query = MemberModel::find();
-    $joins = [];
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert) == false)
+            return false;
 
-    // $joinToUser = false;
-    // $joinToUserImage = false;
-    // $joinToUserBirthLocation = false;
-    // $joinToUserHomeLocation = false;
-    // $joinToKanoon = false;
+        if ((empty($this->rptOutputFields) == false)
+            && (ArrayHelper::isIndexed($this->rptOutputFields) == false)
+        ) {
+            //it is converted to indexed to order the appropriate output fields
+            $this->rptOutputFields = array_keys($this->rptOutputFields);
+        }
 
-    //-- rptInputFields ------------------------------
-    /*
+        return true;
+    }
+
+    /**
+     * return query
+     */
+    public function run()
+    {
+        switch ($this->rptType) {
+            case enuReportType::Members:
+                return $this->runMembers();
+
+            case enuReportType::Fiancial:
+                return $this->runFinancial();
+        }
+
+        throw new NotFoundHttpException('Report type not supported.');
+    }
+
+    /**
+     * return query
+     */
+    private function runMembers()
+    {
+        $query = MemberModel::find();
+        $joins = [];
+
+        // $joinToUser = false;
+        // $joinToUserImage = false;
+        // $joinToUserBirthLocation = false;
+        // $joinToUserHomeLocation = false;
+        // $joinToKanoon = false;
+
+        //-- rptInputFields ------------------------------
+        /*
     {
       "mbrknnParams": {"I": "55"},
       "mbrknnKanoonID": "8",
@@ -101,144 +101,159 @@ class ReportModel extends MhaActiveRecord
     }
     */
 
-    $fnAddBetweenCondition = function ($field, $values) use (&$query) {
-      if (empty($values['From']) == false) {
-        if (empty($values['To']) == false)
-          $query->andWhere(['BETWEEN', $field, $values['From'], $values['To']]);
-        else
-          $query->andWhere(['>=', $field, $values['From']]);
-      } else if (empty($values['To']) == false)
-        $query->andWhere(['<=', $field, $values['To']]);
-    };
+        $fnAddBetweenCondition = function ($field, $values) use (&$query) {
+            if (empty($values['From']) == false) {
+                if (empty($values['To']) == false)
+                    $query->andWhere(['BETWEEN', $field, $values['From'], $values['To']]);
+                else
+                    $query->andWhere(['>=', $field, $values['From']]);
+            } else if (empty($values['To']) == false)
+                $query->andWhere(['<=', $field, $values['To']]);
+        };
 
-    $fnApplyLikeSearchCondition = function ($field, $values) use (&$query) {
-      $vals = explode(' ', $values);
+        $fnApplyLikeSearchCondition = function ($field, $values) use (&$query) {
+            $vals = explode(' ', $values);
 
-      $ors = ['OR'];
+            $ors = ['OR'];
 
-      foreach ($vals as $val) {
-        $ors[] = ['LIKE', $field, $val];
-      }
-      $query->andWhere($ors);
-    };
+            foreach ($vals as $val) {
+                $ors[] = ['LIKE', $field, $val];
+            }
+            $query->andWhere($ors);
+        };
 
-    $fnParseHasValue = function($hasvalue) {
-      if ($hasvalue === NULL)
-        return NULL;
+        $fnParseHasValue = function ($hasvalue) {
+            if ($hasvalue === NULL)
+                return NULL;
 
-      if (is_array($hasvalue) == false)
-        $hasvalue = (array)$hasvalue;
+            if (is_array($hasvalue) == false)
+                $hasvalue = (array)$hasvalue;
 
-      $hv = (isset($hasvalue[0]) ? $hasvalue[0] : NULL);
+            $hv = (isset($hasvalue[0]) ? $hasvalue[0] : NULL);
 
-      if ($hv === 0 || $hv === '0')
-        return false;
+            if ($hv === 0 || $hv === '0')
+                return false;
 
-      if ($hv === 1 || $hv === '1')
-        return true;
+            if ($hv === 1 || $hv === '1')
+                return true;
 
-      //may be not ['0'] or ['1']
-      return $hasvalue;
-    };
+            //may be not ['0'] or ['1']
+            return $hasvalue;
+        };
 
-    $appliedHas = [];
+        $appliedHas = [];
 
-    $inputFieldsSchema = [
-      'usrBirthLocation' => [
-        'hasCallback' => function ($query, $key, $hasvalue) {
-          if ($hasvalue) {
-            $query->andWhere(['IS', 'birthstate.sttID', DbExpression::notNull()]);
-            $query->andWhere(['IS', 'birthcity.ctvID', DbExpression::notNull()]);
-          } else {
-            $query->andWhere(['birthstate.sttID' => null]);
-            $query->andWhere(['birthcity.ctvID' => null]);
-          }
-        },
-        'filterCallback' => function ($query, $key, $value, $hasvalue) {
-          if (empty($value['State']) == false)
-            $query->andWhere(['birthstate.sttID' => $value['State']]);
+        $inputFieldsSchema = [
+            'usrBirthLocation' => [
+                'hasCallback' => function ($query, $key, $hasvalue) {
+                    if ($hasvalue) {
+                        $query->andWhere(['IS', 'birthstate.sttID', DbExpression::notNull()]);
+                        $query->andWhere(['IS', 'birthcity.ctvID', DbExpression::notNull()]);
+                    } else {
+                        $query->andWhere(['birthstate.sttID' => null]);
+                        $query->andWhere(['birthcity.ctvID' => null]);
+                    }
+                },
+                'filterCallback' => function ($query, $key, $value, $hasvalue) {
+                    if (empty($value['State']) == false)
+                        $query->andWhere(['birthstate.sttID' => $value['State']]);
 
-          if (empty($value['City']) == false)
-            $query->andWhere(['birthcity.ctvID' => $value['City']]);
-        },
-        'join' => [
-          'user',
-          'userBirthLocation',
-        ],
-      ],
+                    if (empty($value['City']) == false)
+                        $query->andWhere(['birthcity.ctvID' => $value['City']]);
+                },
+                'join' => [
+                    'user',
+                    'userBirthLocation',
+                ],
+            ],
 
-      'usrBirthDate' => [ // [From], [To]
-        'hasCallback' => function ($query, $key, $hasvalue) {
-          if ($hasvalue)
-            $query->andWhere(['IS', $key, DbExpression::notNull()]);
-          else
-            $query->andWhere([$key => null]);
-        },
-        'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
-          $fnAddBetweenCondition($key, $value);
-        },
-        'join' => [
-          'user',
-        ],
-      ],
+            'usrBirthDate' => [ // [From], [To]
+                'hasCallback' => function ($query, $key, $hasvalue) {
+                    if ($hasvalue)
+                        $query->andWhere(['IS', $key, DbExpression::notNull()]);
+                    else
+                        $query->andWhere([$key => null]);
+                },
+                'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
+                    $fnAddBetweenCondition($key, $value);
+                },
+                'join' => [
+                    'user',
+                ],
+            ],
 
-      'usrStateID' => [
-        'hasCallback' => function ($query, $key, $hasvalue) {
-          if ($hasvalue)
-            $query->andWhere(['IS', $key, DbExpression::notNull()]);
-          else
-            $query->andWhere([$key => null]);
-        },
-        'filterCallback' => function ($query, $key, $value, $hasvalue) {
-          $query->andWhere([$key => $value]);
-        },
-        'join' => [
-          'user',
-          'userHomeLocation',
-        ],
-      ],
+            'usrDeadAt' => [ // [From], [To]
+                'hasCallback' => function ($query, $key, $hasvalue) {
+                    if ($hasvalue)
+                        $query->andWhere(['IS', $key, DbExpression::notNull()]);
+                    else
+                        $query->andWhere([$key => null]);
+                },
+                'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
+                    $fnAddBetweenCondition($key, $value);
+                },
+                'join' => [
+                    'user',
+                ],
+            ],
 
-      'usrCityOrVillageID' => [
-        'hasCallback' => function ($query, $key, $hasvalue) {
-          if ($hasvalue)
-            $query->andWhere(['IS', $key, DbExpression::notNull()]);
-          else
-            $query->andWhere([$key => null]);
-        },
-        'filterCallback' => function ($query, $key, $value, $hasvalue) {
-          $query->andWhere([$key => $value]);
-        },
-        'join' => [
-          'user',
-          'userHomeLocation',
-        ],
-      ],
+            'usrStateID' => [
+                'hasCallback' => function ($query, $key, $hasvalue) {
+                    if ($hasvalue)
+                        $query->andWhere(['IS', $key, DbExpression::notNull()]);
+                    else
+                        $query->andWhere([$key => null]);
+                },
+                'filterCallback' => function ($query, $key, $value, $hasvalue) {
+                    $query->andWhere([$key => $value]);
+                },
+                'join' => [
+                    'user',
+                    'userHomeLocation',
+                ],
+            ],
 
-      'mbrAcceptedAt' => [ // [From], [To]
-        'hasCallback' => function ($query, $key, $hasvalue) {
-          if ($hasvalue)
-            $query->andWhere(['IS', $key, DbExpression::notNull()]);
-          else
-            $query->andWhere([$key => null]);
-        },
-        'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
-          $fnAddBetweenCondition($key, $value);
-        },
-      ],
+            'usrCityOrVillageID' => [
+                'hasCallback' => function ($query, $key, $hasvalue) {
+                    if ($hasvalue)
+                        $query->andWhere(['IS', $key, DbExpression::notNull()]);
+                    else
+                        $query->andWhere([$key => null]);
+                },
+                'filterCallback' => function ($query, $key, $value, $hasvalue) {
+                    $query->andWhere([$key => $value]);
+                },
+                'join' => [
+                    'user',
+                    'userHomeLocation',
+                ],
+            ],
 
-      'mbrExpireDate' => [ // [From], [To]
-        'hasCallback' => function ($query, $key, $hasvalue) {
-          if ($hasvalue)
-            $query->andWhere(['IS', $key, DbExpression::notNull()]);
-          else
-            $query->andWhere([$key => null]);
-        },
-        'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
-          $fnAddBetweenCondition($key, $value);
-        },
-      ],
+            'mbrAcceptedAt' => [ // [From], [To]
+                'hasCallback' => function ($query, $key, $hasvalue) {
+                    if ($hasvalue)
+                        $query->andWhere(['IS', $key, DbExpression::notNull()]);
+                    else
+                        $query->andWhere([$key => null]);
+                },
+                'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
+                    $fnAddBetweenCondition($key, $value);
+                },
+            ],
 
-/*
+            'mbrExpireDate' => [ // [From], [To]
+                'hasCallback' => function ($query, $key, $hasvalue) {
+                    if ($hasvalue)
+                        $query->andWhere(['IS', $key, DbExpression::notNull()]);
+                    else
+                        $query->andWhere([$key => null]);
+                },
+                'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
+                    $fnAddBetweenCondition($key, $value);
+                },
+            ],
+
+            /*
 case| kanoon   | degree   | query
 ====|==========|==========|======================================================================================
 1.1 | [EMPTY]  | [EMPTY]  | NOTHING
@@ -259,334 +274,334 @@ case| kanoon   | degree   | query
 4.4 | has      | has      | IS NOT NULL AND NOT LIKE '%:NULL|%'
 */
 
-      'mbrknn' => [
-        // 'hasCallback' => function($query, $key, $value) {
-        //   if ($value == 0)
-        //     $query->andWhere(['kanoonIDs' => null]);
-        //   else
-        //     $query->andWhere(['IS', 'kanoonIDs', DbExpression::notNull()]);
-        // },
-        'filterCallback' => function ($query, $key, $value, $hasvalue)
-            use ($fnParseHasValue, &$appliedHas) {
-          $appliedHas['mbrknn'] = true;
+            'mbrknn' => [
+                // 'hasCallback' => function($query, $key, $value) {
+                //   if ($value == 0)
+                //     $query->andWhere(['kanoonIDs' => null]);
+                //   else
+                //     $query->andWhere(['IS', 'kanoonIDs', DbExpression::notNull()]);
+                // },
+                'filterCallback' => function ($query, $key, $value, $hasvalue)
+                use ($fnParseHasValue, &$appliedHas) {
+                    $appliedHas['mbrknn'] = true;
 
-          $hasvalue_KanoonID = $fnParseHasValue($hasvalue['KanoonID'] ?? NULL);
-          $hasvalue_MembershipDegree = $fnParseHasValue($hasvalue['MembershipDegree'] ?? NULL);
+                    $hasvalue_KanoonID = $fnParseHasValue($hasvalue['KanoonID'] ?? NULL);
+                    $hasvalue_MembershipDegree = $fnParseHasValue($hasvalue['MembershipDegree'] ?? NULL);
 
-          $KanoonID = $value["KanoonID"] ?? [];
-          $MembershipDegree = $value["MembershipDegree"] ?? [];
+                    $KanoonID = $value["KanoonID"] ?? [];
+                    $MembershipDegree = $value["MembershipDegree"] ?? [];
 
-          if (empty($KanoonID) == false) {
-            if (is_string($KanoonID))
-              $KanoonID = (array)$KanoonID;
-          }
-
-          if (empty($MembershipDegree) == false) {
-            if (is_string($MembershipDegree))
-              $MembershipDegree = (array)$MembershipDegree;
-          }
-
-          if ($hasvalue_KanoonID === NULL) {
-            if (empty($KanoonID)) {
-              if ($hasvalue_MembershipDegree === NULL) {
-                if (empty($MembershipDegree)) {
-                  //1.1: do nothing
-                } else {
-                  //1.2
-                  $vv = ['OR'];
-                  foreach ($MembershipDegree as $vd) {
-                    $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%:{$vd}|%'")];
-                  }
-                  $query->andWhere($vv);
-                }
-              } else if ($hasvalue_MembershipDegree == false) {
-                //1.3
-                $query->andWhere(['LIKE', 'kanoonIDDegrees', new DbExpression("'%:NULL|%'")]);
-              } else if ($hasvalue_MembershipDegree == true) {
-                //1.4
-                $query->andWhere(['LIKE', 'kanoonIDDegrees', new DbExpression("'%:_|%'")]);
-              }
-            } else { //C{,D...}
-              if ($hasvalue_MembershipDegree === NULL) {
-                if (empty($MembershipDegree)) {
-                  //2.1:
-                  $vv = ['OR'];
-                  foreach ($KanoonID as $vk) {
-                    $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%|{$vk}:%'")];
-                  }
-                  $query->andWhere($vv);
-                } else {
-                  //2.2
-                  $vv = ['OR'];
-                  foreach ($KanoonID as $vk) {
-                    foreach ($MembershipDegree as $vd) {
-                      $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%|{$vk}:{$vd}|%'")];
+                    if (empty($KanoonID) == false) {
+                        if (is_string($KanoonID))
+                            $KanoonID = (array)$KanoonID;
                     }
-                  }
-                  $query->andWhere($vv);
-                }
-              } else if ($hasvalue_MembershipDegree == false) {
-                //2.3
-                  $vv = ['OR'];
-                  foreach ($KanoonID as $vk) {
-                    $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%|{$vk}:NULL|%'")];
-                  }
-                  $query->andWhere($vv);
-              } else if ($hasvalue_MembershipDegree == true) {
-                //2.4
-                  $vv = ['OR'];
-                  foreach ($KanoonID as $vk) {
-                    $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%|{$vk}:_|%'")];
-                  }
-                  $query->andWhere($vv);
-              }
+
+                    if (empty($MembershipDegree) == false) {
+                        if (is_string($MembershipDegree))
+                            $MembershipDegree = (array)$MembershipDegree;
+                    }
+
+                    if ($hasvalue_KanoonID === NULL) {
+                        if (empty($KanoonID)) {
+                            if ($hasvalue_MembershipDegree === NULL) {
+                                if (empty($MembershipDegree)) {
+                                    //1.1: do nothing
+                                } else {
+                                    //1.2
+                                    $vv = ['OR'];
+                                    foreach ($MembershipDegree as $vd) {
+                                        $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%:{$vd}|%'")];
+                                    }
+                                    $query->andWhere($vv);
+                                }
+                            } else if ($hasvalue_MembershipDegree == false) {
+                                //1.3
+                                $query->andWhere(['LIKE', 'kanoonIDDegrees', new DbExpression("'%:NULL|%'")]);
+                            } else if ($hasvalue_MembershipDegree == true) {
+                                //1.4
+                                $query->andWhere(['LIKE', 'kanoonIDDegrees', new DbExpression("'%:_|%'")]);
+                            }
+                        } else { //C{,D...}
+                            if ($hasvalue_MembershipDegree === NULL) {
+                                if (empty($MembershipDegree)) {
+                                    //2.1:
+                                    $vv = ['OR'];
+                                    foreach ($KanoonID as $vk) {
+                                        $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%|{$vk}:%'")];
+                                    }
+                                    $query->andWhere($vv);
+                                } else {
+                                    //2.2
+                                    $vv = ['OR'];
+                                    foreach ($KanoonID as $vk) {
+                                        foreach ($MembershipDegree as $vd) {
+                                            $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%|{$vk}:{$vd}|%'")];
+                                        }
+                                    }
+                                    $query->andWhere($vv);
+                                }
+                            } else if ($hasvalue_MembershipDegree == false) {
+                                //2.3
+                                $vv = ['OR'];
+                                foreach ($KanoonID as $vk) {
+                                    $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%|{$vk}:NULL|%'")];
+                                }
+                                $query->andWhere($vv);
+                            } else if ($hasvalue_MembershipDegree == true) {
+                                //2.4
+                                $vv = ['OR'];
+                                foreach ($KanoonID as $vk) {
+                                    $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%|{$vk}:_|%'")];
+                                }
+                                $query->andWhere($vv);
+                            }
+                        }
+                    } else if ($hasvalue_KanoonID == false)
+                        //3.1, 3.2, 3.3, 3.4:
+                        $query->andWhere(['kanoonIDs' => null]);
+                    else if ($hasvalue_KanoonID == true) {
+                        if ($hasvalue_MembershipDegree === NULL) {
+                            if (empty($MembershipDegree)) {
+                                //4.1:
+                                $query->andWhere(['IS', 'kanoonIDDegrees', DbExpression::notNull()]);
+                            } else {
+                                //4.2:
+                                $vv = ['OR'];
+                                foreach ($MembershipDegree as $vd) {
+                                    $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%:{$vd}|%'")];
+                                }
+                                $query->andWhere($vv);
+                            }
+                        } else if ($hasvalue_MembershipDegree == false) {
+                            //4.3:
+                            $query
+                                ->andWhere(['IS', 'kanoonIDDegrees', DbExpression::notNull()])
+                                ->andWhere(['NOT LIKE', 'kanoonIDDegrees', new DbExpression("'%:_|%'")]);
+                        } else if ($hasvalue_MembershipDegree == true) {
+                            //4.4:
+                            $query
+                                ->andWhere(['IS', 'kanoonIDDegrees', DbExpression::notNull()])
+                                ->andWhere(['NOT LIKE', 'kanoonIDDegrees', new DbExpression("'%:NULL|%'")]);
+                        }
+                    }
+                },
+                'join' => [
+                    'kanoon',
+                ],
+            ],
+
+            // case 'mbrknnParams':         // [I], [S], [R]
+            // 	$joinToKanoon = true;
+            // 	$vals = implode(',', $v);
+            // 	$query->andWhere(new DbExpression(
+            // 		"JSON_UNQUOTE(JSON_EXTRACT(mbrknnParams, '$.desc')) IN ({$vals})"
+            // 	));
+            // 	break;
+
+            'mbrJob' => [
+                'hasCallback' => function ($query, $key, $hasvalue) {
+                    if ($hasvalue)
+                        $query->andWhere(['IS', $key, DbExpression::notNull()]);
+                    else
+                        $query->andWhere([$key => null]);
+                },
+                'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnApplyLikeSearchCondition) {
+                    $fnApplyLikeSearchCondition($key, $value);
+                },
+            ],
+
+            'mbrRegisterCode' => [
+                'hasCallback' => function ($query, $key, $hasvalue) {
+                    if ($hasvalue)
+                        $query->andWhere(['IS', $key, DbExpression::notNull()]);
+                    else
+                        $query->andWhere([$key => null]);
+                },
+                'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnApplyLikeSearchCondition) {
+                    $fnApplyLikeSearchCondition($key, $value);
+                },
+            ],
+
+        ];
+
+        foreach ($this->rptInputFields as $k => $v) {
+            if ($k == 'Has')
+                continue;
+
+            $schema = $inputFieldsSchema[$k] ?? [];
+            if (isset($schema['filterCallback']) == false) {
+                $schema['filterCallback'] = function ($query, $key, $value, $hasvalue)
+                use (&$appliedHas) {
+                    if ($hasvalue === NULL)
+                        $query->andWhere(['IN', $key, $value]);
+                    else if (empty($appliedHas[$key])) {
+                        if ($hasvalue == 0)
+                            $query->andWhere([$key => null]);
+                        else
+                            $query->andWhere(['IS', $key, DbExpression::notNull()]);
+
+                        $appliedHas[$key] = true;
+                    }
+                };
             }
-          } else if ($hasvalue_KanoonID == false)
-            //3.1, 3.2, 3.3, 3.4:
-            $query->andWhere(['kanoonIDs' => null]);
-          else if ($hasvalue_KanoonID == true) {
-            if ($hasvalue_MembershipDegree === NULL) {
-              if (empty($MembershipDegree)) {
-                //4.1:
-                $query->andWhere(['IS', 'kanoonIDDegrees', DbExpression::notNull()]);
-              } else {
-                //4.2:
-                $vv = ['OR'];
-                foreach ($MembershipDegree as $vd) {
-                  $vv[] = ['LIKE', 'kanoonIDDegrees', new DbExpression("'%:{$vd}|%'")];
-                }
-                $query->andWhere($vv);
-              }
-            } else if ($hasvalue_MembershipDegree == false) {
-              //4.3:
-              $query
-                ->andWhere(['IS', 'kanoonIDDegrees', DbExpression::notNull()])
-                ->andWhere(['NOT LIKE', 'kanoonIDDegrees', new DbExpression("'%:_|%'")]);
-            } else if ($hasvalue_MembershipDegree == true) {
-              //4.4:
-              $query
-                ->andWhere(['IS', 'kanoonIDDegrees', DbExpression::notNull()])
-                ->andWhere(['NOT LIKE', 'kanoonIDDegrees', new DbExpression("'%:NULL|%'")]);
-            }
-          }
-        },
-        'join' => [
-          'kanoon',
-        ],
-      ],
 
-      // case 'mbrknnParams':         // [I], [S], [R]
-      // 	$joinToKanoon = true;
-      // 	$vals = implode(',', $v);
-      // 	$query->andWhere(new DbExpression(
-      // 		"JSON_UNQUOTE(JSON_EXTRACT(mbrknnParams, '$.desc')) IN ({$vals})"
-      // 	));
-      // 	break;
-
-      'mbrJob' => [
-        'hasCallback' => function ($query, $key, $hasvalue) {
-          if ($hasvalue)
-            $query->andWhere(['IS', $key, DbExpression::notNull()]);
-          else
-            $query->andWhere([$key => null]);
-        },
-        'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnApplyLikeSearchCondition) {
-          $fnApplyLikeSearchCondition($key, $value);
-        },
-      ],
-
-      'mbrRegisterCode' => [
-        'hasCallback' => function ($query, $key, $hasvalue) {
-          if ($hasvalue)
-            $query->andWhere(['IS', $key, DbExpression::notNull()]);
-          else
-            $query->andWhere([$key => null]);
-        },
-        'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnApplyLikeSearchCondition) {
-          $fnApplyLikeSearchCondition($key, $value);
-        },
-      ],
-
-    ];
-
-    foreach ($this->rptInputFields as $k => $v) {
-      if ($k == 'Has')
-        continue;
-
-      $schema = $inputFieldsSchema[$k] ?? [];
-      if (isset($schema['filterCallback']) == false) {
-        $schema['filterCallback'] = function ($query, $key, $value, $hasvalue)
-            use (&$appliedHas) {
-          if ($hasvalue === NULL)
-            $query->andWhere(['IN', $key, $value]);
-          else if (empty($appliedHas[$key])) {
-            if ($hasvalue == 0)
-              $query->andWhere([$key => null]);
+            if (isset($this->rptInputFields['Has'][$k]))
+                $hasvalue = $fnParseHasValue($this->rptInputFields['Has'][$k]);
             else
-              $query->andWhere(['IS', $key, DbExpression::notNull()]);
+                $hasvalue = NULL;
 
-            $appliedHas[$key] = true;
-          }
+            if ($hasvalue !== NULL && empty($schema['hasCallback']) == false) {
+                if (empty($appliedHas[$k])) {
+                    $schema['hasCallback']($query, $k, $hasvalue);
+                    $appliedHas[$k] = true;
+                }
+            } else {
+                $schema['filterCallback']($query, $k, $v, $hasvalue);
+            }
+
+            if (isset($schema['join'])) {
+                foreach ((array)$schema['join'] as $j) {
+                    $joins[$j] = true;
+                }
+            }
+        }
+
+        if (isset($this->rptInputFields['Has'])) {
+            foreach ($this->rptInputFields['Has'] as $k => $v) {
+
+                $hasvalue = $fnParseHasValue($v);
+                if ($hasvalue === NULL)
+                    continue;
+
+                $schema = $inputFieldsSchema[$k] ?? [];
+                if (empty($schema['hasCallback']))
+                    continue;
+
+                if (empty($appliedHas[$k])) {
+                    $schema['hasCallback']($query, $k, $hasvalue);
+                    $appliedHas[$k] = true;
+                }
+            }
+        }
+
+        //-- rptOutputFields ---------------------------------
+        foreach ($this->rptOutputFields as $field) {
+            if (str_starts_with($field, 'user.')) {
+                $joins['user'] = true;
+
+                if ($field == 'user.usrImage')
+                    $joins['userImage'] = true;
+                else if ($field == 'user.usrBirthCityID')
+                    $joins['userBirthLocation'] = true;
+                else if (in_array($field, [
+                    'user.usrCountryID',
+                    'user.usrStateID',
+                    'user.usrCityOrVillageID',
+                    'user.usrTownID',
+                ]))
+                    $joins['userHomeLocation'] = true;
+            } else if (
+                str_starts_with($field, 'mbrknn')
+                || str_starts_with($field, 'knn')
+                || str_starts_with($field, 'kanoon')
+            ) {
+                $joins['kanoon'] = true;
+                // } else if (str_starts_with($field, 'mbr')) {
+                // } else  {
+                // unknown field
+            }
+        }
+
+        //columns
+        // $query
+        // 	->select('mbrUserID')
+        // ;
+
+        foreach ($this->rptOutputFields as $field) {
+            switch ($field) {
+                case 'usrBirthCityID':
+                    // $query->addSelect([
+                    // 	'birthcity.ctvName AS BirthCityName',
+                    // 	'birthstate.sttName AS BirthStateName',
+                    // ]);
+                    break;
+
+                case 'usrStateID':
+                    // $query->addSelect([
+                    // 	'homestate.sttName AS HomeStateName',
+                    // ]);
+                    break;
+
+                case 'usrCityOrVillageID':
+                    // $query->addSelect([
+                    // 	'homecity.ctvName AS HomeCityName',
+                    // ]);
+                    break;
+
+                case 'knnName':
+                    // $query->addSelect([
+                    // 	'knnID',
+                    // 	'knnName',
+                    // 	// 'mbrknnParams',
+                    // 	'knnDescFieldType',
+                    // ]);
+                    break;
+
+                case 'hasPassword':
+                    // $query->addSelect(new DbExpression("usrPasswordHash IS NOT NULL AND usrPasswordHash != '' AS hasPassword"));
+                    break;
+
+                case 'mbrInstrumentID':
+                    $query->joinWith('instrument'); //, false);
+                    break;
+
+                case 'mbrSingID':
+                    $query->joinWith('sing'); //, false);
+                    break;
+
+                case 'mbrResearchID':
+                    $query->joinWith('research'); //, false);
+                    break;
+
+                default:
+                    // $query->addSelect($field);
+                    break;
+            }
+        }
+
+        //join
+        if (isset($joins['user'])) {
+            $query->innerJoinWith('user'); //, false);
+
+            if (isset($joins['userImage']))
+                $query->joinWith('user.imageFile'); //, false);
+
+            if (isset($joins['userBirthLocation']))
+                $query->joinWith('user.birthCityOrVillage'); //, false);
+
+            if (isset($joins['userHomeLocation'])) {
+                $query
+                    ->joinWith('user.country') //, false)
+                    ->joinWith('user.state') //, false)
+                    ->joinWith('user.cityOrVillage') //, false)
+                    ->joinWith('user.town') //, false)
+                ;
+            }
+        }
+
+        $fnGetValue = function ($value, $qouted = false) {
+            return ($qouted ? "'" : "") . "{$value}" . ($qouted ? "'" : "");
         };
-      }
 
-      if (isset($this->rptInputFields['Has'][$k]))
-        $hasvalue = $fnParseHasValue($this->rptInputFields['Has'][$k]);
-      else
-        $hasvalue = NULL;
-
-      if ($hasvalue !== NULL && empty($schema['hasCallback']) == false) {
-        if (empty($appliedHas[$k])) {
-          $schema['hasCallback']($query, $k, $hasvalue);
-          $appliedHas[$k] = true;
-        }
-      } else {
-        $schema['filterCallback']($query, $k, $v, $hasvalue);
-      }
-
-      if (isset($schema['join'])) {
-        foreach ((array)$schema['join'] as $j) {
-          $joins[$j] = true;
-        }
-      }
-    }
-
-    if (isset($this->rptInputFields['Has'])) {
-      foreach ($this->rptInputFields['Has'] as $k => $v) {
-
-        $hasvalue = $fnParseHasValue($v);
-        if ($hasvalue === NULL)
-            continue;
-
-        $schema = $inputFieldsSchema[$k] ?? [];
-        if (empty($schema['hasCallback']))
-            continue;
-
-        if (empty($appliedHas[$k])) {
-          $schema['hasCallback']($query, $k, $hasvalue);
-          $appliedHas[$k] = true;
-        }
-      }
-    }
-
-    //-- rptOutputFields ---------------------------------
-    foreach ($this->rptOutputFields as $field) {
-      if (str_starts_with($field, 'user.')) {
-        $joins['user'] = true;
-
-        if ($field == 'user.usrImage')
-          $joins['userImage'] = true;
-        else if ($field == 'user.usrBirthCityID')
-          $joins['userBirthLocation'] = true;
-        else if (in_array($field, [
-          'user.usrCountryID',
-          'user.usrStateID',
-          'user.usrCityOrVillageID',
-          'user.usrTownID',
-        ]))
-          $joins['userHomeLocation'] = true;
-      } else if (
-        str_starts_with($field, 'mbrknn')
-        || str_starts_with($field, 'knn')
-        || str_starts_with($field, 'kanoon')
-      ) {
-        $joins['kanoon'] = true;
-        // } else if (str_starts_with($field, 'mbr')) {
-        // } else  {
-        // unknown field
-      }
-    }
-
-    //columns
-    // $query
-    // 	->select('mbrUserID')
-    // ;
-
-    foreach ($this->rptOutputFields as $field) {
-      switch ($field) {
-        case 'usrBirthCityID':
-          // $query->addSelect([
-          // 	'birthcity.ctvName AS BirthCityName',
-          // 	'birthstate.sttName AS BirthStateName',
-          // ]);
-          break;
-
-        case 'usrStateID':
-          // $query->addSelect([
-          // 	'homestate.sttName AS HomeStateName',
-          // ]);
-          break;
-
-        case 'usrCityOrVillageID':
-          // $query->addSelect([
-          // 	'homecity.ctvName AS HomeCityName',
-          // ]);
-          break;
-
-        case 'knnName':
-          // $query->addSelect([
-          // 	'knnID',
-          // 	'knnName',
-          // 	// 'mbrknnParams',
-          // 	'knnDescFieldType',
-          // ]);
-          break;
-
-        case 'hasPassword':
-          // $query->addSelect(new DbExpression("usrPasswordHash IS NOT NULL AND usrPasswordHash != '' AS hasPassword"));
-          break;
-
-        case 'mbrInstrumentID':
-          $query->joinWith('instrument'); //, false);
-          break;
-
-        case 'mbrSingID':
-          $query->joinWith('sing'); //, false);
-          break;
-
-        case 'mbrResearchID':
-          $query->joinWith('research'); //, false);
-          break;
-
-        default:
-          // $query->addSelect($field);
-          break;
-      }
-    }
-
-    //join
-    if (isset($joins['user'])) {
-      $query->innerJoinWith('user'); //, false);
-
-      if (isset($joins['userImage']))
-        $query->joinWith('user.imageFile'); //, false);
-
-      if (isset($joins['userBirthLocation']))
-        $query->joinWith('user.birthCityOrVillage'); //, false);
-
-      if (isset($joins['userHomeLocation'])) {
-        $query
-          ->joinWith('user.country') //, false)
-          ->joinWith('user.state') //, false)
-          ->joinWith('user.cityOrVillage') //, false)
-          ->joinWith('user.town') //, false)
-        ;
-      }
-    }
-
-    $fnGetValue = function ($value, $qouted = false) {
-      return ($qouted ? "'" : "") . "{$value}" . ($qouted ? "'" : "");
-    };
-
-    if (isset($joins['kanoon'])) {
-      $knnNameFieldName = 'knnName';
-      $query
-        ->addSelect(new DbExpression("kanoons.kanoonNames AS kanoonNames"))
-        ->addSelect(new DbExpression("kanoons.kanoonIDs AS kanoonIDs"))
-        ->addSelect(new DbExpression("kanoons.kanoonDegrees AS kanoonDegrees"))
-        ->addSelect(new DbExpression("kanoons.kanoonIDDegrees AS kanoonIDDegrees"))
-        ->leftJoin(
-          "(
+        if (isset($joins['kanoon'])) {
+            $knnNameFieldName = 'knnName';
+            $query
+                ->addSelect(new DbExpression("kanoons.kanoonNames AS kanoonNames"))
+                ->addSelect(new DbExpression("kanoons.kanoonIDs AS kanoonIDs"))
+                ->addSelect(new DbExpression("kanoons.kanoonDegrees AS kanoonDegrees"))
+                ->addSelect(new DbExpression("kanoons.kanoonIDDegrees AS kanoonIDDegrees"))
+                ->leftJoin(
+                    "(
     SELECT  mbrknnMemberID
          ,  GROUP_CONCAT(knn.{$knnNameFieldName} SEPARATOR '|') AS kanoonNames
          ,  GROUP_CONCAT(knn.knnID SEPARATOR '|') AS kanoonIDs
@@ -598,26 +613,26 @@ INNER JOIN  tbl_MHA_Kanoon knn
      WHERE  mbrknnStatus = '{$fnGetValue(enuMemberKanoonStatus::Accepted)}'
   GROUP BY  mbrknnMemberID
             ) AS kanoons",
-          "kanoons.mbrknnMemberID = tbl_MHA_Member.mbrUserID"
-        )
-      ;
+                    "kanoons.mbrknnMemberID = tbl_MHA_Member.mbrUserID"
+                )
+            ;
 
-      // $query
-      // 	->leftJoin(MemberKanoonModel::tableName(), [
-      // 		'AND',
-      // 		MemberKanoonModel::tableName() . '.mbrknnMemberID = '
-      // 		. MemberModel::tableName() . '.mbrUserID',
-      // 		MemberKanoonModel::tableName() . ".mbrknnStatus = '" . enuMemberKanoonStatus::Accepted . "'"
-      // 	])
-      // 	->leftJoin(KanoonModel::tableName(),
-      // 		KanoonModel::tableName() . '.knnID = '
-      // 		. MemberKanoonModel::tableName() . '.mbrknnKanoonID'
-      // 	)
-      // ;
+            // $query
+            // 	->leftJoin(MemberKanoonModel::tableName(), [
+            // 		'AND',
+            // 		MemberKanoonModel::tableName() . '.mbrknnMemberID = '
+            // 		. MemberModel::tableName() . '.mbrUserID',
+            // 		MemberKanoonModel::tableName() . ".mbrknnStatus = '" . enuMemberKanoonStatus::Accepted . "'"
+            // 	])
+            // 	->leftJoin(KanoonModel::tableName(),
+            // 		KanoonModel::tableName() . '.knnID = '
+            // 		. MemberKanoonModel::tableName() . '.mbrknnKanoonID'
+            // 	)
+            // ;
+        }
+
+        return $query;
     }
-
-    return $query;
-  }
 
   /*	private function runMembers1()
   {
@@ -988,15 +1003,15 @@ INNER JOIN  tbl_MHA_Kanoon knn
   }
 */
 
-  /**
-   * return query
-   */
-  private function runFinancial()
-  {
-    //*******************************
+    /**
+     * return query
+     */
+    private function runFinancial()
+    {
+        //*******************************
 
-    throw new \Exception('not implemented yet!');
+        throw new \Exception('not implemented yet!');
 
-    //*******************************
-  }
+        //*******************************
+    }
 }
