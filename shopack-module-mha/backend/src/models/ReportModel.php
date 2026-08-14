@@ -480,19 +480,22 @@ class ReportModel extends MhaActiveRecord
         }
 
         if (isset($this->rptInputFields['Has'])) {
+
             foreach ($this->rptInputFields['Has'] as $k => $v) {
 
                 $hasvalue = $fnParseHasValue($v);
                 if ($hasvalue === NULL)
                     continue;
 
-                $schema = $inputFieldsSchema[$k] ?? [];
-                if (empty($schema['hasCallback']))
-                    continue;
-
                 if (empty($appliedHas[$k])) {
-                    $schema['hasCallback']($query, $k, $hasvalue);
-                    $appliedHas[$k] = true;
+                    $schema = $inputFieldsSchema[$k] ?? [];
+                    if (isset($schema['hasCallback'])) {
+                        $schema['hasCallback']($query, $k, $hasvalue);
+                        $appliedHas[$k] = true;
+                    } else if (isset($schema['filterCallback'])) {
+                        $schema['filterCallback']($query, $k, [], $hasvalue);
+                        $appliedHas[$k] = true;
+                    }
                 }
             }
         }
