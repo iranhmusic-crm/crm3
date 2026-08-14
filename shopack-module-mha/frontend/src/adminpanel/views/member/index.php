@@ -113,7 +113,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 //     return $model->user->usrEmail;
                 //   },
                 // ],
-                'mbrAcceptedAt:jalaliWithTime',
+                'mbrAcceptedAt:jalali',
                 'mbrExpireDate:jalali',
             ];
 

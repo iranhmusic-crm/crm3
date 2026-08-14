@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'attribute' => 'mbrStatus',
                                     'value' => enuMemberStatus::getLabel($model->mbrStatus),
                                 ],
-                                'mbrAcceptedAt:jalaliWithTime',
+                                'mbrAcceptedAt:jalali',
                                 'mbrExpireDate:jalali',
                                 [
                                     'group' => true,

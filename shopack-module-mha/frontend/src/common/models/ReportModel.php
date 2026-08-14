@@ -196,9 +196,9 @@ class ReportModel extends RestClientActiveRecord
 			],
 			'mbrAcceptedAt' => [
 				'label' => Yii::t('mha', 'Registration Accepted At'),
-				'format' => 'jalaliWithTime',
+				'format' => 'jalali',
 				'export' => function ($model) {
-					return Yii::$app->formatter->asJalaliWithTime($model['mbrAcceptedAt'] ?? null);
+					return Yii::$app->formatter->asJalali($model['mbrAcceptedAt'] ?? null);
 				},
 				'checked' => true,
 			],

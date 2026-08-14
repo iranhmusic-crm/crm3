@@ -67,7 +67,7 @@ $defects = $model->getDefects();
 										// 	'value' => enuUserStatus::getLabel($model->user->usrStatus),
 										// ],
 										'mbrRegisterCode',
-										'mbrAcceptedAt:jalaliWithTime',
+										'mbrAcceptedAt:jalali',
 										[
 											'attribute' => 'mbrStatus',
 											'value' => enuMemberStatus::getLabel($model->mbrStatus),
