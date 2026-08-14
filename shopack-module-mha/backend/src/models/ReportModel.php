@@ -102,6 +102,9 @@ class ReportModel extends MhaActiveRecord
     */
 
         $fnAddBetweenCondition = function ($field, $values) use (&$query) {
+            if (empty($values))
+                return false;
+
             if (empty($values['From']) == false) {
                 if (empty($values['To']) == false)
                     $query->andWhere(['BETWEEN', $field, $values['From'], $values['To']]);
@@ -114,6 +117,9 @@ class ReportModel extends MhaActiveRecord
         };
 
         $fnApplyLikeSearchCondition = function ($field, $values) use (&$query) {
+            if (empty($values))
+                return false;
+
             $vals = explode(' ', $values);
 
             $ors = ['OR'];
@@ -681,7 +687,7 @@ INNER JOIN  tbl_MHA_Kanoon knn
         return $query;
     }
 
-  /*	private function runMembers1()
+    /*	private function runMembers1()
   {
     $query = MemberModel::find();
     $joins = [];
