@@ -109,6 +109,8 @@ class ReportModel extends MhaActiveRecord
                     $query->andWhere(['>=', $field, $values['From']]);
             } else if (empty($values['To']) == false)
                 $query->andWhere(['<=', $field, $values['To']]);
+
+            return (empty($values['From']) == false || empty($values['To']) == false);
         };
 
         $fnApplyLikeSearchCondition = function ($field, $values) use (&$query) {
@@ -254,25 +256,25 @@ class ReportModel extends MhaActiveRecord
             ],
 
             /*
-case| kanoon   | degree   | query
-====|==========|==========|======================================================================================
-1.1 | [EMPTY]  | [EMPTY]  | NOTHING
-1.2 | [EMPTY]  | C{,D...} | LIKE '%:C|%' { OR LIKE '%:D|%' ... }
-1.3 | [EMPTY]  | has not  | LIKE '%:NULL|%'
-1.4 | [EMPTY]  | has      | LIKE '%:_|%'
-2.1 | 9{,4...} | [EMPTY]  | LIKE '%|9:%' { OR LIKE '%|4:%' ...}
-2.2 | 9{,4...} | C{,D...} | LIKE '%|9:C|%' { OR LIKE '%|9:D|%' ... OR LIKE '%|4:C|%' OR LIKE '%|4:D|%' ...}
-2.3 | 9{,4...} | has not  | LIKE '%|9:NULL|%' { OR LIKE '%|4:NULL|%' ...}
-2.4 | 9{,4...} | has      | LIKE '%|9:_|%' { OR NOT LIKE '%|4:_|%' ...}
-3.1 | has not  | [EMPTY]  | IS NULL
-3.2 | has not  | C{,D...} | IS NULL
-3.3 | has not  | has not  | IS NULL
-3.4 | has not  | has      | IS NULL
-4.1 | has      | [EMPTY]  | IS NOT NULL
-4.2 | has      | C{,D...} | LIKE '%:C|%' { OR LIKE '%:D|%' ... }
-4.3 | has      | has not  | IS NOT NULL AND NOT LIKE '%:_|%'
-4.4 | has      | has      | IS NOT NULL AND NOT LIKE '%:NULL|%'
-*/
+                case| kanoon   | degree   | query
+                ====|==========|==========|======================================================================================
+                1.1 | [EMPTY]  | [EMPTY]  | NOTHING
+                1.2 | [EMPTY]  | C{,D...} | LIKE '%:C|%' { OR LIKE '%:D|%' ... }
+                1.3 | [EMPTY]  | has not  | LIKE '%:NULL|%'
+                1.4 | [EMPTY]  | has      | LIKE '%:_|%'
+                2.1 | 9{,4...} | [EMPTY]  | LIKE '%|9:%' { OR LIKE '%|4:%' ...}
+                2.2 | 9{,4...} | C{,D...} | LIKE '%|9:C|%' { OR LIKE '%|9:D|%' ... OR LIKE '%|4:C|%' OR LIKE '%|4:D|%' ...}
+                2.3 | 9{,4...} | has not  | LIKE '%|9:NULL|%' { OR LIKE '%|4:NULL|%' ...}
+                2.4 | 9{,4...} | has      | LIKE '%|9:_|%' { OR NOT LIKE '%|4:_|%' ...}
+                3.1 | has not  | [EMPTY]  | IS NULL
+                3.2 | has not  | C{,D...} | IS NULL
+                3.3 | has not  | has not  | IS NULL
+                3.4 | has not  | has      | IS NULL
+                4.1 | has      | [EMPTY]  | IS NOT NULL
+                4.2 | has      | C{,D...} | LIKE '%:C|%' { OR LIKE '%:D|%' ... }
+                4.3 | has      | has not  | IS NOT NULL AND NOT LIKE '%:_|%'
+                4.4 | has      | has      | IS NOT NULL AND NOT LIKE '%:NULL|%'
+            */
 
             'mbrknn' => [
                 // 'hasCallback' => function($query, $key, $value) {
@@ -422,6 +424,35 @@ case| kanoon   | degree   | query
                 },
             ],
 
+            'finBalance' => [ // [Type], [From], [To]
+                // 'hasCallback' => function ($query, $key, $hasvalue) {
+                //     if ($hasvalue)
+                //         $query->andWhere(['IS', $key, DbExpression::notNull()]);
+                //     else
+                //         $query->andWhere([$key => null]);
+                // },
+                'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
+                    $appliedHas['finBalance'] = true;
+
+                    $finBalanceType = $value["Type"] ?? null;
+                    if (is_array($finBalanceType))
+                        $finBalanceType = $finBalanceType[0];
+
+                    if ($finBalanceType == 0) {
+                        $query
+                            ->andWhere(['IS', 'finBalance', DbExpression::notNull()])
+                            ->andWhere(['finBalance' => 0]);
+                    } else if ($finBalanceType == 1) {
+                        if (false == $fnAddBetweenCondition($key, $value))
+                            $query
+                                ->andWhere(['IS', 'finBalance', DbExpression::notNull()])
+                                ->andWhere(['>', 'finBalance', 0]);
+                    }
+                },
+                'join' => [
+                    'wallet',
+                ],
+            ],
         ];
 
         foreach ($this->rptInputFields as $k => $v) {
@@ -614,6 +645,35 @@ INNER JOIN  tbl_MHA_Kanoon knn
   GROUP BY  mbrknnMemberID
             ) AS kanoons",
                     "kanoons.mbrknnMemberID = tbl_MHA_Member.mbrUserID"
+                )
+            ;
+
+            // $query
+            // 	->leftJoin(MemberKanoonModel::tableName(), [
+            // 		'AND',
+            // 		MemberKanoonModel::tableName() . '.mbrknnMemberID = '
+            // 		. MemberModel::tableName() . '.mbrUserID',
+            // 		MemberKanoonModel::tableName() . ".mbrknnStatus = '" . enuMemberKanoonStatus::Accepted . "'"
+            // 	])
+            // 	->leftJoin(KanoonModel::tableName(),
+            // 		KanoonModel::tableName() . '.knnID = '
+            // 		. MemberKanoonModel::tableName() . '.mbrknnKanoonID'
+            // 	)
+            // ;
+        }
+
+        if (isset($joins['wallet'])) {
+            $knnNameFieldName = 'knnName';
+            $query
+                ->addSelect(new DbExpression("walletBalance.finBalance AS finBalance"))
+                ->leftJoin(
+                    "(
+    SELECT  walOwnerUserID
+         ,  SUM(walRemainedAmount) AS finBalance
+      FROM  tbl_AAA_Wallet
+  GROUP BY  walOwnerUserID
+            ) AS walletBalance",
+                    "walletBalance.walOwnerUserID = tbl_MHA_Member.mbrUserID"
                 )
             ;
 

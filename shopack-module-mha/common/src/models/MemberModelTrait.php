@@ -51,12 +51,14 @@ trait MemberModelTrait
 
     public $kanoonNames;
     public $kanoonDegrees;
+    public $finBalance;
     //just used for export to client
     public function adhocColumnsInfo()
     {
         return [
             'kanoonNames' => ModelColumnHelper::adhoc(),
             'kanoonDegrees' => ModelColumnHelper::adhoc(),
+            'finBalance' => ModelColumnHelper::adhoc(),
         ];
     }
 

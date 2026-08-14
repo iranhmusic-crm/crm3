@@ -166,6 +166,14 @@ class ReportModel extends RestClientActiveRecord
 
 			'mbrJob' => Yii::t('mha', 'Job'),
 
+			'finBalance' => [
+				'label' => Yii::t('aaa', 'Financial Balance'),
+				'format' => 'toman',
+				'export' => function ($model) {
+					return Yii::$app->formatter->asToman($model['finBalance'] ?? null);
+				},
+			],
+
 			// 'birthCityOrVillage.ctvName'       => 'شهر تولد',
 			// 'birthCityOrVillage.state.sttName' => 'استان تولد',
 			// 'cityOrVillage.ctvName'            => 'شهر سکونت',

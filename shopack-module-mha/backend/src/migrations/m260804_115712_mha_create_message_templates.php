@@ -4,8 +4,8 @@
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
 
-use shopack\base\common\db\Migration;
 use yii\db\Expression;
+use shopack\base\common\db\Migration;
 
 class m260804_115712_mha_create_message_templates extends Migration
 {
