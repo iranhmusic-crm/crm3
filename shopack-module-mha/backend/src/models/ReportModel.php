@@ -424,34 +424,16 @@ class ReportModel extends MhaActiveRecord
                 },
             ],
 
-            'finBalance' => [ // [Type], [From], [To]
-                // 'hasCallback' => function ($query, $key, $hasvalue) {
-                //     if ($hasvalue)
-                //         $query->andWhere(['IS', $key, DbExpression::notNull()]);
-                //     else
-                //         $query->andWhere([$key => null]);
-                // },
-                'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
-                    $appliedHas['finBalance'] = true;
-
-                    $finBalanceType = $value["Type"] ?? null;
-                    if (is_array($finBalanceType))
-                        $finBalanceType = $finBalanceType[0];
-
-                    if ($finBalanceType == 0) {
-                        $query
-                            ->andWhere(['IS', 'finBalance', DbExpression::notNull()])
-                            ->andWhere(['finBalance' => 0]);
-                    } else if ($finBalanceType == 1) {
-                        if (false == $fnAddBetweenCondition($key, $value))
-                            $query
-                                ->andWhere(['IS', 'finBalance', DbExpression::notNull()])
-                                ->andWhere(['>', 'finBalance', 0]);
-                    }
+            'finBalance' => [ // [From], [To]
+                'hasCallback' => function ($query, $key, $hasvalue) {
+                    if ($hasvalue)
+                        $query->andWhere(['AND', ['IS', $key, DbExpression::notNull()], ['>', $key, 0]]);
+                    else
+                        $query->andWhere(['OR', [$key => null], [$key => 0]]);
                 },
-                'join' => [
-                    'wallet',
-                ],
+                'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
+                    $fnAddBetweenCondition($key, $value);
+                },
             ],
         ];
 
@@ -540,6 +522,8 @@ class ReportModel extends MhaActiveRecord
                 // } else if (str_starts_with($field, 'mbr')) {
                 // } else  {
                 // unknown field
+            } else if ($field == 'finBalance') {
+                $joins['wallet'] = true;
             }
         }
 

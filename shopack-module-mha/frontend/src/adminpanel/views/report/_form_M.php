@@ -606,13 +606,12 @@ JS;
   $builder->fields([
     ['@section', 'label' => 'فیلترهای ورودی - اطلاعات مالی'],
     [
-      'rptInputFields[finBalance][Type]',
+      'rptInputFields[Has][finBalance]',
       'label' => Yii::t('aaa', 'Financial Balance'),
       'type' => FormBuilder::FIELD_CHECKBOXLIST,
       'data' => [
-        0 => 'صفر',
-        1 => 'بستانکار',
-        // 2 => 'بدهکار',
+        0 => 'ندارد',
+        1 => 'دارد',
       ],
       'widgetOptions' => [
         'inline' => true,
@@ -622,7 +621,7 @@ JS;
       'rptInputFields[finBalance][From]',
       'label' => 'از',
       'visibleConditions' => [
-        'rptInputFields[finBalance][Type]' => ['js', "function() { return ({{conditionFieldValue}}__checked_items.length && {{conditionFieldValue}}__checked_items[0].value != 0); }()"],
+        'rptInputFields[Has][finBalance]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
       ],
       'fieldOptions' => [
         'addon' => [
@@ -639,7 +638,7 @@ JS;
       'rptInputFields[finBalance][To]',
       'label' => 'تا',
       'visibleConditions' => [
-        'rptInputFields[finBalance][Type]' => ['js', "function() { return ({{conditionFieldValue}}__checked_items.length && {{conditionFieldValue}}__checked_items[0].value != 0); }()"],
+        'rptInputFields[Has][finBalance]' => ['js', "function() { return ({{conditionFieldValue}} == false); }()"],
       ],
       'fieldOptions' => [
         'addon' => [
