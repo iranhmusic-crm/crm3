@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -15,80 +16,81 @@ use shopack\interface\accounting\common\enums\enuUserAssetStatus;
 
 class MembershipController extends BaseController
 {
-	public function actionIndex()
-  {
-    $searchModel = new MembershipUserAssetSearchModel();
-		$dataProvider = $searchModel->search(array_replace_recursive(
-			Yii::$app->request->queryParams, [
-				'uasActorID' => Yii::$app->user->id,
-				'uasStatus' => enuUserAssetStatus::Active,
-			]));
+    public function actionIndex()
+    {
+        $searchModel = new MembershipUserAssetSearchModel();
+        $dataProvider = $searchModel->search(array_replace_recursive(
+            Yii::$app->request->queryParams,
+            [
+                'uasActorID' => Yii::$app->user->id,
+                'uasStatus' => enuUserAssetStatus::Active,
+            ]
+        ));
 
-    $viewParams = [
-			'searchModel' => $searchModel,
-			'dataProvider' => $dataProvider,
-		];
+        $viewParams = [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ];
 
-		if (Yii::$app->request->isAjax)
-			return $this->renderJson($this->renderAjax('_index', $viewParams));
+        if (Yii::$app->request->isAjax)
+            return $this->renderJson($this->renderAjax('_index', $viewParams));
 
-    // if ($isPartial) {
-    //   return $this->renderPartial('_index', $viewParams);
-    // }
+        // if ($isPartial) {
+        //   return $this->renderPartial('_index', $viewParams);
+        // }
 
-    return $this->render('index', $viewParams);
-  }
+        return $this->render('index', $viewParams);
+    }
 
-	public function actionAddToBasket()
-  {
-		$bodyParams = Yii::$app->request->getBodyParams();
+    public function actionAddToBasket()
+    {
+        $bodyParams = Yii::$app->request->getBodyParams();
 
-		$model = new MembershipForm();
+        $model = new MembershipForm();
 
-		try {
-			$formPosted = $model->load($bodyParams);
-		} catch (\Throwable $th) {
-			if (Yii::$app->request->isAjax) {
-				return $this->renderAjaxModal('_error', [
-					'error' => Yii::t('mha', $th->getMessage()),
-				]);
-			}
+        try {
+            $formPosted = $model->load($bodyParams);
+        } catch (\Throwable $th) {
+            if (Yii::$app->request->isAjax) {
+                return $this->renderAjaxModal('_error', [
+                    'error' => Yii::t('mha', $th->getMessage()),
+                ]);
+            }
 
-			throw $th;
-		}
+            throw $th;
+        }
 
-		$done = false;
-		if ($formPosted)
-			$done = $model->addToBasket($bodyParams['basketdata'] ?? null);
+        $done = false;
+        if ($formPosted)
+            $done = $model->addToBasket($bodyParams['basketdata'] ?? null);
 
-		if (Yii::$app->request->isAjax) {
-			if ($done !== false) {
-				return $this->renderJson([
-					'message' => Yii::t('app', 'Success'),
-					'redirect' => Url::to(['/aaa/basket']),
-					// 'basketdata' => $done,
-				]);
-			}
+        if (Yii::$app->request->isAjax) {
+            if ($done !== false) {
+                return $this->renderJson([
+                    'message' => Yii::t('app', 'Success'),
+                    'redirect' => Url::to(['/aaa/basket']),
+                    // 'basketdata' => $done,
+                ]);
+            }
 
-			if ($formPosted) {
-				return $this->renderJson([
-					'status' => 'Error',
-					'message' => Yii::t('app', 'Error'),
-					'error' => Html::errorSummary($model),
-				]);
-			}
+            if ($formPosted) {
+                return $this->renderJson([
+                    'status' => 'Error',
+                    'message' => Yii::t('app', 'Error'),
+                    'error' => Html::errorSummary($model),
+                ]);
+            }
 
-			return $this->renderAjaxModal('_form', [
-				'model' => $model,
-			]);
-		}
+            return $this->renderAjaxModal('_form', [
+                'model' => $model,
+            ]);
+        }
 
-		// if ($done)
-		// 	return $this->redirect(['view', 'id' => $model->primaryKeyValue()]);
+        // if ($done)
+        // 	return $this->redirect(['view', 'id' => $model->primaryKeyValue()]);
 
-		return $this->render('create', [
-			'model' => $model,
-		]);
-	}
-
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
 }

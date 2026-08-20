@@ -73,7 +73,6 @@ use iranhmusic\shopack\mha\frontend\common\models\MemberModel;
   }
 
   $columns = array_merge($columns, [
-    'mbrknnIsMaster:boolean',
     [
       'class' => \iranhmusic\shopack\mha\frontend\common\widgets\grid\KanoonDataColumn::class,
       'attribute' => 'mbrknnKanoonID',

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -15,113 +16,122 @@ use iranhmusic\shopack\mha\backend\accounting\models\MembershipForm;
 
 class MembershipController extends BaseRestController
 {
-	public function behaviors()
-	{
-		$behaviors = parent::behaviors();
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
 
-		// $behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
-		// ];
+        // $behaviors[static::BEHAVIOR_AUTHENTICATOR]['except'] = [
+        // ];
 
-		return $behaviors;
-	}
+        return $behaviors;
+    }
 
-	public function actionOptions()
-	{
-		return 'options';
-	}
+    public function actionOptions()
+    {
+        return 'options';
+    }
 
-	//called by owner
-	public function actionRenewalInfo($memberID = null)
-	{
-		if ($memberID == null)
-			$memberID = Yii::$app->user->id;
-		else if (($memberID != Yii::$app->user->id)
-				&& (PrivHelper::hasPriv('mha/member-membership/crud', '0100') == false)) {
-			throw new ForbiddenHttpException('access denied');
-		}
+    //called by owner
+    public function actionRenewalInfo($memberID = null)
+    {
+        if ($memberID == null)
+            $memberID = Yii::$app->user->id;
+        else if (($memberID != Yii::$app->user->id)
+            && (PrivHelper::hasPriv('mha/member-membership/crud', '0100') == false)
+        ) {
+            throw new ForbiddenHttpException('access denied');
+        }
 
-		list ($startDate, $endDate, $years, $unitPrice, $totalPrice, $saleableModel, $cardPrintSaleableModel, $printCardAmount) = MembershipForm::getRenewalInfo($memberID);
+        $info = MembershipForm::getRenewalInfo($memberID);
 
-		return [
-			'startDate'		=> $startDate,
-			'endDate'			=> $endDate,
-			'years'				=> $years,
-			'unitPrice'		=> $unitPrice,
-			'totalPrice'	=> $totalPrice,
-			'saleableID'	=> $saleableModel->slbID,
-			'printCardAmount'	=> $printCardAmount,
-		];
-	}
+        $startDate              = $info['startDate'];
+        $endDate                = $info['endDate'];
+        $years                  = $info['years'];
+        $unitPrice              = $info['unitPrice'];
+        $totalPrice             = $info['totalPrice'];
+        $saleableModel          = $info['saleableModel'];
+        $cardPrintSaleableModel = $info['cardPrintSaleableModel'];
+        $printCardAmount        = $info['printCardAmount'];
 
-	public function actionAddToBasket()
-	{
-		$bodyParams = Yii::$app->request->getBodyParams();
+        return [
+            'startDate'       => $startDate,
+            'endDate'         => $endDate,
+            'years'           => $years,
+            'unitPrice'       => $unitPrice,
+            'totalPrice'      => $totalPrice,
+            'saleableID'      => $saleableModel->slbID,
+            'printCardAmount' => $printCardAmount,
+        ];
+    }
 
-		$base64Basketdata = $bodyParams['basketdata'] ?? [];
-		$printCard = $bodyParams['printCard'] ?? null;
-		$discountCode = $bodyParams['discountCode'] ?? null;
+    public function actionAddToBasket()
+    {
+        $bodyParams = Yii::$app->request->getBodyParams();
 
-		$result = MembershipForm::addToBasket($base64Basketdata, null, $printCard, $discountCode);
+        $base64Basketdata = $bodyParams['basketdata'] ?? [];
+        $printCard = $bodyParams['printCard'] ?? null;
+        $discountCode = $bodyParams['discountCode'] ?? null;
 
-		return [
-			'key'			=> $result[0],
-			'basket'	=> $result[1],
-		];
-	}
+        $result = MembershipForm::addToBasket($base64Basketdata, null, $printCard, $discountCode);
 
-	//called by operator
-	public function actionRenewalInfoForInvoice(
-		$memberID = null,
-		$ofpID = null
-	) {
-		PrivHelper::checkPriv('mha/member-membership/crud', '0100');
+        return [
+            'key'            => $result[0],
+            'basket'    => $result[1],
+        ];
+    }
 
-		list (
-			$startDate,
-			$maxYears,
-			$memberModel,
-			$offlinePaymentModel,
-			$membershipSaleableModels,
-			$membershipCardSaleableModels
-		) = MembershipForm::getRenewalInfoForInvoice($memberID, $ofpID);
+    //called by operator
+    public function actionRenewalInfoForInvoice(
+        $memberID = null,
+        $ofpID = null
+    ) {
+        PrivHelper::checkPriv('mha/member-membership/crud', '0100');
 
-		return [
-			'startDate'											=> $startDate,
-			'maxYears'											=> $maxYears,
-			'memberModel'										=> $memberModel,
-			'offlinePaymentModel'						=> $offlinePaymentModel,
-			'membershipSaleableModels'			=> $membershipSaleableModels,
-			'membershipCardSaleableModels'	=> $membershipCardSaleableModels
-		];
-	}
+        $info = MembershipForm::getRenewalInfoForInvoice($memberID, $ofpID);
 
-	public function actionRenewViaInvoice()
-	{
-		PrivHelper::checkPriv('mha/member-membership/crud', '1000');
+        $startDate                    = $info['startDate'];
+        $maxYears                     = $info['maxYears'];
+        $memberModel                  = $info['memberModel'];
+        $offlinePaymentModel          = $info['offlinePaymentModel'];
+        $membershipSaleableModels     = $info['membershipSaleableModels'];
+        $membershipCardSaleableModels = $info['membershipCardSaleableModels'];
 
-		$bodyParams = Yii::$app->request->getBodyParams();
+        return [
+            'startDate'                    => $startDate,
+            'maxYears'                     => $maxYears,
+            'memberModel'                  => $memberModel,
+            'offlinePaymentModel'          => $offlinePaymentModel,
+            'membershipSaleableModels'     => $membershipSaleableModels,
+            'membershipCardSaleableModels' => $membershipCardSaleableModels
+        ];
+    }
 
-		$memberID									= $bodyParams['memberID'] ?? null;
-		// $ofpID										= $bodyParams['ofpID'] ?? null;
-		$years										= $bodyParams['years'];
-		$membershipSaleableID			= $bodyParams['membershipSaleableID'] ?? null;
-		$membershipCardSaleableID	= $bodyParams['membershipCardSaleableID'] ?? null;
-		$invoiceID								= $bodyParams['invoiceID'] ?? null;
+    public function actionRenewViaInvoice()
+    {
+        PrivHelper::checkPriv('mha/member-membership/crud', '1000');
 
-		$result = MembershipForm::addToInvoice(
-			$memberID,
-			// $ofpID,
-			$years,
-			$membershipSaleableID,
-			$membershipCardSaleableID,
-			$invoiceID
-		);
+        $bodyParams = Yii::$app->request->getBodyParams();
 
-		return [
-			'membershipItemKey'			=> $result[0],
-			'membershipCardItemKey'	=> $result[1],
-			'invoiceID'							=> $result[2],
-		];
-	}
+        $memberID                 = $bodyParams['memberID'] ?? null;
+        // $ofpID                 = $bodyParams['ofpID'] ?? null;
+        $years                    = $bodyParams['years'];
+        $membershipSaleableID     = $bodyParams['membershipSaleableID'] ?? null;
+        $membershipCardSaleableID = $bodyParams['membershipCardSaleableID'] ?? null;
+        $invoiceID                = $bodyParams['invoiceID'] ?? null;
 
+        $result = MembershipForm::addToInvoice(
+            $memberID,
+            // $ofpID,
+            $years,
+            $membershipSaleableID,
+            $membershipCardSaleableID,
+            $invoiceID
+        );
+
+        return [
+            'membershipItemKey'     => $result[0],
+            'membershipCardItemKey' => $result[1],
+            'invoiceID'             => $result[2],
+        ];
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -16,174 +17,173 @@ use shopack\base\common\helpers\HttpHelper;
 
 class RenewViaInvoiceForm extends Model
 {
-	public $memberID;
-	public $ofpID;
+    public $memberID;
+    public $ofpID;
 
-	public $memberModel;
-	public $offlinePaymentModel;
-	public $membershipSaleableModels;
-	public $membershipCardSaleableModels;
+    public $memberModel;
+    public $offlinePaymentModel;
+    public $membershipSaleableModels;
+    public $membershipCardSaleableModels;
 
-	public $startDate;
-	public $years;
-	public $maxYears;
-	public $membershipSaleableID;
-	public $membershipCardSaleableID;
+    public $startDate;
+    public $years;
+    public $maxYears;
+    public $membershipSaleableID;
+    public $membershipCardSaleableID;
 
-	public $membershipItemKey;
-	public $membershipCardItemKey;
-	public $invoiceID;
+    public $membershipItemKey;
+    public $membershipCardItemKey;
+    public $invoiceID;
 
-	public function rules()
-	{
-		return [
-			['ofpID', 'integer'],
-			// ['startDate', 'safe'],
-			['years', 'required'],
-			['membershipSaleableID', 'safe'],
-			['membershipCardSaleableID', 'safe'],
-			// ['membershipSaleableID', 'required'],
-			// ['membershipCardSaleableID', 'required'],
+    public function rules()
+    {
+        return [
+            ['ofpID', 'integer'],
+            // ['startDate', 'safe'],
+            ['years', 'required'],
+            ['membershipSaleableID', 'safe'],
+            ['membershipCardSaleableID', 'safe'],
+            // ['membershipSaleableID', 'required'],
+            // ['membershipCardSaleableID', 'required'],
 
-			['invoiceID', 'safe'],
+            ['invoiceID', 'safe'],
 
-      // [[
-      //   'membershipSaleableID',
-      //   'membershipCardSaleableID',
-      // ], GroupRequiredValidator::class,
-      //   'min' => 1,
-      //   'in' => [
-      //     'membershipSaleableID',
-      //     'membershipCardSaleableID',
-      //   ],
-        // 'message' => 'one of email or mobile or ssid is required',
-      // ],
+            // [[
+            //   'membershipSaleableID',
+            //   'membershipCardSaleableID',
+            // ], GroupRequiredValidator::class,
+            //   'min' => 1,
+            //   'in' => [
+            //     'membershipSaleableID',
+            //     'membershipCardSaleableID',
+            //   ],
+            // 'message' => 'one of email or mobile or ssid is required',
+            // ],
 
-			// ['discountCode', 'string'],
-			// ['printCard', 'safe'],
-		];
-	}
+            // ['discountCode', 'string'],
+            // ['printCard', 'safe'],
+        ];
+    }
 
-	public function attributeLabels()
-	{
-		return [
-			'memberID'									=> Yii::t('mha', 'Member'),
-			'ofpID'											=> Yii::t('aaa', 'Offline Payment'),
-			'startDate'									=> 'تاریخ شروع دوره عضویت',
-			'years'											=> 'طول دوره',
-			'membershipSaleableID'			=> 'دوره عضویت',
-			'membershipCardSaleableID'	=> 'چاپ کارت',
-		];
-	}
+    public function attributeLabels()
+    {
+        return [
+            'memberID'                 => Yii::t('mha', 'Member'),
+            'ofpID'                    => Yii::t('aaa', 'Offline Payment'),
+            'startDate'                => 'تاریخ شروع دوره عضویت',
+            'years'                    => 'طول دوره',
+            'membershipSaleableID'     => 'دوره عضویت',
+            'membershipCardSaleableID' => 'چاپ کارت',
+        ];
+    }
 
-	public function load($data, $formName = null)
-	{
-		$loaded = parent::load($data, $formName);
+    public function load($data, $formName = null)
+    {
+        $loaded = parent::load($data, $formName);
 
-		list (
-			$startDate,
-			$maxYears,
-			$memberModel,
-			$offlinePaymentModel,
-			$membershipSaleableModels,
-			$membershipCardSaleableModels
-		) = $this->getRenewalInfo();
+        $info = $this->getRenewalInfo();
 
-		$this->startDate										= $startDate;
-		$this->maxYears											= $maxYears;
-		$this->memberModel									= $memberModel;
-		$this->offlinePaymentModel					= $offlinePaymentModel;
-		$this->membershipSaleableModels			=	$membershipSaleableModels;
-		$this->membershipCardSaleableModels	= $membershipCardSaleableModels;
+        $startDate                    = $info['startDate'];
+        $maxYears                     = $info['maxYears'];
+        $memberModel                  = $info['memberModel'];
+        $offlinePaymentModel          = $info['offlinePaymentModel'];
+        $membershipSaleableModels     = $info['membershipSaleableModels'];
+        $membershipCardSaleableModels = $info['membershipCardSaleableModels'];
 
-		if (empty($this->memberID))
-			$this->memberID = $this->memberModel['mbrUserID'];
+        $this->startDate                    = $startDate;
+        $this->maxYears                     = $maxYears;
+        $this->memberModel                  = $memberModel;
+        $this->offlinePaymentModel          = $offlinePaymentModel;
+        $this->membershipSaleableModels     = $membershipSaleableModels;
+        $this->membershipCardSaleableModels = $membershipCardSaleableModels;
 
-		if (empty($this->years))
-			$this->years = 1;
+        if (empty($this->memberID))
+            $this->memberID = $this->memberModel['mbrUserID'];
 
-		if ($this->membershipSaleableID == null)
-			$this->membershipSaleableID = $this->membershipSaleableModels[0]['slbID'];
+        if (empty($this->years))
+            $this->years = 1;
 
-		return $loaded;
-	}
+        if ($this->membershipSaleableID == null)
+            $this->membershipSaleableID = $this->membershipSaleableModels[0]['slbID'];
 
-	public function getRenewalInfo()
-	{
-		$apiResponse = HttpHelper::callApi('mha/accounting/membership/renewal-info-for-invoice',
-			HttpHelper::METHOD_GET,
-			[
-				'memberID' => $this->memberID,
-				'ofpID' => $this->ofpID,
-			]
-		);
+        return $loaded;
+    }
 
-    HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
+    public function getRenewalInfo()
+    {
+        $apiResponse = HttpHelper::callApi(
+            'mha/accounting/membership/renewal-info-for-invoice',
+            HttpHelper::METHOD_GET,
+            [
+                'memberID' => $this->memberID,
+                'ofpID' => $this->ofpID,
+            ]
+        );
 
-		return [
-			$apiResponse['body']['startDate'],
-			$apiResponse['body']['maxYears'],
-			$apiResponse['body']['memberModel'],
-			$apiResponse['body']['offlinePaymentModel'],
-			$apiResponse['body']['membershipSaleableModels'],
-			$apiResponse['body']['membershipCardSaleableModels'],
-		];
-	}
+        HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
-	public function validate($attributeNames = null, $clearErrors = true)
-	{
-		if (parent::validate($attributeNames, $clearErrors) == false)
-			return false;
+        return [
+            'startDate'                    => $apiResponse['body']['startDate'],
+            'maxYears'                     => $apiResponse['body']['maxYears'],
+            'memberModel'                  => $apiResponse['body']['memberModel'],
+            'offlinePaymentModel'          => $apiResponse['body']['offlinePaymentModel'],
+            'membershipSaleableModels'     => $apiResponse['body']['membershipSaleableModels'],
+            'membershipCardSaleableModels' => $apiResponse['body']['membershipCardSaleableModels'],
+        ];
+    }
 
-		if (empty($this->membershipSaleableID) && empty($this->membershipCardSaleableID)) {
-			$this->addErrors([
-        'membershipSaleableID' => 'یکی از انواع دوره عضویت یا چاپ کارت را انتخاب کنید',
-        'membershipCardSaleableID' => 'یکی از انواع دوره عضویت یا چاپ کارت را انتخاب کنید',
-			]);
+    public function validate($attributeNames = null, $clearErrors = true)
+    {
+        if (parent::validate($attributeNames, $clearErrors) == false)
+            return false;
 
-			return false;
-		}
+        if (empty($this->membershipSaleableID) && empty($this->membershipCardSaleableID)) {
+            $this->addErrors([
+                'membershipSaleableID' => 'یکی از انواع دوره عضویت یا چاپ کارت را انتخاب کنید',
+                'membershipCardSaleableID' => 'یکی از انواع دوره عضویت یا چاپ کارت را انتخاب کنید',
+            ]);
 
-		return true;
-	}
+            return false;
+        }
 
-	public function process()
-	{
-		if ($this->validate() == false)
-			return false;
+        return true;
+    }
 
-		try {
-			$apiResponse = HttpHelper::callApi('mha/accounting/membership/renew-via-invoice',
-				HttpHelper::METHOD_POST,
-				[],
-				[
-					'memberID'									=> $this->memberID,
-					'ofpID'											=> $this->ofpID,
-					'invoiceID'									=> $this->invoiceID,
-					'years'											=> $this->years,
-					'membershipSaleableID'			=> $this->membershipSaleableID,
-					'membershipCardSaleableID'	=> $this->membershipCardSaleableID,
-				]
-			);
+    public function process()
+    {
+        if ($this->validate() == false)
+            return false;
 
-			HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
+        try {
+            $apiResponse = HttpHelper::callApi(
+                'mha/accounting/membership/renew-via-invoice',
+                HttpHelper::METHOD_POST,
+                [],
+                [
+                    'memberID'                 => $this->memberID,
+                    'ofpID'                    => $this->ofpID,
+                    'invoiceID'                => $this->invoiceID,
+                    'years'                    => $this->years,
+                    'membershipSaleableID'     => $this->membershipSaleableID,
+                    'membershipCardSaleableID' => $this->membershipCardSaleableID,
+                ]
+            );
 
-			$this->membershipItemKey			= $apiResponse['body']['membershipItemKey'];
-			$this->membershipCardItemKey	= $apiResponse['body']['membershipCardItemKey'];
-			$this->invoiceID							= $apiResponse['body']['invoiceID'];
+            HttpHelper::throwApiResponseIfFailed($apiResponse, 'mha');
 
-			return ((empty($this->membershipItemKey) == false)
-				|| (empty($this->membershipCardItemKey) == false));
+            $this->membershipItemKey     = $apiResponse['body']['membershipItemKey'];
+            $this->membershipCardItemKey = $apiResponse['body']['membershipCardItemKey'];
+            $this->invoiceID             = $apiResponse['body']['invoiceID'];
 
-		} catch (\Throwable $th) {
-			if (YII_ENV_DEV)
-				throw $th;
+            return ((empty($this->membershipItemKey) == false)
+                || (empty($this->membershipCardItemKey) == false));
+        } catch (\Throwable $th) {
+            if (YII_ENV_DEV)
+                throw $th;
 
-			$this->addError('', Yii::t('mha', $th->getMessage()));
+            $this->addError('', Yii::t('mha', $th->getMessage()));
 
-			return false;
-		}
-
-	}
-
+            return false;
+        }
+    }
 }

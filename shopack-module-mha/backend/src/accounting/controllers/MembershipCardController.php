@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -23,16 +24,22 @@ class MembershipCardController extends BaseRestController
 		if ($memberID == null)
 			$memberID = Yii::$app->user->id;
 		else if (($memberID != Yii::$app->user->id)
-				&& (PrivHelper::hasPriv('mha/member-membership-card/crud', '0100') == false)) {
+			&& (PrivHelper::hasPriv('mha/member-membership-card/crud', '0100') == false)
+		) {
 			throw new ForbiddenHttpException('access denied');
 		}
 
-		list ($membershipUserAssetID, $price, $saleableModel) = MembershipCardForm::getRenewalInfo($memberID);
+		$info = MembershipCardForm::getRenewalInfo($memberID);
+
+		$membershipUserAssetID = $info['membershipUserAssetID'];
+		$price                 = $info['price'];
+		$saleableModel         = $info['saleableModel'];
+		$lastMembership        = $info['lastMembership'];
 
 		return [
 			'membershipUserAssetID' => $membershipUserAssetID,
-			'price' => $price,
-			'saleableModel' => $saleableModel,
+			'price'                 => $price,
+			'saleableModel'         => $saleableModel,
 		];
 	}
 
@@ -42,5 +49,4 @@ class MembershipCardController extends BaseRestController
 
 		return MembershipCardForm::addToBasket($base64Basketdata);
 	}
-
 }

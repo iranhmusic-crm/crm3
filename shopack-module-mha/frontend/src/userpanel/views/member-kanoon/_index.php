@@ -76,7 +76,6 @@ use iranhmusic\shopack\mha\frontend\common\models\BasicDefinitionModel;
       //     return $desc;
       //   },
       // ],
-      'mbrknnIsMaster:boolean',
       [
         'class' => \shopack\base\frontend\common\widgets\grid\EnumDataColumn::class,
         'enumClass' => enuMemberKanoonStatus::class,

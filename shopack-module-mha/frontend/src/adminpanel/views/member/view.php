@@ -93,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'attributes' => [
                                 [
                                     'attribute' => 'mbrRegisterCode',
-                                    'value' => '[' . ($model->mbrRegisterCode ?? 'ندارد') . ']',
+                                    'value' => ($model->mbrRegisterCode ?? '[ندارد]'),
                                 ],
                                 [
                                     'attribute' => 'mbrStatus',

@@ -222,7 +222,7 @@ $searchModel = new MemberKanoonModel();
 $mbrkanoons = $searchModel->find()
   ->andWhere(['mbrknnMemberID' => $model->mbrUserID])
   ->andWhere(['mbrknnStatus' => enuMemberKanoonStatus::Accepted])
-  ->orderBy('mbrknnIsMaster DESC')
+  ->orderBy('knnGroupID')
   ->all();
 
 $kanoonNames = [];

@@ -18,7 +18,6 @@ use iranhmusic\shopack\mha\common\enums\enuMemberKanoonStatus;
 'mbrknnMemberID',
 'mbrknnKanoonID',
 'mbrknnParams',
-'mbrknnIsMaster',
 'mbrknnMembershipDegree',
 'mbrknnComment',
 'mbrknnHistory',
@@ -92,14 +91,6 @@ trait MemberKanoonModelTrait
 				enuColumnInfo::required   => false,
 				enuColumnInfo::selectable => true,
         // enuColumnInfo::search     => null,
-			],
-			'mbrknnIsMaster' => [
-				enuColumnInfo::type       => 'boolean',
-				enuColumnInfo::validator  => null,
-				enuColumnInfo::default    => 1,
-				enuColumnInfo::required   => true,
-				enuColumnInfo::selectable => true,
-				enuColumnInfo::search     => enuColumnSearchType::exact,
 			],
 			//enuKanoonMembershipDegree
 			'mbrknnMembershipDegree' => [

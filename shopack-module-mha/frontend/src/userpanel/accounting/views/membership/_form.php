@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -10,84 +11,92 @@ use shopack\base\frontend\common\widgets\datetime\DatePicker;
 ?>
 
 <div class='member-membership-form'>
-	<?php
-		$form = ActiveForm::begin([
-			'model' => $model,
-			'formConfig' => [
-				'labelSpan' => 4,
-			],
-			// 'modalDoneScript_OK' => "window.localStorage.setItem('basket', result.basketdata);"
-		]);
+    <?php
+    $form = ActiveForm::begin([
+        'model' => $model,
+        'formConfig' => [
+            'labelSpan' => 4,
+        ],
+        // 'modalDoneScript_OK' => "window.localStorage.setItem('basket', result.basketdata);"
+    ]);
 
-		$builder = $form->getBuilder();
+    $builder = $form->getBuilder();
 
-		$builder->fields([
-			[
-				'startDate',
-				'type' => FormBuilder::FIELD_STATIC,
-				'staticFormat' => 'jalali',
-				// 'staticValue' => Yii::$app->formatter->asJalali($model->mbrshpStartDate),
-			],
-			[
-				'endDate',
-				'type' => FormBuilder::FIELD_STATIC,
-				'staticFormat' => 'jalali',
-				// 'staticValue' => Yii::$app->formatter->asJalali($model->mbrshpEndDate),
-			],
-			[
-				'years',
-				'type' => FormBuilder::FIELD_STATIC,
-				'staticFormat' => 'decimal',
-			],
-			[
-				'unitPrice',
-				'type' => FormBuilder::FIELD_STATIC,
-				'staticFormat' => 'toman',
-			],
-			[
-				'totalPrice',
-				'type' => FormBuilder::FIELD_STATIC,
-				'staticFormat' => 'toman', //['currency', 'IRT'],
-			],
-			// [
-			// 	'saleableID',
-			// 	'type' => FormBuilder::FIELD_STATIC,
-			// ],
-			'<hr>',
-			[
-				'printCard',
-				'type' => FormBuilder::FIELD_CHECKBOX,
-				'widgetOptions' => [[], true],
-			],
-			[
-				'printCardAmount',
-				'type' => FormBuilder::FIELD_STATIC,
-				'staticFormat' => 'toman', //['currency', 'IRT'],
-				'visibleConditions' => [
-					'printCard' => 1,
-				],
-			],
-			'<hr>',
-			[
-				'discountCode',
-			],
-		]);
-	?>
+    $builder->fields([
+        [
+            'startDate',
+            'type' => FormBuilder::FIELD_STATIC,
+            'staticFormat' => 'jalali',
+            // 'staticValue' => Yii::$app->formatter->asJalali($model->mbrshpStartDate),
+        ],
+        [
+            'endDate',
+            'type' => FormBuilder::FIELD_STATIC,
+            'staticFormat' => 'jalali',
+            // 'staticValue' => Yii::$app->formatter->asJalali($model->mbrshpEndDate),
+        ],
+        [
+            'years',
+            'label' => 'طول دوره',
+            'type' => FormBuilder::FIELD_RADIOLIST,
+            'data' => [
+                1 => '1 سال',
+                2 => '2 سال',
+                3 => '3 سال',
+            ],
+            'widgetOptions' => [
+                'inline' => true,
+            ],
+        ],
+        [
+            'unitPrice',
+            'type' => FormBuilder::FIELD_STATIC,
+            'staticFormat' => 'toman',
+        ],
+        [
+            'totalPrice',
+            'type' => FormBuilder::FIELD_STATIC,
+            'staticFormat' => 'toman', //['currency', 'IRT'],
+        ],
+        // [
+        // 	'saleableID',
+        // 	'type' => FormBuilder::FIELD_STATIC,
+        // ],
+        '<hr>',
+        [
+            'printCard',
+            'type' => FormBuilder::FIELD_CHECKBOX,
+            'widgetOptions' => [[], true],
+        ],
+        [
+            'printCardAmount',
+            'type' => FormBuilder::FIELD_STATIC,
+            'staticFormat' => 'toman', //['currency', 'IRT'],
+            'visibleConditions' => [
+                'printCard' => 1,
+            ],
+        ],
+        '<hr>',
+        [
+            'discountCode',
+        ],
+    ]);
+    ?>
 
-	<?php $builder->beginFooter(); ?>
-		<div class="card-footer">
-			<div class="float-end">
-				<?= Html::activeSubmitButton($model, Yii::t('aaa', 'Add To Basket')) ?>
-			</div>
-			<div>
-				<?= Html::formErrorSummary($model); ?>
-			</div>
-			<div class="clearfix"></div>
-		</div>
-	<?php $builder->endFooter(); ?>
+    <?php $builder->beginFooter(); ?>
+    <div class="card-footer">
+        <div class="float-end">
+            <?= Html::activeSubmitButton($model, Yii::t('aaa', 'Add To Basket')) ?>
+        </div>
+        <div>
+            <?= Html::formErrorSummary($model); ?>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <?php $builder->endFooter(); ?>
 
-	<?php
-		$builder->render();
-		$form->endForm(); //ActiveForm::end();
-	?>
+    <?php
+    $builder->render();
+    $form->endForm(); //ActiveForm::end();
+    ?>
 </div>

@@ -32,7 +32,6 @@ class MemberKanoonSearchModel extends MemberKanoonModel
 					// 'mbrknnMemberID',
 					// 'mbrknnKanoonID',
 					// 'mbrknnParams',
-					'mbrknnIsMaster',
 					'mbrknnMembershipDegree',
 					// 'mbrknnComment',
 					// 'mbrknnHistory',
