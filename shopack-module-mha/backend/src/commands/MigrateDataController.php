@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -177,7 +178,15 @@ group by uquStatus
 
 class MigrateDataController extends Controller
 {
-  public function log($message, $type='info')
+  const crm_1_membership_slbID = 5;
+  const crm_1_membership_slbUUID = 'a66c6e51-a31c-11f1-9082-b8763f820154';
+  const crm_1_membership_slbCode = 'ac9da38e-a31c-11f1-9082-b8763f820154';
+
+  const crm_2_membership_slbID = 1;
+  const crm_2_membership_slbUUID = '66ba37e1-72fd-11ee-8786-e73347ca2144';
+  const crm_2_membership_slbCode = '66ba37f4-72fd-11ee-8786-e73347ca2144';
+
+  public function log($message, $type = 'info')
   {
     echo "[" . date('Y/m/d H:i:s') . "][{$type}] {$message}\n";
   }
@@ -187,7 +196,8 @@ class MigrateDataController extends Controller
     $this->log($message, 'trace');
   }
 
-  public function queryExecute($qry, $function, $line) {
+  public function queryExecute($qry, $function, $line)
+  {
     try {
       return Yii::$app->db->createCommand($qry)->execute();
     } catch (\Throwable $th) {
@@ -198,7 +208,8 @@ class MigrateDataController extends Controller
     }
   }
 
-  public function queryAll($qry, $function, $line) {
+  public function queryAll($qry, $function, $line)
+  {
     try {
       return Yii::$app->db->createCommand($qry)->queryAll();
     } catch (\Throwable $th) {
@@ -209,7 +220,8 @@ class MigrateDataController extends Controller
     }
   }
 
-  public function queryOne($qry, $function, $line) {
+  public function queryOne($qry, $function, $line)
+  {
     try {
       return Yii::$app->db->createCommand($qry)->queryOne();
     } catch (\Throwable $th) {
@@ -220,106 +232,14 @@ class MigrateDataController extends Controller
     }
   }
 
-  public function actionFromV2()
-  {
-    $this->log("migrating from v2");
-
-    //unlock
-    $fnUnlock = function() {
-      $qry = "DELETE FROM tbl_convert WHERE tableName = 'locked'";
-      $this->queryExecute($qry, __FUNCTION__, __LINE__);
-    };
-
-    $convertTableData = $this->readConvertTable();
-    if (isset($convertTableData['locked'])) {
-      $nonExpireFound = false;
-      foreach ($convertTableData as $tbl => $data) {
-        if (($tbl != 'locked') && (($data['expired'] ?? 0) == 0)) {
-          $nonExpireFound = true;
-          break;
-        }
-      }
-
-      if ($nonExpireFound) {
-        $this->log("LOCKED");
-        return;
-      }
-
-      $this->log("RE-LOCKING...");
-      $qry = "UPDATE tbl_convert SET at=NOW() WHERE tableName='locked'";
-      $this->queryExecute($qry, __FUNCTION__, __LINE__);
-    }
-
-    //lock
-    $qry = "INSERT IGNORE INTO tbl_convert(tableName, lastID) VALUES ('locked', 0)";
-    $this->queryExecute($qry, __FUNCTION__, __LINE__);
-
-    try {
-      /*  1 */ $this->convert_categories_to_State($convertTableData);
-      /*  1 */ $this->convert_categories_to_City($convertTableData);
-      /*  2 */ // رشته تخصصی موسیقی
-      /*  3 */ $this->convert_categories_to_MhaBDef($convertTableData, 3, 'instrument', enuBasicDefinitionType::Instrument);
-      /*  4 */ // شغل
-      /*  5 */ // مدرک تحصیلی
-      /*  6 */ // رشته تحصیلی
-      /*  7 */ // نوع بیمه
-      /*  8 */ $this->convert_categories_to_MhaBDef($convertTableData, 8, 'sing', enuBasicDefinitionType::Sing);
-      /*  9 */ $this->convert_categories_to_MhaBDef($convertTableData, 9, 'research', enuBasicDefinitionType::Research);
-      /* 10 */ $this->convert_categories_to_Document($convertTableData);
-
-      $this->convert_club_to_Kanoon($convertTableData);
-
-      $this->convert_profile_to_User($convertTableData);
-
-      $this->convert_profile_to_Member($convertTableData);
-
-      $this->convert_expert_to_Mbr_Specialty($convertTableData);
-
-      $this->convert_billing($convertTableData);
-
-      // NOT COMPLETED $this->convert_onlinebank($convertTableData);
-
-      $this->convert_profile_to_Mbr_Kanoon($convertTableData);
-
-      $this->convert_profile_to_Usr_other_1($convertTableData);
-
-      $this->convert_profile_to_Mbr_other_1($convertTableData);
-
-      // $this->copylostimages();
-      $this->convert_profile_to_UserImage($convertTableData);
-      $this->convert_document_to_Mbr_Document($convertTableData);
-
-      $this->convert_create_default_password_for_members($convertTableData);
-
-      $this->convert_update_members_expiredate($convertTableData);
-
-      $this->convert_profile_to_Mbr_expiredate($convertTableData);
-
-
-
-
-
-      $fnUnlock();
-
-    } catch (\Throwable $exp) {
-      $fnUnlock();
-      $this->log($exp->getMessage());
-      throw $exp;
-    } catch (\Exception $exp) {
-      $fnUnlock();
-      $this->log($exp->getMessage());
-      throw $exp;
-    }
-  }
-
-  public function readConvertTable()
+  public function readConvertTable($version)
   {
     $tableSchema = Yii::$app->db
       ->getSchema()
       ->getTableSchema('tbl_convert');
 
     if ($tableSchema === null) {
-      $qry =<<<SQL
+      $qry = <<<SQL
 CREATE TABLE `tbl_convert` (
 	`tableName` VARCHAR(256) NOT NULL COLLATE 'utf8mb4_unicode_ci',
 	`lastID` BIGINT(20) UNSIGNED NOT NULL,
@@ -337,15 +257,17 @@ SQL;
     }
 
     $result = [];
-    $qry =<<<SQL
+    $qry = <<<SQL
   SELECT tbl_convert.*
        , tbl_convert.at < DATE_SUB(NOW(), INTERVAL 2 MINUTE) AS expired
     FROM tbl_convert
+   WHERE tableName LIKE 'v{$version}.%'
 SQL;
     $rows = $this->queryAll($qry, __FUNCTION__, __LINE__);
-    foreach ($rows as $row) {
+
+    foreach ($rows as $row)
       $result[$row['tableName']] = $row;
-    }
+
     return $result;
   }
 
@@ -365,7 +287,7 @@ SQL;
       $destTableFields = implode(',', $destTableFields);
 
       //destination table
-      $qry =<<<SQL
+      $qry = <<<SQL
       INSERT INTO {$destTableName}({$destTableFields})
       VALUES
 SQL;
@@ -389,7 +311,7 @@ SQL;
       $rowsCount = $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
       //tbl_convert
-      $qry =<<<SQL
+      $qry = <<<SQL
       INSERT INTO tbl_convert(tableName, lastID, at)
            VALUES ('{$convertKey}', $lastID, NOW())
                ON DUPLICATE KEY UPDATE lastID={$lastID}, at=NOW();
@@ -399,7 +321,6 @@ SQL;
       //commit
       $transaction->commit();
       return $rowsCount;
-
     } catch (\Throwable $exp) {
       $transaction->rollBack();
       throw $exp;
@@ -437,8 +358,8 @@ SQL;
     foreach ($meridiemMap as $km => $vm) {
       if (strpos($value, $km) !== false) {
         $value = str_replace(':' . $km,       '', $value);
-        $value = str_replace(      $km . ':', '', $value);
-        $value = str_replace(      $km,       '', $value);
+        $value = str_replace($km . ':', '', $value);
+        $value = str_replace($km,       '', $value);
         $value = $value . ' ' . $vm;
       }
     }
@@ -493,7 +414,6 @@ SQL;
         return $ret;
 
       return "'" . $ret . "'";
-
     } catch (\Throwable $exp) {
       echo "Error. date: " . $value;
       throw $exp;
@@ -537,16 +457,115 @@ SQL;
     return null;
   }
 
-  public function convert_categories_to_State(&$convertTableData)
+  /**********************************************************\
+  |* V 2                                                    *|
+  \**********************************************************/
+  public function actionFromV2()
+  {
+    return;
+
+    $this->log("migrating from v2");
+
+    //unlock
+    $fnUnlock = function () {
+      $qry = "DELETE FROM tbl_convert WHERE tableName = 'v2.locked'";
+      $this->queryExecute($qry, __FUNCTION__, __LINE__);
+    };
+
+    $convertTableData = $this->readConvertTable(2);
+
+    if (isset($convertTableData['v2.locked'])) {
+      $nonExpireFound = false;
+      foreach ($convertTableData as $tbl => $data) {
+        if (($tbl != 'v2.locked') && (($data['expired'] ?? 0) == 0)) {
+          $nonExpireFound = true;
+          break;
+        }
+      }
+
+      if ($nonExpireFound) {
+        $this->log("V2.LOCKED");
+        return;
+      }
+
+      $this->log("RE-LOCKING...");
+      $qry = "UPDATE tbl_convert SET at=NOW() WHERE tableName='v2.locked'";
+      $this->queryExecute($qry, __FUNCTION__, __LINE__);
+    }
+
+    //lock
+    $qry = "INSERT IGNORE INTO tbl_convert(tableName, lastID) VALUES ('v2.locked', 0)";
+    $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+    try {
+      /*  1 */
+      $this->v2_convert_categories_to_State($convertTableData);
+      /*  1 */
+      $this->v2_convert_categories_to_City($convertTableData);
+      /*  2 */ // رشته تخصصی موسیقی
+      /*  3 */
+      $this->v2_convert_categories_to_MhaBDef($convertTableData, 3, 'instrument', enuBasicDefinitionType::Instrument);
+      /*  4 */ // شغل
+      /*  5 */ // مدرک تحصیلی
+      /*  6 */ // رشته تحصیلی
+      /*  7 */ // نوع بیمه
+      /*  8 */
+      $this->v2_convert_categories_to_MhaBDef($convertTableData, 8, 'sing', enuBasicDefinitionType::Sing);
+      /*  9 */
+      $this->v2_convert_categories_to_MhaBDef($convertTableData, 9, 'research', enuBasicDefinitionType::Research);
+      /* 10 */
+      $this->v2_convert_categories_to_Document($convertTableData);
+
+      $this->v2_convert_club_to_Kanoon($convertTableData);
+
+      $this->v2_convert_profile_to_User($convertTableData);
+
+      $this->v2_convert_profile_to_Member($convertTableData);
+
+      $this->v2_convert_expert_to_Mbr_Specialty($convertTableData);
+
+      $this->v2_convert_billing($convertTableData);
+
+      // NOT COMPLETED $this->v2_convert_onlinebank($convertTableData);
+
+      $this->v2_convert_profile_to_Mbr_Kanoon($convertTableData);
+
+      $this->v2_convert_profile_to_Usr_other_1($convertTableData);
+
+      $this->v2_convert_profile_to_Mbr_other_1($convertTableData);
+
+      // $this->copylostimages();
+      $this->v2_convert_profile_to_UserImage($convertTableData);
+      $this->v2_convert_document_to_Mbr_Document($convertTableData);
+
+      $this->v2_convert_create_default_password_for_members($convertTableData);
+
+      $this->v2_convert_update_members_expiredate($convertTableData);
+
+      $this->v2_convert_profile_to_Mbr_expiredate($convertTableData);
+
+      $fnUnlock();
+    } catch (\Throwable $exp) {
+      $fnUnlock();
+      $this->log($exp->getMessage());
+      throw $exp;
+    } catch (\Exception $exp) {
+      $fnUnlock();
+      $this->log($exp->getMessage());
+      throw $exp;
+    }
+  }
+
+  public function v2_convert_categories_to_State(&$convertTableData)
   {
     $this->log("categories to state:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_categories[type=1][parent=0]';
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 0;
 
-		$qry =<<<SQL
+    $qry = <<<SQL
     SELECT tbl_categories.*
       FROM tbl_categories
      WHERE tbl_categories.tbl_categories_type = 1
@@ -559,7 +578,7 @@ SQL;
 SQL;
 
     $this->log("  fetching data from ({$lastID})+1...");
-    $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+    $rows = $dboldcrm->createCommand($qry)->queryAll();
 
     if (empty($rows)) {
       $this->log("  nothing to do");
@@ -568,7 +587,7 @@ SQL;
 
     $this->log("  source data fetched");
 
-    $fnPutData = function($values, $lastID) use($convertKey) {
+    $fnPutData = function ($values, $lastID) use ($convertKey) {
       $this->putData('tbl_AAA_GeoState', [
         'sttID',
         'sttUUID',
@@ -614,16 +633,16 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_categories_to_City(&$convertTableData)
+  public function v2_convert_categories_to_City(&$convertTableData)
   {
     $this->log("categories to city:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_categories[type=1][parent!=0]';
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 0;
 
-		$qry =<<<SQL
+    $qry = <<<SQL
     SELECT tbl_categories.*
          , parent.tbl_categories_id AS parentID
       FROM tbl_categories
@@ -639,7 +658,7 @@ SQL;
 SQL;
 
     $this->log("  fetching data from ({$lastID})+1...");
-    $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+    $rows = $dboldcrm->createCommand($qry)->queryAll();
 
     if (empty($rows)) {
       $this->log("  nothing to do");
@@ -648,7 +667,7 @@ SQL;
 
     $this->log("  source data fetched");
 
-    $fnPutData = function($values, $lastID) use($convertKey) {
+    $fnPutData = function ($values, $lastID) use ($convertKey) {
       $this->putData('tbl_AAA_GeoCityOrVillage', [
         'ctvID',
         'ctvUUID',
@@ -694,16 +713,16 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_categories_to_MhaBDef(&$convertTableData, $typeID, $typeName, $typeEnum)
+  public function v2_convert_categories_to_MhaBDef(&$convertTableData, $typeID, $typeName, $typeEnum)
   {
     $this->log("categories to {$typeName}");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = "v2.tbl_categories[type={$typeID}]";
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 0;
 
-		$qry =<<<SQL
+    $qry = <<<SQL
     SELECT tbl_categories.*
       FROM tbl_categories
      WHERE tbl_categories.tbl_categories_type = {$typeID}
@@ -712,7 +731,7 @@ SQL;
 SQL;
 
     $this->log("  fetching data from ({$lastID})+1...");
-    $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+    $rows = $dboldcrm->createCommand($qry)->queryAll();
 
     if (empty($rows)) {
       $this->log("  nothing to do");
@@ -721,7 +740,7 @@ SQL;
 
     $this->log("  source data fetched");
 
-    $fnPutData = function($values, $lastID) use($convertKey) {
+    $fnPutData = function ($values, $lastID) use ($convertKey) {
       $this->putData('tbl_MHA_BasicDefinition', [
         'bdfID',
         'bdfUUID',
@@ -767,16 +786,16 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_categories_to_Document(&$convertTableData)
+  public function v2_convert_categories_to_Document(&$convertTableData)
   {
     $this->log("categories to document:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_categories[type=10]';
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 0;
 
-		$qry =<<<SQL
+    $qry = <<<SQL
     SELECT tbl_categories.*
       FROM tbl_categories
      WHERE tbl_categories.tbl_categories_type = 10
@@ -785,7 +804,7 @@ SQL;
 SQL;
 
     $this->log("  fetching data from ({$lastID})+1...");
-    $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+    $rows = $dboldcrm->createCommand($qry)->queryAll();
 
     if (empty($rows)) {
       $this->log("  nothing to do");
@@ -794,7 +813,7 @@ SQL;
 
     $this->log("  source data fetched");
 
-    $fnPutData = function($values, $lastID) use($convertKey) {
+    $fnPutData = function ($values, $lastID) use ($convertKey) {
       $this->putData('tbl_MHA_Document', [
         'docID',
         'docUUID',
@@ -840,16 +859,16 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_club_to_Kanoon(&$convertTableData)
+  public function v2_convert_club_to_Kanoon(&$convertTableData)
   {
     $this->log("club to kanoon:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_club';
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 0;
 
-		$qry =<<<SQL
+    $qry = <<<SQL
     SELECT tbl_club.*
       FROM tbl_club
      WHERE tbl_club.tbl_club_id > {$lastID}
@@ -857,7 +876,7 @@ SQL;
 SQL;
 
     $this->log("  fetching data from ({$lastID})+1...");
-    $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+    $rows = $dboldcrm->createCommand($qry)->queryAll();
 
     if (empty($rows)) {
       $this->log("  nothing to do");
@@ -866,7 +885,7 @@ SQL;
 
     $this->log("  source data fetched");
 
-    $fnPutData = function($values, $lastID) use($convertKey) {
+    $fnPutData = function ($values, $lastID) use ($convertKey) {
       $this->putData('tbl_MHA_Kanoon', [
         'knnID',
         'knnUUID',
@@ -912,16 +931,16 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_profile_to_User(&$convertTableData)
+  public function v2_convert_profile_to_User(&$convertTableData)
   {
     $this->log("profile to User:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_profile->user';
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 2; //start from 3
 
-		$qry =<<<SQL
+    $qry = <<<SQL
     SELECT tbl_categories.tbl_categories_id AS city_id
          , TRIM(tbl_categories.tbl_categories_title) AS city_title
          , parent.tbl_categories_id AS state_id
@@ -936,9 +955,9 @@ SQL;
        AND tbl_categories.tbl_categories_code != tbl_categories.tbl_categories_parentid
   ORDER BY tbl_categories.tbl_categories_id
 SQL;
-    $CityAndStatesRows = $oldcrmdbv2->createCommand($qry)->queryAll();
+    $CityAndStatesRows = $dboldcrm->createCommand($qry)->queryAll();
 
-    $fnPutData = function($values, $lastID) use($convertKey) {
+    $fnPutData = function ($values, $lastID) use ($convertKey) {
       $this->putData('tbl_AAA_User', [
         'usrID',
         'usrUUID',
@@ -988,7 +1007,7 @@ SQL;
     while (true) {
       ++$loopCount;
 
-      $qry =<<<SQL
+      $qry = <<<SQL
       SELECT tbl_profile.*
            , tbl_address.*
            , tbl_otherinfo.*
@@ -1029,7 +1048,7 @@ SQL;
 SQL;
 
       $this->log("  fetching data from ({$lastID})+1...");
-      $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
 
       if (empty($rows)) {
         if ($loopCount == 1) {
@@ -1119,7 +1138,7 @@ SQL;
         if (str_starts_with($mobile, '00') == false) {
           if (strlen($mobile) > 11)
             $mobile = substr($mobile, 0, 11);
-            // $mobile = substr($mobile, -11);
+          // $mobile = substr($mobile, -11);
 
           if (strlen($mobile) == 10 && str_starts_with($mobile, '9'))
             $mobile = '0' . $mobile;
@@ -1291,40 +1310,68 @@ SQL;
         //------------
         try {
           $values[$lastID] = implode(',', [
-            /* usrID                */ $lastID + 100,
-            /* usrUUID              */ $this->quotedString($uuid),
-            /* usrGender            */ $gender,
-            /* usrFirstName         */ $this->quotedString($row['tbl_profile_fld1']),
-            /* usrFirstName_en      */ $this->quotedString($this->coalesce([$row['tbl_otherinfo_fld1'], $row['tbl_profile_fld17']])),
-            /* usrLastName          */ $this->quotedString($row['tbl_profile_fld2']),
-            /* usrLastName_en       */ $this->quotedString($this->coalesce([$row['tbl_otherinfo_fld2'], $row['tbl_profile_fld18']])),
-            /* usrFatherName        */ $this->quotedString($row['tbl_profile_fld6']),
-            /* usrFatherName_en     */ $this->quotedString($row['tbl_otherinfo_fld3']),
-            /* usrEmail             */ $email,
+            /* usrID                */
+            $lastID + 100,
+            /* usrUUID              */
+            $this->quotedString($uuid),
+            /* usrGender            */
+            $gender,
+            /* usrFirstName         */
+            $this->quotedString($row['tbl_profile_fld1']),
+            /* usrFirstName_en      */
+            $this->quotedString($this->coalesce([$row['tbl_otherinfo_fld1'], $row['tbl_profile_fld17']])),
+            /* usrLastName          */
+            $this->quotedString($row['tbl_profile_fld2']),
+            /* usrLastName_en       */
+            $this->quotedString($this->coalesce([$row['tbl_otherinfo_fld2'], $row['tbl_profile_fld18']])),
+            /* usrFatherName        */
+            $this->quotedString($row['tbl_profile_fld6']),
+            /* usrFatherName_en     */
+            $this->quotedString($row['tbl_otherinfo_fld3']),
+            /* usrEmail             */
+            $email,
             /* usrEmailApprovedAt   */
-            /* usrMobile            */ $mobile,
+            /* usrMobile            */
+            $mobile,
             /* usrMobileApprovedAt  */
-            /* usrSSID              */ $ssid,
-            /* usrBirthCertID       */ $this->quotedString($row['tbl_profile_fld4']),
-            /* usrRoleID            */ 10,
-            /* usrPrivs             */ 'NULL',
+            /* usrSSID              */
+            $ssid,
+            /* usrBirthCertID       */
+            $this->quotedString($row['tbl_profile_fld4']),
+            /* usrRoleID            */
+            10,
+            /* usrPrivs             */
+            'NULL',
             /* usrPasswordHash      */
             /* usrPasswordCreatedAt */
-            /* usrBirthDate         */ $usrBirthDate,
-            /* usrBirthCityID       */ $birthCityID,
-            /* usrCountryID         */ 1,
-            /* usrStateID           */ $this->nullIfEmpty($row['stateID']), //from tbl_address
-            /* usrCityOrVillageID   */ $this->nullIfEmpty($row['cityID']), //from tbl_address
+            /* usrBirthDate         */
+            $usrBirthDate,
+            /* usrBirthCityID       */
+            $birthCityID,
+            /* usrCountryID         */
+            1,
+            /* usrStateID           */
+            $this->nullIfEmpty($row['stateID']), //from tbl_address
+            /* usrCityOrVillageID   */
+            $this->nullIfEmpty($row['cityID']), //from tbl_address
             /* usrTownID            */
-            /* usrHomeAddress       */ $homeAddress,
-            /* usrZipCode           */ $this->quotedString($row['tbl_address_fld11']), //from tbl_address
-            /* usrPhones            */ $phones,
-            /* usrWorkAddress       */ $this->quotedString($row['tbl_address_fld12']),
-            /* usrWorkPhones        */ $this->quotedString($workphone),
-            /* usrWebsite           */ $this->quotedString($row['tbl_address_fld15']),
+            /* usrHomeAddress       */
+            $homeAddress,
+            /* usrZipCode           */
+            $this->quotedString($row['tbl_address_fld11']), //from tbl_address
+            /* usrPhones            */
+            $phones,
+            /* usrWorkAddress       */
+            $this->quotedString($row['tbl_address_fld12']),
+            /* usrWorkPhones        */
+            $this->quotedString($workphone),
+            /* usrWebsite           */
+            $this->quotedString($row['tbl_address_fld15']),
             /* usrImageFileID       */
-            /* usrCreatedAt         */ $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
-            /* usrUpdatedAt         */ $this->jalaliToMiladi($row['tbl_profile_editdate']),
+            /* usrCreatedAt         */
+            $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
+            /* usrUpdatedAt         */
+            $this->jalaliToMiladi($row['tbl_profile_editdate']),
           ]);
         } catch (\Throwable $exp) {
           echo "** ERROR: ID: {$lastID} **\n";
@@ -1341,7 +1388,6 @@ SQL;
         $fnPutData($values, $lastID);
         $values = [];
       }
-
     } //while (true)
 
     if (isset($convertTableData[$convertKey]))
@@ -1354,16 +1400,16 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_profile_to_Member(&$convertTableData)
+  public function v2_convert_profile_to_Member(&$convertTableData)
   {
     $this->log("profile to Member:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_profile->member';
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 2; //start from 3
 
-    $fnPutData = function($values, $lastID) use($convertKey) {
+    $fnPutData = function ($values, $lastID) use ($convertKey) {
       $this->putData('tbl_MHA_Member', [
         'mbrUserID',
         'mbrUUID',
@@ -1388,7 +1434,7 @@ SQL;
     while (true) {
       ++$loopCount;
 
-      $qry =<<<SQL
+      $qry = <<<SQL
       SELECT tbl_profile.*
            , tbl_address.*
            , tbl_otherinfo.*
@@ -1409,7 +1455,7 @@ SQL;
 SQL;
 
       $this->log("  fetching data from ({$lastID})+1...");
-      $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
 
       if (empty($rows)) {
         if ($loopCount == 1) {
@@ -1434,18 +1480,27 @@ SQL;
           $mbrMusicExperiences = implode(' - ', $mbrMusicExperiences);
 
           $values[$lastID] = implode(',', [
-            /* mbrUserID                 */ $lastID + 100,
-            /* mbrUUID                   */ 'UUID()',
-            /* mbrRegisterCode           */ $this->nullIfEmpty($row['tbl_profile_code']),
+            /* mbrUserID                 */
+            $lastID + 100,
+            /* mbrUUID                   */
+            'UUID()',
+            /* mbrRegisterCode           */
+            $this->nullIfEmpty($row['tbl_profile_code']),
             /* mbrAcceptedAt             */
-            /* mbrMusicExperiences       */ $this->quotedString($mbrMusicExperiences),
+            /* mbrMusicExperiences       */
+            $this->quotedString($mbrMusicExperiences),
             /* mbrMusicExperienceStartAt */
-            /* mbrArtHistory             */ $this->quotedString($row['tbl_otherinfo_fld11']),
-            /* mbrMusicEducationHistory  */ $this->quotedString($row['tbl_profile_fld15']),
-            /* mbrOwnOrgName             */ $this->quotedString($row['tbl_address_fldn27']),
+            /* mbrArtHistory             */
+            $this->quotedString($row['tbl_otherinfo_fld11']),
+            /* mbrMusicEducationHistory  */
+            $this->quotedString($row['tbl_profile_fld15']),
+            /* mbrOwnOrgName             */
+            $this->quotedString($row['tbl_address_fldn27']),
             /* mbrStatus                 */
-            /* mbrCreatedAt              */ $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
-            /* mbrUpdatedAt              */ $this->jalaliToMiladi($row['tbl_profile_editdate']),
+            /* mbrCreatedAt              */
+            $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
+            /* mbrUpdatedAt              */
+            $this->jalaliToMiladi($row['tbl_profile_editdate']),
           ]);
         } catch (\Throwable $exp) {
           echo "** ERROR: ID: {$lastID} **\n";
@@ -1462,7 +1517,6 @@ SQL;
         $fnPutData($values, $lastID);
         $values = [];
       }
-
     } //while (true)
 
     if (isset($convertTableData[$convertKey]))
@@ -1514,7 +1568,7 @@ SQL;
   {
     $this->log("  ERROR ON '{$lastID}' {$err}");
 
-    $qry =<<<SQL
+    $qry = <<<SQL
   INSERT INTO tbl_convert(tableName, lastID, at, info)
        VALUES ('{$convertKey}', 0, NOW(), '{$lastID}')
            ON DUPLICATE KEY UPDATE
@@ -1538,7 +1592,7 @@ SQL;
   {
     //remove lastID from tbl_convert.info
 
-    $idsForRemove = array_filter($ids, function($var) use($errorids) {
+    $idsForRemove = array_filter($ids, function ($var) use ($errorids) {
       return isset($errorids[$var]);
     });
 
@@ -1555,13 +1609,13 @@ SQL;
         $replaces = "REPLACE(CONCAT(',', info, ',') , ',{$id},', ',')";
       } else {
         $replaces =
-            "REPLACE("
+          "REPLACE("
           . $replaces
           . ", ',{$id},', ',')";
       }
     }
 
-    $qry =<<<SQL
+    $qry = <<<SQL
   UPDATE tbl_convert
      SET info = IF (info IS NULL OR LENGTH(info) = 0,
            NULL, TRIM(BOTH ',' FROM {$replaces})
@@ -1569,29 +1623,29 @@ SQL;
        , at = NOW()
    WHERE tableName = '{$convertKey}';
 SQL;
-// var_dump(['$qry' => $qry]);
+    // var_dump(['$qry' => $qry]);
     $this->queryExecute($qry, __FUNCTION__, __LINE__);
   }
 
-  public function convert_profile_to_Mbr_Kanoon(&$convertTableData)
+  public function v2_convert_profile_to_Mbr_Kanoon(&$convertTableData)
   {
     $this->log("profile to Member-Kanoon:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_profile->member-kanoon';
 
-    list ($queryLastID, $errorids) = $this->initializeWorker($convertTableData, $convertKey);
+    list($queryLastID, $errorids) = $this->initializeWorker($convertTableData, $convertKey);
 
     $processedErrorIds = [];
 
     //-------------------------
-    $qry =<<<SQL
+    $qry = <<<SQL
     SELECT *
       FROM tbl_club
 SQL;
 
-    $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+    $rows = $dboldcrm->createCommand($qry)->queryAll();
     if (empty($rows)) {
       $this->log("  source clubs is empty");
       return;
@@ -1641,7 +1695,7 @@ SQL;
     ];
 
     //-------------------------
-    $fnPutData = function(array $values, $lastID) use($convertKey, &$errorids, &$processedErrorIds) {
+    $fnPutData = function (array $values, $lastID) use ($convertKey, &$errorids, &$processedErrorIds) {
       $this->putData('tbl_MHA_Member_Kanoon', [
         'mbrknnUUID',
         'mbrknnMemberID',
@@ -1672,7 +1726,7 @@ SQL;
       //   break;
 
       //-- create where and newFetchCount -------------------------------
-      $thisLoopErrorIDs = array_filter($errorids, function($var) use($queryLastID) {
+      $thisLoopErrorIDs = array_filter($errorids, function ($var) use ($queryLastID) {
         return ($var <= $queryLastID);
       });
 
@@ -1693,7 +1747,7 @@ SQL;
       // var_dump(['thisLoopErrorIDs' => $thisLoopErrorIDs, 'where' => $where]);
 
       //---------------------------------
-      $qry =<<<SQL
+      $qry = <<<SQL
       SELECT tbl_profile.*
            , tbl_club.*
 
@@ -1710,7 +1764,7 @@ SQL;
 SQL;
 
       $this->log("  fetching data from ({$queryLastID})+1...");
-      $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
 
       if (empty($rows)) {
         if ($loopCount == 1) {
@@ -1738,8 +1792,8 @@ SQL;
           $tbl_profile_order = trim($row['tbl_profile_order']);
           if (empty($tbl_profile_order)) {
             $degrees = null;
-          // } else if ($tbl_profile_order == trim($row['tbl_profile_code'])) { //error: code 8992
-          //   $degrees = [enuKanoonMembershipDegree::Dependent1];
+            // } else if ($tbl_profile_order == trim($row['tbl_profile_code'])) { //error: code 8992
+            //   $degrees = [enuKanoonMembershipDegree::Dependent1];
           } else {
             $tbl_profile_order = str_replace(' ', '', $tbl_profile_order);
             $degrees = $clubDegrees[$tbl_profile_order];
@@ -1754,8 +1808,10 @@ SQL;
           $tbl_profile_op2date = $this->jalaliToMiladi($row['tbl_profile_op2date'], null, false);
 
           $tbl_profile_expiredate  = $this->coalesce([$row['tbl_profile_expiredate']]);
-          $tbl_profile_commission  = trim($row['tbl_profile_commission']); if ($tbl_profile_commission == '') $tbl_profile_commission = null;
-          $tbl_profile_stepone     = trim($row['tbl_profile_stepone']);    if ($tbl_profile_stepone == '') $tbl_profile_stepone = null;
+          $tbl_profile_commission  = trim($row['tbl_profile_commission']);
+          if ($tbl_profile_commission == '') $tbl_profile_commission = null;
+          $tbl_profile_stepone     = trim($row['tbl_profile_stepone']);
+          if ($tbl_profile_stepone == '') $tbl_profile_stepone = null;
           // $tbl_profile_statuscheck = $this->coalesce([$row['tbl_profile_statuscheck']]);
           // $tbl_profile_steptwo     = $this->coalesce([$row['tbl_profile_steptwo']]);
 
@@ -1824,7 +1880,7 @@ SQL;
 
           $lastcomment = $this->coalesce([$tbl_profile_op2, $tbl_profile_op1]);
 
-/*          print_r([
+          /*          print_r([
             'profile' => $lastID,
             'club ids' => $ids,
             'club degrees' => $degrees,
@@ -1848,19 +1904,26 @@ SQL;
 
           foreach ($ids as $clubidx => $clubid) {
             $values[$lastID + ($clubidx * 100000)] = implode(',', [
-              /* mbrknnUUID             */ 'UUID()',
-              /* mbrknnMemberID         */ $lastID + 100,
-              /* mbrknnKanoonID         */ $clubid,
+              /* mbrknnUUID             */
+              'UUID()',
+              /* mbrknnMemberID         */
+              $lastID + 100,
+              /* mbrknnKanoonID         */
+              $clubid,
               // /* mbrknnParams           */ 'NULL', //$params,
-              /* mbrknnIsMaster         */ $clubidx == 0 ? 1 : 0,
-              /* mbrknnMembershipDegree */ $this->quotedString($degrees[$clubidx] ?? $degrees[0] ?? null),
-              /* mbrknnComment          */ $this->quotedString($lastcomment),
-              /* mbrknnHistory          */ $this->quotedString($history),
-              /* mbrknnStatus           */ $this->quotedString($newStatus),
-            //   /* mbrknnCreatedAt        */ $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
+              /* mbrknnIsMaster         */
+              $clubidx == 0 ? 1 : 0,
+              /* mbrknnMembershipDegree */
+              $this->quotedString($degrees[$clubidx] ?? $degrees[0] ?? null),
+              /* mbrknnComment          */
+              $this->quotedString($lastcomment),
+              /* mbrknnHistory          */
+              $this->quotedString($history),
+              /* mbrknnStatus           */
+              $this->quotedString($newStatus),
+              //   /* mbrknnCreatedAt        */ $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
             ]);
           }
-
         } catch (\Throwable $exp) {
           $this->fnLogErrorToConvertTable($lastID, $exp->getMessage(), $convertKey, $errorids, $processedErrorIds);
           // echo "** ERROR: ID: {$lastID} **\n";
@@ -1889,12 +1952,12 @@ SQL;
     $this->log("  converted to '{$queryLastID}'");
   }
 
-  public function convert_expert_to_Mbr_Specialty(&$convertTableData)
+  public function v2_convert_expert_to_Mbr_Specialty(&$convertTableData)
   {
     $this->log("expert to Mbr_Specialty:");
 
     //specialty types ----------------
-		$qry =<<<SQL
+    $qry = <<<SQL
     SELECT *
       FROM tbl_MHA_Specialty
   ORDER BY spcRoot
@@ -1954,7 +2017,7 @@ SQL;
     }
 
     if (empty($values) == false) {
-      $qry =<<<SQL
+      $qry = <<<SQL
         INSERT INTO tbl_MHA_Specialty(
           spcID,
           spcUUID,
@@ -1971,7 +2034,7 @@ SQL;
     }
 
     //----------------
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_expert';
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 0;
@@ -2078,7 +2141,7 @@ SQL;
       ],
     ];
 
-    $fnPutData = function($values, $lastID) use($convertKey) {
+    $fnPutData = function ($values, $lastID) use ($convertKey) {
       $this->putData('tbl_MHA_Member_Specialty', [
         // 'mbrspcID',
         'mbrspcUUID',
@@ -2097,7 +2160,7 @@ SQL;
     //-----------------------
     $values = [];
 
-    $fnCreateMbrSpcs = function($lastID, $row, $fldID) use(&$values, $keywords, &$specialties) {
+    $fnCreateMbrSpcs = function ($lastID, $row, $fldID) use (&$values, $keywords, &$specialties) {
 
       $userid = $row['tbl_profile_id'];
 
@@ -2120,13 +2183,19 @@ SQL;
 
         $values[$lastID] = implode(',', [
           // /* mbrspcID          */ $lastID,
-          /* mbrspcUUID        */ 'UUID()',
-          /* mbrspcMemberID    */ $userid + 100,
-          /* mbrspcSpecialtyID */ $fldID,
-          /* mbrspcDesc        */ $spctext,
-          /* mbrspcCreatedAt   */ $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
+          /* mbrspcUUID        */
+          'UUID()',
+          /* mbrspcMemberID    */
+          $userid + 100,
+          /* mbrspcSpecialtyID */
+          $fldID,
+          /* mbrspcDesc        */
+          $spctext,
+          /* mbrspcCreatedAt   */
+          $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
           /* mbrspcCreatedBy   */
-          /* mbrspcUpdatedAt   */ $this->jalaliToMiladi($row['tbl_profile_editdate']),
+          /* mbrspcUpdatedAt   */
+          $this->jalaliToMiladi($row['tbl_profile_editdate']),
           /* mbrspcUpdatedBy   */
           /* mbrspcRemovedAt   */
           /* mbrspcRemovedBy   */
@@ -2222,13 +2291,19 @@ SQL;
 
         $values[$lastID] = implode(',', [
           // /* mbrspcID          */ $lastID,
-          /* mbrspcUUID        */ 'UUID()',
-          /* mbrspcMemberID    */ $userid + 100,
-          /* mbrspcSpecialtyID */ $found,
-          /* mbrspcDesc        */ $spctext,
-          /* mbrspcCreatedAt   */ $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
+          /* mbrspcUUID        */
+          'UUID()',
+          /* mbrspcMemberID    */
+          $userid + 100,
+          /* mbrspcSpecialtyID */
+          $found,
+          /* mbrspcDesc        */
+          $spctext,
+          /* mbrspcCreatedAt   */
+          $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
           /* mbrspcCreatedBy   */
-          /* mbrspcUpdatedAt   */ $this->jalaliToMiladi($row['tbl_profile_editdate']),
+          /* mbrspcUpdatedAt   */
+          $this->jalaliToMiladi($row['tbl_profile_editdate']),
           /* mbrspcUpdatedBy   */
           /* mbrspcRemovedAt   */
           /* mbrspcRemovedBy   */
@@ -2242,7 +2317,7 @@ SQL;
     while (true) {
       ++$loopCount;
 
-      $qry =<<<SQL
+      $qry = <<<SQL
       SELECT *
         FROM tbl_expert
   INNER JOIN tbl_profile
@@ -2254,7 +2329,7 @@ SQL;
 SQL;
 
       $this->log("  fetching data from ({$lastID})+1...");
-      $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
 
       if (empty($rows)) {
         if ($loopCount == 1) {
@@ -2297,7 +2372,6 @@ SQL;
         $fnPutData($values, $lastID);
         $values = [];
       }
-
     } //while (true)
 
     if (isset($convertTableData[$convertKey]))
@@ -2310,11 +2384,11 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_profile_to_UserImage(&$convertTableData)
+  public function v2_convert_profile_to_UserImage(&$convertTableData)
   {
     $this->log("profile to User Image:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_profile->user-image';
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 2; //start from 3
@@ -2327,7 +2401,7 @@ SQL;
     while (true) {
       ++$loopCount;
 
-      $qry =<<<SQL
+      $qry = <<<SQL
     SELECT tbl_profile.tbl_profile_id
          , tbl_profile.tbl_profile_systemcode
          , tbl_profile.tbl_profile_img
@@ -2339,7 +2413,7 @@ SQL;
 SQL;
 
       $this->log("  fetching data from ({$lastID})+1...");
-      $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
 
       if (empty($rows)) {
         if ($loopCount == 1) {
@@ -2370,7 +2444,7 @@ SQL;
         $checkImgUsed = false;
 
         //check tbl_AAA_UploadFile
-        $qry =<<<SQL
+        $qry = <<<SQL
   SELECT *
     FROM tbl_AAA_UploadFile
    WHERE uflOriginalFileName = '{$originalFileName}'
@@ -2384,28 +2458,37 @@ SQL;
 
         if (empty($imageFileID)) {
           $imageFileID = Yii::$app->fileManager->saveAndUploadFileForUser(
-            /* sourceFileName     */ $sourceFileName,
-            /* sourceIsFromUpload */ false,
-            /* originalFileName   */ $originalFileName,
-            /* owner_uuid         */ $uuid,
-            /* owner_id           */ $userid,
-            /* subdir             */ 'user',
-            /* overwrite          */ true,
-            /* doStore            */ false,
-            /* deleteLocalFileAfterUpload */ true
+            /* sourceFileName     */
+            $sourceFileName,
+            /* sourceIsFromUpload */
+            false,
+            /* originalFileName   */
+            $originalFileName,
+            /* owner_uuid         */
+            $uuid,
+            /* owner_id           */
+            $userid,
+            /* subdir             */
+            'user',
+            /* overwrite          */
+            true,
+            /* doStore            */
+            false,
+            /* deleteLocalFileAfterUpload */
+            true
           );
         }
 
         //------------
         if ($checkImgUsed) {
-          $qry =<<<SQL
+          $qry = <<<SQL
   SELECT *
     FROM tbl_AAA_User
    WHERE usrImageFileID = {$imageFileID}
 SQL;
           $userRow = $this->queryOne($qry, __FUNCTION__, __LINE__);
           if (empty($userRow) == false) {
-            $qry =<<<SQL
+            $qry = <<<SQL
   INSERT INTO tbl_convert(tableName, lastID, at)
        VALUES ('{$convertKey}', $lastID, NOW())
            ON DUPLICATE KEY UPDATE lastID={$lastID}, at=NOW();
@@ -2420,7 +2503,7 @@ SQL;
         }
 
         //tbl_aaa_user
-        $qry =<<<SQL
+        $qry = <<<SQL
   UPDATE tbl_AAA_User
      SET usrImageFileID = {$imageFileID}
    WHERE usrID = {$userid}
@@ -2428,7 +2511,7 @@ SQL;
         $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
         //tbl_convert
-        $qry =<<<SQL
+        $qry = <<<SQL
   INSERT INTO tbl_convert(tableName, lastID, at)
        VALUES ('{$convertKey}', $lastID, NOW())
            ON DUPLICATE KEY UPDATE lastID={$lastID}, at=NOW();
@@ -2436,19 +2519,18 @@ SQL;
         $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
         $lastSavedID = $lastID;
-
       } //foreach ($rows as $row)
 
     } //while (true)
 
     // if ($lastSavedID != $lastID) {
-      //tbl_convert
-      $qry =<<<SQL
+    //tbl_convert
+    $qry = <<<SQL
   INSERT INTO tbl_convert(tableName, lastID, at)
        VALUES ('{$convertKey}', $lastID, NOW())
            ON DUPLICATE KEY UPDATE lastID={$lastID}, at=NOW();
 SQL;
-      $this->queryExecute($qry, __FUNCTION__, __LINE__);
+    $this->queryExecute($qry, __FUNCTION__, __LINE__);
     // }
 
     if (isset($convertTableData[$convertKey]))
@@ -2461,20 +2543,20 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_document_to_Mbr_Document(&$convertTableData)
+  public function v2_convert_document_to_Mbr_Document(&$convertTableData)
   {
     $this->log("document to Mbr_Document:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_document->member-document';
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 0;
 
     $tmpPath = Yii::$app->params['convert_source_files_path_document'];
 
-    $fnPutData = function($values, $lastID) use($convertKey) {
+    $fnPutData = function ($values, $lastID) use ($convertKey) {
       $this->putData('tbl_MHA_Member_Document', [
-//        'mbrdocID',
+        //        'mbrdocID',
         'mbrdocUUID',
         'mbrdocMemberID',
         'mbrdocDocumentID',
@@ -2493,7 +2575,7 @@ SQL;
 
     //--------------------
     $newDocumentTypeIDs = [];
-		$qry =<<<SQL
+    $qry = <<<SQL
     SELECT *
       FROM tbl_MHA_Document
 SQL;
@@ -2512,7 +2594,7 @@ SQL;
       if (($maxLoopCount > 0) && ($loopCount > $maxLoopCount))
         break;
 
-		$qry =<<<SQL
+      $qry = <<<SQL
       SELECT tbl_document.*
            , tbl_profile.tbl_profile_id
            , tbl_profile.tbl_profile_systemcode
@@ -2532,7 +2614,7 @@ SQL;
 SQL;
 
       $this->log("  fetching data from ({$lastID})+1...");
-      $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
 
       if (empty($rows)) {
         if ($loopCount == 1) {
@@ -2557,7 +2639,7 @@ SQL;
           if (isset($newDocumentTypeIDs[$title]))
             $docid = $newDocumentTypeIDs[$title];
           else {
-            $qry =<<<SQL
+            $qry = <<<SQL
   INSERT INTO tbl_MHA_Document(docUUID, docName, docType)
        VALUES (UUID(), '{$title}', 'O');
 SQL;
@@ -2590,7 +2672,7 @@ SQL;
         $checkImgUsed = false;
 
         //check tbl_AAA_UploadFile
-        $qry =<<<SQL
+        $qry = <<<SQL
   SELECT *
     FROM tbl_AAA_UploadFile
    WHERE uflOriginalFileName = '{$originalFileName}'
@@ -2604,28 +2686,37 @@ SQL;
 
         if (empty($imageFileID)) {
           $imageFileID = Yii::$app->fileManager->saveAndUploadFileForUser(
-            /* sourceFileName     */ $sourceFileName,
-            /* sourceIsFromUpload */ false,
-            /* originalFileName   */ $originalFileName,
-            /* owner_uuid         */ $uuid,
-            /* owner_id           */ $userid,
-            /* subdir             */ 'document',
-            /* overwrite          */ true,
-            /* doStore            */ false,
-            /* deleteLocalFileAfterUpload */ true
+            /* sourceFileName     */
+            $sourceFileName,
+            /* sourceIsFromUpload */
+            false,
+            /* originalFileName   */
+            $originalFileName,
+            /* owner_uuid         */
+            $uuid,
+            /* owner_id           */
+            $userid,
+            /* subdir             */
+            'document',
+            /* overwrite          */
+            true,
+            /* doStore            */
+            false,
+            /* deleteLocalFileAfterUpload */
+            true
           );
         }
 
         //------------
         if ($checkImgUsed) {
-          $qry =<<<SQL
+          $qry = <<<SQL
   SELECT *
     FROM tbl_MHA_Member_Document
    WHERE mbrdocFileID = {$imageFileID}
 SQL;
           $docRow = $this->queryOne($qry, __FUNCTION__, __LINE__);
           if (empty($docRow) == false) {
-            $qry =<<<SQL
+            $qry = <<<SQL
   INSERT INTO tbl_convert(tableName, lastID, at)
        VALUES ('{$convertKey}', $lastID, NOW())
            ON DUPLICATE KEY UPDATE lastID={$lastID}, at=NOW();
@@ -2640,35 +2731,41 @@ SQL;
         }
 
         $fnPutData(implode(',', [
-//          /* mbrdocID         */ $lastID,
-          /* mbrdocUUID       */ 'UUID()',
-          /* mbrdocMemberID   */ $userid,
-          /* mbrdocDocumentID */ $docid,
-          /* mbrdocTitle      */ $this->quotedString($row['tbl_document_title']),
-          /* mbrdocFileID     */ $imageFileID,
-          /* mbrdocStatus     */ "'" . (trim($row['tbl_document_status']) == '0'
-                                  ? enuMemberDocumentStatus::WaitForApprove
-                                  : enuMemberDocumentStatus::Approved) . "'",
-          /* mbrdocCreatedAt  */ $this->jalaliToMiladi($row['tbl_document_date'], 'NOW()'),
+          //          /* mbrdocID         */ $lastID,
+          /* mbrdocUUID       */
+          'UUID()',
+          /* mbrdocMemberID   */
+          $userid,
+          /* mbrdocDocumentID */
+          $docid,
+          /* mbrdocTitle      */
+          $this->quotedString($row['tbl_document_title']),
+          /* mbrdocFileID     */
+          $imageFileID,
+          /* mbrdocStatus     */
+          "'" . (trim($row['tbl_document_status']) == '0'
+            ? enuMemberDocumentStatus::WaitForApprove
+            : enuMemberDocumentStatus::Approved) . "'",
+          /* mbrdocCreatedAt  */
+          $this->jalaliToMiladi($row['tbl_document_date'], 'NOW()'),
           /* mbrdocCreatedBy  */
           /* mbrdocUpdatedAt  */
           /* mbrdocUpdatedBy  */
         ]), $lastID);
 
         $lastSavedID = $lastID;
-
       } //foreach ($rows as $row)
 
     } //while (true)
 
     // if ($lastSavedID != $lastID) {
-      //tbl_convert
-      $qry =<<<SQL
+    //tbl_convert
+    $qry = <<<SQL
   INSERT INTO tbl_convert(tableName, lastID, at)
        VALUES ('{$convertKey}', $lastID, NOW())
            ON DUPLICATE KEY UPDATE lastID={$lastID}, at=NOW();
 SQL;
-      $this->queryExecute($qry, __FUNCTION__, __LINE__);
+    $this->queryExecute($qry, __FUNCTION__, __LINE__);
     // }
 
     if (isset($convertTableData[$convertKey]))
@@ -2685,9 +2782,13 @@ SQL;
   {
     $this->log("ensureMembershipSaleableExists");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    // $dboldcrm = Yii::$app->oldcrmdbv2;
 
-    $qry =<<<SQL
+    $fnGetConst = function ($value) {
+      return $value;
+    };
+
+    $qry = <<<SQL
   INSERT IGNORE INTO tbl_MHA_Accounting_Unit
      SET untID       = 1
        , untUUID     = UUID()
@@ -2696,7 +2797,7 @@ SQL;
 SQL;
     $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
-    $qry =<<<SQL
+    $qry = <<<SQL
   INSERT IGNORE INTO tbl_MHA_Accounting_Product
      SET prdID      = 1
        , prdUUID    = UUID()
@@ -2707,33 +2808,43 @@ SQL;
 SQL;
     $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
-    $qry =<<<SQL
+    $qry = <<<SQL
   INSERT IGNORE INTO tbl_MHA_Accounting_Saleable
-     SET slbID                = 1
-       , slbUUID              = UUID()
+     SET slbID                = {$fnGetConst(self::crm_2_membership_slbID)}
+       , slbUUID              = '{$fnGetConst(self::crm_2_membership_slbUUID)}'
        , slbProductID         = 1
-       , slbCode              = UUID()
-       , slbName              = 'پیش فرض برای کانورت اطلاعات'
-       , slbAvailableFromDate = '1991-03-21 00:00:00'
+       , slbCode              = '{$fnGetConst(self::crm_2_membership_slbCode)}'
+       , slbName              = 'کانورت از سیستم 2 - از ۱۴۰۱/۰۱/۱۹'
+       , slbAvailableFromDate = '2022-04-09 00:00:00'
        , slbBasePrice         = 50000
 SQL;
     $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
-    return 1;
+    $qry = <<<SQL
+  INSERT IGNORE INTO tbl_MHA_Accounting_Saleable
+     SET slbID                = {$fnGetConst(self::crm_1_membership_slbID)}
+       , slbUUID              = '{$fnGetConst(self::crm_1_membership_slbUUID)}'
+       , slbProductID         = 1
+       , slbCode              = '{$fnGetConst(self::crm_1_membership_slbCode)}'
+       , slbName              = 'کانورت از سیستم 1 - از ۱۳۷۰/۰۱/۰۱'
+       , slbAvailableFromDate = '1991-03-21 00:00:00'
+       , slbBasePrice         = 50000
+SQL;
+    $this->queryExecute($qry, __FUNCTION__, __LINE__);
   }
 
-  public function convert_billing(&$convertTableData)
+  public function v2_convert_billing(&$convertTableData)
   {
     $this->log("billing:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     //-- update AUTO_INCREMENT
-    $qry =<<<SQL
+    $qry = <<<SQL
   SELECT MAX(tbl_billing_id) AS cnt
     FROM tbl_billing
 SQL;
-    $cnt1 = $oldcrmdbv2->createCommand($qry)->queryOne();
+    $cnt1 = $dboldcrm->createCommand($qry)->queryOne();
     if (empty($cnt1) || (($cnt1['cnt'] ?? 0) == 0)) {
       $this->log("  nothing to do");
       return;
@@ -2741,13 +2852,13 @@ SQL;
     $cnt1 = $cnt1['cnt'];
 
     //--
-/*
+    /*
   SELECT AUTO_INCREMENT
     FROM INFORMATION_SCHEMA.TABLES
    WHERE TABLE_SCHEMA = DATABASE()
      AND TABLE_NAME   = 'tbl_AAA_OfflinePayment';
 */
-    $qry =<<<SQL
+    $qry = <<<SQL
   SELECT MAX(ofpID) AS cnt
     FROM tbl_AAA_OfflinePayment
 SQL;
@@ -2766,92 +2877,82 @@ SQL;
     }
 
     //-- normalize input -------------------------------
-    $qry =<<<SQL
+    $qry = <<<SQL
   SELECT COLUMN_NAME
     FROM INFORMATION_SCHEMA.COLUMNS
    WHERE TABLE_SCHEMA = DATABASE()
      AND TABLE_NAME   = 'tbl_billing'
      AND COLUMN_NAME  = 'convert_tbl_billing_username';
 SQL;
-    $cnt1 = $oldcrmdbv2->createCommand($qry)->queryOne();
+    $cnt1 = $dboldcrm->createCommand($qry)->queryOne();
     if (empty($cnt1)) {
-      $qry =<<<SQL
+      $qry = <<<SQL
 ALTER TABLE `tbl_billing`
   ADD COLUMN `convert_tbl_billing_username` VARCHAR(256) NULL DEFAULT NULL AFTER `tbl_billing_username`,
   ADD INDEX `convert_tbl_billing_username` (`convert_tbl_billing_username`);
 SQL;
-      $oldcrmdbv2->createCommand($qry)->execute();
+      $dboldcrm->createCommand($qry)->execute();
     }
 
-    $qry =<<<SQL
+    $fnFixBadPersianCharsSql = function ($field) {
+      return <<<SQL
+  REPLACE(
+  REPLACE(
+  REPLACE(
+  REPLACE(
+  REPLACE(
+  REPLACE(
+  REPLACE(
+  REPLACE($field,
+    'أ', 'ا'),
+    'ك', 'ک'),
+    'ؠ', 'ی'),
+    'ى', 'ی'),
+    'ي', 'ی'),
+    'ݷ', 'ی'),
+    'ئ', 'ی'),
+    ' ', '')
+SQL;
+    };
+
+    $qry = <<<SQL
   UPDATE tbl_billing
      SET tbl_billing_title = TRIM(tbl_billing_title)
        , tbl_billing_usercode = TRIM(tbl_billing_usercode)
-       , convert_tbl_billing_username =
-          REPLACE(
-          REPLACE(
-          REPLACE(
-          REPLACE(
-          REPLACE(
-          REPLACE(
-          REPLACE(
-          REPLACE(TRIM(tbl_billing_username),
-            'أ', 'ا'),
-            'ك', 'ک'),
-            'ؠ', 'ی'),
-            'ى', 'ی'),
-            'ي', 'ی'),
-            'ݷ', 'ی'),
-            'ئ', 'ی'),
-            ' ', '')
+       , convert_tbl_billing_username = {$fnFixBadPersianCharsSql("TRIM(tbl_billing_username)")}
 SQL;
-    $oldcrmdbv2->createCommand($qry)->execute();
+    $dboldcrm->createCommand($qry)->execute();
 
     //-- add convert_fullname to tbl_profile -------------------------------
-    $qry =<<<SQL
+    $qry = <<<SQL
   SELECT COLUMN_NAME
     FROM INFORMATION_SCHEMA.COLUMNS
    WHERE TABLE_SCHEMA = DATABASE()
      AND TABLE_NAME   = 'tbl_profile'
      AND COLUMN_NAME  = 'convert_fullname';
 SQL;
-    $cnt1 = $oldcrmdbv2->createCommand($qry)->queryOne();
+    $cnt1 = $dboldcrm->createCommand($qry)->queryOne();
     if (empty($cnt1)) {
-      $qry =<<<SQL
+      $qry = <<<SQL
 ALTER TABLE `tbl_profile`
   ADD COLUMN `convert_fullname` VARCHAR(1024) NULL DEFAULT NULL AFTER `tbl_profile_fld2`,
   ADD INDEX `convert_fullname` (`convert_fullname`);
 SQL;
-      $oldcrmdbv2->createCommand($qry)->execute();
+      $dboldcrm->createCommand($qry)->execute();
     }
 
-    $qry =<<<SQL
+    $qry = <<<SQL
   UPDATE tbl_profile
-     SET convert_fullname =
-      REPLACE(
-      REPLACE(
-      REPLACE(
-      REPLACE(
-      REPLACE(
-      REPLACE(
-      REPLACE(
-      REPLACE(CONCAT(tbl_profile_fld1, ' ', tbl_profile_fld2),
-        'أ', 'ا'),
-        'ك', 'ک'),
-        'ؠ', 'ی'),
-        'ى', 'ی'),
-        'ي', 'ی'),
-        'ݷ', 'ی'),
-        'ئ', 'ی'),
-        ' ', '')
+     SET convert_fullname = {$fnFixBadPersianCharsSql("CONCAT(tbl_profile_fld1, ' ', tbl_profile_fld2)")}
 SQL;
-  //  WHERE convert_fullname IS NULL
-    $oldcrmdbv2->createCommand($qry)->execute();
+    //  WHERE convert_fullname IS NULL
+    $dboldcrm->createCommand($qry)->execute();
 
-    $membershipID = $this->ensureMembershipSaleableExists();
+    $this->ensureMembershipSaleableExists();
 
-    //---------------------------------
-    $fnGetConst = function($value) { return $value; };
+    $fnGetConst = function ($value) {
+      return $value;
+    };
 
     $convertKey = 'v2.tbl_billing';
     $queryLastID = $convertTableData[$convertKey]['lastID'] ?? 0;
@@ -2870,7 +2971,7 @@ SQL;
 
     $processedErrorIds = [];
 
-    $fnRemoveFromErrorIDs = function($lastID) use (&$errorids, &$processedErrorIds) {
+    $fnRemoveFromErrorIDs = function ($lastID) use (&$errorids, &$processedErrorIds) {
       if (empty($errorids[$lastID]))
         return false;
 
@@ -2905,7 +3006,7 @@ SQL;
         $where .= "AND tbl_billing.tbl_billing_id NOT IN (" . implode(',', $processedErrorIds) . ")\n";
       }
 
-      $qry =<<<SQL
+      $qry = <<<SQL
      SELECT p1.tbl_profile_id AS p1_id_by_code
           , GROUP_CONCAT(p2.tbl_profile_id) AS p2_id_by_name
           , p3.tbl_profile_id AS p3_id_by_title
@@ -2934,7 +3035,7 @@ SQL;
 SQL;
 
       $this->log("  fetching data from ({$queryLastID})+1...");
-      $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
 
       if (empty($rows)) {
         if ($loopCount == 1) {
@@ -2972,8 +3073,8 @@ SQL;
           $tbl_billing_editdate  = $this->jalaliToMiladi($row['tbl_billing_editdate']);
 
           if (($tbl_billing_price > 0)
-              && ($tbl_billing_date != 'NULL')
-              && ($tbl_billing_expire != 'NULL')
+            && ($tbl_billing_date != 'NULL')
+            && ($tbl_billing_expire != 'NULL')
           ) {
             $p1_id_by_code  = $row['p1_id_by_code'] ?? null;
             $p2_id_by_name  = $row['p2_id_by_name'] ?? null;
@@ -2983,14 +3084,15 @@ SQL;
               if ($p2_id_by_name != null) {
                 if ($p1_id_by_code == $p2_id_by_name) {
                   $profileID = $p1_id_by_code;
-                } else  {
+                } else {
                   if ($p3_id_by_title != null) {
                     if (strpos(",{$p2_id_by_name},", ",{$p3_id_by_title},") !== false) {
                       $profileID = $p3_id_by_title;
                     }
                   }
                 }
-              } else if ($p3_id_by_title != null
+              } else if (
+                $p3_id_by_title != null
                 && $p1_id_by_code == $p3_id_by_title
               ) {
                 $profileID = $p1_id_by_code;
@@ -3028,18 +3130,18 @@ SQL;
               } else
                 $doSwap = true;
             } else {
-//               if ($tbl_billing_title != 'NULL') {
-//                 $uid = $profileID + 100;
-//                 $qry =<<<SQL
-//   SELECT *
-//     FROM tbl_MHA_Member
-//    WHERE mbrRegisterCode = {$tbl_billing_track}
-//      AND mbrUserID = {$uid}
-// SQL;
-//                 $mbrrow = $this->queryOne($qry, __FUNCTION__, __LINE__);
-//                 if (empty($mbrrow) == false)
-//                   $doSwap = true;
-//               }
+              //               if ($tbl_billing_title != 'NULL') {
+              //                 $uid = $profileID + 100;
+              //                 $qry =<<<SQL
+              //   SELECT *
+              //     FROM tbl_MHA_Member
+              //    WHERE mbrRegisterCode = {$tbl_billing_track}
+              //      AND mbrUserID = {$uid}
+              // SQL;
+              //                 $mbrrow = $this->queryOne($qry, __FUNCTION__, __LINE__);
+              //                 if (empty($mbrrow) == false)
+              //                   $doSwap = true;
+              //               }
             }
             if ($doSwap) {
               $this->log("  swap track and title (ofp:{$lastID})");
@@ -3060,7 +3162,7 @@ SQL;
 
             $this->log("  ERROR ON '{$lastID}' {$err}");
 
-            $qry =<<<SQL
+            $qry = <<<SQL
   INSERT INTO tbl_convert(tableName, lastID, at, info)
        VALUES ('{$convertKey}', 0, NOW(), '{$lastID}')
            ON DUPLICATE KEY UPDATE info = IF (info IS NULL OR LENGTH(info)=0,
@@ -3087,7 +3189,7 @@ SQL;
 
           try {
             //search for duplicates
-            $qry =<<<SQL
+            $qry = <<<SQL
   SELECT COUNT(*) AS cnt
     FROM tbl_AAA_OfflinePayment
    WHERE ofpTrackNumber = {$tbl_billing_track}
@@ -3103,7 +3205,7 @@ SQL;
             //phase 1: offline payment
             //ensure wallet
             if (empty($userDefWalletMap[$userid])) {
-              $qry =<<<SQL
+              $qry = <<<SQL
   SELECT walID
     FROM tbl_AAA_Wallet
    WHERE walOwnerUserID = {$userid}
@@ -3136,7 +3238,7 @@ SQL;
             } else {
               $ofpStatus = enuOfflinePaymentStatus::Approved;
 
-              $qry =<<<SQL
+              $qry = <<<SQL
   INSERT INTO tbl_AAA_Voucher
           SET vchUUID        = UUID()
             , vchOwnerUserID = {$userid}
@@ -3154,7 +3256,7 @@ SQL;
             $ofpComment = "CONCAT(" . implode(", ' - ', ", $ofpComment) . ")";
 
             //create offline payment
-            $qry =<<<SQL
+            $qry = <<<SQL
   INSERT INTO tbl_AAA_OfflinePayment
           SET ofpID               = {$lastID}
             , ofpUUID             = UUID()
@@ -3178,7 +3280,7 @@ SQL;
 
             if ($duplicate == false) {
               //create wallet transaction
-              $qry =<<<SQL
+              $qry = <<<SQL
   INSERT INTO tbl_AAA_WalletTransaction
           SET wtrUUID             = UUID()
             , wtrWalletID		      = {$walid}
@@ -3189,12 +3291,12 @@ SQL;
               $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
               //update wallet
-//               $qry =<<<SQL
-//   UPDATE tbl_AAA_Wallet
-//      SET walRemainedAmount = walRemainedAmount + {$tbl_billing_price}
-//    WHERE walID = {$walid}
-// SQL;
-//               $this->queryExecute($qry, __FUNCTION__, __LINE__);
+              //               $qry =<<<SQL
+              //   UPDATE tbl_AAA_Wallet
+              //      SET walRemainedAmount = walRemainedAmount + {$tbl_billing_price}
+              //    WHERE walID = {$walid}
+              // SQL;
+              //               $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
               //phase 2: membership
               //create basket voucher
@@ -3205,22 +3307,22 @@ SQL;
                   // 'userid'    => $userid,
                   'service'   => 'mha',
                   // 'slbkey'    => 'mbrshp',
-                  'slbid'     => $membershipID,
+                  'slbid'     => $fnGetConst(self::crm_2_membership_slbID),
                   'desc'      => 'حق عضویت تا ' . $tbl_billing_expire_jalali,
                   'qty'       => 1,
-                  'unit'			=> 'سال',
-                  'prdtype'		=> 'D',
+                  'unit'      => 'سال',
+                  'prdtype'    => 'D',
                   'unitprice' => $tbl_billing_price,
                   // 'slbinfo'		=> [
                   //   'startDate' => $startDate,
                   //   'endDate' => $endDate,
                   // ],
                   'maxqty'    => 1,
-                  'qtystep'		=> 0, //0: do not allow to change qty in basket
+                  'qtystep'    => 0, //0: do not allow to change qty in basket
                 ],
               ]);
 
-              $qry =<<<SQL
+              $qry = <<<SQL
   INSERT INTO tbl_AAA_Voucher
           SET vchUUID         = UUID()
             , vchOwnerUserID  = {$userid}
@@ -3236,7 +3338,7 @@ SQL;
               $voucherid = Yii::$app->db->getLastInsertID();
 
               //create wallet transaction
-              $qry =<<<SQL
+              $qry = <<<SQL
   INSERT INTO tbl_AAA_WalletTransaction
           SET wtrUUID       = UUID()
             , wtrWalletID		= {$walid}
@@ -3246,19 +3348,19 @@ SQL;
               $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
               //update wallet
-  //             $qry =<<<SQL
-  //   UPDATE tbl_AAA_Wallet
-  //     SET walRemainedAmount = walRemainedAmount - {$tbl_billing_price}
-  //   WHERE walID = {$walid}
-  // SQL;
-  //             $this->queryExecute($qry, __FUNCTION__, __LINE__);
+              //             $qry =<<<SQL
+              //   UPDATE tbl_AAA_Wallet
+              //     SET walRemainedAmount = walRemainedAmount - {$tbl_billing_price}
+              //   WHERE walID = {$walid}
+              // SQL;
+              //             $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
               //member membership
-              $qry =<<<SQL
+              $qry = <<<SQL
   INSERT INTO tbl_MHA_Accounting_UserAsset
           SET uasUUID						 = '{$vchItemKey}'
             , uasActorID         = {$userid}
-            , uasSaleableID      = {$membershipID}
+            , uasSaleableID      = {$fnGetConst(self::crm_2_membership_slbID)}
             , uasQty             = 1
             , uasVoucherID       = {$voucherid}
             , uasVoucherItemInfo = '{$vchItems}'
@@ -3269,7 +3371,7 @@ SQL;
               $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
               //phase 3: member
-              $qry =<<<SQL
+              $qry = <<<SQL
   UPDATE tbl_MHA_Member
      SET mbrAcceptedAt = DATE_ADD({$tbl_billing_expire}, INTERVAL -1 YEAR)
    WHERE mbrUserID = {$userid}
@@ -3282,7 +3384,7 @@ SQL;
 
             //phase 4: log
             //log to tbl_convert
-            $qry =<<<SQL
+            $qry = <<<SQL
   INSERT INTO tbl_convert(tableName, lastID, at)
         VALUES ('{$convertKey}', $lastID, NOW())
             ON DUPLICATE KEY UPDATE lastID={$lastID}, at=NOW();
@@ -3293,7 +3395,7 @@ SQL;
             if ($fnRemoveFromErrorIDs($lastID)) {
               $this->log("  REMOVE '{$lastID}' FROM ERRORS");
 
-              $qry =<<<SQL
+              $qry = <<<SQL
   UPDATE tbl_convert
      SET info = IF (info IS NULL OR LENGTH(info)=0,
            NULL,
@@ -3310,12 +3412,10 @@ SQL;
 
             //commit
             $transaction->commit();
-
           } catch (\Throwable $exp) {
             $transaction->rollBack();
             throw $exp;
           }
-
         } catch (\Throwable $exp) {
           echo "** ERROR: ID: {$lastID} **\n";
           echo $exp->getMessage();
@@ -3336,18 +3436,18 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_onlinebank(&$convertTableData)
+  public function v2_convert_onlinebank(&$convertTableData)
   {
     $this->log("onlinebank:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     //-- update AUTO_INCREMENT
-    $qry =<<<SQL
+    $qry = <<<SQL
   SELECT MAX(tbl_onlinebank_id) AS cnt
     FROM tbl_onlinebank
 SQL;
-    $cnt1 = $oldcrmdbv2->createCommand($qry)->queryOne();
+    $cnt1 = $dboldcrm->createCommand($qry)->queryOne();
     if (empty($cnt1) || (($cnt1['cnt'] ?? 0) == 0)) {
       $this->log("  nothing to do");
       return;
@@ -3355,13 +3455,13 @@ SQL;
     $cnt1 = $cnt1['cnt'];
 
     //--
-  /*
+    /*
   SELECT AUTO_INCREMENT
     FROM INFORMATION_SCHEMA.TABLES
    WHERE TABLE_SCHEMA = DATABASE()
      AND TABLE_NAME   = 'tbl_AAA_OnlinePayment';
   */
-    $qry =<<<SQL
+    $qry = <<<SQL
   SELECT MAX(onpID) AS cnt
     FROM tbl_AAA_OnlinePayment
 SQL;
@@ -3381,7 +3481,7 @@ SQL;
 
     //-- get BankKeshavarziPaymentGateway -------------------------------
     $gatewayID = null;
-    $qry =<<<SQL
+    $qry = <<<SQL
   SELECT *
     FROM tbl_AAA_Gateway
    WHERE gtwPluginName = 'BankKeshavarziPaymentGateway'
@@ -3394,10 +3494,11 @@ SQL;
     $gatewayID = intval($gtwrow['gtwID']);
 
     //-- check default membership -------------------------------
-    $membershipID = $this->ensureMembershipSaleableExists();
+    $this->ensureMembershipSaleableExists();
 
-    //---------------------------------
-    $fnGetConst = function($value) { return $value; };
+    $fnGetConst = function ($value) {
+      return $value;
+    };
 
     $convertKey = 'v2.tbl_onlinebank';
     $queryLastID = $convertTableData[$convertKey]['lastID'] ?? 0;
@@ -3416,7 +3517,7 @@ SQL;
 
     $processedErrorIds = [];
 
-    $fnRemoveFromErrorIDs = function($lastID) use (&$errorids, &$processedErrorIds) {
+    $fnRemoveFromErrorIDs = function ($lastID) use (&$errorids, &$processedErrorIds) {
       if (empty($errorids[$lastID]))
         return false;
 
@@ -3451,7 +3552,7 @@ SQL;
         $where .= "AND tbl_onlinebank.tbl_onlinebank_id NOT IN (" . implode(',', $processedErrorIds) . ")\n";
       }
 
-      $qry =<<<SQL
+      $qry = <<<SQL
      SELECT *
        FROM tbl_onlinebank
   LEFT JOIN tbl_profile
@@ -3463,7 +3564,7 @@ SQL;
 SQL;
 
       $this->log("  fetching data from ({$queryLastID})+1...");
-      $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
 
       if (empty($rows)) {
         if ($loopCount == 1) {
@@ -3518,8 +3619,8 @@ SQL;
             $err = implode(',', $err);
 
             $this->log("  ERROR ON '{$lastID}' {$err}");
-}
-/*
+          }
+          /*
 
 delete from tbl_MHA_MemberMembership;
 
@@ -3670,7 +3771,7 @@ SQL;
                   'userid'    => $userid,
                   'service'   => 'mha',
                   // 'slbkey'    => 'mbrshp',
-                  'slbid'     => $membershipID,
+                  'slbid'     => $fnGetConst(self::crm_2_membership_slbID),
                   'desc'      => 'حق عضویت تا (نامعلوم)',
                   'qty'       => 1,
                   'maxqty'    => 1,
@@ -3728,7 +3829,7 @@ SQL;
   INSERT INTO tbl_MHA_MemberMembership
           SET mbrshpUUID         = UUID()
             , mbrshpMemberID     = {$userid}
-            , mbrshpMembershipID = {$membershipID}
+            , mbrshpMembershipID = {$fnGetConst(self::crm_2_membership_slbID)}
             , mbrshpVoucherID    = {$voucherid}
             , mbrshpStartDate    = {$tbl_onlinebank_expire}
             , mbrshpEndDate      = {$tbl_onlinebank_expire}
@@ -3787,8 +3888,6 @@ SQL;
 
 
 */
-
-
         } catch (\Throwable $exp) {
           echo "** ERROR: ID: {$lastID} **\n";
           throw $exp;
@@ -3807,7 +3906,7 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_create_default_password_for_members(&$convertTableData)
+  public function v2_convert_create_default_password_for_members(&$convertTableData)
   {
     $this->log("create default password for members:");
 
@@ -3815,7 +3914,7 @@ SQL;
     $lastID = $convertTableData[$convertKey]['lastID'] ?? 0;
 
     //-----------------
-    $fnPutData = function($values, $lastID) use($convertKey) {
+    $fnPutData = function ($values, $lastID) use ($convertKey) {
       $this->putData('tbl_AAA_User', [
         'usrID',
         'usrPasswordHash',
@@ -3838,7 +3937,7 @@ SQL;
       if (($maxLoopCount > 0) && ($loopCount > $maxLoopCount))
         break;
 
-      $qry =<<<SQL
+      $qry = <<<SQL
       SELECT usrID
            , mbrUserID
            , mbrRegisterCode
@@ -3885,10 +3984,14 @@ SQL;
 
           //user must change password at first login
           $values[$lastID] = implode(',', [
-            /* usrID                 */ $lastID,
-            /* usrPasswordHash       */ "'{$usrPasswordHash}'",
-            /* usrPasswordCreatedAt  */ 'NOW()',
-            /* usrMustChangePassword */ 1
+            /* usrID                 */
+            $lastID,
+            /* usrPasswordHash       */
+            "'{$usrPasswordHash}'",
+            /* usrPasswordCreatedAt  */
+            'NOW()',
+            /* usrMustChangePassword */
+            1
           ]);
         } catch (\Throwable $exp) {
           echo "** ERROR: ID: {$lastID} **\n";
@@ -3920,20 +4023,20 @@ SQL;
     $this->log("  converted to '{$lastID}'");
   }
 
-  public function convert_profile_to_Usr_other_1(&$convertTableData)
+  public function v2_convert_profile_to_Usr_other_1(&$convertTableData)
   {
     $this->log("profile_to_Usr_other_1:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_profile->user.other(1)';
 
-    list ($queryLastID, $errorids) = $this->initializeWorker($convertTableData, $convertKey);
+    list($queryLastID, $errorids) = $this->initializeWorker($convertTableData, $convertKey);
 
     $processedErrorIds = [];
 
     //-----------------
-    $fnPutData = function(array $values, $lastID) use($convertKey, &$errorids, &$processedErrorIds) {
+    $fnPutData = function (array $values, $lastID) use ($convertKey, &$errorids, &$processedErrorIds) {
       $this->putData('tbl_AAA_User', [
         'usrID',
         'usrEducationLevel',
@@ -3980,7 +4083,7 @@ SQL;
       'مجرد' => enuUserMaritalStatus::NotMarried,
     ];
 
-    $fnFromMapIfNotNull = function($value, $map, $nullValue = null) {
+    $fnFromMapIfNotNull = function ($value, $map, $nullValue = null) {
       if (empty($value))
         return $nullValue;
 
@@ -4002,7 +4105,7 @@ SQL;
       //   break;
 
       //-- create where and newFetchCount -------------------------------
-      $thisLoopErrorIDs = array_filter($errorids, function($var) use($queryLastID) {
+      $thisLoopErrorIDs = array_filter($errorids, function ($var) use ($queryLastID) {
         return ($var <= $queryLastID);
       });
 
@@ -4022,7 +4125,7 @@ SQL;
 
       // var_dump(['thisLoopErrorIDs' => $thisLoopErrorIDs, 'where' => $where]);
 
-      $qry =<<<SQL
+      $qry = <<<SQL
       SELECT tbl_profile.*
            , tbl_otherinfo.*
 
@@ -4039,7 +4142,7 @@ SQL;
 SQL;
 
       $this->log("  fetching data from ({$queryLastID})+1...");
-      $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
 
       if (empty($rows)) {
         if ($loopCount == 1) {
@@ -4077,15 +4180,21 @@ SQL;
           }
 
           $values[$lastID] = implode(',', [
-            /* usrID               */ $lastID + 100,
-            /* usrEducationLevel   */ $this->quotedString($Education),
-            /* usrFieldOfStudy     */ $this->quotedString($FieldOfStudy),
-            /* usrYearOfGraduation */ $this->nullIfEmpty($YearOfGraduation),
-            /* usrEducationPlace   */ $this->quotedString($EducationPlace),
-            /* usrMilitaryStatus   */ $this->quotedString($MilitaryStatus),
-            /* usrMaritalStatus    */ $this->quotedString($MaritalStatus),
+            /* usrID               */
+            $lastID + 100,
+            /* usrEducationLevel   */
+            $this->quotedString($Education),
+            /* usrFieldOfStudy     */
+            $this->quotedString($FieldOfStudy),
+            /* usrYearOfGraduation */
+            $this->nullIfEmpty($YearOfGraduation),
+            /* usrEducationPlace   */
+            $this->quotedString($EducationPlace),
+            /* usrMilitaryStatus   */
+            $this->quotedString($MilitaryStatus),
+            /* usrMaritalStatus    */
+            $this->quotedString($MaritalStatus),
           ]);
-
         } catch (\Throwable $exp) {
           $this->fnLogErrorToConvertTable($lastID, $exp->getMessage(), $convertKey, $errorids, $processedErrorIds);
           // echo "** ERROR: ID: {$lastID} **\n";
@@ -4114,20 +4223,20 @@ SQL;
     $this->log("  converted to '{$queryLastID}'");
   }
 
-  public function convert_profile_to_Mbr_other_1(&$convertTableData)
+  public function v2_convert_profile_to_Mbr_other_1(&$convertTableData)
   {
     $this->log("profile_to_Mbr_other_1:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_profile->member.other(1)';
 
-    list ($queryLastID, $errorids) = $this->initializeWorker($convertTableData, $convertKey);
+    list($queryLastID, $errorids) = $this->initializeWorker($convertTableData, $convertKey);
 
     $processedErrorIds = [];
 
     //-----------------
-    $fnPutData = function(array $values, $lastID) use($convertKey, &$errorids, &$processedErrorIds) {
+    $fnPutData = function (array $values, $lastID) use ($convertKey, &$errorids, &$processedErrorIds) {
       $this->putData('tbl_MHA_Member', [
         'mbrUserID',
         'mbrInstrumentID',
@@ -4162,7 +4271,7 @@ SQL;
       'درجه پنجم'   => 5,
     ];
 
-    $fnFromMapIfNotNull = function($value, $map, $nullValue = null) {
+    $fnFromMapIfNotNull = function ($value, $map, $nullValue = null) {
       if (empty($value))
         return $nullValue;
 
@@ -4184,7 +4293,7 @@ SQL;
       //   break;
 
       //-- create where and newFetchCount -------------------------------
-      $thisLoopErrorIDs = array_filter($errorids, function($var) use($queryLastID) {
+      $thisLoopErrorIDs = array_filter($errorids, function ($var) use ($queryLastID) {
         return ($var <= $queryLastID);
       });
 
@@ -4204,7 +4313,7 @@ SQL;
 
       // var_dump(['thisLoopErrorIDs' => $thisLoopErrorIDs, 'where' => $where]);
 
-      $qry =<<<SQL
+      $qry = <<<SQL
       SELECT tbl_profile.*
            , tbl_otherinfo.*
 
@@ -4221,7 +4330,7 @@ SQL;
 SQL;
 
       $this->log("  fetching data from ({$queryLastID})+1...");
-      $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
 
       if (empty($rows)) {
         if ($loopCount == 1) {
@@ -4274,15 +4383,21 @@ SQL;
           }
 
           $values[$lastID] = implode(',', [
-            /* mbrUserID          */ $lastID + 100,
-            /* mbrInstrumentID    */ $InstrumentID,
-            /* mbrSingID          */ $SingID,
-            /* mbrResearchID      */ $ResearchID,
-            /* mbrJob             */ $Job,
-            /* mbrArtDegree       */ $ArtDegree,
-            /* mbrHonarCreditCode */ $HonarCreditCode,
+            /* mbrUserID          */
+            $lastID + 100,
+            /* mbrInstrumentID    */
+            $InstrumentID,
+            /* mbrSingID          */
+            $SingID,
+            /* mbrResearchID      */
+            $ResearchID,
+            /* mbrJob             */
+            $Job,
+            /* mbrArtDegree       */
+            $ArtDegree,
+            /* mbrHonarCreditCode */
+            $HonarCreditCode,
           ]);
-
         } catch (\Throwable $exp) {
           $this->fnLogErrorToConvertTable($lastID, $exp->getMessage(), $convertKey, $errorids, $processedErrorIds);
           // echo "** ERROR: ID: {$lastID} **\n";
@@ -4313,7 +4428,7 @@ SQL;
 
   public function copylostimages()
   {
-/*
+    /*
     $files = [
       "userprofile_1613821716.jpg" => "/home2/iranhmus/domains/api.iranhmusic.ir/public_html/tmp/upload/user/69/1D/99/691D9952/10499/user/userprofile_1613821716.jpg",
     ];
@@ -4333,11 +4448,11 @@ SQL;
 */
   }
 
-  public function convert_update_members_expiredate(&$convertTableData)
+  public function v2_convert_update_members_expiredate(&$convertTableData)
   {
     $this->log("update members expire date:");
 
-    $qry =<<<SQL
+    $qry = <<<SQL
     UPDATE tbl_MHA_Member mbr
 INNER JOIN (
     SELECT uas.uasActorID
@@ -4360,20 +4475,20 @@ SQL;
     $this->log("update members expire date: {$rowsCount}");
   }
 
-  public function convert_profile_to_Mbr_expiredate(&$convertTableData)
+  public function v2_convert_profile_to_Mbr_expiredate(&$convertTableData)
   {
     $this->log("profile_to_Mbr_expiredate:");
 
-    $oldcrmdbv2 = Yii::$app->oldcrmdbv2;
+    $dboldcrm = Yii::$app->oldcrmdbv2;
 
     $convertKey = 'v2.tbl_profile->member.expiredate';
 
-    list ($queryLastID, $errorids) = $this->initializeWorker($convertTableData, $convertKey);
+    list($queryLastID, $errorids) = $this->initializeWorker($convertTableData, $convertKey);
 
     $processedErrorIds = [];
 
     //-----------------
-    $fnPutData = function(array $values, $lastID) use($convertKey, &$errorids, &$processedErrorIds) {
+    $fnPutData = function (array $values, $lastID) use ($convertKey, &$errorids, &$processedErrorIds) {
       $this->putData('tbl_MHA_Member', [
         'mbrUserID',
         'mbrExpireDate_convert',
@@ -4387,7 +4502,7 @@ SQL;
     try {
       //phase 1: add column
       $this->log('  check mbrExpireDate_convert column');
-      $qry =<<<SQL
+      $qry = <<<SQL
   SELECT COLUMN_NAME
     FROM INFORMATION_SCHEMA.COLUMNS
    WHERE TABLE_SCHEMA = DATABASE()
@@ -4398,7 +4513,7 @@ SQL;
       if (empty($cnt1)) {
         $this->log('  creating mbrExpireDate_convert column');
 
-        $qry =<<<SQL
+        $qry = <<<SQL
 ALTER TABLE `tbl_MHA_Member`
   ADD COLUMN `mbrExpireDate_convert` VARCHAR(256) NULL DEFAULT NULL;
 SQL;
@@ -4420,7 +4535,7 @@ SQL;
         //   break;
 
         //-- create where and newFetchCount -------------------------------
-        $thisLoopErrorIDs = array_filter($errorids, function($var) use($queryLastID) {
+        $thisLoopErrorIDs = array_filter($errorids, function ($var) use ($queryLastID) {
           return ($var <= $queryLastID);
         });
 
@@ -4440,7 +4555,7 @@ SQL;
 
         // var_dump(['thisLoopErrorIDs' => $thisLoopErrorIDs, 'where' => $where]);
 
-        $qry =<<<SQL
+        $qry = <<<SQL
   SELECT tbl_profile.*
 
     FROM tbl_profile
@@ -4455,7 +4570,7 @@ ORDER BY tbl_profile.tbl_profile_id
 SQL;
 
         $this->log("  fetching data from ({$queryLastID})+1...");
-        $rows = $oldcrmdbv2->createCommand($qry)->queryAll();
+        $rows = $dboldcrm->createCommand($qry)->queryAll();
 
         if (empty($rows)) {
           if ($loopCount == 1) {
@@ -4482,10 +4597,11 @@ SQL;
             $tbl_profile_expiredate = $this->jalaliToMiladi($row['tbl_profile_expiredate']);
 
             $values[$lastID] = implode(',', [
-              /* mbrUserID             */ $lastID + 100,
-              /* mbrExpireDate_convert */ $tbl_profile_expiredate,
+              /* mbrUserID             */
+              $lastID + 100,
+              /* mbrExpireDate_convert */
+              $tbl_profile_expiredate,
             ]);
-
           } catch (\Throwable $exp) {
             $this->fnLogErrorToConvertTable($lastID, $exp->getMessage(), $convertKey, $errorids, $processedErrorIds);
             // echo "** ERROR: ID: {$lastID} **\n";
@@ -4514,7 +4630,7 @@ SQL;
       $this->log("  converted to '{$queryLastID}'");
 
       //phase 3: convert mbrExpireDate_convert to mbrExpireDate if can
-      $qry =<<<SQL
+      $qry = <<<SQL
  UPDATE tbl_MHA_Member
     SET mbrExpireDate = mbrExpireDate_convert
   WHERE mbrExpireDate_convert IS NOT NULL
@@ -4526,17 +4642,516 @@ SQL;
 
       $rowsCount = $this->queryExecute($qry, __FUNCTION__, __LINE__);
       $this->log("update members expire date: {$rowsCount}");
-
     } catch (\Throwable $th) {
       $this->log($th->getMessage(), 'ERROR');
-
     } finally {
-      $qry =<<<SQL
+      $qry = <<<SQL
 ALTER TABLE `tbl_MHA_Member`
   DROP COLUMN `mbrExpireDate_convert`;
 SQL;
       $this->queryExecute($qry, __FUNCTION__, __LINE__);
     }
   }
+
+  /**********************************************************\
+  |* V 1                                                    *|
+  \**********************************************************/
+  public function actionFromV1()
+  {
+    $this->log("migrating from v1");
+
+    //unlock
+    $fnUnlock = function () {
+      $qry = "DELETE FROM tbl_convert WHERE tableName = 'v1.locked'";
+      $this->queryExecute($qry, __FUNCTION__, __LINE__);
+    };
+
+    $convertTableData = $this->readConvertTable(1);
+
+    if (isset($convertTableData['v1.locked'])) {
+      $nonExpireFound = false;
+      foreach ($convertTableData as $tbl => $data) {
+        if (($tbl != 'v1.locked') && (($data['expired'] ?? 0) == 0)) {
+          $nonExpireFound = true;
+          break;
+        }
+      }
+
+      if ($nonExpireFound) {
+        $this->log("V1.LOCKED");
+        return;
+      }
+
+      $this->log("RE-LOCKING...");
+      $qry = "UPDATE tbl_convert SET at=NOW() WHERE tableName='v1.locked'";
+      $this->queryExecute($qry, __FUNCTION__, __LINE__);
+    }
+
+    //lock
+    $qry = "INSERT IGNORE INTO tbl_convert(tableName, lastID) VALUES ('v1.locked', 0)";
+    $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+    try {
+      $this->v1_convert_positive_balance($convertTableData);
+
+      $fnUnlock();
+    } catch (\Throwable $exp) {
+      $fnUnlock();
+      $this->log($exp->getMessage());
+      throw $exp;
+    } catch (\Exception $exp) {
+      $fnUnlock();
+      $this->log($exp->getMessage());
+      throw $exp;
+    }
+  }
+
+  public function v1_convert_positive_balance(&$convertTableData)
+  {
+    $this->log("balance (+):");
+
+    $dboldcrm = Yii::$app->oldcrmdbv1;
+
+    //-- add convert_status field (NULL: not touched, C:converted, E:error) -------------------------------
+    //     $qry = <<<SQL
+    //   SELECT COLUMN_NAME
+    //     FROM INFORMATION_SCHEMA.COLUMNS
+    //    WHERE TABLE_SCHEMA = DATABASE()
+    //      AND TABLE_NAME = 'tbl_MHA_MHAMemberBalance'
+    //      AND COLUMN_NAME = 'convert_status';
+    // SQL;
+    //     $cnt1 = $dboldcrm->createCommand($qry)->queryOne();
+    //     if (empty($cnt1)) {
+    //       $qry = <<<SQL
+    // ALTER TABLE `tbl_MHA_MHAMemberBalance`
+    // 	ADD COLUMN `convert_status` CHAR(1) NULL DEFAULT NULL AFTER `MHAMemberBalance_UpdateDate`;
+    // SQL;
+    //       $dboldcrm->createCommand($qry)->execute();
+    //     }
+
+    //-- normalize input -------------------------------
+    $qry = <<<SQL
+  SELECT COLUMN_NAME
+    FROM INFORMATION_SCHEMA.COLUMNS
+   WHERE TABLE_SCHEMA = DATABASE()
+     AND TABLE_NAME = 'tbl_MHA_MHAMemberBalance'
+     AND COLUMN_NAME = 'convert_MHAMemberBalance_Amount';
+SQL;
+    $cnt1 = $dboldcrm->createCommand($qry)->queryOne();
+    if (empty($cnt1)) {
+      $qry = <<<SQL
+ALTER TABLE `tbl_MHA_MHAMemberBalance`
+	ADD COLUMN `convert_MHAMemberBalance_Amount` FLOAT NULL AFTER `MHAMemberBalance_Amount`;
+SQL;
+      $dboldcrm->createCommand($qry)->execute();
+    }
+
+    $qry = <<<SQL
+ UPDATE tbl_MHA_MHAMemberBalance
+    SET convert_MHAMemberBalance_Amount = CASE
+   WHEN (
+        (
+        MHAMemberBalance_Desc LIKE '%عضويت%'
+    AND MHAMemberBalance_Desc NOT LIKE '%بانک%'
+    AND MHAMemberBalance_Desc NOT LIKE '%پرداخت%'
+    AND MHAMemberBalance_Desc NOT LIKE '%حواله%'
+    AND MHAMemberBalance_Desc NOT LIKE '%واريز%'
+    AND MHAMemberBalance_Desc NOT LIKE '%فيش%'
+        )
+    AND MHAMemberBalance_Amount > 0
+        )
+     OR (
+        MHAMemberBalance_Desc NOT LIKE '%عضويت%'
+    AND (
+        MHAMemberBalance_Desc LIKE '%بانک%'
+     OR MHAMemberBalance_Desc LIKE '%پرداخت%'
+     OR MHAMemberBalance_Desc LIKE '%حواله%'
+     OR MHAMemberBalance_Desc LIKE '%واريز%'
+        )
+    AND MHAMemberBalance_Amount < 0
+        )
+   THEN -1 * MHAMemberBalance_Amount
+   ELSE MHAMemberBalance_Amount
+    END
+  WHERE convert_MHAMemberBalance_Amount IS NULL;
+;
+SQL;
+    $dboldcrm->createCommand($qry)->execute();
+
+    #2948
+
+    //-- update AUTO_INCREMENT
+    //     $qry = <<<SQL
+    //   SELECT MAX(MHAMemberBalance_Code) AS _max_code
+    //     FROM tbl_MHA_MHAMemberBalance
+    //    WHERE convert_MHAMemberBalance_Amount > 0
+    // SQL;
+    //     $max_code = $dboldcrm->createCommand($qry)->queryOne();
+    //     if (empty($max_code) || (($max_code['_max_code'] ?? 0) == 0)) {
+    //       $this->log("  nothing to do");
+    //       return;
+    //     }
+    //     $max_code = $max_code['_max_code'];
+
+    $this->ensureMembershipSaleableExists();
+
+    $fnGetConst = function ($value) {
+      return $value;
+    };
+
+    $fnFixBadPersianCharsSql = function ($field) {
+      return <<<SQL
+    REPLACE(
+    REPLACE(
+    REPLACE(
+    REPLACE(
+    REPLACE(
+    REPLACE(
+    REPLACE(
+    REPLACE($field,
+      'أ', 'ا'),
+      'ك', 'ک'),
+      'ؠ', 'ی'),
+      'ى', 'ی'),
+      'ي', 'ی'),
+      'ݷ', 'ی'),
+      'ئ', 'ی'),
+      ' ', '')
+  SQL;
+    };
+
+    //-----------------
+    $convertKey = 'v1.tbl_MHA_MHAMemberBalance';
+    $queryLastID = $convertTableData[$convertKey]['lastID'] ?? 0;
+
+    //-----------------
+    $errorids = $convertTableData[$convertKey]['info'] ?? null;
+    if (empty($errorids))
+      $errorids = [];
+    else
+      $errorids = explode(',', $errorids);
+
+    if (empty($errorids) == false) {
+      $errorids = array_combine(array_values($errorids), array_values($errorids));
+      $this->log("  last errorids: " . implode(',', $errorids));
+    }
+
+    $processedErrorIds = [];
+
+    $fnRemoveFromErrorIDs = function ($lastID) use (&$errorids, &$processedErrorIds) {
+      if (empty($errorids[$lastID]))
+        return false;
+
+      unset($errorids[$lastID]);
+      $processedErrorIds[$lastID] = $lastID;
+
+      return true;
+    };
+
+    //-----------------
+    $userDefWalletMap = [];
+    $fetchCount = 1000;
+    $loopCount = 0;
+
+    while (true) {
+      ++$loopCount;
+
+      // if ($loopCount > 1)
+      //   break;
+
+      $erroridsCount = count($errorids);
+      $newFetchCount = $fetchCount;
+      if ($erroridsCount > $newFetchCount)
+        $newFetchCount += $erroridsCount;
+
+      // $where = "(tbl_MHA_MHAMemberBalance.MHAMemberBalance_Code > {$queryLastID} OR convert_status = 'E')\n";
+      // if (empty($processedErrorIds) == false)
+      //   $where .= "AND tbl_MHA_MHAMemberBalance.MHAMemberBalance_Code NOT IN (" . implode(',', $processedErrorIds) . ")\n";
+
+      $where = "tbl_MHA_MHAMemberBalance.MHAMemberBalance_Code > {$queryLastID}";
+      if (empty($errorids) == false)
+        $where = '(' . $where . "\nOR tbl_MHA_MHAMemberBalance.MHAMemberBalance_Code IN (" . implode(',', $errorids) . ")\n)";
+      $where .= "\n";
+      if (empty($processedErrorIds) == false)
+        $where .= "AND tbl_MHA_MHAMemberBalance.MHAMemberBalance_Code NOT IN (" . implode(',', $processedErrorIds) . ")\n";
+
+      $qry = <<<SQL
+      SELECT *
+        FROM tbl_MHA_MHAMemberBalance
+  INNER JOIN tbl_MHA_MHAMember
+          ON tbl_MHA_MHAMember.MHAMember_Code = tbl_MHA_MHAMemberBalance.MHAMemberBalance_MHAMember_Code
+  INNER JOIN tbl_APP_Member
+          ON tbl_APP_Member.Member_Code = tbl_MHA_MHAMember.MHAMember_Member_Code
+       WHERE convert_MHAMemberBalance_Amount > 0
+         AND {$where}
+       LIMIT {$newFetchCount}
+SQL;
+
+      $this->log("  fetching data from ({$queryLastID})+1...");
+      $rows = $dboldcrm->createCommand($qry)->queryAll();
+
+      if (empty($rows)) {
+        if ($loopCount == 1) {
+          $this->log("  nothing to do");
+          return;
+        }
+        //else:
+        break;
+      }
+
+      $this->log("  source data fetched: " . count($rows) . " rows");
+
+      foreach ($rows as $row) {
+        $lastID = intval(trim($row['MHAMemberBalance_Code']));
+
+        if ($lastID > $queryLastID)
+          $queryLastID = $lastID;
+
+        try {
+          if (empty($row['Member_ID'])) {
+            $this->fnLogErrorToConvertTable($lastID, 'Member_ID is empty', $convertKey, $errorids, $processedErrorIds);
+            continue;
+          }
+
+          $qry = <<<SQL
+  SELECT mbrUserID
+    FROM tbl_MHA_Member
+   WHERE mbrRegisterCode = {$row['Member_ID']}
+SQL;
+          $mbrrow = $this->queryOne($qry, __FUNCTION__, __LINE__);
+          if (empty($mbrrow)) {
+            $this->fnLogErrorToConvertTable($lastID, 'Member not found', $convertKey, $errorids, $processedErrorIds);
+            continue;
+          }
+
+          ///@todo: get All rows -> check for not removed member if more than 1 row fetched
+
+          $userid = $mbrrow['mbrUserID'];
+
+          //----------------------------------------
+          $convert_MHAMemberBalance_Amount = intval($row['convert_MHAMemberBalance_Amount']);
+          $MHAMemberBalance_Date           = $row['MHAMemberBalance_Date'];
+          $MHAMemberBalance_Desc           = StringHelper::fixPersianCharacters($row['MHAMemberBalance_Desc']);
+          $MHAMemberBalance_Guid           = strtolower(str_replace('{', '', str_replace('}', '', $row['MHAMemberBalance_Guid'])));
+
+          $transaction = Yii::$app->db->beginTransaction();
+
+          try {
+            //phase 1: offline payment
+            //ensure wallet
+            if (empty($userDefWalletMap[$userid])) {
+              $qry = <<<SQL
+  SELECT walID
+    FROM tbl_AAA_Wallet
+   WHERE walOwnerUserID = {$userid}
+     AND walIsDefault = 1
+     AND walStatus != '{$fnGetConst(enuWalletStatus::Removed)}'
+SQL;
+              $walrow = $this->queryOne($qry, __FUNCTION__, __LINE__);
+              if (empty($walrow) || (($walrow['walID'] ?? 0) == 0)) {
+                $this->log("  error in get def wal id");
+                throw new \Exception("  error in get def wal id");
+              }
+              $walid = $walrow['walID'];
+              $userDefWalletMap[$userid] = $walid;
+            } else
+              $walid = $userDefWalletMap[$userid];
+
+            //create credit voucher
+            $qry = <<<SQL
+  INSERT INTO tbl_AAA_Voucher
+          SET vchUUID        = UUID()
+            , vchOwnerUserID = {$userid}
+            , vchType        = '{$fnGetConst(enuVoucherType::Credit)}'
+            , vchAmount      = {$convert_MHAMemberBalance_Amount}
+            , vchTotalAmount = {$convert_MHAMemberBalance_Amount}
+            , vchOfflinePaid = {$convert_MHAMemberBalance_Amount}
+            , vchItems       = '{"inc-wallet-id":"{$walid}","convert-from":"v1","convert-id":{$lastID}}'
+            , vchStatus      = '{$fnGetConst(enuVoucherStatus::Finished)}'
+SQL;
+            $this->queryExecute($qry, __FUNCTION__, __LINE__);
+            $voucherid = Yii::$app->db->getLastInsertID();
+
+            //create offline payment
+            $qry = <<<SQL
+  INSERT INTO tbl_AAA_OfflinePayment
+          SET ofpUUID        = '{$MHAMemberBalance_Guid}'
+            , ofpOwnerUserID = {$userid}
+            , ofpVoucherID   = {$voucherid}
+            , ofpType        = '{$fnGetConst(enuOfflinePaymentType::ToAccountNumber)}'
+            , ofpAmount      = {$convert_MHAMemberBalance_Amount}
+            , ofpPayDate     = '{$MHAMemberBalance_Date}'
+            , ofpWalletID    = {$walid}
+            , ofpComment     = 'کانورت از سیستم ۱ - {$MHAMemberBalance_Desc}'
+            , ofpStatus      = '{$fnGetConst(enuOfflinePaymentStatus::Approved)}'
+SQL;
+            $this->queryExecute($qry, __FUNCTION__, __LINE__);
+            $ofpid = Yii::$app->db->getLastInsertID();
+
+            //create wallet transaction
+            $qry = <<<SQL
+  INSERT INTO tbl_AAA_WalletTransaction
+          SET wtrUUID             = UUID()
+            , wtrWalletID		      = {$walid}
+            , wtrVoucherID		    = {$voucherid}
+            , wtrOfflinePaymentID = {$ofpid}
+            , wtrAmount			      = {$convert_MHAMemberBalance_Amount}
+SQL;
+            $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+            //update wallet
+            $qry = <<<SQL
+       UPDATE tbl_AAA_Wallet
+          SET walRemainedAmount = walRemainedAmount + {$convert_MHAMemberBalance_Amount}
+        WHERE walID = {$walid}
+SQL;
+            $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+            /*************************************
+
+              //phase 2: membership
+              //create basket voucher
+              $vchItemKey = Uuid::uuid4()->toString();
+              $vchItems = Json::encode([
+                [
+                  'key'       => $vchItemKey,
+                  // 'userid'    => $userid,
+                  'service'   => 'mha',
+                  // 'slbkey'    => 'mbrshp',
+                  'slbid'     => $fnGetConst(self::crm_2_membership_slbID),
+                  'desc'      => 'حق عضویت تا ' . $tbl_MHA_MHAMemberBalance_expire_jalali,
+                  'qty'       => 1,
+                  'unit'      => 'سال',
+                  'prdtype'    => 'D',
+                  'unitprice' => $convert_MHAMemberBalance_Amount,
+                  // 'slbinfo'		=> [
+                  //   'startDate' => $startDate,
+                  //   'endDate' => $endDate,
+                  // ],
+                  'maxqty'    => 1,
+                  'qtystep'    => 0, //0: do not allow to change qty in basket
+                ],
+              ]);
+
+              $qry = <<<SQL
+  INSERT INTO tbl_AAA_Voucher
+          SET vchUUID         = UUID()
+            , vchOwnerUserID  = {$userid}
+            , vchType         = '{$fnGetConst(enuVoucherType::Basket)}'
+            , vchAmount       = {$convert_MHAMemberBalance_Amount}
+            , vchTotalAmount  = {$convert_MHAMemberBalance_Amount}
+            , vchPaidByWallet = {$convert_MHAMemberBalance_Amount}
+            , vchTotalPaid    = {$convert_MHAMemberBalance_Amount}
+            , vchItems        = '{$vchItems}'
+            , vchStatus       = '{$fnGetConst(enuVoucherStatus::Finished)}'
+SQL;
+              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+              $voucherid = Yii::$app->db->getLastInsertID();
+
+              //create wallet transaction
+              $qry = <<<SQL
+  INSERT INTO tbl_AAA_WalletTransaction
+          SET wtrUUID       = UUID()
+            , wtrWalletID		= {$walid}
+            , wtrVoucherID	= {$voucherid}
+            , wtrAmount			= (-1) * {$convert_MHAMemberBalance_Amount}
+SQL;
+              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+              //update wallet
+              //             $qry =<<<SQL
+              //   UPDATE tbl_AAA_Wallet
+              //     SET walRemainedAmount = walRemainedAmount - {$convert_MHAMemberBalance_Amount}
+              //   WHERE walID = {$walid}
+              // SQL;
+              //             $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+              //member membership
+              $qry = <<<SQL
+  INSERT INTO tbl_MHA_Accounting_UserAsset
+          SET uasUUID						 = '{$vchItemKey}'
+            , uasActorID         = {$userid}
+            , uasSaleableID      = {$fnGetConst(self::crm_2_membership_slbID)}
+            , uasQty             = 1
+            , uasVoucherID       = {$voucherid}
+            , uasVoucherItemInfo = '{$vchItems}'
+            , uasValidFromDate   = NULL
+            , uasValidToDate     = {$tbl_MHA_MHAMemberBalance_expire}
+            , uasStatus          = '{$fnGetConst(enuUserAssetStatus::Active)}'
+SQL;
+              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+              //phase 3: member
+              $qry = <<<SQL
+  UPDATE tbl_MHA_Member
+     SET mbrAcceptedAt = DATE_ADD({$tbl_MHA_MHAMemberBalance_expire}, INTERVAL -1 YEAR)
+   WHERE mbrUserID = {$userid}
+     AND (mbrAcceptedAt IS NULL
+      OR mbrAcceptedAt > DATE_ADD({$tbl_MHA_MHAMemberBalance_expire}, INTERVAL -1 YEAR)
+         )
+SQL;
+              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+             ****************************************************/
+
+            //phase 4: log
+            //log to tbl_convert
+            $qry = <<<SQL
+   INSERT INTO tbl_convert(tableName, lastID, at)
+        VALUES ('{$convertKey}', $lastID, NOW())
+            ON DUPLICATE KEY UPDATE lastID={$lastID}, at=NOW();
+SQL;
+            $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+            //remove lastID from tbl_convert.info
+            if ($fnRemoveFromErrorIDs($lastID)) {
+              $this->log("  REMOVE '{$lastID}' FROM ERRORS");
+
+              $qry = <<<SQL
+  UPDATE tbl_convert
+     SET info = IF (info IS NULL OR LENGTH(info)=0,
+           NULL,
+           IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
+             TRIM(BOTH ',' FROM REPLACE(CONCAT(',', info, ','), ',{$lastID},', ',')),
+             info
+           )
+         )
+       , at=NOW()
+   WHERE tableName = '{$convertKey}';
+SQL;
+              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+            }
+
+            $this->fnUnLogErrorFromConvertTable([$lastID], $convertKey, $errorids, $processedErrorIds);
+
+            //commit
+            $transaction->commit();
+          } catch (\Throwable $exp) {
+            $transaction->rollBack();
+            throw $exp;
+          }
+        } catch (\Throwable $exp) {
+          $this->fnLogErrorToConvertTable($lastID, $exp->getMessage(), $convertKey, $errorids, $processedErrorIds);
+          // echo "** ERROR: ID: {$lastID} **\n";
+          echo $exp->getMessage();
+          echo "\n";
+          // throw $exp;
+        }
+      } //foreach ($rows as $row)
+    } //while (true)
+
+    if (isset($convertTableData[$convertKey]))
+      $convertTableData[$convertKey]['lastID'] = $queryLastID;
+    else
+      $convertTableData[$convertKey] = [
+        'lastID' => $queryLastID
+      ];
+
+    $this->log("  converted to '{$queryLastID}'");
+  }
+
+  //     $qry = <<<SQL
+  //   UPDATE tbl_profile
+  //      SET convert_fullname = {$fnFixBadPersianCharsSql("CONCAT(tbl_profile_fld1, ' ', tbl_profile_fld2)")}
 
 }

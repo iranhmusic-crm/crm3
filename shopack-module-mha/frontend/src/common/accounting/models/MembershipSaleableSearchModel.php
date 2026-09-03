@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Kambiz Zandi <kambizzandi@gmail.com>
  */
@@ -14,7 +15,7 @@ use iranhmusic\shopack\mha\frontend\common\accounting\models\MembershipSaleableM
 
 class MembershipSaleableSearchModel extends MembershipSaleableModel
 {
-  use \shopack\base\common\db\SearchModelTrait;
+	use \shopack\base\common\db\SearchModelTrait;
 
 	// public $providedCount;
 
@@ -54,7 +55,13 @@ class MembershipSaleableSearchModel extends MembershipSaleableModel
 						'default' => SORT_DESC,
 					],
 					'slbRemovedBy',
+					'slbAvailableFromDate' => [
+						SORT_DESC,
+					],
 				],
+				'defaultOrder' => [
+					'slbAvailableFromDate' => SORT_DESC,
+				]
 			],
 		]);
 
@@ -76,5 +83,4 @@ class MembershipSaleableSearchModel extends MembershipSaleableModel
 
 		return $dataProvider;
 	}
-
 }
