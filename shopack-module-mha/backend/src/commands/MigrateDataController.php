@@ -34,6 +34,7 @@ use iranhmusic\shopack\mha\common\enums\enuMemberStatus;
 use shopack\aaa\common\enums\enuUserEducationLevel;
 use shopack\aaa\common\enums\enuUserMaritalStatus;
 use shopack\aaa\common\enums\enuUserMilitaryStatus;
+use shopack\interface\accounting\common\enums\enuProductType;
 use shopack\interface\accounting\common\enums\enuUserAssetStatus;
 
 /*
@@ -57,15 +58,15 @@ DELETE FROM tbl_MHA_Member WHERE mbrUserID > 100;
 DELETE FROM tbl_MHA_BasicDefinition;
 
 UPDATE tbl_AAA_User
-	SET tbl_AAA_User.usrCreatedBy = NULL
-    , tbl_AAA_User.usrUpdatedBy = NULL
-	WHERE usrID > 100;
+    SET tbl_AAA_User.usrCreatedBy = null
+    , tbl_AAA_User.usrUpdatedBy = null
+    WHERE usrID > 100;
 
 -- user images and docs:
 DELETE FROM tbl_MHA_Member_Document;
 UPDATE tbl_AAA_User
-	SET tbl_AAA_User.usrImageFileID = null
-	WHERE usrID > 100;
+    SET tbl_AAA_User.usrImageFileID = null
+    WHERE usrID > 100;
 DELETE FROM tbl_AAA_UploadFile WHERE tbl_AAA_UploadFile.uflOwnerUserID > 100;
 
 DELETE tbl_AAA_WalletTransaction FROM tbl_AAA_WalletTransaction INNER JOIN tbl_AAA_Wallet ON tbl_AAA_Wallet.walID = tbl_AAA_WalletTransaction.wtrWalletID WHERE tbl_AAA_Wallet.walOwnerUserID > 100;
@@ -122,18 +123,18 @@ delete from tbl_MHA_MemberMembership;
 update tbl_AAA_Wallet set walRemainedAmount = 0 where walOwnerUserID > 100;
 
 delete tbl_AAA_WalletTransaction
-	from tbl_AAA_WalletTransaction
-	inner join tbl_AAA_Wallet
-	on tbl_AAA_Wallet.walID = tbl_AAA_WalletTransaction.wtrWalletID
-	where walOwnerUserID > 100;
+    from tbl_AAA_WalletTransaction
+    inner join tbl_AAA_Wallet
+    on tbl_AAA_Wallet.walID = tbl_AAA_WalletTransaction.wtrWalletID
+    where walOwnerUserID > 100;
 
 delete from tbl_AAA_OfflinePayment WHERE ofpOwnerUserID > 100;
 
 delete tbl_AAA_OnlinePayment
-	from tbl_AAA_OnlinePayment
-	INNER JOIN tbl_AAA_Voucher
-	ON tbl_AAA_Voucher.vchID = tbl_AAA_OnlinePayment.onpVoucherID
-	WHERE vchOwnerUserID > 100;
+    from tbl_AAA_OnlinePayment
+    INNER JOIN tbl_AAA_Voucher
+    ON tbl_AAA_Voucher.vchID = tbl_AAA_OnlinePayment.onpVoucherID
+    WHERE vchOwnerUserID > 100;
 
 delete from tbl_AAA_Voucher where vchOwnerUserID > 100;
 
@@ -151,8 +152,8 @@ DELETE FROM tbl_MHA_Member_Document;
 ALTER TABLE tbl_MHA_Member_Document AUTO_INCREMENT=1;
 
 UPDATE tbl_AAA_User
-	SET tbl_AAA_User.usrImageFileID = NULL
-	WHERE tbl_AAA_User.usrImageFileID IS NOT NULL;
+    SET tbl_AAA_User.usrImageFileID = null
+    WHERE tbl_AAA_User.usrImageFileID IS NOT null;
 
 DELETE FROM tbl_AAA_UploadQueue;
 ALTER TABLE tbl_AAA_UploadQueue AUTO_INCREMENT=1;
@@ -161,8 +162,8 @@ DELETE FROM tbl_AAA_UploadFile;
 ALTER TABLE tbl_AAA_UploadFile AUTO_INCREMENT=1;
 
 UPDATE tbl_AAA_Gateway
- 	SET tbl_AAA_Gateway.gtwUsages = NULL
-	WHERE tbl_AAA_Gateway.gtwPluginName = 'ArvanS3ObjectStorageGateway';
+     SET tbl_AAA_Gateway.gtwUsages = null
+    WHERE tbl_AAA_Gateway.gtwPluginName = 'ArvanS3ObjectStorageGateway';
 
 DELETE FROM tbl_convert
   WHERE tableName = 'v2.tbl_profile->user-image'
@@ -189,7 +190,7 @@ class MigrateDataController extends Controller
 
     public function log($message, $type = 'info')
     {
-        echo "[" . date('Y/m/d H:i:s') . "][{$type}] {$message}\n";
+        echo date('Y/m/d H:i:s') . " [{$type}] {$message}\n";
     }
 
     public function trace($message)
@@ -242,11 +243,11 @@ class MigrateDataController extends Controller
         if ($tableSchema === null) {
             $qry = <<<SQL
 CREATE TABLE `tbl_convert` (
-	`tableName` VARCHAR(256) NOT NULL COLLATE 'utf8mb4_unicode_ci',
-	`lastID` BIGINT(20) UNSIGNED NOT NULL,
-	`at` TIMESTAMP NOT NULL DEFAULT (NOW()),
-	`info` MEDIUMTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
-	PRIMARY KEY (`tableName`) USING BTREE
+    `tableName` VARCHAR(256) NOT null COLLATE 'utf8mb4_unicode_ci',
+    `lastID` BIGINT(20) UNSIGNED NOT null,
+    `at` TIMESTAMP NOT null DEFAULT (NOW()),
+    `info` MEDIUMTEXT null DEFAULT null COLLATE 'utf8mb4_unicode_ci',
+    PRIMARY KEY (`tableName`) USING BTREE
 )
 COLLATE='utf8mb4_unicode_ci'
 ENGINE=InnoDB
@@ -328,24 +329,25 @@ SQL;
         }
     }
 
-    public $jalali = null;
-    public function jalaliToMiladi($value, $def = 'NULL', $qouted = true)
+    public ?Jalali $jalali = null;
+
+    public function jalaliToMiladi($value)
     {
         if ($this->jalali == null)
             $this->jalali = new Jalali();
 
         if ($value == null)
-            return $def;
+            return null;
 
         $value = trim($value);
         if (empty($value) || str_starts_with($value, '-') || str_starts_with($value, '0000'))
-            return $def;
+            return null;
 
         if (strpos($value, '/') === false) {
             if (strpos($value, '.') !== false)
                 $value = str_replace('.', '/', $value);
             else
-                return $def;
+                return null;
         }
 
         //meridiem
@@ -377,14 +379,14 @@ SQL;
 
                 //error
                 if (strpos($timePart, '-') !== false)
-                    return $def;
+                    return null;
 
                 $value = trim(substr($value, 0, $hyphenIndex - 1));
             }
 
             $parts = explode('/', $value);
             if (count($parts) != 3)
-                return $def;
+                return null;
 
             if (strlen($parts[0]) == 3)
                 $value = '1' . $value;
@@ -392,49 +394,63 @@ SQL;
                 $value = '13' . $value;
 
             if (strlen($parts[0]) != 4)
-                return $def;
+                return null;
 
             if ($parts[1] < 1 || $parts[1] > 12)
-                return $def;
+                return null;
 
             if ($parts[2] < 1 || $parts[2] > 31)
-                return $def;
+                return null;
 
-            $ret = $this->jalali->setJalaliDate($value, '/')->getGregorian()->format('Y/m/d');
+            $miladi = $this->jalali->setJalaliDate($value, '/')->getGregorian();
 
             if (isset($timePart)) {
                 $timeParts = explode(':', $timePart);
                 while (count($timeParts) < 3)
                     $timeParts[] = '0';
                 $timePart = implode(':', $timeParts);
+            } else
+                $timePart = null;
 
-                $ret .= ' - ' . $timePart;
-            }
-
-            if ($qouted == false)
-                return $ret;
-
-            return "'" . $ret . "'";
+            return [$miladi, $timePart];
         } catch (\Throwable $exp) {
             echo "Error. date: " . $value;
             throw $exp;
         }
     }
 
+    public function jalaliToMiladiString($value, $def = 'null', $qouted = true)
+    {
+        list($miladi, $time_str) = $this->jalaliToMiladi($value);
+
+        if ($miladi == null)
+            return $def;
+
+        $ret = $miladi->format('Y/m/d');
+
+        if ($time_str)
+            $ret .= ' - ' . $time_str;
+
+        if ($qouted == false)
+            return $ret;
+
+        return "'" . $ret . "'";
+    }
+
     public function quotedString($value)
     {
         if ($value == null)
-            return 'NULL';
+            return 'null';
 
         $value = trim($value);
         if (empty($value))
-            return 'NULL';
+            return 'null';
 
         $value = str_replace("'", "\"", $value);
         return "'" . StringHelper::fixPersianCharacters($value) . "'";
     }
 
-    public function nullIfEmpty($value, $nullValue = 'NULL')
+    public function nullIfEmpty($value, $nullValue = 'null')
     {
         if ($value == null)
             return $nullValue;
@@ -572,7 +588,7 @@ SQL;
      WHERE tbl_categories.tbl_categories_type = 1
        AND tbl_categories.tbl_categories_id > {$lastID}
        AND (
-           tbl_categories.tbl_categories_parentid IS NULL
+           tbl_categories.tbl_categories_parentid IS null
         OR tbl_categories.tbl_categories_parentid = '0'
            )
   ORDER BY tbl_categories.tbl_categories_id
@@ -651,7 +667,7 @@ SQL;
         ON parent.tbl_categories_code = tbl_categories.tbl_categories_parentid
      WHERE tbl_categories.tbl_categories_type = 1
        AND tbl_categories.tbl_categories_id > {$lastID}
-       AND tbl_categories.tbl_categories_parentid IS NOT NULL
+       AND tbl_categories.tbl_categories_parentid IS NOT null
        AND tbl_categories.tbl_categories_parentid != '0'
        AND TRIM(tbl_categories.tbl_categories_parentid) != ''
        AND tbl_categories.tbl_categories_code != tbl_categories.tbl_categories_parentid
@@ -950,7 +966,7 @@ SQL;
  LEFT JOIN tbl_categories parent
         ON parent.tbl_categories_code = tbl_categories.tbl_categories_parentid
      WHERE tbl_categories.tbl_categories_type = 1
-       AND tbl_categories.tbl_categories_parentid IS NOT NULL
+       AND tbl_categories.tbl_categories_parentid IS NOT null
        AND tbl_categories.tbl_categories_parentid != '0'
        AND TRIM(tbl_categories.tbl_categories_parentid) != ''
        AND tbl_categories.tbl_categories_code != tbl_categories.tbl_categories_parentid
@@ -1027,19 +1043,19 @@ SQL;
    LEFT JOIN tbl_categories state
           ON TRIM(state.tbl_categories_title) = TRIM(tbl_address.tbl_address_fld1)
          AND state.tbl_categories_type = 1
-         AND IFNULL(state.tbl_categories_parentid, '0') = '0'
+         AND IFnull(state.tbl_categories_parentid, '0') = '0'
          AND TRIM(tbl_address.tbl_address_fld1) != ''
 
    LEFT JOIN tbl_categories city
           ON TRIM(city.tbl_categories_title) = TRIM(tbl_address.tbl_address_fld2)
          AND city.tbl_categories_type = 1
-         AND IFNULL(city.tbl_categories_parentid, '0') = state.tbl_categories_code
+         AND IFnull(city.tbl_categories_parentid, '0') = state.tbl_categories_code
          AND TRIM(tbl_address.tbl_address_fld2) != ''
 
    LEFT JOIN tbl_categories birth_state
           ON TRIM(birth_state.tbl_categories_title) = TRIM(tbl_profile.tbl_profile_fldn7)
          AND birth_state.tbl_categories_type = 1
-         AND IFNULL(birth_state.tbl_categories_parentid, '0') = '0'
+         AND IFnull(birth_state.tbl_categories_parentid, '0') = '0'
          AND TRIM(tbl_profile.tbl_profile_fldn7) != ''
 
        WHERE tbl_profile.tbl_profile_id > {$lastID}
@@ -1066,7 +1082,7 @@ SQL;
                 $lastID = trim($row['tbl_profile_id']);
 
                 //------------
-                $gender = 'NULL';
+                $gender = 'null';
                 if (empty($row['tbl_profile_fld16']) == false) {
                     if (trim($row['tbl_profile_fld16']) == 'مرد')
                         $gender = "'" . enuGender::Male . "'";
@@ -1275,7 +1291,7 @@ SQL;
                 $ssid = $this->quotedString($ssid);
 
                 //------------
-                $birthCityID = 'NULL';
+                $birthCityID = 'null';
                 $birthCityName = trim($row['tbl_profile_fld7']);
                 if (empty($birthCityName) == false) {
                     $birthStateID = $row['birthStateID'];
@@ -1303,8 +1319,8 @@ SQL;
                 }
 
                 //------------
-                $usrBirthDate = $this->jalaliToMiladi($row['tbl_profile_fld3']);
-                if (($usrBirthDate == 'NULL') && (empty($row['tbl_otherinfo_fld4']) == false)) {
+                $usrBirthDate = $this->jalaliToMiladiString($row['tbl_profile_fld3']);
+                if (($usrBirthDate == 'null') && (empty($row['tbl_otherinfo_fld4']) == false)) {
                     $usrBirthDate = $this->quotedString($row['tbl_otherinfo_fld4']);
                 }
 
@@ -1342,7 +1358,7 @@ SQL;
                         /* usrRoleID            */
                         10,
                         /* usrPrivs             */
-                        'NULL',
+                        'null',
                         /* usrPasswordHash      */
                         /* usrPasswordCreatedAt */
                         /* usrBirthDate         */
@@ -1370,9 +1386,9 @@ SQL;
                         $this->quotedString($row['tbl_address_fld15']),
                         /* usrImageFileID       */
                         /* usrCreatedAt         */
-                        $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
+                        $this->jalaliToMiladiString($row['tbl_profile_date'], 'NOW()'),
                         /* usrUpdatedAt         */
-                        $this->jalaliToMiladi($row['tbl_profile_editdate']),
+                        $this->jalaliToMiladiString($row['tbl_profile_editdate']),
                     ]);
                 } catch (\Throwable $exp) {
                     echo "** ERROR: ID: {$lastID} **\n";
@@ -1499,9 +1515,9 @@ SQL;
                         $this->quotedString($row['tbl_address_fldn27']),
                         /* mbrStatus                 */
                         /* mbrCreatedAt              */
-                        $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
+                        $this->jalaliToMiladiString($row['tbl_profile_date'], 'NOW()'),
                         /* mbrUpdatedAt              */
-                        $this->jalaliToMiladi($row['tbl_profile_editdate']),
+                        $this->jalaliToMiladiString($row['tbl_profile_editdate']),
                     ]);
                 } catch (\Throwable $exp) {
                     echo "** ERROR: ID: {$lastID} **\n";
@@ -1573,7 +1589,7 @@ SQL;
   INSERT INTO tbl_convert(tableName, lastID, at, info)
        VALUES ('{$convertKey}', 0, NOW(), '{$lastID}')
            ON DUPLICATE KEY UPDATE
-              info = IF (info IS NULL OR LENGTH(info) = 0,
+              info = IF (info IS null OR LENGTH(info) = 0,
                 '{$lastID}',
                 IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
                   info,
@@ -1618,8 +1634,8 @@ SQL;
 
         $qry = <<<SQL
   UPDATE tbl_convert
-     SET info = IF (info IS NULL OR LENGTH(info) = 0,
-           NULL, TRIM(BOTH ',' FROM {$replaces})
+     SET info = IF (info IS null OR LENGTH(info) = 0,
+           null, TRIM(BOTH ',' FROM {$replaces})
          )
        , at = NOW()
    WHERE tableName = '{$convertKey}';
@@ -1805,8 +1821,8 @@ SQL;
 
                     $tbl_profile_op1     = $this->coalesce([$row['tbl_profile_op1']]);
                     $tbl_profile_op2     = $this->coalesce([$row['tbl_profile_op2']]);
-                    $tbl_profile_op1date = $this->jalaliToMiladi($row['tbl_profile_op1date'], null, false);
-                    $tbl_profile_op2date = $this->jalaliToMiladi($row['tbl_profile_op2date'], null, false);
+                    $tbl_profile_op1date = $this->jalaliToMiladiString($row['tbl_profile_op1date'], null, false);
+                    $tbl_profile_op2date = $this->jalaliToMiladiString($row['tbl_profile_op2date'], null, false);
 
                     $tbl_profile_expiredate  = $this->coalesce([$row['tbl_profile_expiredate']]);
                     $tbl_profile_commission  = trim($row['tbl_profile_commission']);
@@ -1911,7 +1927,7 @@ SQL;
                             $lastID + 100,
                             /* mbrknnKanoonID         */
                             $clubid,
-                            // /* mbrknnParams           */ 'NULL', //$params,
+                            // /* mbrknnParams           */ 'null', //$params,
                             /* mbrknnIsMaster         */
                             $clubidx == 0 ? 1 : 0,
                             /* mbrknnMembershipDegree */
@@ -1922,7 +1938,7 @@ SQL;
                             $this->quotedString($history),
                             /* mbrknnStatus           */
                             $this->quotedString($newStatus),
-                            //   /* mbrknnCreatedAt        */ $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
+                            //   /* mbrknnCreatedAt        */ $this->jalaliToMiladiString($row['tbl_profile_date'], 'NOW()'),
                         ]);
                     }
                 } catch (\Throwable $exp) {
@@ -2006,7 +2022,7 @@ SQL;
                 'spcLevel'          => 0,
                 'spcName'           => $this->quotedString($v['name']),
                 // 'spcDesc'           =>
-                'spcDescFieldType'  => isset($v['fieldType']) ? "'" . $v['fieldType'] . "'" : 'NULL',
+                'spcDescFieldType'  => isset($v['fieldType']) ? "'" . $v['fieldType'] . "'" : 'null',
                 // 'spcDescFieldLabel' =>
             ];
 
@@ -2193,10 +2209,10 @@ SQL;
                     /* mbrspcDesc        */
                     $spctext,
                     /* mbrspcCreatedAt   */
-                    $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
+                    $this->jalaliToMiladiString($row['tbl_profile_date'], 'NOW()'),
                     /* mbrspcCreatedBy   */
                     /* mbrspcUpdatedAt   */
-                    $this->jalaliToMiladi($row['tbl_profile_editdate']),
+                    $this->jalaliToMiladiString($row['tbl_profile_editdate']),
                     /* mbrspcUpdatedBy   */
                     /* mbrspcRemovedAt   */
                     /* mbrspcRemovedBy   */
@@ -2283,7 +2299,7 @@ SQL;
                     $found = $child->spcID;
                 }
 
-                $spctext = 'NULL';
+                $spctext = 'null';
                 if (empty($expertData_8) == false) {
                     $spctext = $this->quotedString(Json::encode([
                         'desc' => $expertData_8,
@@ -2301,10 +2317,10 @@ SQL;
                     /* mbrspcDesc        */
                     $spctext,
                     /* mbrspcCreatedAt   */
-                    $this->jalaliToMiladi($row['tbl_profile_date'], 'NOW()'),
+                    $this->jalaliToMiladiString($row['tbl_profile_date'], 'NOW()'),
                     /* mbrspcCreatedBy   */
                     /* mbrspcUpdatedAt   */
-                    $this->jalaliToMiladi($row['tbl_profile_editdate']),
+                    $this->jalaliToMiladiString($row['tbl_profile_editdate']),
                     /* mbrspcUpdatedBy   */
                     /* mbrspcRemovedAt   */
                     /* mbrspcRemovedBy   */
@@ -2408,7 +2424,7 @@ SQL;
          , tbl_profile.tbl_profile_img
       FROM tbl_profile
      WHERE tbl_profile.tbl_profile_id > {$lastID}
-       AND TRIM(IFNULL(tbl_profile.tbl_profile_img, '')) != ''
+       AND TRIM(IFnull(tbl_profile.tbl_profile_img, '')) != ''
   ORDER BY tbl_profile.tbl_profile_id
      LIMIT {$fetchCount}
 SQL;
@@ -2748,7 +2764,7 @@ SQL;
                         ? enuMemberDocumentStatus::WaitForApprove
                         : enuMemberDocumentStatus::Approved) . "'",
                     /* mbrdocCreatedAt  */
-                    $this->jalaliToMiladi($row['tbl_document_date'], 'NOW()'),
+                    $this->jalaliToMiladiString($row['tbl_document_date'], 'NOW()'),
                     /* mbrdocCreatedBy  */
                     /* mbrdocUpdatedAt  */
                     /* mbrdocUpdatedBy  */
@@ -2889,7 +2905,7 @@ SQL;
         if (empty($cnt1)) {
             $qry = <<<SQL
 ALTER TABLE `tbl_billing`
-  ADD COLUMN `convert_tbl_billing_username` VARCHAR(256) NULL DEFAULT NULL AFTER `tbl_billing_username`,
+  ADD COLUMN `convert_tbl_billing_username` VARCHAR(256) null DEFAULT null AFTER `tbl_billing_username`,
   ADD INDEX `convert_tbl_billing_username` (`convert_tbl_billing_username`);
 SQL;
             $dboldcrm->createCommand($qry)->execute();
@@ -2936,7 +2952,7 @@ SQL;
         if (empty($cnt1)) {
             $qry = <<<SQL
 ALTER TABLE `tbl_profile`
-  ADD COLUMN `convert_fullname` VARCHAR(1024) NULL DEFAULT NULL AFTER `tbl_profile_fld2`,
+  ADD COLUMN `convert_fullname` VARCHAR(1024) null DEFAULT null AFTER `tbl_profile_fld2`,
   ADD INDEX `convert_fullname` (`convert_fullname`);
 SQL;
             $dboldcrm->createCommand($qry)->execute();
@@ -2946,7 +2962,7 @@ SQL;
   UPDATE tbl_profile
      SET convert_fullname = {$fnFixBadPersianCharsSql("CONCAT(tbl_profile_fld1, ' ', tbl_profile_fld2)")}
 SQL;
-        //  WHERE convert_fullname IS NULL
+        //  WHERE convert_fullname IS null
         $dboldcrm->createCommand($qry)->execute();
 
         $this->ensureMembershipSaleableExists();
@@ -3065,17 +3081,17 @@ SQL;
                     $tbl_billing_bank      = $this->quotedString($row['tbl_billing_bank']);
                     $tbl_billing_price     = intval(preg_replace('/[^0-9]/', '', $row['tbl_billing_price'])) / 10; //rial -> toman
                     $tbl_billing_track     = $this->quotedString($row['tbl_billing_track']);
-                    $tbl_billing_date      = $this->jalaliToMiladi($row['tbl_billing_date']);
+                    $tbl_billing_date      = $this->jalaliToMiladiString($row['tbl_billing_date']);
                     $tbl_billing_comment   = $this->quotedString($row['tbl_billing_comment']);
                     $tbl_billing_status    = intval(preg_replace('/[^0-9]/', '', $row['tbl_billing_status']));
                     $tbl_billing_type      = intval(preg_replace('/[^0-9]/', '', $row['tbl_billing_type']));
                     $tbl_billing_expire_jalali = trim($row['tbl_billing_expire']);
-                    $tbl_billing_expire    = $this->jalaliToMiladi($row['tbl_billing_expire']);
-                    $tbl_billing_editdate  = $this->jalaliToMiladi($row['tbl_billing_editdate']);
+                    $tbl_billing_expire    = $this->jalaliToMiladiString($row['tbl_billing_expire']);
+                    $tbl_billing_editdate  = $this->jalaliToMiladiString($row['tbl_billing_editdate']);
 
                     if (($tbl_billing_price > 0)
-                        && ($tbl_billing_date != 'NULL')
-                        && ($tbl_billing_expire != 'NULL')
+                        && ($tbl_billing_date != 'null')
+                        && ($tbl_billing_expire != 'null')
                     ) {
                         $p1_id_by_code  = $row['p1_id_by_code'] ?? null;
                         $p2_id_by_name  = $row['p2_id_by_name'] ?? null;
@@ -3116,7 +3132,7 @@ SQL;
                             }
                             //else error
                         } //$p1_id_by_code == null
-                    } //if ($tbl_billing_date != 'NULL')
+                    } //if ($tbl_billing_date != 'null')
 
                     //has error?
                     $err = [];
@@ -3124,14 +3140,14 @@ SQL;
                     if ($profileID != null) {
                         $doSwap = false;
 
-                        if ($tbl_billing_track == 'NULL') {
-                            if ($tbl_billing_title == 'NULL') {
+                        if ($tbl_billing_track == 'null') {
+                            if ($tbl_billing_title == 'null') {
                                 $err[] = 'track and title is null';
                                 $profileID = null;
                             } else
                                 $doSwap = true;
                         } else {
-                            //               if ($tbl_billing_title != 'NULL') {
+                            //               if ($tbl_billing_title != 'null') {
                             //                 $uid = $profileID + 100;
                             //                 $qry =<<<SQL
                             //   SELECT *
@@ -3155,9 +3171,9 @@ SQL;
                     if ($profileID === null) {
                         if (empty($tbl_billing_price))
                             $err[] = 'price';
-                        if ($tbl_billing_date == 'NULL')
+                        if ($tbl_billing_date == 'null')
                             $err[] = 'date';
-                        if ($tbl_billing_expire == 'NULL')
+                        if ($tbl_billing_expire == 'null')
                             $err[] = 'expire';
                         $err = implode(',', $err);
 
@@ -3166,7 +3182,7 @@ SQL;
                         $qry = <<<SQL
   INSERT INTO tbl_convert(tableName, lastID, at, info)
        VALUES ('{$convertKey}', 0, NOW(), '{$lastID}')
-           ON DUPLICATE KEY UPDATE info = IF (info IS NULL OR LENGTH(info)=0,
+           ON DUPLICATE KEY UPDATE info = IF (info IS null OR LENGTH(info)=0,
                 '{$lastID}',
                 IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
                   info,
@@ -3224,7 +3240,7 @@ SQL;
                             $walid = $userDefWalletMap[$userid];
 
                         //create credit voucher
-                        if ($tbl_billing_comment == 'NULL')
+                        if ($tbl_billing_comment == 'null')
                             $ofpComment = [];
                         else
                             $ofpComment = [$tbl_billing_comment];
@@ -3233,7 +3249,7 @@ SQL;
 
                         if ($duplicate) {
                             $ofpStatus = enuOfflinePaymentStatus::Rejected;
-                            $voucherid = 'NULL';
+                            $voucherid = 'null';
 
                             $ofpComment[] = "'تکراری'";
                         } else {
@@ -3270,8 +3286,8 @@ SQL;
             , ofpAmount           = {$tbl_billing_price}
             , ofpPayDate          = {$tbl_billing_date}
             , ofpPayer            = {$tbl_billing_username}
-            , ofpSourceCartNumber = NULL
-            , ofpImageFileID      = NULL
+            , ofpSourceCartNumber = null
+            , ofpImageFileID      = null
             , ofpWalletID         = {$walid}
             , ofpComment          = {$ofpComment}
             , ofpStatus           = '{$ofpStatus}'
@@ -3284,8 +3300,8 @@ SQL;
                             $qry = <<<SQL
   INSERT INTO tbl_AAA_WalletTransaction
           SET wtrUUID             = UUID()
-            , wtrWalletID		      = {$walid}
-            , wtrVoucherID		    = {$voucherid}
+            , wtrWalletID         = {$walid}
+            , wtrVoucherID        = {$voucherid}
             , wtrOfflinePaymentID = {$ofpid}
             , wtrDepositAmount    = {$tbl_billing_price}
 SQL;
@@ -3312,14 +3328,14 @@ SQL;
                                     'desc'      => 'حق عضویت تا ' . $tbl_billing_expire_jalali,
                                     'qty'       => 1,
                                     'unit'      => 'سال',
-                                    'prdtype'    => 'D',
+                                    'prdtype'   => 'D',
                                     'unitprice' => $tbl_billing_price,
-                                    // 'slbinfo'		=> [
+                                    // 'slbinfo'   => [
                                     //   'startDate' => $startDate,
-                                    //   'endDate' => $endDate,
+                                    //   'endDate'   => $endDate,
                                     // ],
                                     'maxqty'    => 1,
-                                    'qtystep'    => 0, //0: do not allow to change qty in basket
+                                    'qtystep'   => 0, //0: do not allow to change qty in basket
                                 ],
                             ]);
 
@@ -3342,9 +3358,9 @@ SQL;
                             $qry = <<<SQL
   INSERT INTO tbl_AAA_WalletTransaction
           SET wtrUUID             = UUID()
-            , wtrWalletID		      = {$walid}
-            , wtrVoucherID	      = {$voucherid}
-            , wtrWithdrawalAmount	= {$tbl_billing_price}
+            , wtrWalletID         = {$walid}
+            , wtrVoucherID        = {$voucherid}
+            , wtrWithdrawalAmount = {$tbl_billing_price}
 SQL;
                             $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
@@ -3359,13 +3375,13 @@ SQL;
                             //member membership
                             $qry = <<<SQL
   INSERT INTO tbl_MHA_Accounting_UserAsset
-          SET uasUUID						 = '{$vchItemKey}'
+          SET uasUUID            = '{$vchItemKey}'
             , uasActorID         = {$userid}
             , uasSaleableID      = {$fnGetConst(self::crm_2_membership_slbID)}
             , uasQty             = 1
             , uasVoucherID       = {$voucherid}
             , uasVoucherItemInfo = '{$vchItems}'
-            , uasValidFromDate   = NULL
+            , uasValidFromDate   = null
             , uasValidToDate     = {$tbl_billing_expire}
             , uasStatus          = '{$fnGetConst(enuUserAssetStatus::Active)}'
 SQL;
@@ -3376,7 +3392,7 @@ SQL;
   UPDATE tbl_MHA_Member
      SET mbrAcceptedAt = DATE_ADD({$tbl_billing_expire}, INTERVAL -1 YEAR)
    WHERE mbrUserID = {$userid}
-     AND (mbrAcceptedAt IS NULL
+     AND (mbrAcceptedAt IS null
       OR mbrAcceptedAt > DATE_ADD({$tbl_billing_expire}, INTERVAL -1 YEAR)
          )
 SQL;
@@ -3398,8 +3414,8 @@ SQL;
 
                             $qry = <<<SQL
   UPDATE tbl_convert
-     SET info = IF (info IS NULL OR LENGTH(info)=0,
-           NULL,
+     SET info = IF (info IS null OR LENGTH(info)=0,
+           null,
            IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
              TRIM(BOTH ',' FROM REPLACE(CONCAT(',', info, ','), ',{$lastID},', ',')),
              info
@@ -3588,22 +3604,22 @@ SQL;
                 try {
                     //tbl_onlinebank_id
                     $tbl_onlinebank_rrn        = $this->quotedString($row['tbl_onlinebank_rrn']);
-                    $tbl_onlinebank_date       = $this->jalaliToMiladi($row['tbl_onlinebank_date']);
+                    $tbl_onlinebank_date       = $this->jalaliToMiladiString($row['tbl_onlinebank_date']);
                     $tbl_onlinebank_price      = intval(preg_replace('/[^0-9]/', '', $row['tbl_onlinebank_price'])) / 10; //rial -> toman
                     //tbl_onlinebank_user
                     $tbl_onlinebank_status     = intval($row['tbl_onlinebank_status']);
-                    // $tbl_onlinebank_dateupdate = $this->jalaliToMiladi($row['tbl_onlinebank_dateupdate']);
+                    // $tbl_onlinebank_dateupdate = $this->jalaliToMiladiString($row['tbl_onlinebank_dateupdate']);
                     $tbl_onlinebank_comment    = $this->quotedString($row['tbl_onlinebank_comment']);
-                    // $tbl_onlinebank_dateday    = $this->jalaliToMiladi($row['tbl_onlinebank_dateday']);
+                    // $tbl_onlinebank_dateday    = $this->jalaliToMiladiString($row['tbl_onlinebank_dateday']);
                     $tbl_profile_id            = $row['tbl_profile_id'];
                     $tbl_profile_expiredate_jalali = trim($row['tbl_profile_expiredate'] ?? '');
-                    $tbl_profile_expiredate    = $this->jalaliToMiladi($row['tbl_profile_expiredate']);
+                    $tbl_profile_expiredate    = $this->jalaliToMiladiString($row['tbl_profile_expiredate']);
 
                     $profileID = null;
                     if ((empty($tbl_profile_id) == false)
                         && ($tbl_onlinebank_price > 0)
-                        && ($tbl_onlinebank_date != 'NULL')
-                        && ($tbl_profile_expiredate != 'NULL')
+                        && ($tbl_onlinebank_date != 'null')
+                        && ($tbl_profile_expiredate != 'null')
                     ) {
                         $profileID = $tbl_profile_id;
                     }
@@ -3613,9 +3629,9 @@ SQL;
                         $err = [];
                         if (empty($tbl_onlinebank_price))
                             $err[] = 'price';
-                        if ($tbl_onlinebank_date == 'NULL')
+                        if ($tbl_onlinebank_date == 'null')
                             $err[] = 'date';
-                        if ($tbl_profile_expiredate == 'NULL')
+                        if ($tbl_profile_expiredate == 'null')
                             $err[] = 'expire';
                         $err = implode(',', $err);
 
@@ -3628,10 +3644,10 @@ delete from tbl_MHA_MemberMembership;
 update tbl_AAA_Wallet set walRemainedAmount = 0 where walOwnerUserID > 100;
 
 delete tbl_AAA_WalletTransaction
-	from tbl_AAA_WalletTransaction
-	inner join tbl_AAA_Wallet
-	on tbl_AAA_Wallet.walID = tbl_AAA_WalletTransaction.wtrWalletID
-	where walOwnerUserID > 100;
+    from tbl_AAA_WalletTransaction
+    inner join tbl_AAA_Wallet
+    on tbl_AAA_Wallet.walID = tbl_AAA_WalletTransaction.wtrWalletID
+    where walOwnerUserID > 100;
 
 delete from tbl_AAA_OfflinePayment WHERE ofpOwnerUserID > 100;
 
@@ -3654,7 +3670,7 @@ delete from tbl_convert where tableName = 'v2.tbl_billing';
             $qry =<<<SQL
   INSERT INTO tbl_convert(tableName, lastID, at, info)
        VALUES ('{$convertKey}', 0, NOW(), '{$lastID}')
-           ON DUPLICATE KEY UPDATE info = IF (info IS NULL OR LENGTH(info)=0,
+           ON DUPLICATE KEY UPDATE info = IF (info IS null OR LENGTH(info)=0,
                 '{$lastID}',
                 IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
                   info,
@@ -3699,7 +3715,7 @@ SQL;
 
             //create credit voucher
             /*if ($tbl_onlinebank_status == 0) { //error
-              $vchOnlinePaid = 'NULL';
+              $vchOnlinePaid = 'null';
               $vchStatus = enuVoucherStatus::Error;
             } else* / { //ok
               $vchOnlinePaid = $tbl_onlinebank_price;
@@ -3748,8 +3764,8 @@ SQL;
             $qry =<<<SQL
   INSERT INTO tbl_AAA_WalletTransaction
           SET wtrUUID             = UUID()
-            , wtrWalletID		      = {$walid}
-            , wtrVoucherID		    = {$voucherid}
+            , wtrWalletID              = {$walid}
+            , wtrVoucherID            = {$voucherid}
             , wtrOnlinePaymentID  = {$onpid}
             , wtrDepositAmount    = {$tbl_onlinebank_price}
 SQL;
@@ -3784,7 +3800,7 @@ SQL;
   INSERT INTO tbl_AAA_Voucher
           SET vchUUID         = UUID()
             , vchOwnerUserID  = {$userid}
-            , vchType         = '{$fnGetConst(enuVoucherType::Basket)}'
+            , vchType         = '{$fnGetConst(enuVoucherType::Invoice)}'
             , vchAmount       = {$tbl_onlinebank_price}
             , vchTotalAmount  = {$tbl_onlinebank_price}
             , vchPaidByWallet = {$tbl_onlinebank_price}
@@ -3799,9 +3815,9 @@ SQL;
               $qry =<<<SQL
   INSERT INTO tbl_AAA_WalletTransaction
           SET wtrUUID             = UUID()
-            , wtrWalletID		      = {$walid}
-            , wtrVoucherID	      = {$voucherid}
-            , wtrWithdrawalAmount	= {$tbl_onlinebank_price}
+            , wtrWalletID              = {$walid}
+            , wtrVoucherID          = {$voucherid}
+            , wtrWithdrawalAmount    = {$tbl_onlinebank_price}
 SQL;
               $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
@@ -3843,7 +3859,7 @@ SQL;
   UPDATE tbl_MHA_Member
      SET mbrAcceptedAt = DATE_ADD({$tbl_onlinebank_expire}, INTERVAL -1 YEAR)
    WHERE mbrUserID = {$userid}
-     AND (mbrAcceptedAt IS NULL
+     AND (mbrAcceptedAt IS null
       OR mbrAcceptedAt > DATE_ADD({$tbl_onlinebank_expire}, INTERVAL -1 YEAR)
          )
 SQL;
@@ -3866,8 +3882,8 @@ SQL;
 
               $qry =<<<SQL
   UPDATE tbl_convert
-     SET info = IF (info IS NULL OR LENGTH(info)=0,
-           NULL,
+     SET info = IF (info IS null OR LENGTH(info)=0,
+           null,
            IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
              TRIM(BOTH ',' FROM REPLACE(CONCAT(',', info, ','), ',{$lastID},', ',')),
              info
@@ -3949,8 +3965,8 @@ SQL;
           ON tbl_AAA_User.usrID = tbl_MHA_Member.mbrUserID
 
        WHERE tbl_MHA_Member.mbrUserID > {$lastID}
-         AND tbl_AAA_User.usrPasswordHash IS NULL
-         AND tbl_MHA_Member.mbrRegisterCode IS NOT NULL
+         AND tbl_AAA_User.usrPasswordHash IS null
+         AND tbl_MHA_Member.mbrRegisterCode IS NOT null
 
     ORDER BY tbl_MHA_Member.mbrUserID
 
@@ -4084,7 +4100,7 @@ SQL;
             'مجرد' => enuUserMaritalStatus::NotMarried,
         ];
 
-        $fnFromMapIfNotNull = function ($value, $map, $nullValue = null) {
+        $fnFromMapIfNotnull = function ($value, $map, $nullValue = null) {
             if (empty($value))
                 return $nullValue;
 
@@ -4166,13 +4182,13 @@ SQL;
                 try {
                     // $this->log("  >{$lastID}");
 
-                    $Education        = $fnFromMapIfNotNull($this->nullIfEmpty($row['tbl_otherinfo_fld5'], null), $mapEducationLevel);
+                    $Education        = $fnFromMapIfNotnull($this->nullIfEmpty($row['tbl_otherinfo_fld5'], null), $mapEducationLevel);
                     $FieldOfStudy     = $this->nullIfEmpty($row['tbl_otherinfo_fld6'], null);
                     $YearOfGraduation = $this->nullIfEmpty($row['tbl_otherinfo_fld7'], null);
                     $EducationPlace   = $this->nullIfEmpty($row['tbl_otherinfo_fld8'], null);
-                    $MilitaryStatus   = $fnFromMapIfNotNull($this->nullIfEmpty($row['tbl_otherinfo_fld9'], null), $mapMilitaryStatus);
+                    $MilitaryStatus   = $fnFromMapIfNotnull($this->nullIfEmpty($row['tbl_otherinfo_fld9'], null), $mapMilitaryStatus);
                     // $tbl_otherinfo_fld10 = $this->nullIfEmpty($row['tbl_otherinfo_fld10'], null);
-                    $MaritalStatus   = $fnFromMapIfNotNull($this->nullIfEmpty($row['tbl_profile_fld11'], null), $mapMaritalStatus);
+                    $MaritalStatus   = $fnFromMapIfNotnull($this->nullIfEmpty($row['tbl_profile_fld11'], null), $mapMaritalStatus);
 
                     if (empty($YearOfGraduation) == false) {
                         $YearOfGraduation = StringHelper::fixPersianCharacters($YearOfGraduation);
@@ -4272,7 +4288,7 @@ SQL;
             'درجه پنجم'   => 5,
         ];
 
-        $fnFromMapIfNotNull = function ($value, $map, $nullValue = null) {
+        $fnFromMapIfNotnull = function ($value, $map, $nullValue = null) {
             if (empty($value))
                 return $nullValue;
 
@@ -4355,30 +4371,30 @@ SQL;
                     // $this->log("  >{$lastID}");
 
                     $InstrumentID = $this->nullIfEmpty($row['tbl_profile_fld9'], null);
-                    $InstrumentID = (empty($InstrumentID) ? 'NULL' : $fnFromMapIfNotNull(StringHelper::fixPersianCharacters($InstrumentID), $mapInstruments));
+                    $InstrumentID = (empty($InstrumentID) ? 'null' : $fnFromMapIfNotnull(StringHelper::fixPersianCharacters($InstrumentID), $mapInstruments));
 
                     $SingID = $this->nullIfEmpty($row['tbl_profile_fld20'], null);
-                    $SingID = (empty($SingID) ? 'NULL' : $fnFromMapIfNotNull(StringHelper::fixPersianCharacters($SingID), $mapSings));
+                    $SingID = (empty($SingID) ? 'null' : $fnFromMapIfNotnull(StringHelper::fixPersianCharacters($SingID), $mapSings));
 
                     $ResearchID = $this->nullIfEmpty($row['tbl_profile_fld21'], null);
-                    $ResearchID = (empty($ResearchID) ? 'NULL' : $fnFromMapIfNotNull(StringHelper::fixPersianCharacters($ResearchID), $mapResearches));
+                    $ResearchID = (empty($ResearchID) ? 'null' : $fnFromMapIfNotnull(StringHelper::fixPersianCharacters($ResearchID), $mapResearches));
 
                     $Job = $this->quotedString($row['tbl_profile_fld14']);
 
-                    $ArtDegree = 'NULL';
+                    $ArtDegree = 'null';
                     if ($this->nullIfEmpty($row['tbl_otherinfo_fldn39'], null) == 'دارد') {
                         $ArtDegree = $this->nullIfEmpty($row['tbl_otherinfo_fldn38'], null);
                         if (empty($ArtDegree))
-                            $ArtDegree = 'NULL';
+                            $ArtDegree = 'null';
                         else
                             $ArtDegree = $mapArtDegree[$ArtDegree];
                     }
 
-                    $HonarCreditCode = 'NULL';
+                    $HonarCreditCode = 'null';
                     if ($this->nullIfEmpty($row['tbl_otherinfo_fldn40'], null) != null) {
                         $HonarCreditCode = $this->nullIfEmpty($row['tbl_otherinfo_fldn41'], null);
                         if (empty($HonarCreditCode))
-                            $HonarCreditCode = 'NULL';
+                            $HonarCreditCode = 'null';
                         else
                             $HonarCreditCode = $this->quotedString($HonarCreditCode);
                     }
@@ -4468,7 +4484,7 @@ INNER JOIN tbl_MHA_Accounting_Product prd
            ) t1
         ON t1.uasActorID = mbr.mbrUserID
        SET mbr.mbrExpireDate = t1.dtexpire
-     WHERE mbr.mbrExpireDate IS NULL
+     WHERE mbr.mbrExpireDate IS null
         OR mbr.mbrExpireDate < t1.dtexpire
 SQL;
 
@@ -4516,7 +4532,7 @@ SQL;
 
                 $qry = <<<SQL
 ALTER TABLE `tbl_MHA_Member`
-  ADD COLUMN `mbrExpireDate_convert` VARCHAR(256) NULL DEFAULT NULL;
+  ADD COLUMN `mbrExpireDate_convert` VARCHAR(256) null DEFAULT null;
 SQL;
                 if ($this->queryExecute($qry, __FUNCTION__, __LINE__) == 0)
                     $this->log('  error creating mbrExpireDate_convert column');
@@ -4562,7 +4578,7 @@ SQL;
     FROM tbl_profile
 
     WHERE {$where}
-      AND tbl_profile_expiredate IS NOT NULL
+      AND tbl_profile_expiredate IS NOT null
       AND tbl_profile_expiredate != ''
 
 ORDER BY tbl_profile.tbl_profile_id
@@ -4595,7 +4611,7 @@ SQL;
                         // $this->log("  >{$lastID}");
 
                         $tbl_profile_expiredate_jalali = trim($row['tbl_profile_expiredate'] ?? '');
-                        $tbl_profile_expiredate = $this->jalaliToMiladi($row['tbl_profile_expiredate']);
+                        $tbl_profile_expiredate = $this->jalaliToMiladiString($row['tbl_profile_expiredate']);
 
                         $values[$lastID] = implode(',', [
                             /* mbrUserID             */
@@ -4634,9 +4650,9 @@ SQL;
             $qry = <<<SQL
  UPDATE tbl_MHA_Member
     SET mbrExpireDate = mbrExpireDate_convert
-  WHERE mbrExpireDate_convert IS NOT NULL
+  WHERE mbrExpireDate_convert IS NOT null
     AND (
-        mbrExpireDate IS NULL
+        mbrExpireDate IS null
      OR mbrExpireDate < mbrExpireDate_convert
         )
 SQL;
@@ -4660,6 +4676,9 @@ SQL;
     public function actionFromV1()
     {
         $this->log("migrating from v1");
+
+        if ($this->jalali == null)
+            $this->jalali = new Jalali();
 
         //unlock
         $fnUnlock = function () {
@@ -4712,10 +4731,11 @@ SQL;
     public function v1_convert_positive_balance(&$convertTableData)
     {
         $this->log("v1_convert_positive_balance");
+        $convertKey = 'v1.tbl_MHA_MHAMemberBalance.positive';
 
         $dboldcrm = Yii::$app->oldcrmdbv1;
 
-        //-- add convert_status field (NULL: not touched, C:converted, E:error) -------------------------------
+        //-- add convert_status field (null: not touched, C:converted, E:error) -------------------------------
         //     $qry = <<<SQL
         //   SELECT COLUMN_NAME
         //     FROM INFORMATION_SCHEMA.COLUMNS
@@ -4727,7 +4747,7 @@ SQL;
         //     if (empty($cnt1)) {
         //       $qry = <<<SQL
         // ALTER TABLE `tbl_MHA_MHAMemberBalance`
-        // 	ADD COLUMN `convert_status` CHAR(1) NULL DEFAULT NULL AFTER `MHAMemberBalance_UpdateDate`;
+        //     ADD COLUMN `convert_status` CHAR(1) null DEFAULT null AFTER `MHAMemberBalance_UpdateDate`;
         // SQL;
         //       $dboldcrm->createCommand($qry)->execute();
         //     }
@@ -4744,7 +4764,7 @@ SQL;
         if (empty($cnt1)) {
             $qry = <<<SQL
 ALTER TABLE `tbl_MHA_MHAMemberBalance`
-	ADD COLUMN `convert_MHAMemberBalance_Amount` FLOAT NULL AFTER `MHAMemberBalance_Amount`;
+    ADD COLUMN `convert_MHAMemberBalance_Amount` FLOAT null AFTER `MHAMemberBalance_Amount`;
 SQL;
             $dboldcrm->createCommand($qry)->execute();
         }
@@ -4776,8 +4796,8 @@ SQL;
    THEN -1 * MHAMemberBalance_Amount
    ELSE MHAMemberBalance_Amount
     END
-  WHERE MHAMemberBalance_Amount IS NOT NULL
-    AND convert_MHAMemberBalance_Amount IS NULL;
+  WHERE MHAMemberBalance_Amount IS NOT null
+    AND convert_MHAMemberBalance_Amount IS null;
 ;
 SQL;
         $dboldcrm->createCommand($qry)->execute();
@@ -4825,7 +4845,6 @@ SQL;
         };
 
         //-----------------
-        $convertKey = 'v1.tbl_MHA_MHAMemberBalance.positive';
         $queryLastID = $convertTableData[$convertKey]['lastID'] ?? 0;
 
         //-----------------
@@ -4854,6 +4873,8 @@ SQL;
 
         //-----------------
         $userDefWalletMap = [];
+        $memberRegisterCodeToUserIDMap = [];
+
         $fetchCount = 1000;
         $loopCount = 0;
 
@@ -4907,48 +4928,53 @@ SQL;
 
             foreach ($rows as $row) {
                 $lastID = intval(trim($row['MHAMemberBalance_Code']));
-
                 if ($lastID > $queryLastID)
                     $queryLastID = $lastID;
 
                 try {
-                    if (empty($row['Member_ID'])) {
-                        $this->fnLogErrorToConvertTable($lastID, 'Member_ID is empty', $convertKey, $errorids, $processedErrorIds);
-                        continue;
-                    }
-
-                    $qry = <<<SQL
-  SELECT *
-    FROM tbl_MHA_Member
-   WHERE mbrRegisterCode = {$row['Member_ID']}
+                    //find userid by mbrRegisterCode
+                    $Member_ID = $row['Member_ID'];
+                    if (empty($memberRegisterCodeToUserIDMap[$Member_ID])) {
+                        $qry = <<<SQL
+    SELECT *
+      FROM tbl_MHA_Member
+     WHERE mbrRegisterCode = {$Member_ID}
 SQL;
-                    $mbrrow = $this->queryAll($qry, __FUNCTION__, __LINE__);
-                    if (empty($mbrrow)) {
-                        $this->fnLogErrorToConvertTable($lastID, 'Member not found', $convertKey, $errorids, $processedErrorIds);
-                        continue;
-                    }
 
-                    $userid = 0;
+                        $mbrrow = $this->queryAll($qry, __FUNCTION__, __LINE__);
+                        if (empty($mbrrow)) {
+                            $this->fnLogErrorToConvertTable($lastID, "invalid regCode({$Member_ID}): Member not found", $convertKey, $errorids, $processedErrorIds);
+                            continue;
+                        }
 
-                    if (count($mbrrow) == 1) {
-                        $userid = intval($mbrrow[0]['mbrUserID']);
-                    } else {
-                        ///get All rows -> check for not removed member if more than 1 row fetched
-                        foreach ($mbrrow as $_mbr) {
-                            if ($_mbr['mbrStatus'] != enuMemberStatus::Removed) {
-                                $userid = intval($_mbr['mbrUserID']);
-                                break;
+                        $userid = 0;
+
+                        if (count($mbrrow) == 1) {
+                            $userid = intval($mbrrow[0]['mbrUserID']);
+                        } else {
+                            ///get All rows -> check for not removed member if more than 1 row fetched
+                            foreach ($mbrrow as $_mbr) {
+                                //get first or last not 'R' row
+                                if ($userid == 0 || $_mbr['mbrStatus'] != enuMemberStatus::Removed)
+                                    $userid = intval($_mbr['mbrUserID']);
                             }
                         }
-                    }
 
-                    if ($userid == 0) {
-                        $this->fnLogErrorToConvertTable($lastID, 'Member not found', $convertKey, $errorids, $processedErrorIds);
-                        continue;
+                        if ($userid == 0) {
+                            $this->fnLogErrorToConvertTable($lastID, 'Member not found', $convertKey, $errorids, $processedErrorIds);
+                            continue;
+                        }
+
+                        $memberRegisterCodeToUserIDMap[$Member_ID] = $userid;
+                    } else {
+                        $userid = $memberRegisterCodeToUserIDMap[$Member_ID];
+                        // $this->log("get userid from cache: register-code({$Member_ID}) -> userid({$userid})");
                     }
 
                     //----------------------------------------
                     $convert_MHAMemberBalance_Amount = intval($row['convert_MHAMemberBalance_Amount']);
+                    $convert_MHAMemberBalance_Amount = $convert_MHAMemberBalance_Amount / 10; // rial -> toman
+
                     $MHAMemberBalance_Date           = $row['MHAMemberBalance_Date'];
                     $MHAMemberBalance_Desc           = StringHelper::fixPersianCharacters($row['MHAMemberBalance_Desc']);
                     $MHAMemberBalance_Guid           = strtolower(str_replace('{', '', str_replace('}', '', $row['MHAMemberBalance_Guid'])));
@@ -5018,8 +5044,8 @@ SQL;
                         $qry = <<<SQL
   INSERT INTO tbl_AAA_WalletTransaction
           SET wtrUUID             = UUID()
-            , wtrWalletID		  = {$walid}
-            , wtrVoucherID		  = {$voucherid}
+            , wtrWalletID          = {$walid}
+            , wtrVoucherID          = {$voucherid}
             , wtrOfflinePaymentID = {$ofpid}
             , wtrDepositAmount    = {$convert_MHAMemberBalance_Amount}
 SQL;
@@ -5032,93 +5058,6 @@ SQL;
         WHERE walID = {$walid}
 SQL;
                         $this->queryExecute($qry, __FUNCTION__, __LINE__);
-
-                        /*************************************
-
-              //phase 2: membership
-              //create basket voucher
-              $vchItemKey = Uuid::uuid4()->toString();
-              $vchItems = Json::encode([
-                [
-                  'key'       => $vchItemKey,
-                  // 'userid'    => $userid,
-                  'service'   => 'mha',
-                  // 'slbkey'    => 'mbrshp',
-                  'slbid'     => $fnGetConst(self::crm_2_membership_slbID),
-                  'desc'      => 'حق عضویت تا ' . $tbl_MHA_MHAMemberBalance_expire_jalali,
-                  'qty'       => 1,
-                  'unit'      => 'سال',
-                  'prdtype'    => 'D',
-                  'unitprice' => $convert_MHAMemberBalance_Amount,
-                  // 'slbinfo'		=> [
-                  //   'startDate' => $startDate,
-                  //   'endDate' => $endDate,
-                  // ],
-                  'maxqty'    => 1,
-                  'qtystep'    => 0, //0: do not allow to change qty in basket
-                ],
-              ]);
-
-              $qry = <<<SQL
-  INSERT INTO tbl_AAA_Voucher
-          SET vchUUID         = UUID()
-            , vchOwnerUserID  = {$userid}
-            , vchType         = '{$fnGetConst(enuVoucherType::Basket)}'
-            , vchAmount       = {$convert_MHAMemberBalance_Amount}
-            , vchTotalAmount  = {$convert_MHAMemberBalance_Amount}
-            , vchPaidByWallet = {$convert_MHAMemberBalance_Amount}
-            , vchTotalPaid    = {$convert_MHAMemberBalance_Amount}
-            , vchItems        = '{$vchItems}'
-            , vchStatus       = '{$fnGetConst(enuVoucherStatus::Finished)}'
-SQL;
-              $this->queryExecute($qry, __FUNCTION__, __LINE__);
-              $voucherid = intval(Yii::$app->db->getLastInsertID());
-
-              //create wallet transaction
-              $qry = <<<SQL
-  INSERT INTO tbl_AAA_WalletTransaction
-          SET wtrUUID             = UUID()
-            , wtrWalletID		      = {$walid}
-            , wtrVoucherID	      = {$voucherid}
-            , wtrWithdrawalAmount = {$convert_MHAMemberBalance_Amount}
-SQL;
-              $this->queryExecute($qry, __FUNCTION__, __LINE__);
-
-              //update wallet
-              //             $qry =<<<SQL
-              //   UPDATE tbl_AAA_Wallet
-              //     SET walRemainedAmount = walRemainedAmount - {$convert_MHAMemberBalance_Amount}
-              //   WHERE walID = {$walid}
-              // SQL;
-              //             $this->queryExecute($qry, __FUNCTION__, __LINE__);
-
-              //member membership
-              $qry = <<<SQL
-  INSERT INTO tbl_MHA_Accounting_UserAsset
-          SET uasUUID						 = '{$vchItemKey}'
-            , uasActorID         = {$userid}
-            , uasSaleableID      = {$fnGetConst(self::crm_2_membership_slbID)}
-            , uasQty             = 1
-            , uasVoucherID       = {$voucherid}
-            , uasVoucherItemInfo = '{$vchItems}'
-            , uasValidFromDate   = NULL
-            , uasValidToDate     = {$tbl_MHA_MHAMemberBalance_expire}
-            , uasStatus          = '{$fnGetConst(enuUserAssetStatus::Active)}'
-SQL;
-              $this->queryExecute($qry, __FUNCTION__, __LINE__);
-
-              //phase 3: member
-              $qry = <<<SQL
-  UPDATE tbl_MHA_Member
-     SET mbrAcceptedAt = DATE_ADD({$tbl_MHA_MHAMemberBalance_expire}, INTERVAL -1 YEAR)
-   WHERE mbrUserID = {$userid}
-     AND (mbrAcceptedAt IS NULL
-      OR mbrAcceptedAt > DATE_ADD({$tbl_MHA_MHAMemberBalance_expire}, INTERVAL -1 YEAR)
-         )
-SQL;
-              $this->queryExecute($qry, __FUNCTION__, __LINE__);
-
-                         ****************************************************/
 
                         //phase 4: log
                         //log to tbl_convert
@@ -5135,8 +5074,8 @@ SQL;
 
                             $qry = <<<SQL
   UPDATE tbl_convert
-     SET info = IF (info IS NULL OR LENGTH(info)=0,
-           NULL,
+     SET info = IF (info IS null OR LENGTH(info)=0,
+           null,
            IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
              TRIM(BOTH ',' FROM REPLACE(CONCAT(',', info, ','), ',{$lastID},', ',')),
              info
@@ -5159,8 +5098,8 @@ SQL;
                 } catch (\Throwable $exp) {
                     $this->fnLogErrorToConvertTable($lastID, $exp->getMessage(), $convertKey, $errorids, $processedErrorIds);
                     // echo "** ERROR: ID: {$lastID} **\n";
-                    echo $exp->getMessage();
-                    echo "\n";
+                    // echo $exp->getMessage();
+                    // echo "\n";
                     // throw $exp;
                 }
             } //foreach ($rows as $row)
@@ -5179,10 +5118,11 @@ SQL;
     public function v1_convert_negative_balance(&$convertTableData)
     {
         $this->log("v1_convert_negative_balance");
+        $convertKey = 'v1.tbl_MHA_MHAMemberBalance.negative';
 
         $dboldcrm = Yii::$app->oldcrmdbv1;
 
-        //-- add convert_status field (NULL: not touched, C:converted, E:error) -------------------------------
+        //-- add convert_status field (null: not touched, C:converted, E:error) -------------------------------
         //     $qry = <<<SQL
         //   SELECT COLUMN_NAME
         //     FROM INFORMATION_SCHEMA.COLUMNS
@@ -5194,7 +5134,7 @@ SQL;
         //     if (empty($cnt1)) {
         //       $qry = <<<SQL
         // ALTER TABLE `tbl_MHA_MHAMemberBalance`
-        // 	ADD COLUMN `convert_status` CHAR(1) NULL DEFAULT NULL AFTER `MHAMemberBalance_UpdateDate`;
+        //     ADD COLUMN `convert_status` CHAR(1) null DEFAULT null AFTER `MHAMemberBalance_UpdateDate`;
         // SQL;
         //       $dboldcrm->createCommand($qry)->execute();
         //     }
@@ -5211,7 +5151,7 @@ SQL;
         if (empty($cnt1)) {
             $qry = <<<SQL
 ALTER TABLE `tbl_MHA_MHAMemberBalance`
-	ADD COLUMN `convert_MHAMemberBalance_Amount` FLOAT NULL AFTER `MHAMemberBalance_Amount`;
+    ADD COLUMN `convert_MHAMemberBalance_Amount` FLOAT null AFTER `MHAMemberBalance_Amount`;
 SQL;
             $dboldcrm->createCommand($qry)->execute();
         }
@@ -5243,8 +5183,8 @@ SQL;
    THEN -1 * MHAMemberBalance_Amount
    ELSE MHAMemberBalance_Amount
     END
-  WHERE MHAMemberBalance_Amount IS NOT NULL
-    AND convert_MHAMemberBalance_Amount IS NULL;
+  WHERE MHAMemberBalance_Amount IS NOT null
+    AND convert_MHAMemberBalance_Amount IS null;
 ;
 SQL;
         $dboldcrm->createCommand($qry)->execute();
@@ -5277,7 +5217,6 @@ SQL;
         };
 
         //-----------------
-        $convertKey = 'v1.tbl_MHA_MHAMemberBalance.negative';
         $queryLastID = $convertTableData[$convertKey]['lastID'] ?? 0;
 
         //-----------------
@@ -5293,6 +5232,7 @@ SQL;
         }
 
         $processedErrorIds = [];
+        $memberRegisterCodeToUserIDMap = [];
 
         $fnRemoveFromErrorIDs = function ($lastID) use (&$errorids, &$processedErrorIds) {
             if (empty($errorids[$lastID]))
@@ -5306,14 +5246,16 @@ SQL;
 
         //-----------------
         $userDefWalletMap = [];
+        $membershipStartDateMap = [];
+
         $fetchCount = 1000;
         $loopCount = 0;
 
         while (true) {
             ++$loopCount;
 
-            if ($loopCount > 1)
-                break;
+            // if ($loopCount > 1)
+            //     break;
 
             $erroridsCount = count($errorids);
             $newFetchCount = $fetchCount;
@@ -5330,6 +5272,16 @@ SQL;
             $where .= "\n";
             if (empty($processedErrorIds) == false)
                 $where .= "AND tbl_MHA_MHAMemberBalance.MHAMemberBalance_Code NOT IN (" . implode(',', $processedErrorIds) . ")\n";
+
+            /******************************************/
+            /******************************************/
+            /******************************************/
+
+            // $where = "tbl_MHA_MHAMemberBalance.MHAMemberBalance_MHAMember_Code = 705\n";
+
+            /******************************************/
+            /******************************************/
+            /******************************************/
 
             $qry = <<<SQL
       SELECT *
@@ -5359,9 +5311,10 @@ SQL;
 
             foreach ($rows as $row) {
                 $lastID = intval(trim($row['MHAMemberBalance_Code']));
-
                 if ($lastID > $queryLastID)
                     $queryLastID = $lastID;
+
+                // $this->log(">> lastID = {$lastID}");
 
                 try {
                     if (empty($row['Member_ID'])) {
@@ -5369,69 +5322,140 @@ SQL;
                         continue;
                     }
 
-                    $qry = <<<SQL
-  SELECT *
-    FROM tbl_MHA_Member
-   WHERE mbrRegisterCode = {$row['Member_ID']}
+                    //find userid by mbrRegisterCode
+                    $Member_ID = $row['Member_ID'];
+                    if (empty($memberRegisterCodeToUserIDMap[$Member_ID])) {
+                        $qry = <<<SQL
+    SELECT *
+      FROM tbl_MHA_Member
+     WHERE mbrRegisterCode = {$Member_ID}
 SQL;
-                    $mbrrow = $this->queryAll($qry, __FUNCTION__, __LINE__);
-                    if (empty($mbrrow)) {
-                        $this->fnLogErrorToConvertTable($lastID, 'Member not found', $convertKey, $errorids, $processedErrorIds);
-                        continue;
-                    }
 
-                    $userid = 0;
+                        $mbrrow = $this->queryAll($qry, __FUNCTION__, __LINE__);
+                        if (empty($mbrrow)) {
+                            $this->fnLogErrorToConvertTable($lastID, "invalid regCode({$Member_ID}): Member not found", $convertKey, $errorids, $processedErrorIds);
+                            continue;
+                        }
 
-                    if (count($mbrrow) == 1) {
-                        $userid = intval($mbrrow[0]['mbrUserID']);
-                    } else {
-                        ///get All rows -> check for not removed member if more than 1 row fetched
-                        foreach ($mbrrow as $_mbr) {
-                            if ($_mbr['mbrStatus'] != enuMemberStatus::Removed) {
-                                $userid = intval($_mbr['mbrUserID']);
-                                break;
+                        $userid = 0;
+
+                        if (count($mbrrow) == 1) {
+                            $userid = intval($mbrrow[0]['mbrUserID']);
+                        } else {
+                            ///get All rows -> check for not removed member if more than 1 row fetched
+                            foreach ($mbrrow as $_mbr) {
+                                //get first or last not 'R' row
+                                if ($userid == 0 || $_mbr['mbrStatus'] != enuMemberStatus::Removed)
+                                    $userid = intval($_mbr['mbrUserID']);
                             }
                         }
-                    }
 
-                    if ($userid == 0) {
-                        $this->fnLogErrorToConvertTable($lastID, 'Member not found', $convertKey, $errorids, $processedErrorIds);
-                        continue;
+                        if ($userid == 0) {
+                            $this->fnLogErrorToConvertTable($lastID, 'Member not found', $convertKey, $errorids, $processedErrorIds);
+                            continue;
+                        }
+
+                        $memberRegisterCodeToUserIDMap[$Member_ID] = $userid;
+                    } else {
+                        $userid = $memberRegisterCodeToUserIDMap[$Member_ID];
+                        // $this->log("get userid from cache: register-code({$Member_ID}) -> userid({$userid})");
                     }
 
                     //----------------------------------------
                     //note: make amount positive:
                     $convert_MHAMemberBalance_Amount = abs(intval($row['convert_MHAMemberBalance_Amount']));
+                    $convert_MHAMemberBalance_Amount = $convert_MHAMemberBalance_Amount / 10; // rial -> toman
+
                     $MHAMemberBalance_Date           = $row['MHAMemberBalance_Date'];
-                    $MHAMemberBalance_Desc           = StringHelper::fixPersianCharacters($row['MHAMemberBalance_Desc']);
+                    $MHAMemberBalance_Desc           = StringHelper::fixPersianCharacters(trim($row['MHAMemberBalance_Desc']));
                     $MHAMemberBalance_Guid           = strtolower(str_replace('{', '', str_replace('}', '', $row['MHAMemberBalance_Guid'])));
+                    $MHAMember_Code                  = intval($row['MHAMember_Code']);
+
+                    if (empty($MHAMemberBalance_Desc)) {
+                        $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > [desc] is empty. desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
+                        continue;
+                    }
+
+                    // extract start & end date from Desc:
+                    $fnGetSmallestStartDateFromOldMembership =
+                        function ($MHAMember_Code)
+                        use ($dboldcrm, &$membershipStartDateMap, $lastID, $convertKey, &$errorids, &$processedErrorIds, $MHAMemberBalance_Desc): ?jalali {
+                            if (empty($membershipStartDateMap[$MHAMember_Code]) == false) {
+                                $jalali_start_date = $membershipStartDateMap[$MHAMember_Code];
+                                $jalali_start_str = $jalali_start_date->format('Y/m/d');
+                                // $this->log("    tbl_MHA_MHAMemberMembership: Member_Code({$MHAMember_Code}) > start({$jalali_start_str})");
+                                return $jalali_start_date;
+                            }
+
+                            $qry = <<<SQL
+    SELECT *
+      FROM tbl_MHA_MHAMemberMembership
+     WHERE MHAMemberMembership_MHAMember_Code = {$MHAMember_Code}
+  ORDER BY MHAMemberMembership_StartDate
+     LIMIT 1
+SQL;
+
+                            $membership_row = $dboldcrm->createCommand($qry)->queryOne();
+                            if (empty($membership_row)) {
+                                $this->log("    Member_Code({$MHAMember_Code}) > tbl_MHA_MHAMemberMembership is EMPTY ---");
+                                return null;
+                            }
+
+                            $miladi_date = new \DateTime($membership_row['MHAMemberMembership_StartDate']);
+                            $jalali_start_date = $this->jalali->setGregorianDate($miladi_date)->getJalali();
+                            $jalali_start_str = $jalali_start_date->format('Y/m/d');
+                            // $this->log("    tbl_MHA_MHAMemberMembership: Member_Code({$MHAMember_Code}) > start({$jalali_start_str})");
+                            $membershipStartDateMap[$MHAMember_Code] = $jalali_start_date;
+                            return $jalali_start_date;
+                        };
+
+                    $from_date_jalali_str = null;
+                    $to_date_jalali_str = null;
 
                     preg_match_all('/([\d\/]+)([^\d\/]+)([\d\/]+)/', $MHAMemberBalance_Desc, $matches, PREG_SET_ORDER);
-                    $from_date_jalali_str = NULL;
-                    $to_date_jalali_str = NULL;
                     if (empty($matches[0][1]) == false)
                         $from_date_jalali_str = $matches[0][1];
                     if (empty($matches[0][3]) == false)
                         $to_date_jalali_str = $matches[0][3];
 
                     if (empty($from_date_jalali_str)) {
-                        $this->fnLogErrorToConvertTable($lastID, "`from` date is empty. desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
+                        $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > [from] date is empty. desc({$MHAMemberBalance_Desc}) ***", $convertKey, $errorids, $processedErrorIds);
                         continue;
                     }
                     if (empty($to_date_jalali_str)) {
-                        $this->fnLogErrorToConvertTable($lastID, "`to` date is empty. desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
+                        $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > [to] date is empty. desc({$MHAMemberBalance_Desc}) ***", $convertKey, $errorids, $processedErrorIds);
                         continue;
                     }
 
-                    $fnExtractDate = function ($date_str, $name) use ($lastID, $convertKey, $errorids, $processedErrorIds, $MHAMemberBalance_Desc) {
+                    $fnExtractDate = function ($date_str, $name) use (&$fnGetSmallestStartDateFromOldMembership, $MHAMember_Code, $lastID, $convertKey, &$errorids, &$processedErrorIds, $MHAMemberBalance_Desc): ?\DateTime {
                         if ($date_str[0] == '/')
                             $date_str = substr($date_str, 1);
                         if ($date_str[strlen($date_str) - 1] == '/')
                             $date_str = substr($date_str, 0, -1);
                         $parts = explode('/', $date_str);
-                        if (count($parts) != 3) {
-                            $this->fnLogErrorToConvertTable($lastID, "[{$name}] invalid date({$date_str}). desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
-                            return NULL;
+
+                        $parts_count = count($parts);
+
+                        if ($parts_count == 1) {
+                            $jalali_start_date = $fnGetSmallestStartDateFromOldMembership($MHAMember_Code);
+                            if ($jalali_start_date == null) {
+                                $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > '/' not found in [{$name}] date({$date_str}). desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
+                                return null;
+                            }
+
+                            // $this->log("[{$lastID}] Member_Code({$MHAMember_Code}) > '/' not found in [{$name}] date({$date_str}). desc({$MHAMemberBalance_Desc})");
+
+                            $parts = [];
+                            $parts[0] = $date_str;
+                            $parts[1] = $jalali_start_date->getMonth();
+                            $parts[2] = $jalali_start_date->getDay();
+
+                            $parts_count = 3;
+                        }
+
+                        if ($parts_count != 3) {
+                            $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > parts != 3 in [{$name}] date({$date_str}). desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
+                            return null;
                         }
 
                         $parts[0] = intval($parts[0]);
@@ -5451,28 +5475,170 @@ SQL;
                         // if ($str != $date_str)
                         //     $this->log("[{$name}] {$date_str} -> {$str}");
 
-                        $miladi = $this->jalaliToMiladi($str);
-                        if (empty($miladi)) {
-                            $this->fnLogErrorToConvertTable($lastID, "[{$name}] can not convert date({$date_str}) to miladi. desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
-                            return NULL;
+                        list($miladi, $_) = $this->jalaliToMiladi($str);
+                        if ($miladi == null) {
+                            $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > can not convert [{$name}] date({$date_str}) to miladi. desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
+                            return null;
                         }
 
                         // $this->log("[{$name}] jalali({$str}) -> miladi({$miladi})");
                         return $miladi;
                     };
 
-                    $from_date = $fnExtractDate($from_date_jalali_str, 'from');
-                    if (empty($from_date))
-                        continue;
+                    $from_date_miladi = $fnExtractDate($from_date_jalali_str, 'from');
+                    $to_date_miladi = $fnExtractDate($to_date_jalali_str, 'to');
 
-                    $to_date = $fnExtractDate($to_date_jalali_str, 'to');
-                    if (empty($to_date))
-                        continue;
+                    if ($from_date_miladi == null || $to_date_miladi == null)
+                        throw new \Exception("error in extract dates for Member_Code({$MHAMember_Code}): from({$from_date_jalali_str}) to({$to_date_jalali_str}) desc({$MHAMemberBalance_Desc})");
+
+                    if ($from_date_miladi > $to_date_miladi) {
+                        $_d = $to_date_miladi;
+                        $to_date_miladi = $from_date_miladi;
+                        $from_date_miladi = $_d;
+                    }
+
+                    $from_date_miladi_str = $from_date_miladi->format('Y/m/d');
+                    $to_date_miladi_str   = $to_date_miladi->format('Y/m/d');
+
+                    $years = intval($to_date_miladi->format('Y')) - intval($from_date_miladi->format('Y'));
+                    // $this->log("extract dates: years({$years}) from({$from_date_miladi_str}) to({$to_date_miladi_str}) desc({$MHAMemberBalance_Desc})");
+
+                    if ($years == 0)
+                        $years = 1;
+                    else if ($years < 0)
+                        throw new \Exception("years({$years}) <= 0: from({$from_date_miladi_str}) to({$to_date_miladi_str}) desc({$MHAMemberBalance_Desc})");
+
+                    // else $this->log("extract dates: from({$from_date_miladi}) to({$to_date_miladi}) desc({$MHAMemberBalance_Desc})");
+
+                    $transaction = Yii::$app->db->beginTransaction();
+
+                    try {
+                        /*************************************************
+              //phase 2: membership
+              //create invoice voucher
+              $vchItemKey = Uuid::uuid4()->toString();
+              $vchItems = Json::encode([
+                [
+                  'key'       => $vchItemKey,
+                  // 'userid'    => $userid,
+                  'service'   => 'mha',
+                  // 'slbkey'    => 'mbrshp',
+                  'slbid'     => $fnGetConst(self::crm_2_membership_slbID),
+                  'desc'      => 'کانورت از سیستم ۱ - ردیف {$lastID} - {$MHAMemberBalance_Desc}',
+                  'qty'       => 1,
+                  'unit'      => 'سال',
+                  'prdtype'    => $fnGetConst(enuProductType::Digital),
+                  'unitprice' => $convert_MHAMemberBalance_Amount,
+                  // 'slbinfo'        => [
+                  //   'startDate' => $startDate,
+                  //   'endDate' => $endDate,
+                  // ],
+                  'maxqty'    => 1,
+                  'qtystep'    => 0, //0: do not allow to change qty in basket
+                ],
+              ]);
+
+              $qry = <<<SQL
+    INSERT INTO tbl_AAA_Voucher
+            SET vchUUID         = UUID()
+              , vchOwnerUserID  = {$userid}
+              , vchType         = '{$fnGetConst(enuVoucherType::Invoice)}'
+              , vchAmount       = {$convert_MHAMemberBalance_Amount}
+              , vchTotalAmount  = {$convert_MHAMemberBalance_Amount}
+              , vchPaidByWallet = {$convert_MHAMemberBalance_Amount}
+              , vchTotalPaid    = {$convert_MHAMemberBalance_Amount}
+              , vchItems        = '{$vchItems}'
+              , vchStatus       = '{$fnGetConst(enuVoucherStatus::Finished)}'
+SQL;
+              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+              $voucherid = intval(Yii::$app->db->getLastInsertID());
+
+              //create wallet transaction
+              $qry = <<<SQL
+    INSERT INTO tbl_AAA_WalletTransaction
+            SET wtrUUID             = UUID()
+              , wtrWalletID          = {$walid}
+              , wtrVoucherID          = {$voucherid}
+              , wtrWithdrawalAmount = {$convert_MHAMemberBalance_Amount}
+SQL;
+              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+              //update wallet
+            $qry =<<<SQL
+    UPDATE tbl_AAA_Wallet
+       SET walRemainedAmount = walRemainedAmount - {$convert_MHAMemberBalance_Amount}
+     WHERE walID = {$walid}
+SQL;
+              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+              //member membership
+              $qry = <<<SQL
+    INSERT INTO tbl_MHA_Accounting_UserAsset
+            SET uasUUID                         = '{$vchItemKey}'
+              , uasActorID         = {$userid}
+              , uasSaleableID      = {$fnGetConst(self::crm_2_membership_slbID)}
+              , uasQty             = 1
+              , uasVoucherID       = {$voucherid}
+              , uasVoucherItemInfo = '{$vchItems}'
+              , uasValidFromDate   = null
+              , uasValidToDate     = {$tbl_MHA_MHAMemberBalance_expire}
+              , uasStatus          = '{$fnGetConst(enuUserAssetStatus::Active)}'
+SQL;
+              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+              //phase 3: member
+              $qry = <<<SQL
+    UPDATE tbl_MHA_Member
+       SET mbrAcceptedAt = DATE_ADD({$tbl_MHA_MHAMemberBalance_expire}, INTERVAL -1 YEAR)
+     WHERE mbrUserID = {$userid}
+       AND (mbrAcceptedAt IS null
+        OR mbrAcceptedAt > DATE_ADD({$tbl_MHA_MHAMemberBalance_expire}, INTERVAL -1 YEAR)
+         )
+SQL;
+              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+                         **************************************************/
+                        //phase 4: log
+                        //log to tbl_convert
+                        $qry = <<<SQL
+   INSERT INTO tbl_convert(tableName, lastID, at)
+        VALUES ('{$convertKey}', $lastID, NOW())
+            ON DUPLICATE KEY UPDATE lastID={$lastID}, at=NOW();
+SQL;
+                        $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+                        //remove lastID from tbl_convert.info
+                        if ($fnRemoveFromErrorIDs($lastID)) {
+                            $this->log("REMOVE '{$lastID}' FROM ERRORS");
+
+                            $qry = <<<SQL
+  UPDATE tbl_convert
+     SET info = IF (info IS null OR LENGTH(info)=0,
+           null,
+           IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
+             TRIM(BOTH ',' FROM REPLACE(CONCAT(',', info, ','), ',{$lastID},', ',')),
+             info
+           )
+         )
+       , at=NOW()
+   WHERE tableName = '{$convertKey}';
+SQL;
+                            $this->queryExecute($qry, __FUNCTION__, __LINE__);
+                        }
+
+                        $this->fnUnLogErrorFromConvertTable([$lastID], $convertKey, $errorids, $processedErrorIds);
+
+                        //commit
+                        $transaction->commit();
+                    } catch (\Throwable $exp) {
+                        $transaction->rollBack();
+                        throw $exp;
+                    }
                 } catch (\Throwable $exp) {
                     $this->fnLogErrorToConvertTable($lastID, $exp->getMessage(), $convertKey, $errorids, $processedErrorIds);
                     // echo "** ERROR: ID: {$lastID} **\n";
-                    echo $exp->getMessage();
-                    echo "\n";
+                    // echo $exp->getMessage();
+                    // echo "\n";
                     // throw $exp;
                 }
             } //foreach ($rows as $row)
