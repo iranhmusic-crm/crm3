@@ -37,6 +37,7 @@ $config = [
 	'language' => 'fa_IR',
 	'basePath' => dirname(__DIR__),
 	'homeUrl' => $baseUrl,
+	'layout' => 'curved-405',
 	'aliases' => [
 		'@bower' => '@vendor/bower-asset',
 		'@npm'   => '@vendor/npm-asset',

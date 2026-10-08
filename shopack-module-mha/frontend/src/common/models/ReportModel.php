@@ -86,14 +86,16 @@ class ReportModel extends RestClientActiveRecord
                 },
                 'checked' => true,
             ],
-            'user.usrFirstName_en' => ['label' => Yii::t('aaa', 'First Name (en)'),],
-            'format' => 'raw',
-            'value' => function ($model, $key, $index, $widget) {
-                return Html::a($model['user']['usrFirstName_en'], ['/mha/member/view', 'id' => $model['mbrUserID']]);
-            },
-            'export' => function ($model) {
-                return $model['user']['usrFirstName_en'];
-            },
+            'user.usrFirstName_en' => [
+                'label' => Yii::t('aaa', 'First Name (en)'),
+                'format' => 'raw',
+                'value' => function ($model, $key, $index, $widget) {
+                    return Html::a($model['user']['usrFirstName_en'], ['/mha/member/view', 'id' => $model['mbrUserID']]);
+                },
+                'export' => function ($model) {
+                    return $model['user']['usrFirstName_en'];
+                },
+            ],
             'user.usrLastName' => [
                 'label' => Yii::t('aaa', 'Last Name'),
                 'format' => 'raw',
