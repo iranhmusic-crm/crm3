@@ -203,9 +203,9 @@ class MigrateDataController extends Controller
         try {
             return Yii::$app->db->createCommand($qry)->execute();
         } catch (\Throwable $th) {
-            $this->trace('** EXCEPTION: ' . $th->getMessage());
-            $this->trace($qry);
-            $this->trace($function . ':' . $line);
+            // $this->trace('** EXCEPTION: ' . $th->getMessage());
+            // $this->trace($qry);
+            // $this->trace($function . ':' . $line);
             throw $th;
         }
     }
@@ -1591,14 +1591,15 @@ SQL;
            ON DUPLICATE KEY UPDATE
               info = IF (info IS null OR LENGTH(info) = 0,
                 '{$lastID}',
-                IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
-                  info,
-                  CONCAT(info, ',', '{$lastID}')
+                IF (LOCATE(',{$lastID},', CONCAT(',', REPLACE(info, '\\n', ''), ',')) >= 1,
+                  REPLACE(info, '\\n', ''),
+                  CONCAT(REPLACE(info, '\\n', ''), ',', '{$lastID}')
                 )
               )
             , at = NOW()
             ;
 SQL;
+        // $this->log("fnLogErrorToConvertTable: qry({$qry})");
         $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
         //prevent fetch in next loops
@@ -1623,7 +1624,7 @@ SQL;
             $this->fnRemoveFromErrorIDs($id, $errorids, $processedErrorIds);
 
             if ($k == 0) {
-                $replaces = "REPLACE(CONCAT(',', info, ',') , ',{$id},', ',')";
+                $replaces = "REPLACE(CONCAT(',', REPLACE(info, '\\n', ''), ',') , ',{$id},', ',')";
             } else {
                 $replaces =
                     "REPLACE("
@@ -2988,16 +2989,6 @@ SQL;
 
         $processedErrorIds = [];
 
-        $fnRemoveFromErrorIDs = function ($lastID) use (&$errorids, &$processedErrorIds) {
-            if (empty($errorids[$lastID]))
-                return false;
-
-            unset($errorids[$lastID]);
-            $processedErrorIds[$lastID] = $lastID;
-
-            return true;
-        };
-
         //-----------------
         $userDefWalletMap = [];
         $fetchCount = 1000;
@@ -3184,7 +3175,7 @@ SQL;
        VALUES ('{$convertKey}', 0, NOW(), '{$lastID}')
            ON DUPLICATE KEY UPDATE info = IF (info IS null OR LENGTH(info)=0,
                 '{$lastID}',
-                IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
+                IF (LOCATE(',{$lastID},', CONCAT(',', REPLACE(info, '\\n', ''), ',')) >= 1,
                   info,
                   CONCAT(info, ',', '{$lastID}')
                 )
@@ -3194,7 +3185,7 @@ SQL;
                         $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
                         //prevent fetch in next loops
-                        $fnRemoveFromErrorIDs($lastID);
+                        $this->fnRemoveFromErrorIDs($lastID, $errorids, $processedErrorIds);
 
                         continue;
                     }
@@ -3409,15 +3400,15 @@ SQL;
                         $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
                         //remove lastID from tbl_convert.info
-                        if ($fnRemoveFromErrorIDs($lastID)) {
+                        if ($this->fnRemoveFromErrorIDs($lastID, $errorids, $processedErrorIds)) {
                             $this->log("  REMOVE '{$lastID}' FROM ERRORS");
 
                             $qry = <<<SQL
   UPDATE tbl_convert
      SET info = IF (info IS null OR LENGTH(info)=0,
            null,
-           IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
-             TRIM(BOTH ',' FROM REPLACE(CONCAT(',', info, ','), ',{$lastID},', ',')),
+           IF (LOCATE(',{$lastID},', CONCAT(',', REPLACE(info, '\\n', ''), ',')) >= 1,
+             TRIM(BOTH ',' FROM REPLACE(CONCAT(',', REPLACE(info, '\\n', ''), ','), ',{$lastID},', ',')),
              info
            )
          )
@@ -3533,16 +3524,6 @@ SQL;
         }
 
         $processedErrorIds = [];
-
-        $fnRemoveFromErrorIDs = function ($lastID) use (&$errorids, &$processedErrorIds) {
-            if (empty($errorids[$lastID]))
-                return false;
-
-            unset($errorids[$lastID]);
-            $processedErrorIds[$lastID] = $lastID;
-
-            return true;
-        };
 
         //-----------------
         $userDefWalletMap = [];
@@ -3672,7 +3653,7 @@ delete from tbl_convert where tableName = 'v2.tbl_billing';
        VALUES ('{$convertKey}', 0, NOW(), '{$lastID}')
            ON DUPLICATE KEY UPDATE info = IF (info IS null OR LENGTH(info)=0,
                 '{$lastID}',
-                IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
+                IF (LOCATE(',{$lastID},', CONCAT(',', REPLACE(info, '\\n', ''), ',')) >= 1,
                   info,
                   CONCAT(info, ',', '{$lastID}')
                 )
@@ -3682,7 +3663,7 @@ SQL;
             $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
             //prevent fetch in next loops
-            $fnRemoveFromErrorIDs($lastID);
+            $this->fnRemoveFromErrorIDs($lastID, $errorids, $processedErrorIds);
 
             continue;
           }
@@ -3877,15 +3858,15 @@ SQL;
             $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
             //remove lastID from tbl_convert.info
-            if ($fnRemoveFromErrorIDs($lastID)) {
+            if ($this->fnRemoveFromErrorIDs($lastID, $errorids, $processedErrorIds)) {
               $this->log("  REMOVE '{$lastID}' FROM ERRORS");
 
               $qry =<<<SQL
   UPDATE tbl_convert
      SET info = IF (info IS null OR LENGTH(info)=0,
            null,
-           IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
-             TRIM(BOTH ',' FROM REPLACE(CONCAT(',', info, ','), ',{$lastID},', ',')),
+           IF (LOCATE(',{$lastID},', CONCAT(',', REPLACE(info, '\\n', ''), ',')) >= 1,
+             TRIM(BOTH ',' FROM REPLACE(CONCAT(',', REPLACE(info, '\\n', ''), ','), ',{$lastID},', ',')),
              info
            )
          )
@@ -4671,8 +4652,8 @@ SQL;
     }
 
     /**********************************************************\
-  |* V 1                                                    *|
-  \**********************************************************/
+    |* V 1                                                    *|
+    \**********************************************************/
     public function actionFromV1()
     {
         $this->log("migrating from v1");
@@ -4712,10 +4693,8 @@ SQL;
         $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
         try {
-            // $this->v1_convert_positive_balance($convertTableData);
-
+            $this->v1_convert_positive_balance($convertTableData);
             $this->v1_convert_negative_balance($convertTableData);
-
             $fnUnlock();
         } catch (\Throwable $exp) {
             $fnUnlock();
@@ -4802,7 +4781,24 @@ SQL;
 SQL;
         $dboldcrm->createCommand($qry)->execute();
 
-        #2948
+        $qry = <<<SQL
+  UPDATE tbl_MHA_MHAMemberBalance
+     SET MHAMemberBalance_Date = CASE
+    WHEN MHAMemberBalance_Date = '3013-10-13 00:00:00' THEN '2012-10-13 00:00:00'
+    WHEN MHAMemberBalance_Date = '1913-10-21 00:00:00' THEN '2008-10-21 00:00:00'
+    WHEN MHAMemberBalance_Date = '1914-01-13 00:00:00' THEN '2009-01-13 00:00:00'
+    WHEN MHAMemberBalance_Date = '2564-04-27 00:00:00' THEN '2014-04-27 00:00:00'
+    WHEN MHAMemberBalance_Date = '1915-05-04 00:00:00' THEN '2015-05-04 00:00:00'
+    WHEN MHAMemberBalance_Date = '1915-07-01 00:00:00' THEN '2015-07-01 00:00:00'
+    WHEN MHAMemberBalance_Date = '1916-01-21 00:00:00' THEN '2008-01-21 00:00:00'
+    WHEN MHAMemberBalance_Date = '1916-04-26 00:00:00' THEN '2008-04-26 00:00:00'
+    WHEN MHAMemberBalance_Date = '2616-10-04 00:00:00' THEN '2016-10-04 00:00:00'
+    ELSE MHAMemberBalance_Date
+     END
+   WHERE convert_MHAMemberBalance_Amount > 0
+;
+SQL;
+        $dboldcrm->createCommand($qry)->execute();
 
         //-- update AUTO_INCREMENT
         //     $qry = <<<SQL
@@ -4861,16 +4857,6 @@ SQL;
 
         $processedErrorIds = [];
 
-        $fnRemoveFromErrorIDs = function ($lastID) use (&$errorids, &$processedErrorIds) {
-            if (empty($errorids[$lastID]))
-                return false;
-
-            unset($errorids[$lastID]);
-            $processedErrorIds[$lastID] = $lastID;
-
-            return true;
-        };
-
         //-----------------
         $userDefWalletMap = [];
         $memberRegisterCodeToUserIDMap = [];
@@ -4882,7 +4868,7 @@ SQL;
             ++$loopCount;
 
             // if ($loopCount > 1)
-            //   break;
+            //     break;
 
             $erroridsCount = count($errorids);
             $newFetchCount = $fetchCount;
@@ -4975,9 +4961,12 @@ SQL;
                     $convert_MHAMemberBalance_Amount = intval($row['convert_MHAMemberBalance_Amount']);
                     $convert_MHAMemberBalance_Amount = $convert_MHAMemberBalance_Amount / 10; // rial -> toman
 
-                    $MHAMemberBalance_Date           = $row['MHAMemberBalance_Date'];
-                    $MHAMemberBalance_Desc           = StringHelper::fixPersianCharacters($row['MHAMemberBalance_Desc']);
-                    $MHAMemberBalance_Guid           = strtolower(str_replace('{', '', str_replace('}', '', $row['MHAMemberBalance_Guid'])));
+                    $MHAMemberBalance_Guid       = strtolower(str_replace('{', '', str_replace('}', '', $row['MHAMemberBalance_Guid'])));
+                    $MHAMemberBalance_Date       = $row['MHAMemberBalance_Date'];
+                    $MHAMemberBalance_CreateDate = $row['MHAMemberBalance_CreateDate'];
+
+                    $MHAMemberBalance_Desc = StringHelper::fixPersianCharacters($row['MHAMemberBalance_Desc']);
+                    $MHAMemberBalance_Desc = str_replace("  ", " ", str_replace("\r", " ", str_replace("\n", " ", $MHAMemberBalance_Desc)));
 
                     preg_match_all('/شماره(\s*)(\d*)/', $MHAMemberBalance_Desc, $matches, PREG_SET_ORDER);
                     $doc_number = '';
@@ -5018,6 +5007,7 @@ SQL;
             , vchOfflinePaid = {$convert_MHAMemberBalance_Amount}
             , vchItems       = '{"inc-wallet-id":"{$walid}","convert-from":"v1","convert-id":{$lastID}}'
             , vchStatus      = '{$fnGetConst(enuVoucherStatus::Finished)}'
+            , vchCreatedAt   = '{$MHAMemberBalance_CreateDate}'
 SQL;
                         $this->queryExecute($qry, __FUNCTION__, __LINE__);
                         $voucherid = intval(Yii::$app->db->getLastInsertID());
@@ -5036,6 +5026,7 @@ SQL;
             , ofpStatus          = '{$fnGetConst(enuOfflinePaymentStatus::Approved)}'
             , ofpTrackNumber     = '{$doc_number}'
             , ofpReferenceNumber = '{$lastID}'
+            , ofpCreatedAt       = '{$MHAMemberBalance_CreateDate}'
 SQL;
                         $this->queryExecute($qry, __FUNCTION__, __LINE__);
                         $ofpid = intval(Yii::$app->db->getLastInsertID());
@@ -5044,10 +5035,11 @@ SQL;
                         $qry = <<<SQL
   INSERT INTO tbl_AAA_WalletTransaction
           SET wtrUUID             = UUID()
-            , wtrWalletID          = {$walid}
-            , wtrVoucherID          = {$voucherid}
+            , wtrWalletID         = {$walid}
+            , wtrVoucherID        = {$voucherid}
             , wtrOfflinePaymentID = {$ofpid}
             , wtrDepositAmount    = {$convert_MHAMemberBalance_Amount}
+            , wtrCreatedAt        = '{$MHAMemberBalance_CreateDate}'
 SQL;
                         $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
@@ -5069,15 +5061,15 @@ SQL;
                         $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
                         //remove lastID from tbl_convert.info
-                        if ($fnRemoveFromErrorIDs($lastID)) {
+                        if ($this->fnRemoveFromErrorIDs($lastID, $errorids, $processedErrorIds)) {
                             $this->log("REMOVE '{$lastID}' FROM ERRORS");
 
                             $qry = <<<SQL
   UPDATE tbl_convert
      SET info = IF (info IS null OR LENGTH(info)=0,
            null,
-           IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
-             TRIM(BOTH ',' FROM REPLACE(CONCAT(',', info, ','), ',{$lastID},', ',')),
+           IF (LOCATE(',{$lastID},', CONCAT(',', REPLACE(info, '\\n', ''), ',')) >= 1,
+             TRIM(BOTH ',' FROM REPLACE(CONCAT(',', REPLACE(info, '\\n', ''), ','), ',{$lastID},', ',')),
              info
            )
          )
@@ -5115,31 +5107,11 @@ SQL;
         $this->log("converted to '{$queryLastID}'");
     }
 
-    public function v1_convert_negative_balance(&$convertTableData)
+    public function normalize_fields_negative_balance()
     {
-        $this->log("v1_convert_negative_balance");
-        $convertKey = 'v1.tbl_MHA_MHAMemberBalance.negative';
-
         $dboldcrm = Yii::$app->oldcrmdbv1;
 
-        //-- add convert_status field (null: not touched, C:converted, E:error) -------------------------------
-        //     $qry = <<<SQL
-        //   SELECT COLUMN_NAME
-        //     FROM INFORMATION_SCHEMA.COLUMNS
-        //    WHERE TABLE_SCHEMA = DATABASE()
-        //      AND TABLE_NAME = 'tbl_MHA_MHAMemberBalance'
-        //      AND COLUMN_NAME = 'convert_status';
-        // SQL;
-        //     $cnt1 = $dboldcrm->createCommand($qry)->queryOne();
-        //     if (empty($cnt1)) {
-        //       $qry = <<<SQL
-        // ALTER TABLE `tbl_MHA_MHAMemberBalance`
-        //     ADD COLUMN `convert_status` CHAR(1) null DEFAULT null AFTER `MHAMemberBalance_UpdateDate`;
-        // SQL;
-        //       $dboldcrm->createCommand($qry)->execute();
-        //     }
-
-        //-- normalize input -------------------------------
+        //amount
         $qry = <<<SQL
   SELECT COLUMN_NAME
     FROM INFORMATION_SCHEMA.COLUMNS
@@ -5189,6 +5161,151 @@ SQL;
 SQL;
         $dboldcrm->createCommand($qry)->execute();
 
+        //desc
+        $qry = <<<SQL
+  SELECT COLUMN_NAME
+    FROM INFORMATION_SCHEMA.COLUMNS
+   WHERE TABLE_SCHEMA = DATABASE()
+     AND TABLE_NAME = 'tbl_MHA_MHAMemberBalance'
+     AND COLUMN_NAME = 'convert_MHAMemberBalance_Desc';
+SQL;
+        $cnt1 = $dboldcrm->createCommand($qry)->queryOne();
+        if (empty($cnt1)) {
+            $qry = <<<SQL
+ALTER TABLE `tbl_MHA_MHAMemberBalance`
+	ADD COLUMN `convert_MHAMemberBalance_Desc` VARCHAR(2048) NULL AFTER `MHAMemberBalance_Desc`;
+SQL;
+            $dboldcrm->createCommand($qry)->execute();
+        }
+
+        $qry = <<<SQL
+  UPDATE tbl_MHA_MHAMemberBalance
+     SET convert_MHAMemberBalance_Desc = CASE
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 03/12/1391 تا 02/12/139'      THEN 'بابت حق عضويت از 03/12/1391 تا 02/12/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 05/06/11386تا 05/06/1387'     THEN 'بابت حق عضويت از 05/06/1386 تا 05/06/1387'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 06/07/1389/تا/60/07/1390'     THEN 'بابت حق عضويت از 06/07/1389 تا 06/07/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 07/0251387 تا 06/02/1388'     THEN 'بابت حق عضويت از 07/02/1387 تا 06/02/1388'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 08/05/1391 تا 07/05/1392'     THEN 'بابت حق عضويت از 08/05/1391 تا 07/05/1392'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 09/1387 تا 09/11/1391'        THEN 'بابت حق عضويت از 09/11/1387 تا 09/11/1391'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 13/112/1383 تا 13/12/1390'    THEN 'بابت حق عضويت از 13/12/1383 تا 13/12/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 14/09/1389 تا 1408/09/1390'   THEN 'بابت حق عضويت از 14/09/1389 تا 14/09/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 15/16/1386 تا 15/06/1387'     THEN 'بابت حق عضويت از 15/06/1386 تا 15/06/1387'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 17/02/1391تا 117/02/1392'     THEN 'بابت حق عضويت از 17/02/1391تا 17/02/1392'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 2229/12/1390 تا 29/12/1391'   THEN 'بابت حق عضويت از 29/12/1390 تا 29/12/1391'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 27/01/1385 تا27/01/11390'     THEN 'بابت حق عضويت از 27/01/1385 تا 27/01/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/03/1390 تا 28/1391'        THEN 'بابت حق عضويت از 28/03/1390 تا 28/03/1391'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/10/1387 تا 26/10/1392'     THEN 'بابت حق عضويت از 28/10/1387 تا 26/10/1392'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/112/1387 تا 28/12/1392'    THEN 'بابت حق عضويت از 28/12/1387 تا 28/12/1392'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1388 تا /12/1389'       THEN 'بابت حق عضويت از 28/12/1388 تا 28/12/1389'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/1387تا28/12/1390'          THEN 'بابت حق عضويت از 28/12/1387 تا 28/12/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 2801/1389تا 28/12/1390'       THEN 'بابت حق عضويت از 28/12/1389 تا 28/12/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 29/12/  1390 تا   29/12/1391' THEN 'بابت حق عضويت از 29/12/1390 تا 29/12/1391'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 29/12/1383 تا 229/12/1387'    THEN 'بابت حق عضويت از 29/12/1383 تا 29/12/1387'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 29/12/1387 تا 22229/12/1389'  THEN 'بابت حق عضويت از 29/12/1387 تا 29/12/1389'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 29/12/1388تا 229/12/1391'     THEN 'بابت حق عضويت از 29/12/1388 تا 29/12/1391'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 29/1271389 تا 29/12/1390'     THEN 'بابت حق عضويت از 29/12/1389 تا 29/12/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/0.8/1389 تا 30/08/1390'    THEN 'بابت حق عضويت از 30/08/1389 تا 30/08/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/03/1387 تا 30/30/1389'     THEN 'بابت حق عضويت از 30/03/1387 تا 30/03/1389'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/06/1392 تا 29/06/1396'     THEN 'بابت حق عضويت از 30/06/1392 تا 29/06/1396'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/08/11386تا 30/08/1392'     THEN 'بابت حق عضويت از 30/08/1386 تا 30/08/1392'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/11/11386تا 30/11/1390'     THEN 'بابت حق عضويت از 30/11/1386 تا 30/11/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 31/030/1390 تا 31/03/1392'    THEN 'بابت حق عضويت از 31/03/1390 تا 31/03/1392'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 31/05/1388 تا 04/31/1389'     THEN 'بابت حق عضويت از 31/05/1388 تا 31/04/1389'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 31/06/1388 تا 31/060/1390'    THEN 'بابت حق عضويت از 31/06/1388 تا 31/06/1390'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از09/23/1388 تا 23/09/1392'      THEN 'بابت حق عضويت از 23/09/1388 تا 23/09/1392'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از20/05/1389تا20/50/1389'        THEN 'بابت حق عضويت از 20/05/1389 تا 20/05/1389'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از34/03/1390 تا 30/03/1391'      THEN 'بابت حق عضويت از 30/03/1390 تا 30/03/1391'
+--
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 01/01/1379 تا 28/12/1387'     THEN 'بابت حق عضويت از 01/01/1379 تا 28/12/1387'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 11/08/1385 تا 09/08/1388'     THEN 'بابت حق عضويت از 11/08/1385 تا 09/08/1388'
+--    WHEN MHAMemberBalance_Desc = 'حق عضويت01/01/1380 تا 29/12/1387'              THEN 'حق عضويت01/01/1380 تا 29/12/1387'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 20/05/1383 تا 18/05/1388'     THEN 'بابت حق عضويت از 20/05/1383 تا 18/05/1388'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/09/2386تا 30/09/1390'      THEN 'بابت حق عضويت از 30/09/1386 تا 30/09/1390'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 20/11/1388 تا 20/11/1390'     THEN 'بابت حق عضويت از 20/11/1388 تا 20/11/1390'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 01/04/1386 تا 01/03/1391'     THEN 'بابت حق عضويت از 01/04/1386 تا 01/03/1391'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 19/02/1286تا 18/02/1388'      THEN 'بابت حق عضويت از 19/02/1386 تا 18/02/1388'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/02/1390 تا 30/02/1391'     THEN 'بابت حق عضويت از 30/02/1390 تا 30/02/1391'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 15/07/16تا 15/07/92'          THEN 'بابت حق عضويت از 15/07/1391 تا 15/07/1392'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/6/1390 تا 30/6/1391'       THEN 'بابت حق عضويت از 30/6/1390 تا 30/6/1391'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/01/1389 تا 29/01/1392'     THEN 'بابت حق عضويت از 30/01/1389 تا 29/01/1392'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 08/05/1391 تا 07/05/1392'     THEN 'بابت حق عضويت از 08/05/1391 تا 07/05/1392'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 24/05/1391 تا 23/05/1392'     THEN 'بابت حق عضويت از 24/05/1391 تا 23/05/1392'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 27/07/1390 تا 26/07/1392'     THEN 'بابت حق عضويت از 27/07/1390 تا 26/07/1392'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 26/09/1384 تا 26/09/1385'     THEN 'بابت حق عضويت از 26/09/1384 تا 26/09/1385'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/10/1387 تا 26/10/1392'     THEN 'بابت حق عضويت از 28/10/1387 تا 26/10/1392'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 19/08/1391 تا 18/08/1392'     THEN 'بابت حق عضويت از 19/08/1391 تا 18/08/1392'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 24/04/1391 تا 23/04/1392'     THEN 'بابت حق عضويت از 24/04/1391 تا 23/04/1392'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 12/11/1390 تا 11/11/1392'     THEN 'بابت حق عضويت از 12/11/1390 تا 11/11/1392'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 31/06/1392 تا 31/06/1393'     THEN 'بابت حق عضويت از 31/06/1392 تا 31/06/1393'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 31/06/1392 تا 31/06/1393'     THEN 'بابت حق عضويت از 31/06/1392 تا 31/06/1393'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/09/1932 تا 30/09/1933'     THEN 'بابت حق عضويت از 30/09/1392 تا 30/09/1393'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/03/1932 تا 30/03/1933'     THEN 'بابت حق عضويت از 30/03/1392 تا 30/03/1393'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1329 تا 27/12/1330'     THEN 'بابت حق عضويت از 28/12/1392 تا 27/12/1393'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/09/1932 تا 30/09/1933'     THEN 'بابت حق عضويت از 30/09/1392 تا 30/09/1393'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 31/03/1393 تا 31/03/1394'     THEN 'بابت حق عضويت از 31/03/1393 تا 31/03/1394'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 31/03/1393 تا 31/03/1394'     THEN 'بابت حق عضويت از 31/03/1393 تا 31/03/1394'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/06/1392 تا 30/06/1394'     THEN 'بابت حق عضويت از 30/06/1392 تا 30/06/1394'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 31/03/1393 تا 31/03/1394'     THEN 'بابت حق عضويت از 31/03/1393 تا 31/03/1394'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 31/03/1393 تا 31/03/1394'     THEN 'بابت حق عضويت از 31/03/1393 تا 31/03/1394'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1392 تا 21/12/1424'     THEN 'بابت حق عضويت از 28/12/1392 تا 21/12/1394'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1383 تا 22/11/1528'     THEN 'بابت حق عضويت از 28/12/1383 تا 22/11/1385'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/09/1393 تا 24/09/1418'     THEN 'بابت حق عضويت از 30/09/1393 تا 24/09/1394'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1292 تا 27/12/1295'     THEN 'بابت حق عضويت از 28/12/1392 تا 27/12/1395'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 03/09/1393 تا 03/09/1394'     THEN 'بابت حق عضويت از 03/09/1393 تا 03/09/1394'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 31/03/1393 تا 23/03/1425'     THEN 'بابت حق عضويت از 31/03/1393 تا 23/03/1395'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1393 تا 28/12/1395'     THEN 'بابت حق عضويت از 28/12/1393 تا 28/12/1395'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1392 تا 28/12/1395'     THEN 'بابت حق عضويت از 28/12/1392 تا 28/12/1395'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1394 تا 22/12/1419'     THEN 'بابت حق عضويت از 28/12/1394 تا 22/12/1395'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/09/1393 تا 24/09/1418'     THEN 'بابت حق عضويت از 30/09/1393 تا 24/09/1394'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/09/1394 تا 24/09/1419'     THEN 'بابت حق عضويت از 30/09/1394 تا 24/09/1395'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/06/1393 تا 30/06/1394'     THEN 'بابت حق عضويت از 30/06/1393 تا 30/06/1394'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/09/1294 تا 30/09/1296'     THEN 'بابت حق عضويت از 30/09/1394 تا 30/09/1396'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/09/1394 تا 30/09/1395'     THEN 'بابت حق عضويت از 30/09/1394 تا 30/09/1395'
+--    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 30/06/1392 تا 29/06/1396'     THEN 'بابت حق عضويت از 30/06/1392 تا 29/06/1396'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1391 تا 14/12/1446'     THEN 'بابت حق عضويت از 28/12/1391 تا 14/12/1392'
+    WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1391 تا 14/12/1447'     THEN 'بابت حق عضويت از 28/12/1391 تا 14/12/1393'
+--
+    ELSE MHAMemberBalance_Desc
+     END
+   WHERE MHAMemberBalance_Amount < 0
+--     AND convert_MHAMemberBalance_Desc IS null;
+;
+SQL;
+        //    AND MHAMemberBalance_Code IN
+        //          (40,162,2354,5474,5747,6877,6907,7233,9163,9207,10107,10595,10672,10679,10733,10889,10993,11784,11813,11940,12873,13265,
+        //           15462,15595,15739,15759,15913,16623,17357,17946,21635,21775,22201,24682,25593,26847,27482,28266,28443,29581,32737,32738,
+        //           34250,34497,37955,37977,42740,43001,43073,43424,45200,46669,48279,48294,48315,48333,48673,48753,48774,48955,48986,48999,
+        //           49200,49284,49300,49308,49534,49572,49825,49878,50283,50529,50929,51923,51950,58828)
+        $dboldcrm->createCommand($qry)->execute();
+    }
+
+    public function v1_convert_negative_balance(&$convertTableData)
+    {
+        $this->log("v1_convert_negative_balance");
+        $convertKey = 'v1.tbl_MHA_MHAMemberBalance.negative';
+
+        $dboldcrm = Yii::$app->oldcrmdbv1;
+
+        //-- add convert_status field (null: not touched, C:converted, E:error) -------------------------------
+        //     $qry = <<<SQL
+        //   SELECT COLUMN_NAME
+        //     FROM INFORMATION_SCHEMA.COLUMNS
+        //    WHERE TABLE_SCHEMA = DATABASE()
+        //      AND TABLE_NAME = 'tbl_MHA_MHAMemberBalance'
+        //      AND COLUMN_NAME = 'convert_status';
+        // SQL;
+        //     $cnt1 = $dboldcrm->createCommand($qry)->queryOne();
+        //     if (empty($cnt1)) {
+        //       $qry = <<<SQL
+        // ALTER TABLE `tbl_MHA_MHAMemberBalance`
+        //     ADD COLUMN `convert_status` CHAR(1) null DEFAULT null AFTER `MHAMemberBalance_UpdateDate`;
+        // SQL;
+        //       $dboldcrm->createCommand($qry)->execute();
+        //     }
+
+        //-- normalize input -------------------------------
+        $this->normalize_fields_negative_balance();
+
         $this->ensureMembershipSaleableExists();
 
         $fnGetConst = function ($value) {
@@ -5223,26 +5340,19 @@ SQL;
         $errorids = $convertTableData[$convertKey]['info'] ?? null;
         if (empty($errorids))
             $errorids = [];
-        else
+        else {
+            // $this->log("RAW errorids: ({$errorids})");
+            $errorids = trim($errorids);
             $errorids = explode(',', $errorids);
+            $errorids = array_combine(array_values($errorids), array_values($errorids));
+        }
 
         if (empty($errorids) == false) {
-            $errorids = array_combine(array_values($errorids), array_values($errorids));
-            $this->log("last errorids: " . implode(',', $errorids));
+            $this->log("last errorids: (" . implode(',', $errorids) . ")");
         }
 
         $processedErrorIds = [];
         $memberRegisterCodeToUserIDMap = [];
-
-        $fnRemoveFromErrorIDs = function ($lastID) use (&$errorids, &$processedErrorIds) {
-            if (empty($errorids[$lastID]))
-                return false;
-
-            unset($errorids[$lastID]);
-            $processedErrorIds[$lastID] = $lastID;
-
-            return true;
-        };
 
         //-----------------
         $userDefWalletMap = [];
@@ -5268,20 +5378,11 @@ SQL;
 
             $where = "tbl_MHA_MHAMemberBalance.MHAMemberBalance_Code > {$queryLastID}";
             if (empty($errorids) == false)
-                $where = '(' . $where . "\nOR tbl_MHA_MHAMemberBalance.MHAMemberBalance_Code IN (" . implode(',', $errorids) . ")\n)";
+                $where = '(' . $where . "\n"
+                    . "OR tbl_MHA_MHAMemberBalance.MHAMemberBalance_Code IN (" . implode(',', $errorids) . ")\n)";
             $where .= "\n";
             if (empty($processedErrorIds) == false)
                 $where .= "AND tbl_MHA_MHAMemberBalance.MHAMemberBalance_Code NOT IN (" . implode(',', $processedErrorIds) . ")\n";
-
-            /******************************************/
-            /******************************************/
-            /******************************************/
-
-            // $where = "tbl_MHA_MHAMemberBalance.MHAMemberBalance_MHAMember_Code = 705\n";
-
-            /******************************************/
-            /******************************************/
-            /******************************************/
 
             $qry = <<<SQL
       SELECT *
@@ -5294,6 +5395,8 @@ SQL;
          AND {$where}
        LIMIT {$newFetchCount}
 SQL;
+
+            // $this->log("qry ({$qry})");
 
             $this->log("fetching data from ({$queryLastID})+1...");
             $rows = $dboldcrm->createCommand($qry)->queryAll();
@@ -5310,9 +5413,9 @@ SQL;
             $this->log("source data fetched: " . count($rows) . " rows");
 
             foreach ($rows as $row) {
-                $lastID = intval(trim($row['MHAMemberBalance_Code']));
-                if ($lastID > $queryLastID)
-                    $queryLastID = $lastID;
+                $lastID = trim($row['MHAMemberBalance_Code']);
+                if (intval($lastID) > $queryLastID)
+                    $queryLastID = intval($lastID);
 
                 // $this->log(">> lastID = {$lastID}");
 
@@ -5333,7 +5436,16 @@ SQL;
 
                         $mbrrow = $this->queryAll($qry, __FUNCTION__, __LINE__);
                         if (empty($mbrrow)) {
+                            // echo "1: ********************* (";
+                            // echo implode(',', $processedErrorIds);
+                            // echo ")\n";
+
                             $this->fnLogErrorToConvertTable($lastID, "invalid regCode({$Member_ID}): Member not found", $convertKey, $errorids, $processedErrorIds);
+
+                            // echo "2: ********************* (";
+                            // echo implode(',', $processedErrorIds);
+                            // echo ")\n";
+
                             continue;
                         }
 
@@ -5365,21 +5477,23 @@ SQL;
                     //note: make amount positive:
                     $convert_MHAMemberBalance_Amount = abs(intval($row['convert_MHAMemberBalance_Amount']));
                     $convert_MHAMemberBalance_Amount = $convert_MHAMemberBalance_Amount / 10; // rial -> toman
-
-                    $MHAMemberBalance_Date           = $row['MHAMemberBalance_Date'];
-                    $MHAMemberBalance_Desc           = StringHelper::fixPersianCharacters(trim($row['MHAMemberBalance_Desc']));
                     $MHAMemberBalance_Guid           = strtolower(str_replace('{', '', str_replace('}', '', $row['MHAMemberBalance_Guid'])));
+                    $MHAMemberBalance_Date           = $row['MHAMemberBalance_Date'];
+                    $MHAMemberBalance_CreateDate     = $row['MHAMemberBalance_CreateDate'];
                     $MHAMember_Code                  = intval($row['MHAMember_Code']);
+                    $convert_MHAMemberBalance_Desc   = StringHelper::fixPersianCharacters(trim($row['convert_MHAMemberBalance_Desc']));
 
-                    if (empty($MHAMemberBalance_Desc)) {
-                        $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > [desc] is empty. desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
+                    if (empty($convert_MHAMemberBalance_Desc)) {
+                        $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > [desc] is empty. desc({$convert_MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
                         continue;
                     }
+
+                    $convert_MHAMemberBalance_Desc = str_replace("  ", " ", str_replace("\r", " ", str_replace("\n", " ", $convert_MHAMemberBalance_Desc)));
 
                     // extract start & end date from Desc:
                     $fnGetSmallestStartDateFromOldMembership =
                         function ($MHAMember_Code)
-                        use ($dboldcrm, &$membershipStartDateMap, $lastID, $convertKey, &$errorids, &$processedErrorIds, $MHAMemberBalance_Desc): ?jalali {
+                        use ($dboldcrm, &$membershipStartDateMap, $lastID, $convertKey, &$errorids, &$processedErrorIds, $convert_MHAMemberBalance_Desc): ?jalali {
                             if (empty($membershipStartDateMap[$MHAMember_Code]) == false) {
                                 $jalali_start_date = $membershipStartDateMap[$MHAMember_Code];
                                 $jalali_start_str = $jalali_start_date->format('Y/m/d');
@@ -5412,22 +5526,22 @@ SQL;
                     $from_date_jalali_str = null;
                     $to_date_jalali_str = null;
 
-                    preg_match_all('/([\d\/]+)([^\d\/]+)([\d\/]+)/', $MHAMemberBalance_Desc, $matches, PREG_SET_ORDER);
+                    preg_match_all('/([\d\/]+)([^\d\/]+)([\d\/]+)/', $convert_MHAMemberBalance_Desc, $matches, PREG_SET_ORDER);
                     if (empty($matches[0][1]) == false)
                         $from_date_jalali_str = $matches[0][1];
                     if (empty($matches[0][3]) == false)
                         $to_date_jalali_str = $matches[0][3];
 
                     if (empty($from_date_jalali_str)) {
-                        $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > [from] date is empty. desc({$MHAMemberBalance_Desc}) ***", $convertKey, $errorids, $processedErrorIds);
+                        $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > [from] date is empty. desc({$convert_MHAMemberBalance_Desc}) ***", $convertKey, $errorids, $processedErrorIds);
                         continue;
                     }
                     if (empty($to_date_jalali_str)) {
-                        $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > [to] date is empty. desc({$MHAMemberBalance_Desc}) ***", $convertKey, $errorids, $processedErrorIds);
+                        $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > [to] date is empty. desc({$convert_MHAMemberBalance_Desc}) ***", $convertKey, $errorids, $processedErrorIds);
                         continue;
                     }
 
-                    $fnExtractDate = function ($date_str, $name) use (&$fnGetSmallestStartDateFromOldMembership, $MHAMember_Code, $lastID, $convertKey, &$errorids, &$processedErrorIds, $MHAMemberBalance_Desc): ?\DateTime {
+                    $fnExtractDate = function ($date_str, $name) use (&$fnGetSmallestStartDateFromOldMembership, $MHAMember_Code, $lastID, $convertKey, &$errorids, &$processedErrorIds, $convert_MHAMemberBalance_Desc): ?\DateTime {
                         if ($date_str[0] == '/')
                             $date_str = substr($date_str, 1);
                         if ($date_str[strlen($date_str) - 1] == '/')
@@ -5439,11 +5553,11 @@ SQL;
                         if ($parts_count == 1) {
                             $jalali_start_date = $fnGetSmallestStartDateFromOldMembership($MHAMember_Code);
                             if ($jalali_start_date == null) {
-                                $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > '/' not found in [{$name}] date({$date_str}). desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
+                                $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > '/' not found in [{$name}] date({$date_str}). desc({$convert_MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
                                 return null;
                             }
 
-                            // $this->log("[{$lastID}] Member_Code({$MHAMember_Code}) > '/' not found in [{$name}] date({$date_str}). desc({$MHAMemberBalance_Desc})");
+                            // $this->log("[{$lastID}] Member_Code({$MHAMember_Code}) > '/' not found in [{$name}] date({$date_str}). desc({$convert_MHAMemberBalance_Desc})");
 
                             $parts = [];
                             $parts[0] = $date_str;
@@ -5454,7 +5568,7 @@ SQL;
                         }
 
                         if ($parts_count != 3) {
-                            $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > parts != 3 in [{$name}] date({$date_str}). desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
+                            $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > parts != 3 in [{$name}] date({$date_str}). desc({$convert_MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
                             return null;
                         }
 
@@ -5477,7 +5591,7 @@ SQL;
 
                         list($miladi, $_) = $this->jalaliToMiladi($str);
                         if ($miladi == null) {
-                            $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > can not convert [{$name}] date({$date_str}) to miladi. desc({$MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
+                            $this->fnLogErrorToConvertTable($lastID, "Member_Code({$MHAMember_Code}) > can not convert [{$name}] date({$date_str}) to miladi. desc({$convert_MHAMemberBalance_Desc})", $convertKey, $errorids, $processedErrorIds);
                             return null;
                         }
 
@@ -5489,7 +5603,7 @@ SQL;
                     $to_date_miladi = $fnExtractDate($to_date_jalali_str, 'to');
 
                     if ($from_date_miladi == null || $to_date_miladi == null)
-                        throw new \Exception("error in extract dates for Member_Code({$MHAMember_Code}): from({$from_date_jalali_str}) to({$to_date_jalali_str}) desc({$MHAMemberBalance_Desc})");
+                        throw new \Exception("error in extract dates for Member_Code({$MHAMember_Code}): from({$from_date_jalali_str}) to({$to_date_jalali_str}) desc({$convert_MHAMemberBalance_Desc})");
 
                     if ($from_date_miladi > $to_date_miladi) {
                         $_d = $to_date_miladi;
@@ -5500,47 +5614,54 @@ SQL;
                     $from_date_miladi_str = $from_date_miladi->format('Y/m/d');
                     $to_date_miladi_str   = $to_date_miladi->format('Y/m/d');
 
+                    // $df = $from_date_miladi->diff($to_date_miladi);
+                    // print_r($df);
+                    // $_365 = $df->days / 365.0;
+                    // $years = ceil($df->days / 365.0);
+                    // echo "----------------- days({$df->days}) /365({$_365}) years:({$years})\n";
+
                     $years = intval($to_date_miladi->format('Y')) - intval($from_date_miladi->format('Y'));
-                    // $this->log("extract dates: years({$years}) from({$from_date_miladi_str}) to({$to_date_miladi_str}) desc({$MHAMemberBalance_Desc})");
+                    // $this->log("extract dates: years({$years}) from({$from_date_miladi_str}) to({$to_date_miladi_str}) desc({$convert_MHAMemberBalance_Desc})");
 
                     if ($years == 0)
                         $years = 1;
                     else if ($years < 0)
-                        throw new \Exception("years({$years}) <= 0: from({$from_date_miladi_str}) to({$to_date_miladi_str}) desc({$MHAMemberBalance_Desc})");
+                        throw new \Exception("years({$years}) <= 0: from({$from_date_miladi_str}) to({$to_date_miladi_str}) desc({$convert_MHAMemberBalance_Desc})");
 
-                    // else $this->log("extract dates: from({$from_date_miladi}) to({$to_date_miladi}) desc({$MHAMemberBalance_Desc})");
+                    // else $this->log("extract dates: from({$from_date_miladi}) to({$to_date_miladi}) desc({$convert_MHAMemberBalance_Desc})");
 
                     $transaction = Yii::$app->db->beginTransaction();
 
                     try {
-                        /*************************************************
-              //phase 2: membership
-              //create invoice voucher
-              $vchItemKey = Uuid::uuid4()->toString();
-              $vchItems = Json::encode([
-                [
-                  'key'       => $vchItemKey,
-                  // 'userid'    => $userid,
-                  'service'   => 'mha',
-                  // 'slbkey'    => 'mbrshp',
-                  'slbid'     => $fnGetConst(self::crm_2_membership_slbID),
-                  'desc'      => 'کانورت از سیستم ۱ - ردیف {$lastID} - {$MHAMemberBalance_Desc}',
-                  'qty'       => 1,
-                  'unit'      => 'سال',
-                  'prdtype'    => $fnGetConst(enuProductType::Digital),
-                  'unitprice' => $convert_MHAMemberBalance_Amount,
-                  // 'slbinfo'        => [
-                  //   'startDate' => $startDate,
-                  //   'endDate' => $endDate,
-                  // ],
-                  'maxqty'    => 1,
-                  'qtystep'    => 0, //0: do not allow to change qty in basket
-                ],
-              ]);
+                        /*************************************************/
+                        //phase 2: membership
+                        //create invoice voucher
+                        $vchItemKey = $MHAMemberBalance_Guid; //Uuid::uuid4()->toString();
+                        $vchItems = Json::encode([
+                            [
+                                'service'    => 'mha',
+                                'key'        => $vchItemKey,
+                                // 'orderID' : user asset id
+                                'desc'       => "کانورت از سیستم ۱ - ردیف {$lastID} - {$convert_MHAMemberBalance_Desc}",
+                                'prdType'    => $fnGetConst(enuProductType::Digital),
+                                'qty'        => $years,
+                                'maxQty'     => $years,
+                                // 'qtyStep'    => 0, //0: do not allow to change qty in basket
+                                'unit'       => 'سال',
+                                'unitPrice'  => 50000,
+                                'subTotal'   => $convert_MHAMemberBalance_Amount,
+                                'totalPrice' => $convert_MHAMemberBalance_Amount,
+                                'params'     => [
+                                    'startDate' => $from_date_miladi_str,
+                                    'endDate'   => $to_date_miladi_str,
+                                ],
+                                // 'slbid'      => $fnGetConst(self::crm_1_membership_slbID),
+                            ],
+                        ]);
 
-              $qry = <<<SQL
+                        $qry = <<<SQL
     INSERT INTO tbl_AAA_Voucher
-            SET vchUUID         = UUID()
+            SET vchUUID         = '{$MHAMemberBalance_Guid}'
               , vchOwnerUserID  = {$userid}
               , vchType         = '{$fnGetConst(enuVoucherType::Invoice)}'
               , vchAmount       = {$convert_MHAMemberBalance_Amount}
@@ -5549,74 +5670,98 @@ SQL;
               , vchTotalPaid    = {$convert_MHAMemberBalance_Amount}
               , vchItems        = '{$vchItems}'
               , vchStatus       = '{$fnGetConst(enuVoucherStatus::Finished)}'
+              , vchCreatedAt    = '{$MHAMemberBalance_CreateDate}'
 SQL;
-              $this->queryExecute($qry, __FUNCTION__, __LINE__);
-              $voucherid = intval(Yii::$app->db->getLastInsertID());
+                        $this->queryExecute($qry, __FUNCTION__, __LINE__);
+                        $voucherid = intval(Yii::$app->db->getLastInsertID());
 
-              //create wallet transaction
-              $qry = <<<SQL
+                        //ensure wallet
+                        if (empty($userDefWalletMap[$userid])) {
+                            $qry = <<<SQL
+  SELECT walID
+    FROM tbl_AAA_Wallet
+   WHERE walOwnerUserID = {$userid}
+     AND walIsDefault = 1
+     AND walStatus != '{$fnGetConst(enuWalletStatus::Removed)}'
+SQL;
+                            $walrow = $this->queryOne($qry, __FUNCTION__, __LINE__);
+                            if (empty($walrow) || (($walrow['walID'] ?? 0) == 0)) {
+                                $this->log("  error in get def wal id");
+                                throw new \Exception("  error in get def wal id");
+                            }
+                            $walid = $walrow['walID'];
+                            $userDefWalletMap[$userid] = $walid;
+                        } else
+                            $walid = $userDefWalletMap[$userid];
+
+                        //create wallet transaction
+                        $qry = <<<SQL
     INSERT INTO tbl_AAA_WalletTransaction
             SET wtrUUID             = UUID()
-              , wtrWalletID          = {$walid}
-              , wtrVoucherID          = {$voucherid}
+              , wtrWalletID         = {$walid}
+              , wtrVoucherID        = {$voucherid}
               , wtrWithdrawalAmount = {$convert_MHAMemberBalance_Amount}
+              , wtrCreatedAt        = '{$MHAMemberBalance_CreateDate}'
 SQL;
-              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+                        $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
-              //update wallet
-            $qry =<<<SQL
+                        //update wallet
+                        $qry = <<<SQL
     UPDATE tbl_AAA_Wallet
        SET walRemainedAmount = walRemainedAmount - {$convert_MHAMemberBalance_Amount}
      WHERE walID = {$walid}
 SQL;
-              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+                        $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
-              //member membership
-              $qry = <<<SQL
+                        //member membership
+                        $qry = <<<SQL
     INSERT INTO tbl_MHA_Accounting_UserAsset
-            SET uasUUID                         = '{$vchItemKey}'
+            SET uasUUID            = '{$vchItemKey}'
               , uasActorID         = {$userid}
-              , uasSaleableID      = {$fnGetConst(self::crm_2_membership_slbID)}
-              , uasQty             = 1
+              , uasSaleableID      = {$fnGetConst(self::crm_1_membership_slbID)}
+              , uasQty             = $years
               , uasVoucherID       = {$voucherid}
               , uasVoucherItemInfo = '{$vchItems}'
-              , uasValidFromDate   = null
-              , uasValidToDate     = {$tbl_MHA_MHAMemberBalance_expire}
+              , uasValidFromDate   = '{$from_date_miladi_str}'
+              , uasValidToDate     = '{$to_date_miladi_str}'
               , uasStatus          = '{$fnGetConst(enuUserAssetStatus::Active)}'
+              , uasCreatedAt       = '{$MHAMemberBalance_CreateDate}'
 SQL;
-              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+                        $this->queryExecute($qry, __FUNCTION__, __LINE__);
+                        // $userAssetid = intval(Yii::$app->db->getLastInsertID());
 
-              //phase 3: member
-              $qry = <<<SQL
+                        //phase 3: member
+                        $qry = <<<SQL
     UPDATE tbl_MHA_Member
-       SET mbrAcceptedAt = DATE_ADD({$tbl_MHA_MHAMemberBalance_expire}, INTERVAL -1 YEAR)
+       SET mbrAcceptedAt = '{$from_date_miladi_str}'
      WHERE mbrUserID = {$userid}
        AND (mbrAcceptedAt IS null
-        OR mbrAcceptedAt > DATE_ADD({$tbl_MHA_MHAMemberBalance_expire}, INTERVAL -1 YEAR)
-         )
+        OR mbrAcceptedAt > '{$from_date_miladi_str}'
+           )
 SQL;
-              $this->queryExecute($qry, __FUNCTION__, __LINE__);
+                        $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
-                         **************************************************/
+                        /**************************************************/
                         //phase 4: log
                         //log to tbl_convert
+                        $max_lastID = max($queryLastID, intval($lastID));
                         $qry = <<<SQL
    INSERT INTO tbl_convert(tableName, lastID, at)
-        VALUES ('{$convertKey}', $lastID, NOW())
-            ON DUPLICATE KEY UPDATE lastID={$lastID}, at=NOW();
+        VALUES ('{$convertKey}', $max_lastID, NOW())
+            ON DUPLICATE KEY UPDATE lastID={$max_lastID}, at=NOW();
 SQL;
                         $this->queryExecute($qry, __FUNCTION__, __LINE__);
 
                         //remove lastID from tbl_convert.info
-                        if ($fnRemoveFromErrorIDs($lastID)) {
+                        if ($this->fnRemoveFromErrorIDs($lastID, $errorids, $processedErrorIds)) {
                             $this->log("REMOVE '{$lastID}' FROM ERRORS");
 
                             $qry = <<<SQL
   UPDATE tbl_convert
      SET info = IF (info IS null OR LENGTH(info)=0,
            null,
-           IF (LOCATE(',{$lastID},', CONCAT(',', info, ',')) >= 1,
-             TRIM(BOTH ',' FROM REPLACE(CONCAT(',', info, ','), ',{$lastID},', ',')),
+           IF (LOCATE(',{$lastID},', CONCAT(',', REPLACE(info, '\\n', ''), ',')) >= 1,
+             TRIM(BOTH ',' FROM REPLACE(CONCAT(',', REPLACE(info, '\\n', ''), ','), ',{$lastID},', ',')),
              info
            )
          )

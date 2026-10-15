@@ -25,7 +25,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 
-<html lang="<?= Yii::$app->language ?>" class="h-100" dir="rtl">
+<html lang="<?= Yii::$app->language ?>" class="h-100" dir="rtl" data-bs-theme="light">
 
 <head>
     <title>پنل مدیریت خانه موسیقی - <?= Html::encode($this->title) ?></title>
