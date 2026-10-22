@@ -5265,9 +5265,36 @@ SQL;
     WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1391 تا 14/12/1446'     THEN 'بابت حق عضويت از 28/12/1391 تا 14/12/1392'
     WHEN MHAMemberBalance_Desc = 'بابت حق عضويت از 28/12/1391 تا 14/12/1447'     THEN 'بابت حق عضويت از 28/12/1391 تا 14/12/1393'
 --
+    WHEN MHAMemberBalance_Desc = '90-3' THEN '1390 1393'
+    WHEN MHAMemberBalance_Desc = '9-95' THEN '1395 1399'
+--
+--    WHEN MHAMemberBalance_Code =    40 AND MHAMemberBalance_Desc = 'بابت حق عضويت تا 2/1385'  THEN 'بابت حق عضويت تا 2/1385'
+    WHEN MHAMemberBalance_Code =  5474 AND MHAMemberBalance_Desc = '87'         THEN '87 88'
+    WHEN MHAMemberBalance_Code = 43424 AND MHAMemberBalance_Desc = '92'         THEN '92 93'
+    WHEN MHAMemberBalance_Code = 48279 AND MHAMemberBalance_Desc = 'بابت 89/95' THEN 'بابت 89 95'
+    WHEN MHAMemberBalance_Code = 48294 AND MHAMemberBalance_Desc = 'بابت 88/95' THEN 'بابت 88 95'
+    WHEN MHAMemberBalance_Code = 48315 AND MHAMemberBalance_Desc = '88/95'      THEN '88 95'
+    WHEN MHAMemberBalance_Code = 48673 AND MHAMemberBalance_Desc = '87/95'      THEN '87 95'
+    WHEN MHAMemberBalance_Code = 48753 AND MHAMemberBalance_Desc = '89/95'      THEN '89 95'
+    WHEN MHAMemberBalance_Code = 48774 AND MHAMemberBalance_Desc = '88/95'      THEN '88 95'
+    WHEN MHAMemberBalance_Code = 48955 AND MHAMemberBalance_Desc = '77/79'      THEN '77 79'
+    WHEN MHAMemberBalance_Code = 48986 AND MHAMemberBalance_Desc = '89/95'      THEN '89 95'
+    WHEN MHAMemberBalance_Code = 48999 AND MHAMemberBalance_Desc = '85/95'      THEN '85 95'
+    WHEN MHAMemberBalance_Code = 49200 AND MHAMemberBalance_Desc = '88/94'      THEN '88 94'
+    WHEN MHAMemberBalance_Code = 49284 AND MHAMemberBalance_Desc = '8894'       THEN '88 94'
+    WHEN MHAMemberBalance_Code = 49308 AND MHAMemberBalance_Desc = '82/95'      THEN '82 95'
+    WHEN MHAMemberBalance_Code = 49534 AND MHAMemberBalance_Desc = '89/95'      THEN '89 95'
+    WHEN MHAMemberBalance_Code = 49572 AND MHAMemberBalance_Desc = '88/95'      THEN '88 95'
+    WHEN MHAMemberBalance_Code = 49825 AND MHAMemberBalance_Desc = '88/95'      THEN '88 95'
+    WHEN MHAMemberBalance_Code = 49878 AND MHAMemberBalance_Desc = '88/95'      THEN '88 95'
+    WHEN MHAMemberBalance_Code = 50283 AND MHAMemberBalance_Desc = '8894'       THEN '88 94'
+    WHEN MHAMemberBalance_Code = 50529 AND MHAMemberBalance_Desc = '88/90'      THEN '88 90'
+    WHEN MHAMemberBalance_Code = 50929 AND MHAMemberBalance_Desc = '88/95'      THEN '88 95'
+    WHEN MHAMemberBalance_Code = 51950 AND MHAMemberBalance_Desc = '88/95'      THEN '88 95'
+--
     ELSE MHAMemberBalance_Desc
      END
-   WHERE MHAMemberBalance_Amount < 0
+   WHERE convert_MHAMemberBalance_Amount < 0
 --     AND convert_MHAMemberBalance_Desc IS null;
 ;
 SQL;
@@ -5481,6 +5508,7 @@ SQL;
                     $MHAMemberBalance_Date           = $row['MHAMemberBalance_Date'];
                     $MHAMemberBalance_CreateDate     = $row['MHAMemberBalance_CreateDate'];
                     $MHAMember_Code                  = intval($row['MHAMember_Code']);
+                    $MHAMemberBalance_Desc           = StringHelper::fixPersianCharacters(trim($row['MHAMemberBalance_Desc']));
                     $convert_MHAMemberBalance_Desc   = StringHelper::fixPersianCharacters(trim($row['convert_MHAMemberBalance_Desc']));
 
                     if (empty($convert_MHAMemberBalance_Desc)) {
@@ -5587,7 +5615,7 @@ SQL;
                         $str = implode('/', $parts);
 
                         // if ($str != $date_str)
-                        //     $this->log("[{$name}] {$date_str} -> {$str}");
+                        //     $this->log("[{$name}] {$date_str} -> {$str} desc({$convert_MHAMemberBalance_Desc})");
 
                         list($miladi, $_) = $this->jalaliToMiladi($str);
                         if ($miladi == null) {
@@ -5642,7 +5670,7 @@ SQL;
                                 'service'    => 'mha',
                                 'key'        => $vchItemKey,
                                 // 'orderID' : user asset id
-                                'desc'       => "کانورت از سیستم ۱ - ردیف {$lastID} - {$convert_MHAMemberBalance_Desc}",
+                                'desc'       => "کانورت از سیستم ۱ - ردیف {$lastID} - {$MHAMemberBalance_Desc}",
                                 'prdType'    => $fnGetConst(enuProductType::Digital),
                                 'qty'        => $years,
                                 'maxQty'     => $years,
