@@ -132,7 +132,7 @@ find_deleted_files() {
 
     local deleted
     deleted="$(
-        rsync -rcn --delete --itemize-changes "${RSYNC_FILTERS[@]}"             "$source/" "$reference/" |
+        rsync -rcn --delete --itemize-changes --copy-dirlinks "${RSYNC_FILTERS[@]}" "$source/" "$reference/" |
         awk '$1=="*deleting" { $1=""; sub(/^[ \t]+/,""); print }'
     )"
 
@@ -194,9 +194,9 @@ build() {
         if [[ -n "$reference" ]]; then
             reference_project="$REFERENCE_DIR/$reference/$project"
             mkdir -p "$reference_project"
-            rsync -a --checksum "${RSYNC_FILTERS[@]}"                 --compare-dest="$reference_project"                 "$source/" "$package_project/"
+            rsync -a --checksum --copy-dirlinks "${RSYNC_FILTERS[@]}" --compare-dest="$reference_project" "$source/" "$package_project/"
         else
-            rsync -a --checksum "${RSYNC_FILTERS[@]}"                 "$source/" "$package_project/"
+            rsync -a --checksum --copy-dirlinks "${RSYNC_FILTERS[@]}" "$source/" "$package_project/"
         fi
 
         remove_empty_dirs "$package_project"
@@ -294,7 +294,7 @@ install_package() {
                 /*|../*|*/../*|..) die "Unsafe deleted path: $relative_path" ;;
             esac
 
-            printf '%s/%s\n' "${relative_target%/}" "$relative_path"                 >> "$install_deleted"
+            printf '%s/%s\n' "${relative_target%/}" "$relative_path" >> "$install_deleted"
         done < "$source_deleted"
     fi
 
@@ -345,7 +345,7 @@ confirm() {
     if [[ -n "$reference" ]]; then
         for project in "${PROJECTS[@]}"; do
             mkdir -p "$CONFIRM_TMP/$project"
-            rsync -a "$REFERENCE_DIR/$reference/$project/"                 "$CONFIRM_TMP/$project/"
+            rsync -a "$REFERENCE_DIR/$reference/$project/" "$CONFIRM_TMP/$project/"
         done
     else
         for project in "${PROJECTS[@]}"; do

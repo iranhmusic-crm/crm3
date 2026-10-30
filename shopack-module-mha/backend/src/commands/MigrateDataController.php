@@ -180,9 +180,20 @@ group by uquStatus
 
 class MigrateDataController extends Controller
 {
-    const crm_1_membership_slbID = 5;
-    const crm_1_membership_slbUUID = 'a66c6e51-a31c-11f1-9082-b8763f820154';
-    const crm_1_membership_slbCode = 'ac9da38e-a31c-11f1-9082-b8763f820154';
+    //10,000 toman
+    const crm_1_membership_slbID_from_1370_01_01   = 3;
+    const crm_1_membership_slbUUID_from_1370_01_01 = 'a66c6e51-a31c-11f1-9082-b8763f820154';
+    const crm_1_membership_slbCode_from_1370_01_01 = 'ac9da38e-a31c-11f1-9082-b8763f820154';
+
+    //20,000 toman
+    const crm_1_membership_slbID_from_1387_01_01   = 4;
+    const crm_1_membership_slbUUID_from_1387_01_01 = '10760a7d-e965-4fcc-b4a2-ac14db12ba46';
+    const crm_1_membership_slbCode_from_1387_01_01 = '1c2029a8-5493-429a-b7a0-e8a475345f03';
+
+    //50,000 toman
+    const crm_1_membership_slbID_from_1392_01_01   = 5;
+    const crm_1_membership_slbUUID_from_1392_01_01 = '61a86cf1-d3df-4712-98e2-59498b87a97c';
+    const crm_1_membership_slbCode_from_1392_01_01 = '9d47ac2b-acaf-4c2b-ac09-78b93937b2a3';
 
     const crm_2_membership_slbID = 1;
     const crm_2_membership_slbUUID = '66ba37e1-72fd-11ee-8786-e73347ca2144';
@@ -2840,12 +2851,36 @@ SQL;
 
         $qry = <<<SQL
   INSERT IGNORE INTO tbl_MHA_Accounting_Saleable
-     SET slbID                = {$fnGetConst(self::crm_1_membership_slbID)}
-       , slbUUID              = '{$fnGetConst(self::crm_1_membership_slbUUID)}'
+     SET slbID                = {$fnGetConst(self::crm_1_membership_slbID_from_1370_01_01)}
+       , slbUUID              = '{$fnGetConst(self::crm_1_membership_slbUUID_from_1370_01_01)}'
        , slbProductID         = 1
-       , slbCode              = '{$fnGetConst(self::crm_1_membership_slbCode)}'
+       , slbCode              = '{$fnGetConst(self::crm_1_membership_slbCode_from_1370_01_01)}'
        , slbName              = 'کانورت از سیستم 1 - از ۱۳۷۰/۰۱/۰۱'
        , slbAvailableFromDate = '1991-03-21 00:00:00'
+       , slbBasePrice         = 10000
+SQL;
+        $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+        $qry = <<<SQL
+  INSERT IGNORE INTO tbl_MHA_Accounting_Saleable
+     SET slbID                = {$fnGetConst(self::crm_1_membership_slbID_from_1387_01_01)}
+       , slbUUID              = '{$fnGetConst(self::crm_1_membership_slbUUID_from_1387_01_01)}'
+       , slbProductID         = 1
+       , slbCode              = '{$fnGetConst(self::crm_1_membership_slbCode_from_1387_01_01)}'
+       , slbName              = 'کانورت از سیستم 1 - از ۱۳۸۷/۰۱/۰۱'
+       , slbAvailableFromDate = '2008-03-20 00:00:00'
+       , slbBasePrice         = 20000
+SQL;
+        $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+        $qry = <<<SQL
+  INSERT IGNORE INTO tbl_MHA_Accounting_Saleable
+     SET slbID                = {$fnGetConst(self::crm_1_membership_slbID_from_1392_01_01)}
+       , slbUUID              = '{$fnGetConst(self::crm_1_membership_slbUUID_from_1392_01_01)}'
+       , slbProductID         = 1
+       , slbCode              = '{$fnGetConst(self::crm_1_membership_slbCode_from_1392_01_01)}'
+       , slbName              = 'کانورت از سیستم 1 - از ۱۳۹۲/۰۱/۰۱'
+       , slbAvailableFromDate = '2013-03-21 00:00:00'
        , slbBasePrice         = 50000
 SQL;
         $this->queryExecute($qry, __FUNCTION__, __LINE__);
@@ -5516,6 +5551,7 @@ SQL;
                         continue;
                     }
 
+                    $MHAMemberBalance_Desc         = str_replace("  ", " ", str_replace("\r", " ", str_replace("\n", " ", $MHAMemberBalance_Desc)));
                     $convert_MHAMemberBalance_Desc = str_replace("  ", " ", str_replace("\r", " ", str_replace("\n", " ", $convert_MHAMemberBalance_Desc)));
 
                     // extract start & end date from Desc:
@@ -5569,7 +5605,7 @@ SQL;
                         continue;
                     }
 
-                    $fnExtractDate = function ($date_str, $name) use (&$fnGetSmallestStartDateFromOldMembership, $MHAMember_Code, $lastID, $convertKey, &$errorids, &$processedErrorIds, $convert_MHAMemberBalance_Desc): ?\DateTime {
+                    $fnExtractDate = function (&$date_str, $name) use (&$fnGetSmallestStartDateFromOldMembership, $MHAMember_Code, $lastID, $convertKey, &$errorids, &$processedErrorIds, $convert_MHAMemberBalance_Desc): ?\DateTime {
                         if ($date_str[0] == '/')
                             $date_str = substr($date_str, 1);
                         if ($date_str[strlen($date_str) - 1] == '/')
@@ -5623,6 +5659,8 @@ SQL;
                             return null;
                         }
 
+                        $date_str = $str;
+
                         // $this->log("[{$name}] jalali({$str}) -> miladi({$miladi})");
                         return $miladi;
                     };
@@ -5662,6 +5700,19 @@ SQL;
 
                     try {
                         /*************************************************/
+                        $to_date_jalali_year = intval(explode('/', $to_date_jalali_str)[0]);
+
+                        if ($to_date_jalali_year < 1387) {
+                            $slbid = self::crm_1_membership_slbID_from_1370_01_01;
+                            $unit_price = 10000;
+                        } elseif ($to_date_jalali_year >= 1392) {
+                            $slbid = self::crm_1_membership_slbID_from_1392_01_01;
+                            $unit_price = 50000;
+                        } else {
+                            $slbid = self::crm_1_membership_slbID_from_1387_01_01;
+                            $unit_price = 20000;
+                        }
+
                         //phase 2: membership
                         //create invoice voucher
                         $vchItemKey = $MHAMemberBalance_Guid; //Uuid::uuid4()->toString();
@@ -5676,14 +5727,14 @@ SQL;
                                 'maxQty'     => $years,
                                 // 'qtyStep'    => 0, //0: do not allow to change qty in basket
                                 'unit'       => 'سال',
-                                'unitPrice'  => 50000,
+                                'unitPrice'  => $unit_price,
                                 'subTotal'   => $convert_MHAMemberBalance_Amount,
                                 'totalPrice' => $convert_MHAMemberBalance_Amount,
                                 'params'     => [
                                     'startDate' => $from_date_miladi_str,
                                     'endDate'   => $to_date_miladi_str,
                                 ],
-                                // 'slbid'      => $fnGetConst(self::crm_1_membership_slbID),
+                                // 'slbid'      => $slbid
                             ],
                         ]);
 
@@ -5746,7 +5797,7 @@ SQL;
     INSERT INTO tbl_MHA_Accounting_UserAsset
             SET uasUUID            = '{$vchItemKey}'
               , uasActorID         = {$userid}
-              , uasSaleableID      = {$fnGetConst(self::crm_1_membership_slbID)}
+              , uasSaleableID      = {$slbid}
               , uasQty             = $years
               , uasVoucherID       = {$voucherid}
               , uasVoucherItemInfo = '{$vchItems}'
@@ -5825,5 +5876,62 @@ SQL;
             ];
 
         $this->log("converted to '{$queryLastID}'");
+    }
+
+    ///@todo: convert v1.memberships
+
+    /**********************************************************\
+    |* V 3                                                    *|
+    \**********************************************************/
+    public function actionV3()
+    {
+        $this->log("migrating v3");
+
+        if ($this->jalali == null)
+            $this->jalali = new Jalali();
+
+        //unlock
+        $fnUnlock = function () {
+            $qry = "DELETE FROM tbl_convert WHERE tableName = 'v3.locked'";
+            $this->queryExecute($qry, __FUNCTION__, __LINE__);
+        };
+
+        $convertTableData = $this->readConvertTable(1);
+
+        if (isset($convertTableData['v3.locked'])) {
+            // $nonExpireFound = false;
+            // foreach ($convertTableData as $tbl => $data) {
+            //     if (($tbl != 'v3.locked') && (($data['expired'] ?? 0) == 0)) {
+            //         $nonExpireFound = true;
+            //         break;
+            //     }
+            // }
+
+            // if ($nonExpireFound) {
+            //     $this->log("V3.LOCKED");
+            //     return;
+            // }
+
+            $this->log("RE-LOCKING...");
+            $qry = "UPDATE tbl_convert SET at=NOW() WHERE tableName='v3.locked'";
+            $this->queryExecute($qry, __FUNCTION__, __LINE__);
+        }
+
+        //lock
+        $qry = "INSERT IGNORE INTO tbl_convert(tableName, lastID) VALUES ('v3.locked', 0)";
+        $this->queryExecute($qry, __FUNCTION__, __LINE__);
+
+        try {
+            $this->v3_approve_old_offlinepayments($convertTableData);
+            $fnUnlock();
+        } catch (\Throwable $exp) {
+            $fnUnlock();
+            $this->log($exp->getMessage());
+            throw $exp;
+        } catch (\Exception $exp) {
+            $fnUnlock();
+            $this->log($exp->getMessage());
+            throw $exp;
+        }
     }
 }

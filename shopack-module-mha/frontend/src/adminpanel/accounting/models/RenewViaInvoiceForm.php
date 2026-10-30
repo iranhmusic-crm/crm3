@@ -85,6 +85,7 @@ class RenewViaInvoiceForm extends Model
 
         $startDate                    = $info['startDate'];
         $maxYears                     = $info['maxYears'];
+        $years                        = $info['years'];
         $memberModel                  = $info['memberModel'];
         $offlinePaymentModel          = $info['offlinePaymentModel'];
         $membershipSaleableModels     = $info['membershipSaleableModels'];
@@ -92,6 +93,7 @@ class RenewViaInvoiceForm extends Model
 
         $this->startDate                    = $startDate;
         $this->maxYears                     = $maxYears;
+        $this->years                        = $years;
         $this->memberModel                  = $memberModel;
         $this->offlinePaymentModel          = $offlinePaymentModel;
         $this->membershipSaleableModels     = $membershipSaleableModels;
@@ -125,6 +127,7 @@ class RenewViaInvoiceForm extends Model
         return [
             'startDate'                    => $apiResponse['body']['startDate'],
             'maxYears'                     => $apiResponse['body']['maxYears'],
+            'years'                        => $apiResponse['body']['years'],
             'memberModel'                  => $apiResponse['body']['memberModel'],
             'offlinePaymentModel'          => $apiResponse['body']['offlinePaymentModel'],
             'membershipSaleableModels'     => $apiResponse['body']['membershipSaleableModels'],

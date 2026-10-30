@@ -440,6 +440,9 @@ class ReportModel extends MhaActiveRecord
                 'filterCallback' => function ($query, $key, $value, $hasvalue) use ($fnAddBetweenCondition) {
                     $fnAddBetweenCondition($key, $value);
                 },
+                'join' => [
+                    'wallet'
+                ],
             ],
         ];
 
@@ -501,6 +504,12 @@ class ReportModel extends MhaActiveRecord
                     } else if (isset($schema['filterCallback'])) {
                         $schema['filterCallback']($query, $k, [], $hasvalue);
                         $appliedHas[$k] = true;
+                    }
+
+                    if (isset($schema['join'])) {
+                        foreach ((array)$schema['join'] as $j) {
+                            $joins[$j] = true;
+                        }
                     }
                 }
             }

@@ -274,6 +274,9 @@ class MembershipForm extends Model
         //todo: compute maxYears by remaining years from member-kanoon
         $maxYears = 3;
 
+        //purchased years
+        $years = null;
+
         $startDate = $startDate->format('Y-m-d');
 
         $fnGetSaleables = function ($saleableType) use ($memberID, $offlinePaymentModel) {
@@ -311,6 +314,8 @@ class MembershipForm extends Model
                         $saleableModels = [$saleableModel2];
                     else
                         $saleableModels = [$saleableModel2, $saleableModel];
+
+                    $years = intval($offlinePaymentModel->ofpAmount, $saleableModel2->slbBasePrice);
                 }
             }
 
@@ -361,10 +366,14 @@ class MembershipForm extends Model
         $membershipSaleableModels     = $fnGetOneSaleable(enuMhaProductType::Membership);
         $membershipCardSaleableModels = $fnGetOneSaleable(enuMhaProductType::MembershipCard);
 
+        if ($offlinePaymentModel != null && empty($membershipSaleableModels) == false)
+            $years = intval($offlinePaymentModel->ofpAmount, $membershipSaleableModels[0]->slbBasePrice);
+
         //-----------------
         return [
             'startDate'                    => $startDate,
             'maxYears'                     => $maxYears,
+            'years'                        => $years,
             'memberModel'                  => $memberModel,
             'offlinePaymentModel'          => $offlinePaymentModel,
             'membershipSaleableModels'     => $membershipSaleableModels,

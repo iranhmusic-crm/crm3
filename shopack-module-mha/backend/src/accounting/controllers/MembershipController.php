@@ -91,6 +91,7 @@ class MembershipController extends BaseRestController
 
         $startDate                    = $info['startDate'];
         $maxYears                     = $info['maxYears'];
+        $years                        = $info['years'];
         $memberModel                  = $info['memberModel'];
         $offlinePaymentModel          = $info['offlinePaymentModel'];
         $membershipSaleableModels     = $info['membershipSaleableModels'];
@@ -99,6 +100,7 @@ class MembershipController extends BaseRestController
         return [
             'startDate'                    => $startDate,
             'maxYears'                     => $maxYears,
+            'years'                        => $years,
             'memberModel'                  => $memberModel,
             'offlinePaymentModel'          => $offlinePaymentModel,
             'membershipSaleableModels'     => $membershipSaleableModels,
