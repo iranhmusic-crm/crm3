@@ -104,8 +104,11 @@ cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.2/bin
 -- MIGRATE:
 cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.2/bin/php yii migrate/up --interactive 0 2>&1 >>logs/migrate.log
 
--- CONVERT:
+-- CONVERT (V2):
 cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.2/bin/php yii mha/migrate-data/from-v2 2>&1 >>logs/mha-migrate-data-from-v2.log
+
+-- CONVERT (V1):
+cd /home2/iranhmus/domains/api.iranhmusic.ir/public_html; /usr/local/php-8.2/bin/php yii mha/migrate-data/from-v1 2>&1 >>logs/mha-migrate-data-from-v1.log
 
 SELECT uquStatus, COUNT(*) FROM tbl_AAA_UploadQueue GROUP BY uquStatus WITH ROLLUP;
 
@@ -4705,18 +4708,18 @@ SQL;
         $convertTableData = $this->readConvertTable(1);
 
         if (isset($convertTableData['v1.locked'])) {
-            // $nonExpireFound = false;
-            // foreach ($convertTableData as $tbl => $data) {
-            //     if (($tbl != 'v1.locked') && (($data['expired'] ?? 0) == 0)) {
-            //         $nonExpireFound = true;
-            //         break;
-            //     }
-            // }
+            $nonExpireFound = false;
+            foreach ($convertTableData as $tbl => $data) {
+                if (($tbl != 'v1.locked') && (($data['expired'] ?? 0) == 0)) {
+                    $nonExpireFound = true;
+                    break;
+                }
+            }
 
-            // if ($nonExpireFound) {
-            //     $this->log("V1.LOCKED");
-            //     return;
-            // }
+            if ($nonExpireFound) {
+                $this->log("V1.LOCKED");
+                return;
+            }
 
             $this->log("RE-LOCKING...");
             $qry = "UPDATE tbl_convert SET at=NOW() WHERE tableName='v1.locked'";
@@ -4729,7 +4732,7 @@ SQL;
 
         try {
             $this->v1_convert_positive_balance($convertTableData);
-            $this->v1_convert_negative_balance($convertTableData);
+//            $this->v1_convert_negative_balance($convertTableData);
             $fnUnlock();
         } catch (\Throwable $exp) {
             $fnUnlock();
@@ -4902,8 +4905,8 @@ SQL;
         while (true) {
             ++$loopCount;
 
-            // if ($loopCount > 1)
-            //     break;
+            if ($loopCount > 2)
+                break;
 
             $erroridsCount = count($errorids);
             $newFetchCount = $fetchCount;
@@ -4930,6 +4933,7 @@ SQL;
           ON tbl_APP_Member.Member_Code = tbl_MHA_MHAMember.MHAMember_Member_Code
        WHERE convert_MHAMemberBalance_Amount > 0
          AND {$where}
+    ORDER BY MHAMemberBalance_Code
        LIMIT {$newFetchCount}
 SQL;
 
@@ -5455,6 +5459,7 @@ SQL;
           ON tbl_APP_Member.Member_Code = tbl_MHA_MHAMember.MHAMember_Member_Code
        WHERE convert_MHAMemberBalance_Amount < 0
          AND {$where}
+    ORDER BY MHAMemberBalance_Code
        LIMIT {$newFetchCount}
 SQL;
 
