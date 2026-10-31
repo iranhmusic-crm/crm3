@@ -35,12 +35,14 @@ class AppAsset extends AssetBundle
 
     public function init()
     {
-        if (Yii::$app->layout == "curved-405") {
+        parent::init();
+
+        $curLayout = Yii::$app->controller->layout ?? Yii::$app->layout;
+
+        if ($curLayout == "curved-405") {
             $this->css[] = 'css/curved-405.css';
         } else {
             $this->css[] = 'css/site.css';
         }
-
-        parent::init();
     }
 }
