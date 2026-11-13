@@ -79,9 +79,15 @@ new_timestamp() {
 
 latest_reference() {
     [[ -d "$REFERENCE_DIR" ]] || return 0
-    find "$REFERENCE_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%f
-' |
-        while read -r n; do is_timestamp_dir "$n" && echo "$n"; done |
+    find "$REFERENCE_DIR" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' |
+        while read -r n; do
+            is_timestamp_dir "$n" || continue
+            local found=0 project
+            for project in "${PROJECTS[@]}"; do
+                [[ -f "$REFERENCE_DIR/$n/$project.sha256" ]] || { found=1; break; }
+            done
+            [[ "$found" -eq 0 ]] && echo "$n"
+        done |
         sort | tail -n 1
 }
 
@@ -125,27 +131,94 @@ remove_empty_dirs() {
     [[ -d "$1" ]] && find "$1" -depth -type d -empty -delete
 }
 
-find_deleted_files() {
-    local source="$1" reference="$2" output="$3"
+# Manifest format (tab-separated): type, digest/target, escaped relative path.
+# Escape backslash and control characters so every record remains one line and
+# paths can be inspected/edited without Base64.
+create_manifest() {
+    local root="$1" output="$2"
     : > "$output"
-    [[ -d "$reference" ]] || return 0
 
-    local deleted
-    deleted="$(
-        rsync -rcn --delete --itemize-changes --copy-dirlinks "${RSYNC_FILTERS[@]}" "$source/" "$reference/" |
-        awk '$1=="*deleting" { $1=""; sub(/^[ \t]+/,""); print }'
-    )"
+    # Hash regular files in batches. Python only performs byte-safe escaping;
+    # it does not hash or read file contents.
+    (
+        cd "$root"
+        find . -type f -print0 |
+            xargs -0 -r sha256sum --zero --
+    ) | python3 -c '
+import sys
 
-    while IFS= read -r path; do
-        [[ -n "$path" ]] || continue
-        case "$path" in
-            /*|../*|*/../*|..) die "Unsafe deleted path: $path" ;;
-        esac
-        if [[ -e "$reference/$path" || -L "$reference/$path" ]] &&
-           [[ ! -d "$reference/$path" ]]; then
-            printf '%s\n' "$path" >> "$output"
+def esc(value):
+    out = bytearray()
+    for b in value:
+        if b == 0x5c: out += b"\\\\"
+        elif b == 0x09: out += b"\\t"
+        elif b == 0x0a: out += b"\\n"
+        elif b == 0x0d: out += b"\\r"
+        elif b < 0x20 or b == 0x7f: out += (b"\\x%02x" % b)
+        else: out.append(b)
+    return bytes(out)
+
+for record in sys.stdin.buffer.read().split(b"\0"):
+    if not record: continue
+    digest, path = record[:64], record[66:]
+    if path.startswith(b"./"): path = path[2:]
+    sys.stdout.buffer.write(b"F\t" + digest + b"\t" + esc(path) + b"\n")
+' > "$output"
+
+    # Keep symlink entries distinct from their targets. The target and path
+    # are escaped using the same byte-level rules as regular-file paths.
+    (cd "$root" && find . -type l -printf '%P\0%l\0') |
+        python3 -c '
+import sys
+
+def esc(value):
+    out = bytearray()
+    for b in value:
+        if b == 0x5c: out += b"\\\\"
+        elif b == 0x09: out += b"\\t"
+        elif b == 0x0a: out += b"\\n"
+        elif b == 0x0d: out += b"\\r"
+        elif b < 0x20 or b == 0x7f: out += (b"\\x%02x" % b)
+        else: out.append(b)
+    return bytes(out)
+
+items = sys.stdin.buffer.read().split(b"\0")
+for i in range(0, len(items) - 1, 2):
+    path, target = items[i], items[i + 1]
+    if not path: continue
+    sys.stdout.buffer.write(b"L\t" + esc(target) + b"\t" + esc(path) + b"\n")
+' >> "$output"
+}
+
+copy_changed_files() {
+    local snapshot="$1" package_project="$2" current_manifest="$3"
+    local previous_manifest="$4" deleted_output="$5" project="$6"
+    local type value escaped_path path signature
+    declare -A CURRENT=() PREVIOUS=()
+
+    # Escaped paths are safe associative-array keys and contain no literal
+    # tabs or newlines. Decode only when accessing the filesystem.
+    if [[ -f "$previous_manifest" ]]; then
+        while IFS=$'\t' read -r type value escaped_path; do
+            [[ -n "$escaped_path" ]] || continue
+            PREVIOUS["$escaped_path"]="$type:$value"
+        done < "$previous_manifest"
+    fi
+
+    while IFS=$'\t' read -r type value escaped_path; do
+        [[ -n "$escaped_path" ]] || continue
+        signature="$type:$value"
+        CURRENT["$escaped_path"]="$signature"
+        if [[ "${PREVIOUS[$escaped_path]-}" != "$signature" ]]; then
+            printf -v path '%b' "$escaped_path"
+            (cd "$snapshot" && cp -a --parents -- "$path" "$package_project/")
         fi
-    done <<< "$deleted"
+    done < "$current_manifest"
+
+    for escaped_path in "${!PREVIOUS[@]}"; do
+        [[ ${CURRENT[$escaped_path]+present} ]] ||
+            printf '%s\t%s\n' "$project" "$escaped_path" >> "$deleted_output"
+    done
 }
 
 validate_package() {
@@ -163,12 +236,15 @@ validate_package() {
 
 build() {
     validate_config
+    command -v rsync >/dev/null 2>&1 || die "rsync is required"
+    command -v sha256sum >/dev/null 2>&1 || die "sha256sum is required"
+    command -v python3 >/dev/null 2>&1 || die "python3 is required"
+
     mkdir -p "$REFERENCE_DIR" "$PACKAGE_DIR"
 
     local ready
     ready="$(latest_ready_package)"
-    [[ -z "$ready" ]] ||
-        die "Package $ready is still ready. Deploy and confirm it first."
+    [[ -z "$ready" ]] || die "Package $ready is still ready. Deploy and confirm it first."
 
     local reference release final_package
     reference="$(latest_reference)"
@@ -176,50 +252,71 @@ build() {
     final_package="$PACKAGE_DIR/$release"
     BUILD_TMP="$PACKAGE_DIR/.tmp_$release"
 
-    mkdir -p "$BUILD_TMP/files"
+    mkdir -p "$BUILD_TMP/files" "$BUILD_TMP/manifests" "$BUILD_TMP/snapshot"
     build_rsync_filters
 
     echo "Building release: $release"
     echo "Reference: ${reference:-none}"
     echo
 
-    local project source package_project reference_project project_deleted
+    local project source snapshot package_project current_manifest previous_manifest project_deleted
+    local changed_count deleted_count total_changed=0
+    : > "$BUILD_TMP/deleted-files.txt"
+
     for project in "${PROJECTS[@]}"; do
         source="$PROJECT_ROOT/$project"
+        snapshot="$BUILD_TMP/snapshot/$project"
         package_project="$BUILD_TMP/files/$project"
+        current_manifest="$BUILD_TMP/manifests/$project.sha256"
+        previous_manifest=""
+        project_deleted="$BUILD_TMP/deleted-$project.txt"
+
         mkdir -p "$package_project"
+        : > "$project_deleted"
+
+        [[ -z "$reference" ]] || previous_manifest="$REFERENCE_DIR/$reference/$project.sha256"
 
         echo "Processing: $project"
 
-        if [[ -n "$reference" ]]; then
-            reference_project="$REFERENCE_DIR/$reference/$project"
-            mkdir -p "$reference_project"
-            rsync -a --checksum --copy-dirlinks "${RSYNC_FILTERS[@]}" --compare-dest="$reference_project" "$source/" "$package_project/"
+        if [[ -z "$reference" ]]; then
+            # First build: there is no previous manifest to compare against.
+            # Let rsync copy the filtered tree directly into the package.
+            rsync -a --copy-dirlinks "${RSYNC_FILTERS[@]}" "$source/" "$package_project/"
+            create_manifest "$package_project" "$current_manifest"
         else
-            rsync -a --checksum --copy-dirlinks "${RSYNC_FILTERS[@]}" "$source/" "$package_project/"
+            mkdir -p "$snapshot"
+
+            # With a reference, stage the filtered source tree for manifest comparison.
+            rsync -a --copy-dirlinks "${RSYNC_FILTERS[@]}" "$source/" "$snapshot/"
+            create_manifest "$snapshot" "$current_manifest"
+            copy_changed_files "$snapshot" "$package_project" "$current_manifest" \
+                "$previous_manifest" "$project_deleted" "$project"
+            rm -rf -- "$snapshot"
         fi
 
-        remove_empty_dirs "$package_project"
-        echo "  Changed/new files: $(count_files "$package_project")"
+        if [[ -s "$project_deleted" ]]; then
+            cat -- "$project_deleted" >> "$BUILD_TMP/deleted-files.txt"
+        fi
+
+        changed_count="$(count_files "$package_project")"
+        total_changed=$((total_changed + changed_count))
+        echo "  Changed/new files: $changed_count"
+
+        rm -rf -- "$snapshot" "$project_deleted"
     done
 
-    : > "$BUILD_TMP/deleted-files.txt"
+    rm -rf -- "$BUILD_TMP/snapshot"
 
-    if [[ -n "$reference" ]]; then
-        for project in "${PROJECTS[@]}"; do
-            source="$PROJECT_ROOT/$project"
-            reference_project="$REFERENCE_DIR/$reference/$project"
-            project_deleted="$(mktemp)"
+    deleted_count="$(wc -l < "$BUILD_TMP/deleted-files.txt" | tr -d ' ')"
 
-            find_deleted_files "$source" "$reference_project" "$project_deleted"
-
-            while IFS= read -r path; do
-                [[ -n "$path" ]] &&
-                    printf '%s|%s\n' "$project" "$path" >> "$BUILD_TMP/deleted-files.txt"
-            done < "$project_deleted"
-
-            rm -f "$project_deleted"
-        done
+    # Do not publish an empty package. A release is needed only when at least
+    # one file is new/changed or at least one previous file was deleted.
+    if (( total_changed == 0 && deleted_count == 0 )); then
+        rm -rf -- "$BUILD_TMP"
+        BUILD_TMP=""
+        echo
+        echo "No changes detected. No package was created."
+        return 0
     fi
 
     {
@@ -228,7 +325,8 @@ build() {
         echo "reference=${reference:-none}"
         echo "created_at=$(date --iso-8601=seconds)"
         echo "project_count=${#PROJECTS[@]}"
-        echo "deleted_files=$(wc -l < "$BUILD_TMP/deleted-files.txt" | tr -d ' ')"
+        echo "deleted_files=$deleted_count"
+        echo "hash_algorithm=SHA-256"
         echo
         for project in "${PROJECTS[@]}"; do
             echo "project=$project"
@@ -283,18 +381,19 @@ install_package() {
     : > "$install_deleted"
 
     if [[ -f "$source_deleted" ]]; then
-        local relative_path
-        while IFS='|' read -r project relative_path; do
-            [[ -n "$project" && -n "$relative_path" ]] || continue
+        local escaped_path relative_path
+        while IFS=$'\t' read -r project escaped_path; do
+            [[ -n "$project" && -n "$escaped_path" ]] || continue
 
             var="INSTALL_DIR_$project"
             relative_target="${!var}"
+            printf -v relative_path '%b' "$escaped_path"
 
             case "$relative_path" in
                 /*|../*|*/../*|..) die "Unsafe deleted path: $relative_path" ;;
             esac
 
-            printf '%s/%s\n' "${relative_target%/}" "$relative_path" >> "$install_deleted"
+            printf '%s/%s\n' "${relative_target%/}" "$escaped_path" >> "$install_deleted"
         done < "$source_deleted"
     fi
 
@@ -319,54 +418,31 @@ install_package() {
 confirm() {
     validate_config
 
-    local release package reference final_reference
+    local release package final_reference
     release="$(latest_ready_package)"
     [[ -n "$release" ]] || die "No ready package found."
 
     package="$PACKAGE_DIR/$release"
     validate_package "$package"
-    reference="$(latest_reference)"
     final_reference="$REFERENCE_DIR/$release"
 
     echo "Release: $release"
-    echo "Previous reference: ${reference:-none}"
+    echo "Previous reference: $(latest_reference || true)"
     echo
 
     read -r -p "Confirm this release? [y/N] " answer
     case "$answer" in y|Y|yes|YES) ;; *) echo "Cancelled."; return 0 ;; esac
 
-    [[ ! -e "$final_reference" ]] ||
-        die "Reference already exists: $final_reference"
+    [[ ! -e "$final_reference" ]] || die "Reference already exists: $final_reference"
 
     CONFIRM_TMP="$REFERENCE_DIR/.tmp_$release"
     mkdir -p "$CONFIRM_TMP"
 
-    local project path
-    if [[ -n "$reference" ]]; then
-        for project in "${PROJECTS[@]}"; do
-            mkdir -p "$CONFIRM_TMP/$project"
-            rsync -a "$REFERENCE_DIR/$reference/$project/" "$CONFIRM_TMP/$project/"
-        done
-    else
-        for project in "${PROJECTS[@]}"; do
-            mkdir -p "$CONFIRM_TMP/$project"
-        done
-    fi
-
+    local project
     for project in "${PROJECTS[@]}"; do
-        rsync -a "$package/files/$project/" "$CONFIRM_TMP/$project/"
-    done
-
-    while IFS='|' read -r project path; do
-        [[ -n "$project" && -n "$path" ]] || continue
-        case "$path" in
-            /*|../*|*/../*|..) die "Unsafe deleted path: $path" ;;
-        esac
-        rm -f -- "$CONFIRM_TMP/$project/$path"
-    done < "$package/deleted-files.txt"
-
-    for project in "${PROJECTS[@]}"; do
-        remove_empty_dirs "$CONFIRM_TMP/$project"
+        [[ -f "$package/manifests/$project.sha256" ]] ||
+            die "SHA-256 manifest missing for project: $project"
+        cp -- "$package/manifests/$project.sha256" "$CONFIRM_TMP/$project.sha256"
     done
 
     {
@@ -375,6 +451,7 @@ confirm() {
         echo "source_package=$release"
         echo "created_at=$(date --iso-8601=seconds)"
         echo "project_count=${#PROJECTS[@]}"
+        echo "hash_algorithm=SHA-256"
     } > "$CONFIRM_TMP/manifest.txt"
 
     mv -- "$CONFIRM_TMP" "$final_reference"
@@ -382,7 +459,6 @@ confirm() {
 
     local manifest="$package/manifest.txt"
     local new_manifest="$manifest.tmp"
-
     sed 's/^status=ready$/status=confirmed/' "$manifest" > "$new_manifest"
     printf 'confirmed_at=%s\n' "$(date --iso-8601=seconds)" >> "$new_manifest"
     mv -- "$new_manifest" "$manifest"
