@@ -66,7 +66,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                 $userMenuItems = [
                     'label' => Yii::t('aaa', 'Login'),
                     'url' => ['/aaa/auth/login'],
-                    'options' => ['class' => 'me-0 ms-auto'],
+                    'options' => ['class' => 'me-0 ms-0'],
                 ];
             } else {
                 if (Yii::$app->user->identity->imageFile && Yii::$app->user->identity->imageFile->isImage()) {
@@ -74,7 +74,6 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                 } else {
                     $label = Html::img('/images/man.png', ['width' => '50px']);
                 }
-
 
                 //------------------
                 $userInfos = [];
@@ -101,7 +100,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                 $userMenuItems = [
                     // 'label' => Yii::t('app', 'Menu'),
                     'label' => $label,
-                    'options' => ['class' => 'me-0 ms-auto'],
+                    'options' => ['class' => 'me-0 ms-0'],
                     'dropdownOptions' => ['class' => 'dropdown-items-reverse'],
                     'items' => [
                         // '<li class="nav-item">' . Html::a(
@@ -134,10 +133,10 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '/f
                 'encodeLabels' => false,
                 'options' => ['class' => 'navbar-nav w-100'],
                 'items' => [
-                    // [
-                    //     'label' => Yii::$app->formatter->asJalali(new \DateTime('now', new \DateTimeZone('UTC')), 'w Y/m/d'),
-                    //     'options' => ['class' => 'me-0 ms-auto'],
-                    // ],
+                    [
+                        'label' => Yii::$app->formatter->asJalali(new \DateTime('now', new \DateTimeZone('UTC')), 'w Y/m/d'),
+                        'options' => ['class' => 'me-0 ms-auto h-center-content'],
+                    ],
                     $userMenuItems,
                 ]
             ]);
